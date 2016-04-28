@@ -40,7 +40,7 @@ module.exports = function(req, res) {
                     // Insert new books
                     sql = "INSERT INTO books (user_id, book_id) VALUES ";                    
                     sql += ids.map(id => {
-                        return `('${uid}', '${+id}', '1', '1', '1')`;
+                        return `('${uid}', '${+id}')`;
                     }).join(", ");
                     
                     cn.query(sql, (err, result) => {
