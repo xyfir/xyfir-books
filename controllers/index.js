@@ -5,6 +5,7 @@ const router = require("express").Router();
 /* Library Manager */
 router.post("/library-manager/:server/:lib/library", require("./library-manager/add-library"));
 router.post("/library-manager/:server/:lib/books", require("./library-manager/add-books"));
+router.put("/library-manager/:server/:lib/books/:book", require("./library-manager/increment-version"));
 router.post("/library-manager/:server/space", require("./library-manager/space-needed"));
 router.put("/library-manager/:server/space", require("./library-manager/update-freespace"));
 
@@ -12,9 +13,7 @@ router.put("/library-manager/:server/space", require("./library-manager/update-f
 router.route("/books")
     .get(require("./books/list"))
     .delete(require("./books/delete"));
-router.route("/books/:book")
-    .get(require("./books/info"))
-    .put(require("./books/increment-version"));
+router.get("/books/:book", require("./books/info"));
 router.route("/books/:book/bookmark")
     .post(require("./books/bookmark/add"))
     .delete(require("./books/bookmark/delete"));
