@@ -15,6 +15,12 @@ router.route("/books")
 router.route("/books/:book")
     .get(require("./books/info"))
     .put(require("./books/increment-version"));
+router.route("/books/:book/bookmark")
+    .post(require("./books/bookmark/add"))
+    .delete(require("./books/bookmark/delete"));
+router.route("/books/:book/note")
+    .post(require("./books/note/add"))
+    .delete(require("./books/note/delete"));
 
 /* Account */
 router.get("/account", require("./account/info"));
