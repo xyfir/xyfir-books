@@ -13,6 +13,7 @@
     "express": "^4.13.4",
     "mysql": "^2.10.2",
     "randomstring": "^1.1.4",
-    "request": "^2.72.0"
+    "request": "^2.72.0",
+    "stripe": "^4.5.0"
   }
 }
