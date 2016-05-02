@@ -21,7 +21,7 @@ module.exports = function(req, res) {
     `;
     let vars = [req.params.server, req.params.lib];
     
-    db(cn => cn.query(sql, (err, rows) => {
+    db(cn => cn.query(sql, vars, (err, rows) => {
         if (err || !rows.length) {
             cn.release();
             res.json({ error: true });
@@ -38,8 +38,8 @@ module.exports = function(req, res) {
                     res.json({ error: true });
                 }
                 else {
-                    sql = "UPDATE servers SET free_space = ? WHERE server_id = ?";
-                    vars = [req.params.server];
+                    sql = "UPDATE servers SET space_free = ? WHERE server_id = ?";
+                    vars = [req.body.freeSpace, req.params.server];
                     
                     cn.query(sql, vars, (err, result) => {
                         cn.release();
