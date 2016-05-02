@@ -34,6 +34,16 @@ app.use(parser.urlencoded({ extended: true }));
 app.use("/", express.static(__dirname + "/public"));
 app.use("/api", require("./controllers/"));
 
+app.get("/", (req, res) => {
+    if (config.environment.type == "dev") {
+        req.session = { uid: 1, subscription: 0, library: {
+            address: "http://localhost:2085/", server: 1,
+            id: "1-libliblililibliblililibliblililibliblili"
+        } };
+    }
+    res.sendFile("views/Home.html");
+});
+app.get("/*", (req, res) => res.sendFile("views/App.html"));
 app.listen(config.environment.port, () => {
     console.log("SERVER RUNNING ON", config.environment.port);
 });
