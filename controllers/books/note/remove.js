@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require("../../lib/db");
+const db = require("../../../lib/db");
 
 /*
     DELETE api/books/:book/note
