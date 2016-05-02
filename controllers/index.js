@@ -16,10 +16,10 @@ router.route("/books")
 router.get("/books/:book", require("./books/info"));
 router.route("/books/:book/bookmark")
     .post(require("./books/bookmark/add"))
-    .delete(require("./books/bookmark/delete"));
+    .delete(require("./books/bookmark/remove"));
 router.route("/books/:book/note")
     .post(require("./books/note/add"))
-    .delete(require("./books/note/delete"));
+    .delete(require("./books/note/remove"));
 
 /* Account */
 router.get("/account", require("./account/info"));
