@@ -36,14 +36,15 @@ app.use("/api", require("./controllers/"));
 
 app.get("/", (req, res) => {
     if (config.environment.type == "dev") {
-        req.session = { uid: 1, subscription: 0, library: {
+        req.session.uid = 1; req.session.subscription = 0;
+        req.session.library = {
             address: "http://localhost:2085/", server: 1,
             id: "1-libliblililibliblililibliblililibliblili"
-        } };
+        };
     }
-    res.sendFile("views/Home.html");
+    res.sendFile(__dirname + "/views/Home.html");
 });
-app.get("/*", (req, res) => res.sendFile("views/App.html"));
+app.get("/*", (req, res) => res.sendFile(__dirname + "/views/App.html"));
 app.listen(config.environment.port, () => {
     console.log("SERVER RUNNING ON", config.environment.port);
 });
