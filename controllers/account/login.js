@@ -65,14 +65,19 @@ module.exports = function(req, res) {
                                 let vars = [rows[0].server_id, library, result.insertId];
                                 
                                 cn.query(sql, vars, (err, result) => {
-                                    cn.release();
-                                    res.json({ error: false });
+                                    sql = "UPDATE servers SET library_count = library_count + 1 WHERE server_id = ?";
+                                    vars = [library];
                                     
-                                    req.session.xadid = body.xadid;
-                                    req.session.subscription = 0;
-                                    req.session.library = {
-                                        address: rows[0].address, server: rows[0].server_id, id: library
-                                    };
+                                    cn.query(sql, vars, (err, result) => {
+                                        cn.release();
+                                        res.json({ error: false });
+                                        
+                                        req.session.xadid = body.xadid;
+                                        req.session.subscription = 0;
+                                        req.session.library = {
+                                            address: rows[0].address, server: rows[0].server_id, id: library
+                                        };
+                                    });
                                 });
                             }
                         });
