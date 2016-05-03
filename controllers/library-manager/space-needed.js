@@ -29,7 +29,7 @@ module.exports = function(req, res) {
         // Make sure server has double the space needed while still leaving 10% available
         if ((req.body.bytes * 2) + (server.space_total * 0.1) > server.space_free) {
             // Libyq Select users must upgrade their server
-            if (!(++server.is_select)) {
+            if (!!(+server.is_select)) {
                 cn.release();
                 res.json({ error: true });
             }
@@ -37,7 +37,7 @@ module.exports = function(req, res) {
             else {
                 const matches = rows.filter(s => {
                     return (
-                        !!(+s.is_select)
+                        !(+s.is_select)
                         &&
                         (req.body.bytes * 2) + (s.space_total * 0.1) < s.space_free
                         &&
@@ -72,7 +72,7 @@ module.exports = function(req, res) {
                         let vars = [body.freeSpace, req.session.library.server];
                         
                         cn.query(sql, vars, (err, result) => {
-                            // Modify library server in users table and session object
+                            // Modify library server in users table
                             sql = "UPDATE users SET library_server_id = ? WHERE user_id = ?";
                             vars = [matches[0].server_id, req.session.uid];
                             
