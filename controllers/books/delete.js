@@ -16,8 +16,8 @@ const db = require("../../lib/db");
 module.exports = function(req, res) { 
 
     request.del({
-        url: `${req.session.library.address}/library/${req.session.library.id}/books`,
-        form: { ids }
+        url: `${req.session.library.address}library/${req.session.library.id}/books`,
+        form: { books: req.body.ids }
     }, (err, response, body) => {
         if (err) {
             res.json({ error: true });
@@ -26,7 +26,7 @@ module.exports = function(req, res) {
             body = JSON.parse(body);
             
             if (body.error) {
-                res.json({ error: true });
+                res.json(body);
             }
             else {
                 let sql = "DELETE FROM books WHERE user_id = ? AND book_id IN (?)";
