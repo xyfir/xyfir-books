@@ -33,7 +33,8 @@ module.exports = function(req, res) {
             if (!rows.length) {
                 // Create user
                 let insert = {
-                    xyfir_id: req.body.xid, email: body.email, xad_id: body.xadid
+                    xyfir_id: req.body.xid, email: body.email, xad_id: body.xadid,
+                    subscription: Date.now() + (7 * 86400000)
                 };
                 sql = "INSERT INTO users SET ?";
                 
