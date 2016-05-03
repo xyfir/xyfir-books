@@ -65,8 +65,10 @@ module.exports = function(req, res) {
                         
                         res.json({ error: false, libraryServerAddress: matches[0].address });
                         
-                        // Update library's old server's free space
-                        sql = "UPDATE servers SET space_free = ? WHERE server_id = ?";
+                        // Update library's old server's free space and library_count
+                        sql = `
+                            UPDATE servers SET space_free = ? AND library_count = library_count - 1 WHERE server_id = ?
+                        `;
                         let vars = [body.freeSpace, req.session.library.server];
                         
                         cn.query(sql, vars, (err, result) => {
@@ -75,10 +77,18 @@ module.exports = function(req, res) {
                             vars = [matches[0].server_id, req.session.uid];
                             
                             cn.query(sql, vars, (err, result) => {
-                                cn.release();
+                                // Increment new server's library_count
+                                sql = `
+                                    UPDATE servers SET library_count = library_count + 1 WHERE server_id = ?
+                                `;
+                                vars = [matches[0].server_id];
                                 
-                                req.session.library.address = matches[0].address;
-                                req.session.library.server = matches[0].server_id;
+                                cn.query(sql, vars, (err, result) => {
+                                    cn.release();
+                                    
+                                    req.session.library.address = matches[0].address;
+                                    req.session.library.server = matches[0].server_id;
+                                });
                             });
                         });
                     });
