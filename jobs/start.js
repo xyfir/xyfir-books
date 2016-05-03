@@ -7,7 +7,8 @@ const cron = require("cron");
     Handles errors / responses from jobs
 */
 module.exports = function() {
-    var jobs = {
+    
+    const jobs = {
         deleteExpiredLibraries: require("./delete-expired-libraries")
     };
 
