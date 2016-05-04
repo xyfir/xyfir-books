@@ -48,3 +48,6 @@ app.get("/*", (req, res) => res.sendFile(__dirname + "/views/App.html"));
 app.listen(config.environment.port, () => {
     console.log("SERVER RUNNING ON", config.environment.port);
 });
+
+if (config.environment.runCronJobs)
+    require("./jobs/start")();
