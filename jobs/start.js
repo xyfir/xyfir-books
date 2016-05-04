@@ -15,8 +15,8 @@ module.exports = function() {
     // Delete libraries over a week expired
     // Runs twice a day
     // Retries once on failure
-    new cron.CronJob("0 1/12 * * *", () => jobs.autobid(err => {
-        if (err) jobs.autobid(err => { return; });
+    new cron.CronJob("0 1/12 * * *", () => jobs.deleteExpiredLibraries(err => {
+        if (err) jobs.deleteExpiredLibraries(err => { return; });
     }), () => { return; }, true);
 
 };
