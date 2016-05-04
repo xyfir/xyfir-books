@@ -42,47 +42,63 @@ module.exports = function(req, res) {
                     if (err || !result.affectedRows) {
                         cn.release();
                         res.json({ error: true });
+                        return;
                     }
-                    else {
-                        // Find a library-manager server to use
-                        sql = `
-                            SELECT * FROM servers WHERE is_select = 0 AND space_free > 100000000 + (space_total * 0.1)
-                            AND library_limit > library_count LIMIT 1
-                        `;
-                        cn.query(sql, (err, rows) => {
-                            if (err || !rows.length) {
-                                cn.release();
-                                res.json({ error: false });
-                            }
-                            else {
-                                req.session.uid = result.insertId;
-                                
-                                const library = result.insertId + '-' + randString.generate(40);
+                    
+                    // Find a library-manager server to use
+                    sql = `
+                        SELECT * FROM servers WHERE is_select = 0 AND space_free > 100000000 + (space_total * 0.1)
+                        AND library_limit > library_count LIMIT 1
+                    `;
+                    cn.query(sql, (err, rows) => {
+                        if (err || !rows.length) {
+                            cn.release();
+                            res.json({ error: false });
+                            return;
+                        }
+                        
+                        req.session.uid = result.insertId;
+                        
+                        const library = result.insertId + '-' + randString.generate(40);
 
-                                // Set user's library and server id
-                                sql = `
-                                    UPDATE users SET library_server_id = ? AND library_id = ? WHERE user_id = ?
-                                `;
-                                let vars = [rows[0].server_id, library, result.insertId];
+                        request.post(rows[0].address + "library/" + library, (err, response, body) => {
+                            if (err) {
+                                cn.release();
+                                res.json({ error: true, message: "Contact support" });
+                                return;
+                            }
+                            
+                            body = JSON.parse(body);
+                            
+                            if (body.error) {
+                                cn.release();
+                                res.json({ error: true, message: "Contact support" });
+                                return;
+                            }
+                            
+                            // Set user's library and server id
+                            sql = `
+                                UPDATE users SET library_server_id = ? AND library_id = ? WHERE user_id = ?
+                            `;
+                            let vars = [rows[0].server_id, library, result.insertId];
+                            
+                            cn.query(sql, vars, (err, result) => {
+                                sql = "UPDATE servers SET library_count = library_count + 1 WHERE server_id = ?";
+                                vars = [library];
                                 
                                 cn.query(sql, vars, (err, result) => {
-                                    sql = "UPDATE servers SET library_count = library_count + 1 WHERE server_id = ?";
-                                    vars = [library];
+                                    cn.release();
+                                    res.json({ error: false });
                                     
-                                    cn.query(sql, vars, (err, result) => {
-                                        cn.release();
-                                        res.json({ error: false });
-                                        
-                                        req.session.xadid = body.xadid;
-                                        req.session.subscription = 0;
-                                        req.session.library = {
-                                            address: rows[0].address, server: rows[0].server_id, id: library
-                                        };
-                                    });
+                                    req.session.xadid = body.xadid;
+                                    req.session.subscription = 0;
+                                    req.session.library = {
+                                        address: rows[0].address, server: rows[0].server_id, id: library
+                                    };
                                 });
-                            }
+                            });
                         });
-                    }
+                    });
                 });
             }
             // Update data
