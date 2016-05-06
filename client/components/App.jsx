@@ -35,6 +35,12 @@ class App extends React.Component {
                 console.log(store.getState());
             });
         }
+        
+        // Configure localForage
+        localforage.config({
+            driver: localforage.INDEXEDDB,
+            name: "Libyq"
+        });
 
         const initialize = (state) => {
             // Set state where needed
