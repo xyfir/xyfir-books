@@ -8,9 +8,12 @@ import reducers from "../reducers/";
 // Components
 
 // Modules
+import setState from "../lib/set-state";
 import ajax from "../lib/ajax";
 
 // Constants
+import { INITIALIZE_STATE } from "../actions/types/";
+import { LIST_BY_ALL } from "../constants/views";
 import { URL, XACC } from "../constants/config";
 
 const store = createStore(reducers);
@@ -30,8 +33,64 @@ class App extends React.Component {
             });
         }
 
-        const initialize = () => {
-            let state = {};
+        const initialize = (state) => {
+            // Set state where needed
+            if (state !== undefined) {
+                this.state = state;
+
+                // Push initial state to store
+                store.dispatch({
+                    type: INITIALIZE_STATE, state
+                });
+
+                // Set state based on current url hash
+                setState(store);
+                
+                // Update state when url hash changes
+                window.onhashchange = () => setState(store);
+                
+                return;
+            }
+            
+            state = {
+                books: [], view: LIST_BY_ALL, account: {
+                    subscription: 0, library: {
+                        address: "", id: ""
+                    }
+                }
+            };
+            
+            // Load initial data from API
+            if (navigator.onLine) {
+                ajax({
+                    url: URL + "api/account", success: (res) => {
+                        state.account = res;
+                        
+                        initialize(state);
+                    }
+                })
+            }
+            // Attempt to pull data from local storage
+            else {
+                localforage.getItem("account").then(account => {
+                    if (account === null) {
+                        swal("Error", "Could not load data from cloud or local storage", "error");
+                    }
+                    else {
+                        state.account = account;
+                        
+                        localforage.getItem("books").then(books => {
+                            state.books = books || [];
+                            
+                            initialize(state);
+                        }).catch(err => {
+                            swal("Error", "Could not load books from local storage", "error");
+                        });
+                    }
+                }).catch(err => {
+                    swal("Error", "Could not load data from cloud or local storage", "error");
+                });
+            }
         };
 
         // Attempt to login using XID/AUTH or skip to initialize()
@@ -55,7 +114,7 @@ class App extends React.Component {
                     }
                     else {
                         initialize();
-                        history.pushState({}, '', URL + "");
+                        history.pushState({}, '', URL + "library/");
                     }
                 }
             });
