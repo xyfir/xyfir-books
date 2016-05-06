@@ -11,7 +11,7 @@ import Library from "./library/";
 import Books from "./books/";
 
 // Modules
-import setState from "../lib/set-state";
+import updateView from "../lib/update-view";
 import ajax from "../lib/ajax";
 
 // Constants
@@ -46,11 +46,11 @@ class App extends React.Component {
                     type: INITIALIZE_STATE, state
                 });
 
-                // Set state based on current url hash
-                setState(store);
+                // Set state.view based on current url hash
+                updateView(store);
                 
-                // Update state when url hash changes
-                window.onhashchange = () => setState(store);
+                // Update state.view when url hash changes
+                window.onhashchange = () => updateView(store);
                 
                 return;
             }
