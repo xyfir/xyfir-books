@@ -6,6 +6,9 @@ import { createStore } from "redux";
 import reducers from "../reducers/";
 
 // Components
+import Account from "./account/";
+import Library from "./library/";
+import Books from "./books/";
 
 // Modules
 import setState from "../lib/set-state";
@@ -130,13 +133,18 @@ class App extends React.Component {
         let view;
 
         switch (this.state.view.split('/')[0]) {
-            
+            case "ACCOUNT":
+                view = <Account data={this.state} dispatch={store.dispatch} />; break;
+            case "LIBRARY":
+                view = <Library data={this.state} dispatch={store.dispatch} />; break;
+            case "BOOKS":
+                view = <Books data={this.state} dispatch={store.dispatch} />;
         }
         
         return (
             <div className="libyq">
-            
-            </div>
+                {view}
+            </div>                
         );
     }
 
