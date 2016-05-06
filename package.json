@@ -14,8 +14,12 @@
     "express": "^4.13.4",
     "express-mysql-session": "^1.0.0",
     "express-session": "^1.13.0",
+    "localforage": "^1.4.0",
     "mysql": "^2.10.2",
     "randomstring": "^1.1.4",
+    "react": "^15.0.2",
+    "react-dom": "^15.0.2",
+    "redux": "^3.5.2",
     "request": "^2.72.0",
     "stripe": "^4.5.0"
   },
