@@ -16,7 +16,7 @@ import ajax from "../lib/ajax";
 
 // Constants
 import { INITIALIZE_STATE } from "../actions/types/";
-import { LIST_BY_ALL } from "../constants/views";
+import { LIST_BOOKS } from "../constants/views";
 import { URL, XACC } from "../constants/config";
 
 const store = createStore(reducers);
@@ -62,7 +62,7 @@ class App extends React.Component {
             }
             
             state = {
-                books: [], view: LIST_BY_ALL, account: {
+                books: [], view: LIST_BOOKS, account: {
                     subscription: 0, library: {
                         address: "", id: ""
                     }

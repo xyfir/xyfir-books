@@ -8,7 +8,7 @@ export default function(store) {
 
     // Hash is empty or not set    
     if (location.hash.length < 2) {
-        store.dispatch(changeView(VIEWS.LIST_BY_ALL));
+        store.dispatch(changeView(VIEWS.LIST_BOOKS));
         return;
     }
 
@@ -52,8 +52,6 @@ export default function(store) {
             }
             else {
                 switch (hash[2]) {
-                    case "all":
-                        return store.dispatch(changeView(VIEWS.LIST_BY_ALL));
                     case "tags":
                         return store.dispatch(changeView(VIEWS.LIST_BY_TAG));
                     case "authors":
