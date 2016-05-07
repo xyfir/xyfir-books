@@ -1,0 +1,40 @@
+import React from "react";
+
+// Components
+import Search from "../../misc/Search";
+
+// Modules
+import findListItems from "../../../lib/books/findMatches";
+
+export default class Authors extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let authors = {/* 'authors': booksCount */};
+        
+        this.props.data.books.forEach(book => {
+            if (authors[book.authors] === undefined)
+                authors[book.authors] = 1;
+            else
+                authors[book.authors]++;
+        });
+        
+        <div className="list-authors">
+            <Search dispatch={this.props.dispatch} />
+            <table className="list">{
+                findListItems(authors, this.props.data.search).map(author => {
+                    return (
+                        <tr>
+                            <td><a href={`#books/list/authors/${author}`}>{author}</a></td>
+                            <td>authors[author]</td>
+                        </tr>
+                    )
+                })
+            }</table>
+        </div>
+    }
+
+}
