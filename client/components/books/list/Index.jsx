@@ -7,17 +7,18 @@ import { loadBooks } from "../../../actions/creators/books";
 import loadBooksFromApi from "../../../lib/books/load-from-api";
 
 // Components
-import ByAuthorSort from "./ByAuthorSort";
-import ByAuthors from "./ByAuthors";
-import ByRating from "./ByRating";
-import BySeries from "./BySeries";
-import ByTag from "./ByTag";
+import ByAuthorSort from "./by/AuthorSort";
+import ByAuthors from "./by/Authors";
+import ByRating from "./by/Rating";
+import BySeries from "./by/Series";
+import ByTag from "./by/Tag";
 //
-import AuthorSort from "./AuthorSort";
-import Authors from "./Authors";
-import Ratings from "./Ratings";
-import Series from "./Series";
-import Tags from "./Tags";
+import AuthorSort from "./group/AuthorSort";
+import Authors from "./group/Authors";
+import Ratings from "./group/Ratings";
+import Series from "./group/Series";
+import Tags from "./group/Tags";
+//
 import All from "./All";
 
 export default class Books extends React.Component {
