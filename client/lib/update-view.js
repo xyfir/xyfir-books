@@ -67,8 +67,6 @@ export default function(store) {
         }
         else {
             switch (hash[1]) {
-                case "search":
-                    return store.dispatch(changeView(VIEWS.SEARCH_BOOKS));
                 case "metadata":
                     return store.dispatch(changeView(VIEWS.EDIT_METADATA));
                 case "read":
