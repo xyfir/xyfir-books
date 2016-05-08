@@ -1,10 +1,10 @@
 import React from "react";
 
 // Components
-import Search from "../../misc/Search";
+import Search from "../../../misc/Search";
 
 // Modules
-import findListItems from "../../../lib/books/findMatches";
+import findListItems from "../../../../lib/books/findMatches";
 
 export default class Authors extends React.Component {
 
@@ -22,19 +22,21 @@ export default class Authors extends React.Component {
                 authors[book.authors]++;
         });
         
-        <div className="list-authors">
-            <Search dispatch={this.props.dispatch} />
-            <table className="list">{
-                findListItems(authors, this.props.data.search).map(author => {
-                    return (
-                        <tr>
-                            <td><a href={`#books/list/authors/${author}`}>{author}</a></td>
-                            <td>authors[author]</td>
-                        </tr>
-                    )
-                })
-            }</table>
-        </div>
+        return (
+            <div className="list-authors">
+                <Search dispatch={this.props.dispatch} />
+                <table className="list">{
+                    findListItems(authors, this.props.data.search).map(author => {
+                        return (
+                            <tr>
+                                <td><a href={`#books/list/authors/${author}`}>{author}</a></td>
+                                <td>authors[author]</td>
+                            </tr>
+                        )
+                    })
+                }</table>
+            </div>
+        );
     }
 
 }

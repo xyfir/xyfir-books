@@ -1,10 +1,10 @@
 import React from "react";
 
 // Components
-import Search from "../../misc/Search";
+import Search from "../../../misc/Search";
 
 // Modules
-import findListItems from "../../../lib/books/findMatches";
+import findListItems from "../../../../lib/books/findMatches";
 
 export default class Series extends React.Component {
 
@@ -22,19 +22,21 @@ export default class Series extends React.Component {
                 seriesGroups[book.series]++;
         });
         
-        <div className="list-series">
-            <Search dispatch={this.props.dispatch} />
-            <table className="list">{
-                findListItems(seriesGroups, this.props.data.search).map(series => {
-                    return (
-                        <tr>
-                            <td><a href={`#books/list/series/${series}`}>{series} Stars</a></td>
-                            <td>seriesGroups[series]</td>
-                        </tr>
-                    )
-                })
-            }</table>
-        </div>
+        return (
+            <div className="list-series">
+                <Search dispatch={this.props.dispatch} />
+                <table className="list">{
+                    findListItems(seriesGroups, this.props.data.search).map(series => {
+                        return (
+                            <tr>
+                                <td><a href={`#books/list/series/${series}`}>{series} Stars</a></td>
+                                <td>seriesGroups[series]</td>
+                            </tr>
+                        )
+                    })
+                }</table>
+            </div>
+        );
     }
 
 }

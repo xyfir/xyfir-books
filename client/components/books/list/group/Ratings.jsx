@@ -1,10 +1,10 @@
 import React from "react";
 
 // Components
-import Search from "../../misc/Search";
+import Search from "../../../misc/Search";
 
 // Modules
-import findListItems from "../../../lib/books/findMatches";
+import findListItems from "../../../../lib/books/findMatches";
 
 export default class Ratings extends React.Component {
 
@@ -24,19 +24,21 @@ export default class Ratings extends React.Component {
                 ratings[rating]++;
         });
         
-        <div className="list-ratings">
-            <Search dispatch={this.props.dispatch} />
-            <table className="list">{
-                findListItems(ratings, this.props.data.search).map(rating => {
-                    return (
-                        <tr>
-                            <td><a href={`#books/list/ratings/${rating}`}>{rating} Stars</a></td>
-                            <td>ratings[rating]</td>
-                        </tr>
-                    )
-                })
-            }</table>
-        </div>
+        return (
+            <div className="list-ratings">
+                <Search dispatch={this.props.dispatch} />
+                <table className="list">{
+                    findListItems(ratings, this.props.data.search).map(rating => {
+                        return (
+                            <tr>
+                                <td><a href={`#books/list/ratings/${rating}`}>{rating} Stars</a></td>
+                                <td>ratings[rating]</td>
+                            </tr>
+                        )
+                    })
+                }</table>
+            </div>
+        );
     }
 
 }

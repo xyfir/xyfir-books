@@ -1,10 +1,10 @@
 import React from "react";
 
 // Components
-import Search from "../../misc/Search";
+import Search from "../../../misc/Search";
 
 // Modules
-import findListItems from "../../../lib/books/findMatches";
+import findListItems from "../../../../lib/books/findMatches";
 
 export default class Tags extends React.Component {
 
@@ -24,19 +24,21 @@ export default class Tags extends React.Component {
             });
         });
         
-        <div className="list-tags">
-            <Search dispatch={this.props.dispatch} />
-            <table className="list">{
-                findListItems(tags, this.props.data.search).map(tag => {
-                    return (
-                        <tr>
-                            <td><a href={`#books/list/tags/${tag}`}>{tag}</a></td>
-                            <td>tags[tag]</td>
-                        </tr>
-                    )
-                })
-            }</table>
-        </div>
+        return (
+            <div className="list-tags">
+                <Search dispatch={this.props.dispatch} />
+                <table className="list">{
+                    findListItems(tags, this.props.data.search).map(tag => {
+                        return (
+                            <tr>
+                                <td><a href={`#books/list/tags/${tag}`}>{tag}</a></td>
+                                <td>tags[tag]</td>
+                            </tr>
+                        )
+                    })
+                }</table>
+            </div>
+        );
     }
 
 }
