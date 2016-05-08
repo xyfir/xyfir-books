@@ -45,18 +45,25 @@ class App extends React.Component {
         const initialize = (state) => {
             // Set state where needed
             if (state !== undefined) {
-                this.state = state;
+                // Grab config from local storage if available
+                localforage.getItem("config").then(config => {
+                    if (config != null) state.config = config;
+                        
+                    this.state = state;
 
-                // Push initial state to store
-                store.dispatch({
-                    type: INITIALIZE_STATE, state
+                    // Push initial state to store
+                    store.dispatch({
+                        type: INITIALIZE_STATE, state
+                    });
+
+                    // Set state.view based on current url hash
+                    updateView(store);
+                    
+                    // Update state.view when url hash changes
+                    window.onhashchange = () => updateView(store);
+                }).catch(err => {
+                    swal("Error", "Could not load user settings", "error");
                 });
-
-                // Set state.view based on current url hash
-                updateView(store);
-                
-                // Update state.view when url hash changes
-                window.onhashchange = () => updateView(store);
                 
                 return;
             }
@@ -65,6 +72,10 @@ class App extends React.Component {
                 books: [], view: LIST_BOOKS, account: {
                     subscription: 0, library: {
                         address: "", id: ""
+                    }
+                }, search: "", config: {
+                    bookList: {
+                        limit: -1, view: "compact"
                     }
                 }
             };
