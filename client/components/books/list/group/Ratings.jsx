@@ -6,7 +6,7 @@ import Search from "../../../misc/Search";
 // Modules
 import findListItems from "../../../../lib/books/findMatches";
 
-export default class Ratings extends React.Component {
+export default class ListRatings extends React.Component {
 
     constructor(props) {
         super(props);
@@ -31,8 +31,10 @@ export default class Ratings extends React.Component {
                     findListItems(ratings, this.props.data.search).map(rating => {
                         return (
                             <tr>
-                                <td><a href={`#books/list/ratings/${rating}`}>{rating} Stars</a></td>
-                                <td>ratings[rating]</td>
+                                <td><a href={`#books/list/all?rating=${encodeURIComponent(rating)}`}>
+                                    {rating} Stars
+                                </a></td>
+                                <td>{ratings[rating]}</td>
                             </tr>
                         )
                     })

@@ -6,7 +6,7 @@ import Search from "../../../misc/Search";
 // Modules
 import findListItems from "../../../../lib/books/findMatches";
 
-export default class Tags extends React.Component {
+export default class ListTags extends React.Component {
 
     constructor(props) {
         super(props);
@@ -31,8 +31,10 @@ export default class Tags extends React.Component {
                     findListItems(tags, this.props.data.search).map(tag => {
                         return (
                             <tr>
-                                <td><a href={`#books/list/tags/${tag}`}>{tag}</a></td>
-                                <td>tags[tag]</td>
+                                <td><a href={`#books/list/all?tag=${encodeURIComponent(tag)}`}>
+                                    {tag}
+                                </a></td>
+                                <td>{tags[tag]}</td>
                             </tr>
                         )
                     })

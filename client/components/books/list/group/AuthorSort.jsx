@@ -6,7 +6,7 @@ import Search from "../../../misc/Search";
 // Modules
 import findListItems from "../../../../lib/books/findMatches";
 
-export default class AuthorSort extends React.Component {
+export default class ListAuthorSort extends React.Component {
 
     constructor(props) {
         super(props);
@@ -29,8 +29,10 @@ export default class AuthorSort extends React.Component {
                     findListItems(authorSort, this.props.data.search).map(author => {
                         return (
                             <tr>
-                                <td><a href={`#books/list/author-sort/${author}`}>{author}</a></td>
-                                <td>authorSort[author]</td>
+                                <td><a href={`#books/list/all?author_sort=${encodeURIComponent(author)}`}>
+                                    {author}
+                                </a></td>
+                                <td>{authorSort[author]}</td>
                             </tr>
                         )
                     })
