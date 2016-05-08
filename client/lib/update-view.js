@@ -47,6 +47,8 @@ export default function(store) {
                     return store.dispatch(changeView(VIEWS.LIST_SERIES));
                 case "ratings":
                     return store.dispatch(changeView(VIEWS.LIST_RATINGS));
+                default:
+                    return store.dispatch(changeView(VIEWS.LIST));
             }
         }
         else {

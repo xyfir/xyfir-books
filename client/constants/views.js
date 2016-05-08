@@ -6,6 +6,7 @@ export const UPLOAD_BOOKS = "BOOKS/UPLOAD";
 export const EDIT_METADATA = "BOOKS/METADATA";
 export const RECENTLY_OPENED = "BOOKS/RECENTLY_OPENED";
 
+export const LIST = "BOOKS/LIST";
 export const LIST_TAGS = "BOOKS/LIST/TAGS";
 export const LIST_BOOKS = "BOOKS/LIST/ALL";
 export const LIST_SERIES = "BOOKS/LIST/SERIES";
