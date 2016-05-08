@@ -8,7 +8,7 @@ export default function(store) {
 
     // Hash is empty or not set    
     if (location.hash.length < 2) {
-        store.dispatch(changeView(VIEWS.LIST_BOOKS));
+        store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
         return;
     }
 
@@ -34,35 +34,19 @@ export default function(store) {
     }
     else if (hash[0] == "books") {
         if (hash[1] == "list") {
-            if (hash[3] === undefined) {
-                switch (hash[2]) {
-                    case "all":
-                        return store.dispatch(changeView(VIEWS.LIST_BOOKS));
-                    case "tags":
-                        return store.dispatch(changeView(VIEWS.LIST_TAGS));
-                    case "authors":
-                        return store.dispatch(changeView(VIEWS.LIST_AUTHORS));
-                    case "author-sort":
-                        return store.dispatch(changeView(VIEWS.LIST_AUTHOR_SORT));
-                    case "series":
-                        return store.dispatch(changeView(VIEWS.LIST_SERIES));
-                    case "ratings":
-                        return store.dispatch(changeView(VIEWS.LIST_RATINGS));
-                }
-            }
-            else {
-                switch (hash[2]) {
-                    case "tags":
-                        return store.dispatch(changeView(VIEWS.LIST_BY_TAG));
-                    case "authors":
-                        return store.dispatch(changeView(VIEWS.LIST_BY_AUTHORS));
-                    case "author-sort":
-                        return store.dispatch(changeView(VIEWS.LIST_BY_AUTHOR_SORT));
-                    case "series":
-                        return store.dispatch(changeView(VIEWS.LIST_BY_SERIES));
-                    case "ratings":
-                        return store.dispatch(changeView(VIEWS.LIST_BY_RATING));
-                }
+            switch (hash[2]) {
+                case "all":
+                    return store.dispatch(changeView(VIEWS.LIST_BOOKS));
+                case "tags":
+                    return store.dispatch(changeView(VIEWS.LIST_TAGS));
+                case "authors":
+                    return store.dispatch(changeView(VIEWS.LIST_AUTHORS));
+                case "author-sort":
+                    return store.dispatch(changeView(VIEWS.LIST_AUTHOR_SORT));
+                case "series":
+                    return store.dispatch(changeView(VIEWS.LIST_SERIES));
+                case "ratings":
+                    return store.dispatch(changeView(VIEWS.LIST_RATINGS));
             }
         }
         else {
