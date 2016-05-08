@@ -11,6 +11,7 @@ import AuthorSort from "./group/AuthorSort";
 import Authors from "./group/Authors";
 import Ratings from "./group/Ratings";
 import Series from "./group/Series";
+import Groups from "./group/Groups";
 import Tags from "./group/Tags";
 //
 import All from "./All";
@@ -51,6 +52,8 @@ export default class Books extends React.Component {
                 return <Authors data={this.props.data} dispatch={this.props.dispatch} />;
             case "AUTHOR_SORT":
                 return <AuthorSort data={this.props.data} dispatch={this.props.dispatch} />;
+            default:
+                return <Groups data={this.props.data} dispatch={this.props.dispatch} />;
         }
     }
 
