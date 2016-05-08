@@ -16,7 +16,7 @@ import Tags from "./group/Tags";
 //
 import All from "./All";
 
-export default class Books extends React.Component {
+export default class BooksList extends React.Component {
 
     constructor(props) {
         super(props);
