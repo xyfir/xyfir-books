@@ -11,7 +11,7 @@ import Library from "./library/";
 import Books from "./books/";
 
 // Modules
-import updateView from "../lib/update-view";
+import updateView from "../lib/url/update-view";
 import ajax from "../lib/ajax";
 
 // Constants
