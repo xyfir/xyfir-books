@@ -4,7 +4,7 @@ import React from "react";
 import Search from "../../../misc/Search";
 
 // Modules
-import findListItems from "../../../../lib/books/findMatches";
+import findListItems from "../../../../lib/books/find-list-items";
 
 export default class ListAuthors extends React.Component {
 
