@@ -27,10 +27,14 @@ export default class ListAllBooks extends React.Component {
         
         return (
             <div className="list-all">
-                  <Search dispatch={this.props.dispatch} />
-                  <span>For advanced searches use <em>author:search title:contains_query ...</em>. Use underscores in place of spaces when a search query for a field contains spaces.</span>
-                 <hr />
-                 {view}
+                <Search dispatch={this.props.dispatch} />
+                <span>
+                    For advanced searches use <em>author:search title:contains_query ...</em>. Use underscores in place of spaces when a search query for a field contains spaces.
+                </span>
+                
+                <hr />
+                
+                {view}
             </div>
         );
     }
