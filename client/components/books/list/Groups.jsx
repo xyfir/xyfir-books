@@ -8,12 +8,12 @@ export default class ListGroups extends React.Component {
 
     render() {
         const groups = [
-            { name: "All", property: "all", arr: [] },
-            { name: "Authors", property: "authors", arr: [] },
-            { name: "Author Sort", property: "author_sort", arr: [] },
-            { name: "Ratings", property: "rating", arr: [] },
-            { name: "Series", property: "series", arr: [] },
-            { name: "Tags", property: "tags", arr: [] }
+            { name: "All", property: "all", route: "all", arr: [] },
+            { name: "Authors", property: "authors", route: "authors", arr: [] },
+            { name: "Author Sort", property: "author_sort", route: "author-sort", arr: [] },
+            { name: "Ratings", property: "rating", route: "ratings", arr: [] },
+            { name: "Series", property: "series", route: "series", arr: [] },
+            { name: "Tags", property: "tags", route: "tags", arr: [] }
         ];
         
         // Count unique instances within each list group
@@ -53,7 +53,7 @@ export default class ListGroups extends React.Component {
                     groups.map(group => {
                         return (
                             <tr>
-                                <td><a href={`#books/list/${group.property}`}>{group.name}</a></td>
+                                <td><a href={`#books/list/${group.route}`}>{group.name}</a></td>
                                 <td>{group.arr.length}</td>
                             </tr>
                         )
