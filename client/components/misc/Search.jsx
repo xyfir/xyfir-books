@@ -12,7 +12,7 @@ export default class BasicSearch extends React.Component {
     }
     
     onSearch(e) {
-        this.props.dispatch(setSearchQuery(e.target.value));
+        this.props.dispatch(setSearchQuery(e.target.value.toLowerCase()));
     }
 
     render() {
