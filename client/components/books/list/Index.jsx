@@ -100,7 +100,7 @@ export default class List extends React.Component {
         }
         
         return (
-            <div className="list-all">
+            <div className="list">
                 <nav className="nav-bar">
                     <a
                         className="icon-home"
