@@ -6,7 +6,7 @@ import { loadBooks } from "../../../actions/creators/books";
 
 // Modules
 import loadBooksFromApi from "../../../lib/books/load-from-api";
-import parseHashQuery from "../../../lib/parse-hash-query";
+import parseHashQuery from "../../../lib/url/parse-hash-query";
 
 // Components
 import SubGroups from "./SubGroups";
