@@ -4,6 +4,8 @@ import React from "react";
 import Compact from "./all/Compact";
 import Table from "./all/Table";
 import Grid from "./all/Grid";
+//
+import Search from "../../misc/Search";
 
 export default class ListAllBooks extends React.Component {
 
@@ -12,14 +14,25 @@ export default class ListAllBooks extends React.Component {
     }
 
     render() {
+        let view;
+        
         switch (this.props.data.config.bookList.view) {
             case "compact":
-                return <Compact data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <Compact data={this.props.data} dispatch={this.props.dispatch} />; break;
             case "table":
-                return <Table data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <Table data={this.props.data} dispatch={this.props.dispatch} />; break;
             case "grid":
-                return <Grid data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <Grid data={this.props.data} dispatch={this.props.dispatch} />;
         }
+        
+        return (
+            <div className="list-all">
+                  <Search dispatch={this.props.dispatch} />
+                  <span>For advanced searches use <em>author:search title:contains_query ...</em>. Use underscores in place of spaces when a search query for a field contains spaces.</span>
+                 <hr />
+                 {view}
+            </div>
+        );
     }
 
 }
