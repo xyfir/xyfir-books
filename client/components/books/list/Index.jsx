@@ -9,12 +9,8 @@ import loadBooksFromApi from "../../../lib/books/load-from-api";
 import parseHashQuery from "../../../lib/parse-hash-query";
 
 // Components
-import AuthorSort from "./group/AuthorSort";
-import Authors from "./group/Authors";
-import Ratings from "./group/Ratings";
-import Series from "./group/Series";
-import Groups from "./group/Groups";
-import Tags from "./group/Tags";
+import SubGroups from "./SubGroups";
+import Groups from "./Groups";
 //
 import All from "./All";
 
@@ -61,19 +57,41 @@ export default class List extends React.Component {
             case "ALL":
                 view = <All data={this.props.data} dispatch={this.props.dispatch} />; break;
             case "TAGS":
-                view = <Tags data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <SubGroups
+                            data={this.props.data}
+                            dispatch={this.props.dispatch}
+                            group="tags"
+                            queryKey="tag"
+                        />;
                 title = "Tags"; break;
             case "RATINGS":
-                view = <Ratings data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <SubGroups
+                            data={this.props.data}
+                            dispatch={this.props.dispatch}
+                            group="ratings"
+                            queryKey="rating"
+                        />;
                 title = "Ratings"; break;
             case "SERIES":
-                view = <Series data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <SubGroups
+                            data={this.props.data}
+                            dispatch={this.props.dispatch}
+                            group="series"
+                        />;
                 title = "Series"; break;
             case "AUTHORS":
-                view = <Authors data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <SubGroups
+                            data={this.props.data}
+                            dispatch={this.props.dispatch}
+                            group="authors"
+                        />;
                 title = "Authors"; break;
             case "AUTHOR_SORT":
-                view = <AuthorSort data={this.props.data} dispatch={this.props.dispatch} />;
+                view = <SubGroups
+                            data={this.props.data}
+                            dispatch={this.props.dispatch}
+                            group="author_sort"
+                        />;
                 title = "Author Sort"; break;
             default:
                 view = <Groups data={this.props.data} dispatch={this.props.dispatch} />;
