@@ -41,9 +41,9 @@ export default class CompactList extends React.Component {
                             
                             <div className="info">
                                 <a className="title" href={url}>{book.title}</a>
-                                <span className="authors" href={
+                                <a className="authors" href={
                                     `#books/list/all?authors=${encodeURIComponent(book.authors)}`
-                                }>{book.authors}</span>
+                                }>{book.authors}</a>
                                 
                                 <span className="percent-complete">{book.percent_complete + "%"}</span>
                                 <span className="word-count">{
