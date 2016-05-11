@@ -37,7 +37,7 @@ export default class GridList extends React.Component {
                                 window.location.hash = `#books/metadata/${book.id}`;
                             }}
                         >
-                            <a href={url}><img className="cover" id={`cover-${book-id}`} /></a>
+                            <a href={url}><img className="cover" id={`cover-${book.id}`} /></a>
                             
                             <div className="info">
                                 <a className="title" href={url}>{book.title}</a>
