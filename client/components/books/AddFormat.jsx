@@ -34,7 +34,7 @@ export default class AddFormat extends React.Component {
             + this.refs.convertTo.value;
         
         
-        ajax({url, method: "POST", success: (res) => {
+        request({url, method: "POST", success: (res) => {
             if (res.error) {
                 swal("Error", "Could not convert format", "error");
             }
