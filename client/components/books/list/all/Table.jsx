@@ -10,6 +10,7 @@ import { URL } from "../../../../constants/config";
 import findMatches from "../../../../lib/books/find-matching";
 import loadCovers from "../../../../lib/books/load-covers";
 import sortBooks from "../../../../lib/books/sort";
+import request from "../../../../lib/request/";
 import toUrl from "../../../../lib/url/clean";
 
 export default class TableList extends React.Component {
@@ -59,7 +60,7 @@ export default class TableList extends React.Component {
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Delete"
         }, () => {
-            ajax({
+            request({
                 url: URL + "api/books", method: "DELETE",
                 data: { ids: this.state.selected.join(',') }, success: (res) => {
                     if (res.error) {

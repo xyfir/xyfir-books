@@ -4,15 +4,18 @@ import { URL } from "../../constants/config";
 // Action creators
 import { loadBooks } from "../../actions/creators/books";
 
+// Modules
+import request from "../../lib/request/";
+
 export default function (library, dispatch) {
     
     // Get from Libyq DB
-    ajax({url: URL + "api/books", success: (books1) => {
+    request({url: URL + "api/books", success: (books1) => {
         if (books1.books.length > 0) {
             const url = library.address + "library/" + library.id + "/books";
             
             // Get from library manager server
-            ajax({url, success: (books2) => {
+            request({url, success: (books2) => {
                 dispatch(loadBooks(books1.map(b1 => {
                     // b1 becomes b2 with versions object property
                     books2.forEach(b2 => {

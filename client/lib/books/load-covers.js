@@ -1,4 +1,4 @@
-import ajax from "../ajax";
+import request from "../request/";
 
 function loadFromApi(book, library) {
     if (navigator.onLine) {

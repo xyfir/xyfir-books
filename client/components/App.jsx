@@ -12,7 +12,7 @@ import Books from "./books/";
 
 // Modules
 import updateView from "../lib/url/update-view";
-import ajax from "../lib/ajax";
+import request from "../lib/request/";
 
 // Constants
 import { INITIALIZE_STATE } from "../actions/types/";
@@ -82,7 +82,7 @@ class App extends React.Component {
             
             // Load initial data from API
             if (navigator.onLine) {
-                ajax({
+                request({
                     url: URL + "api/account", success: (res) => {
                         state.account = res;
                         
@@ -124,7 +124,7 @@ class App extends React.Component {
                 location.href.lastIndexOf("&auth=") + 6
             );
             
-            ajax({
+            request({
                 url: URL + "api/account/login",
                 method: "POST",
                 data: { xid, auth },
