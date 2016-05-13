@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 import { addFormat } from "../../actions/creators/books";
 
 // Modules
+import spaceNeeded from "../../lib/request/space-needed";
 import request from "../../lib/request/";
 import upload from "../../lib/request/upload";
 
@@ -30,24 +31,36 @@ export default class AddFormat extends React.Component {
             return;
         }
         
-        const url = this.props.data.account.library.address + "library/"
-            + this.props.data.account.library.id + "/books/"
-            + this.state.id + "/format/convert/"
-            + this.refs.convertFrom.value + "/"
-            + this.refs.convertTo.value;
+        const bytes = this.props.data.books.find(b => {
+            return this.state.id == b.id;
+        }).size;
         
-        
-        request({url, method: "POST", success: (res) => {
-            if (res.error) {
-                swal("Error", "Could not convert format", "error");
+        spaceNeeded(bytes, this.props.dispatch, (err, address) => {
+            if (err) {
+                swal("Error", "An unknown error occured", "error");
             }
             else {
-                this.props.dispatch(addFormat(
-                    this.state.id, this.refs.convertTo.value
-                ));
-                swal("Success", "Format added", "success");
+                address = address === undefined
+                    ? this.props.data.account.library.address : address;
+                    
+                const url = address + "library/" + this.props.data.account.library.id
+                    + "/books/" + this.state.id + "/format/convert/"
+                    + this.refs.convertFrom.value + "/"
+                    + this.refs.convertTo.value;
+                    
+                request({url, method: "POST", success: (res) => {
+                    if (res.error) {
+                        swal("Error", "Could not convert format", "error");
+                    }
+                    else {
+                        this.props.dispatch(addFormat(
+                            this.state.id, this.refs.convertTo.value
+                        ));
+                        swal("Success", "Format added", "success");
+                    }
+                }});
             }
-        }});
+        });
     }
     
     onUpload(files) {
@@ -56,19 +69,28 @@ export default class AddFormat extends React.Component {
             return;
         }
         
-        const url = this.props.data.account.library.address + "library/"
-            + this.props.data.account.library.id + "/books/"
-            + this.state.id + "/format"; 
-        
-        upload(url, "POST", "book", [files[0]], res => {
-            if (res.error) {
-                swal("Error", "Could not upload file", "error");
+        spaceNeeded(files[0].size, this.props.dispatch, (err, address) => {
+            if (err) {
+                swal("Error", "An unknown error occured", "error");
             }
             else {
-                this.props.dispatch(addFormat(
-                    this.state.id, this.refs.convertTo.value
-                ));
-                swal("Success", "Format added", "success");
+                address = address === undefined
+                    ? this.props.data.account.library.address : address;
+        
+                const url = address + "library/" + this.props.data.account.library.id
+                    + "/books/" + this.state.id + "/format"; 
+                
+                upload(url, "POST", "book", [files[0]], res => {
+                    if (res.error) {
+                        swal("Error", "Could not upload file", "error");
+                    }
+                    else {
+                        this.props.dispatch(addFormat(
+                            this.state.id, this.refs.convertTo.value
+                        ));
+                        swal("Success", "Format added", "success");
+                    }
+                });
             }
         });
     }
