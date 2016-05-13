@@ -11,15 +11,6 @@ export default class NavBar extends React.Component {
         
         return (
             <nav className="nav-bar">
-                {this.props.back !== undefined ? (
-                    <a href={this.props.back}>
-                        <span
-                            className="icon-back"
-                            title="Back"
-                        />{showText ? " Back" : ""}
-                    </a>
-                ) : (<a />)}
-                
                 {this.props.home ? (
                     <a href="#books/recently-opened">
                         <span

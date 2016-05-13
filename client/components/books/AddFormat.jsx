@@ -82,7 +82,6 @@ export default class AddFormat extends React.Component {
         return (
             <div className="add-format">
                 <NavBar
-                    back="#book/list/all"
                     home={true}
                     account={true}
                     title="Add Format"
