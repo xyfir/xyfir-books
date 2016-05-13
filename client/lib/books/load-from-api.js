@@ -5,7 +5,7 @@ import { URL } from "../../constants/config";
 import { loadBooks } from "../../actions/creators/books";
 
 // Modules
-import request from "../../lib/request/";
+import request from "../request/";
 
 export default function (library, dispatch) {
     
@@ -16,7 +16,7 @@ export default function (library, dispatch) {
             
             // Get from library manager server
             request({url, success: (books2) => {
-                dispatch(loadBooks(books1.map(b1 => {
+                const books = books1.map(b1 => {
                     // b1 becomes b2 with versions object property
                     books2.forEach(b2 => {
                         if (b1.id == b2.id) {
@@ -27,7 +27,13 @@ export default function (library, dispatch) {
                     });
                     
                     return b1;
-                }).filter(b => b.title !== undefined)));
+                }).filter(b => b.title !== undefined);
+                
+                books1 = null, book2 = null;
+                
+                dispatch(loadBooks(books));
+                
+                localforage.setItem("books", books);
             }});
         }
     }});
