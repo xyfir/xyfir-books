@@ -1,9 +1,6 @@
 import React from "react";
 import Dropzone from "react-dropzone";
 
-// Action creators
-import { deleteFormat, incrementVersion } from "../../actions/creators/books";
-
 // Modules
 import spaceNeeded from "../../lib/request/space-needed";
 import loadCovers from "../../lib/books/load-covers";
