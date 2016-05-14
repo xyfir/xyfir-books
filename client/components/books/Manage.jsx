@@ -195,18 +195,29 @@ export default class ManageBook extends React.Component {
             data.series_index = this.refs.series_index.value;
         }
         
-        const url = "";
-        
-        // Send to library server
-        request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
-            if (res.error) {
+        spaceNeeded(1000000, this.props.dispatch, (err, address) => {
+            if (err) {
                 swal("Error", "An unknown error occured", "error");
             }
             else {
-                // Reload state.books and update local storage books
-                loadBooks(this.props.data.account.library, this.props.dispatch);
+                address = address === undefined
+                    ? this.props.data.account.library.address : address;
+                    
+                const url = address + "library/" + this.props.data.account.library.id
+                    + "/books/" + this.state.id + "/metadata";
+        
+                // Send to library server
+                request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
+                    if (res.error) {
+                        swal("Error", "An unknown error occured", "error");
+                    }
+                    else {
+                        // Reload state.books and update local storage books
+                        loadBooks(this.props.data.account.library, this.props.dispatch);
+                    }
+                }});
             }
-        }});
+        });
     }
 
     render() {
