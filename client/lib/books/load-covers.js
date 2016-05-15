@@ -1,6 +1,32 @@
 import request from "../request/";
 
+function cleanUp(books) {
+    
+    localforage.keys().then(keys => {
+        // Filter out non-cover keys
+        keys = keys.filter(k => k.indexOf("cover-") == 0);
+        
+        keys.forEach(k => {
+            // [ "cover", id, version ]
+            k = k.split('-');
+            
+            const book = books.find(b => k[1] == b.id);
+            
+            // Delete if book id no longer exists in books
+            if (book === undefined) {
+                localforage.removeItem(k);
+            }
+            // Delete if book has a higher version number
+            else if (book.versions.cover > k[2]) {
+                localforage.removeItem(k);
+            }
+        });
+    });
+    
+}
+
 function loadFromApi(book, library) {
+    
     if (navigator.onLine) {
         let xhr = new XMLHttpRequest();
         
@@ -28,9 +54,10 @@ function loadFromApi(book, library) {
         xhr.open("GET", url);
         xhr.send();
     }
+
 }
 
-export default function(books, library) {
+function loadCovers(books, library) {
     
     [].forEach.call(document.querySelectorAll("img.cover"), img => {
         if (!img.src) {
@@ -49,4 +76,8 @@ export default function(books, library) {
         }
     });
     
+    setTimeout(() => cleanUp(books), 30 * 1000);
+    
 }
+
+export default loadCovers;
