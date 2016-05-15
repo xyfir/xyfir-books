@@ -3,6 +3,7 @@ import React from "react";
 // Components
 import RecentlyOpened from "./RecentlyOpened";
 import AddFormat from "./AddFormat";
+import BulkEdit from "./BulkEdit";
 import Manage from "./Manage";
 import Upload from "./Upload";
 import List from "./list/";
@@ -20,6 +21,8 @@ export default class Books extends React.Component {
                 return <RecentlyOpened data={this.props.data} dispatch={this.props.dispatch} />;
             case "ADD_FORMAT":
                 return <AddFormat data={this.props.data} dispatch={this.props.dispatch} />;
+            case "BULK_EDIT":
+                return <BulkEdit data={this.props.data} dispatch={this.props.dispatch} />;
             case "MANAGE":
                 return <Manage data={this.props.data} dispatch={this.props.dispatch} />;
             case "UPLOAD":
