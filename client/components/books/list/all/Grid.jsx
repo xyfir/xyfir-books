@@ -27,20 +27,20 @@ export default class GridList extends React.Component {
                     findMatches(this.props.data.books, this.props.data.search),
                     "title"
                 ).map(book => {
-                    const url = `#books/read/${book.id}/${toUrl(book.authors)}/${toUrl(book.title)}`;
+                    const url = `/${book.id}/${toUrl(book.authors)}/${toUrl(book.title)}`;
                     
                     return (
                         <div
                             className="book"
                             onContextMenu={(e) => {
                                 e.preventDefault();
-                                window.location.hash = `#books/metadata/${book.id}`;
+                                window.location.hash = `#books/manage${url}`;
                             }}
                         >
-                            <a href={url}><img className="cover" id={`cover-${book.id}`} /></a>
+                            <a href={`#books/read${url}`}><img className="cover" id={`cover-${book.id}`} /></a>
                             
                             <div className="info">
-                                <a className="title" href={url}>{book.title}</a>
+                                <a className="title" href={`#books/read${url}`}>{book.title}</a>
                                 <a className="authors" href={
                                     `#books/list/all?authors=${encodeURIComponent(book.authors)}`
                                 }>{book.authors}</a>

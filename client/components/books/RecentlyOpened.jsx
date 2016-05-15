@@ -40,7 +40,7 @@ export default class RecentlyOpened extends React.Component {
                                 className="book"
                                 onContextMenu={(e) => {
                                     e.preventDefault();
-                                    window.location.hash = `#books/metadata/${book.id}`;
+                                    window.location.hash = `#books/manage${url}`;
                                 }}
                             >
                                 <a href={`#books/read${url}`}><img className="cover" id={`cover-${book.id}`} /></a>

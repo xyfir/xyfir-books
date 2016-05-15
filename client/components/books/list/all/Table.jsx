@@ -198,8 +198,8 @@ export default class TableList extends React.Component {
                             </a>
                             
                             {this.state.selected.length > 1 ? (
-                                <a href={`#books/mass-manage/${this.state.selected.join(',')}`}>
-                                    <span className="icon-edit" /> Manage
+                                <a href={`#books/bulk-edit/${this.state.selected.join(',')}`}>
+                                    <span className="icon-edit" /> Bulk Edit
                                 </a>
                             ) : (
                                 <a href={`#books/manage/${selectedBook.url}`}>
