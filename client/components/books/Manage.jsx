@@ -213,7 +213,10 @@ export default class ManageBook extends React.Component {
                     }
                     else {
                         // Reload state.books and update local storage books
-                        loadBooks(this.props.data.account.library, this.props.dispatch);
+                        loadBooks(
+                            Object.assign({}, this.props.data.account.library, { address }),
+                            this.props.dispatch
+                        );
                     }
                 }});
             }
