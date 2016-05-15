@@ -22,7 +22,8 @@
     "react-dropzone": "^3.4.0",
     "redux": "^3.5.2",
     "request": "^2.72.0",
-    "stripe": "^4.5.0"
+    "stripe": "^4.5.0",
+    "titlecase": "^1.1.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
