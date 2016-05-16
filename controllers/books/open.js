@@ -7,18 +7,21 @@ const db = require("../../lib/db");
     RETURN
         {
             bookmarks: [{ cfi: string, created: number }],
-            notes: [{ cfi: string, note }]
+            notes: [{ cfi: string, note }],
+            last_read: number
         }
     DESCRIPTION
         Returns all notes / highlighted text and bookmarks for a book
+        Update book's last_read
 */
 module.exports = function(req, res) { 
 
-    const vars = [req.session.uid, req.params.book];
+    // Get notes
+    let vars = [req.session.uid, req.params.book];
     let sql = "SELECT cfi, note FROM notes WHERE user_id = ? AND book_id = ?";
     
     db(cn => cn.query(sql, vars, (err, rows) => {
-        let response = { bookmarks: [], notes: [] };
+        let response = { bookmarks: [], notes: [], last_read: 0 };
         
         if (err) {
             cn.release();
@@ -27,13 +30,19 @@ module.exports = function(req, res) {
         else {
             response.notes = rows;
             
+            // Get bookmarks
             sql = "SELECT cfi, created FROM bookmarks WHERE user_id = ? AND book_id = ?";
-            
             cn.query(sql, vars, (err, rows) => {
-                cn.release();
-                
                 response.bookmarks = rows;
+                response.last_read = Date.now();
+                
                 res.json(response);
+                
+                // Update last_read
+                sql = "UPDATE books SET last_read = ? WHERE user_id = ? AND book_id = ?";
+                vars = [response.last_read, req.session.uid, req.params.book];
+                
+                cn.query(sql, vars, (err, result) => cn.release());
             });
         }
     }));
