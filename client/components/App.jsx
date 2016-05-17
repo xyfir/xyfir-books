@@ -6,6 +6,7 @@ import { createStore } from "redux";
 import reducers from "../reducers/";
 
 // Components
+import Settings from "./settings/";
 import Account from "./account/";
 import Library from "./library/";
 import Books from "./books/";
@@ -150,6 +151,8 @@ class App extends React.Component {
         let view;
 
         switch (this.state.view.split('/')[0]) {
+            case "SETTINGS":
+                view = <Settings data={this.state} dispatch={store.dispatch} />; break;
             case "ACCOUNT":
                 view = <Account data={this.state} dispatch={store.dispatch} />; break;
             case "LIBRARY":
