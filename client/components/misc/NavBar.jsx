@@ -32,7 +32,7 @@ export default class NavBar extends React.Component {
                 <span className="title">{this.props.title}</span>
                 
                 {this.props.library ? (
-                    <a href="#library-manage/info">
+                    <a href="#library/info">
                         <span
                             className="icon-book"
                             title="Library"
