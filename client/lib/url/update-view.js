@@ -1,8 +1,8 @@
 // Action creators
-import { changeView } from "../actions/creators/";
+import { changeView } from "../../actions/creators/";
 
 // Constants
-import * as VIEWS from "../constants/views";
+import * as VIEWS from "../../constants/views";
 
 export default function(store) {
 
