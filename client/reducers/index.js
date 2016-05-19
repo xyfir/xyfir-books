@@ -1,6 +1,6 @@
 // Reducers
+import settings from "./settings";
 import account from "./account";
-import config from "./config";
 import books from "./books";
 
 import {
@@ -26,7 +26,7 @@ export default function (state, action) {
             else {
                 return {
                     account: account(state.account, action),
-                    config: config(state.config, action),
+                    config: settings(state.config, action),
                     books: books(state.books, action),
                     view: state.view
                 };
