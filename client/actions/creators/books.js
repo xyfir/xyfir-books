@@ -4,18 +4,18 @@ import {
 
 export function addFormat(id, format) {
     return {
-        action: ADD_FORMAT, id, format
+        type: ADD_FORMAT, id, format
     };
 }
 
 export function deleteBooks(ids) {
     return {
-        action: DELETE_BOOKS, ids
+        type: DELETE_BOOKS, ids
     };
 }
 
 export function loadBooks(books) {
     return {
-        action: LOAD_BOOKS, books
+        type: LOAD_BOOKS, books
     };
 }

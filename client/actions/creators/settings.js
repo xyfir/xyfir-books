@@ -4,18 +4,18 @@ import {
 
 export function setBookList(obj) {
     return {
-        action: SET_BOOK_LIST, obj
+        type: SET_BOOK_LIST, obj
     };
 }
 
 export function setTheme(theme) {
     return {
-        action: SET_THEME, theme
+        type: SET_THEME, theme
     };
 }
 
 export function setListView(view) {
     return {
-        action: SET_LIST_VIEW, view
+        type: SET_LIST_VIEW, view
     };
 }
