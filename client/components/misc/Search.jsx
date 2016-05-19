@@ -1,7 +1,7 @@
 import React from "react";
 
 // Action creators
-import { setSearch } from "../../../actions/creators/";
+import { setSearch } from "../../actions/creators/";
 
 export default class BasicSearch extends React.Component {
 
