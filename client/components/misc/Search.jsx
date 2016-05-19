@@ -1,7 +1,7 @@
 import React from "react";
 
 // Action creators
-import { setSearchQuery } from "../../../actions/creators/books";
+import { setSearch } from "../../../actions/creators/";
 
 export default class BasicSearch extends React.Component {
 
@@ -12,7 +12,7 @@ export default class BasicSearch extends React.Component {
     }
     
     onSearch(e) {
-        this.props.dispatch(setSearchQuery(e.target.value.toLowerCase()));
+        this.props.dispatch(setSearch(e.target.value.toLowerCase()));
     }
 
     render() {
