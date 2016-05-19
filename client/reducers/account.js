@@ -1,4 +1,6 @@
-import { PURCHASE_SUBSCRIPTION } from "../actions/types/account/subscription";
+import {
+    PURCHASE_SUBSCRIPTION, SET_LIBRARY_ADDRESS
+} from "../actions/types/account";
 
 export default function(state, action) {
     switch (action.type) {

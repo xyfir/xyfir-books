@@ -5,7 +5,7 @@ import request from "./index";
 import { URL } from "../../constants/config";
 
 // Action creators
-import { setLibraryAddress } from "../../actions/creators/account/";
+import { setLibraryAddress } from "../../actions/creators/account";
 
 export default function (bytes, dispatch, fn) {
     

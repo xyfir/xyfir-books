@@ -1,7 +1,7 @@
 import React from "react";
 
 // Action creators
-import { purchaseSubscription } from "../../actions/creators/account/subscription";
+import { purchaseSubscription } from "../../actions/creators/account";
 
 // Constants
 import { URL, STRIPE_KEY_PUB } from "../../constants/config";
