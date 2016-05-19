@@ -56,7 +56,7 @@ export default class DownloadLibrary extends React.Component {
                     download(url + file.join('/'), res => {
                         zip.file(file, res);
                         
-                        const callDownloadBook = true;
+                        let callDownloadBook = true;
                         
                         // Download formats
                         book.formats.forEach(format => {
