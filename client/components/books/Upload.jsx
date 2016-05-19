@@ -1,9 +1,6 @@
 import React from "react";
 import Dropzone from "react-dropzone";
 
-// Action creators
-import { addBooks } from "../../actions/creators/books";
-
 // Modules
 import loadBooksFromApi from "../../lib/books/load-from-api";
 import spaceNeeded from "../../lib/request/space-needed";
