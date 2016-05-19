@@ -1,6 +1,6 @@
 import {
     PURCHASE_SUBSCRIPTION, SET_LIBRARY_ADDRESS
-} from "../../types/account";
+} from "../types/account";
 
 export function purchaseSubscription(subscription) {
     return {
