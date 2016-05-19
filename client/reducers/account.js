@@ -9,6 +9,13 @@ export default function(state, action) {
                 subscription: action.subscription
             });
             
+        case SET_LIBRARY_ADDRESS:
+            return Object.assign({}, state, {
+                library: Object.assign({}, state.library, {
+                    address: action.address
+                })
+            });
+            
         default:
             return state;
     }
