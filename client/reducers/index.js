@@ -1,20 +1,36 @@
 // Reducers
 import account from "./account";
+import config from "./config";
+import books from "./books";
 
-import { INITIALIZE_STATE, CHANGE_VIEW } from "../actions/types/";
+import {
+    INITIALIZE_STATE, CHANGE_VIEW, SET_SEARCH
+} from "../actions/types/";
 
 export default function (state, action) {
-
-    if (action.type == INITIALIZE_STATE)
-        return action.state;
-    else if (state == undefined)
-        return {};
-    else if (action.type == CHANGE_VIEW)
-        return Object.assign({}, state, { view: action.view });
-
-    return {
-        account: account(state.account, action),
-        view: state.view
-    };
+        
+    switch (action.type) {
+        case INITIALIZE_STATE:
+            return action.state;
+            
+        case CHANGE_VIEW:
+            return Object.assign({}, state, { view: action.view });
+            
+        case SET_SEARCH:
+            return Object.assign({}, state, { search: action.query });
+            
+        default:
+            if (state === undefined) {
+                return {};
+            }
+            else {
+                return {
+                    account: account(state.account, action),
+                    config: config(state.config, action),
+                    books: books(state.books, action),
+                    view: state.view
+                };
+            }
+    }
 
 }
