@@ -1,3 +1,5 @@
 node_modules/
 .vscode/
 config.js
+public/js/App.js
+public/css/style.css
