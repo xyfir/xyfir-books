@@ -1,7 +1,7 @@
 import React from "react";
 
 // Action creators
-import { updateBookList } from "../../actions/creators/settings";
+import { setBookList } from "../../actions/creators/settings";
 
 // Components
 import NavBar from "../misc/NavBar";
@@ -32,7 +32,7 @@ export default class BookListSettings extends React.Component {
         };
         
         // Update state
-        this.props.dispatch(updateBookList({ columns, defaultSort }));
+        this.props.dispatch(setBookList({ columns, defaultSort }));
         
         // Update config object in local storage
         let config = Object.assign({}, this.props.data.config);
