@@ -1,7 +1,7 @@
 import React from "react";
 
 // Action creators
-import { setListView } from "../../../actions/creators/config/bookList";
+import { setListView } from "../../../actions/creators/settings";
 import { loadBooks } from "../../../actions/creators/books";
 
 // Modules
