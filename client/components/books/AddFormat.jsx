@@ -86,7 +86,7 @@ export default class AddFormat extends React.Component {
                     }
                     else {
                         this.props.dispatch(addFormat(
-                            this.state.id, this.refs.convertTo.value
+                            this.state.id, files[0].name.split('.').pop()
                         ));
                         swal("Success", "Format added", "success");
                     }
