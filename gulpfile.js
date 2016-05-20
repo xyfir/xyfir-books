@@ -60,3 +60,16 @@ gulp.task("client", function () {
 		.pipe(!isDev ? gzip() : gutil.noop())
 		.pipe(gulp.dest('./public/js/'));
 });
+
+/*
+	copy-libs
+    - get localforage.min.js
+    - get jszip.min.js
+    - copy to ./client/public/js
+*/
+gulp.task("copy-libs", function () {
+    gulp.src([
+        "./node_modules/jszip/dist/jszip.min.js",
+        "./node_modules/localforage/dist/localforage.min.js"
+    ]).pipe(gulp.dest("./client/public/js"));
+});
