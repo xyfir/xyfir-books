@@ -2,6 +2,11 @@ const gutil = require("gulp-util");
 const gzip = require("gulp-gzip");
 const gulp = require("gulp");
 
+const postcss = require("gulp-postcss");
+const precss = require("precss");
+const nano = require("cssnano");
+const ap = require("autoprefixer");
+
 const isDev = require("./config").environment.type == "dev";
 
 /*
@@ -12,11 +17,6 @@ const isDev = require("./config").environment.type == "dev";
 	- minifies / gzip
 */
 gulp.task("css", function () {
-    const postcss = require("gulp-postcss");
-    const precss = require("precss");
-    const nano = require("cssnano");
-    const ap = require("autoprefixer");
-    
     return gulp.src("./client/styles/style.css")
         .pipe(postcss([
             precss({}),
@@ -63,15 +63,32 @@ gulp.task("client", function () {
 
 /*
 	copy-libs
-    - get localforage.min.js
-    - get jszip.min.js
+    - get localforage / sweetalert / jszip
     - copy to ./public/js
 */
 gulp.task("copy-libs", function () {
     return gulp.src([
         "./node_modules/jszip/dist/jszip.min.js",
+        "./node_modules/sweetalert/dist/sweetalert.min.js",
         "./node_modules/localforage/dist/localforage.min.js"
     ]).pipe(gulp.dest("./public/js"));
+});
+
+/*
+	copy-css
+    - get sweetalert.css
+    - postcss modifiers
+    - copy to ./public/css
+*/
+gulp.task("copy-css", function () {
+    return gulp.src([
+        "./node_modules/sweetalert/dist/sweetalert.css"
+    ]).pipe(postcss([
+        ap({browsers: "last 1 version, > 10%"}),
+        nano({ autoprefixer: false, zindex: false })
+    ])).pipe(
+        !isDev ? gzip() : gutil.noop()
+    ).pipe(gulp.dest("./public/css"));
 });
 
 /*
