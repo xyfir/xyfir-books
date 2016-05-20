@@ -65,11 +65,22 @@ gulp.task("client", function () {
 	copy-libs
     - get localforage.min.js
     - get jszip.min.js
-    - copy to ./client/public/js
+    - copy to ./public/js
 */
 gulp.task("copy-libs", function () {
-    gulp.src([
+    return gulp.src([
         "./node_modules/jszip/dist/jszip.min.js",
         "./node_modules/localforage/dist/localforage.min.js"
-    ]).pipe(gulp.dest("./client/public/js"));
+    ]).pipe(gulp.dest("./public/js"));
+});
+
+/*
+	fontello
+    - get font and css files from fontello
+    - place in ./public/fontello
+*/
+gulp.task("fontello", function () {
+    return gulp.src("fontello.json")
+        .pipe(require("gulp-fontello")())
+        .pipe(gulp.dest("./public/fontello"));
 });
