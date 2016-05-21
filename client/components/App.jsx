@@ -75,8 +75,17 @@ class App extends React.Component {
                         address: "", id: ""
                     }
                 }, search: "", config: {
+                    general: {
+                        theme: "light"
+                    },
                     bookList: {
-                        limit: -1, view: "compact"
+                        view: "compact", table: {
+                            columns: [
+                                "title", "authors", "series", "added", "rating"
+                            ], defaultSort: {
+                                column: "added", asc: true
+                            }
+                        }
                     }
                 }
             };
