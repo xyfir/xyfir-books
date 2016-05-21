@@ -3,6 +3,7 @@ body {
 	line-height: 142%;
 	font-family: "Source Sans Pro",Calibri,Candara,sans-serif;
     text-align: center;
+	margin: 0em;
 }
 hr {
 	border: 0;
@@ -21,12 +22,12 @@ span[class^="icon-"]:hover {
 
 /* LINKS */
 a {
-	color: $purple;
+	color: $blue;
     cursor: pointer;
 	text-decoration: none;
 }
 a:hover, a:focus {
-	color: $lpurple;
+	color: $lblue;
 }
 .link-lg {
 	font-size: 125%;
@@ -53,10 +54,10 @@ input[type=submit], button, .btn {
 	font-size: 140%;
 }
 .btn-primary {
-	background-color: $purple;
+	background-color: $blue;
 }
 .btn-primary:hover {
-	background-color: $lpurple; 
+	background-color: $lblue; 
 }
 .btn-secondary {
 	background-color: $gray;
@@ -115,4 +116,23 @@ input[type=checkbox] {
 
 .sweet-alert > fieldset > input {
     display: none;
+}
+
+/* NAV-BAR */
+nav.nav-bar {
+	
+	background-color: $lllgray;
+	margin-bottom: 1em;
+	padding: 0.5em 0em;
+	font-size: 115%;
+	
+	.left, .right, .title {
+		display: inline-block;
+		width: 30%;
+	}
+	
+	span {
+		margin-left: 0.4em;
+	}
+	
 }
