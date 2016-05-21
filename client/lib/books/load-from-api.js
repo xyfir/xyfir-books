@@ -16,9 +16,9 @@ export default function (library, dispatch) {
             
             // Get from library manager server
             request({url, success: (books2) => {
-                const books = books1.map(b1 => {
+                const books = books1.books.map(b1 => {
                     // b1 becomes b2 with versions object property
-                    books2.forEach(b2 => {
+                    books2.books.forEach(b2 => {
                         if (b1.id == b2.id) {
                             b1 = Object.assign({}, b2, { versions: {
                                 metadata: b1.versionMetadata, cover: b1.versionCover
@@ -29,7 +29,7 @@ export default function (library, dispatch) {
                     return b1;
                 }).filter(b => b.title !== undefined);
                 
-                books1 = null, book2 = null;
+                books1 = null, books2 = null;
                 
                 dispatch(loadBooks(books));
                 
