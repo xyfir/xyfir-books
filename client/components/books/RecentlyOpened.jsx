@@ -1,6 +1,7 @@
 import React from "react";
 
 // Modules
+import loadCovers from "../../lib/books/load-covers";
 import sortBooks from "../../lib/books/sort";
 import toUrl from "../../lib/url/clean";
 
@@ -15,6 +16,14 @@ export default class RecentlyOpened extends React.Component {
         this.state = { infoView: 1 };
         
         this.onToggleView = this.onToggleView.bind(this);
+    }
+    
+    componentDidMount() {
+        loadCovers(this.props.data.books, this.props.data.account.library);
+    }
+    
+    componentDidUpdate() {
+        loadCovers(this.props.data.books, this.props.data.account.library);
     }
     
     onToggleView() {
