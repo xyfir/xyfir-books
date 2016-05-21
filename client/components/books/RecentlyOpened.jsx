@@ -2,6 +2,7 @@ import React from "react";
 
 // Modules
 import sortBooks from "../../lib/books/sort";
+import toUrl from "../../lib/url/clean";
 
 // Components
 import NavBar from "../misc/NavBar";
