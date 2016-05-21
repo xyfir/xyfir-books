@@ -27,7 +27,7 @@ export default class ManageBook extends React.Component {
     }
     
     componentDidMount() {
-        loadCovers();
+        loadCovers(this.props.data.books, this.props.data.account.library);
     }
     
     onToggleEditComments() {
@@ -157,7 +157,7 @@ export default class ManageBook extends React.Component {
                                 
                                 // Load new cover
                                 document.querySelector("img.cover").src = "";
-                                loadCovers();
+                                loadCovers(this.props.data.books, this.props.data.account.library);
                                 
                                 // Increment book.versions.cover
                                 this.props.dispatch(incrementVersion(

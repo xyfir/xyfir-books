@@ -13,11 +13,11 @@ export default class GridList extends React.Component {
     }
     
     componentDidMount() {
-        loadCovers();
+        loadCovers(this.props.data.books, this.props.data.account.library);
     }
     
     componentDidUpdate() {
-        loadCovers();
+        loadCovers(this.props.data.books, this.props.data.account.library);
     }
 
     render() {

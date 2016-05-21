@@ -26,7 +26,8 @@ export default class TableList extends React.Component {
     }
     
     componentDidUpdate() {
-        if (this.state.selected.length) loadCovers();
+        if (this.state.selected.length)
+            loadCovers(this.props.data.books, this.props.data.account.library);
     }
     
     onSelect(e, id) {
