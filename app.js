@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
     }
     res.sendFile(__dirname + "/views/Home.html");
 });
-app.get("/*", (req, res) => res.sendFile(__dirname + "/views/App.html"));
+app.get("/app/*", (req, res) => res.sendFile(__dirname + "/views/App.html"));
 app.listen(config.environment.port, () => {
     console.log("SERVER RUNNING ON", config.environment.port);
 });
