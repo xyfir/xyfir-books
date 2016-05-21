@@ -6,7 +6,7 @@ import { PATH_SEPARATOR } from "../../constants/config";
 
 function cleanUp(books) {
     
-    localforage.keys().then(keys => {
+    setTimeout(() => localforage.keys().then(keys => {
         // Filter out non-cover keys
         keys = keys.filter(k => k.indexOf("cover-") == 0);
         
@@ -25,7 +25,7 @@ function cleanUp(books) {
                 localforage.removeItem(k);
             }
         });
-    });
+    }), 30 * 1000);
     
 }
 
@@ -80,7 +80,7 @@ function loadCovers(books, library) {
         }
     });
     
-    setTimeout(() => cleanUp(books), 30 * 1000);
+    cleanUp(books);
     
 }
 
