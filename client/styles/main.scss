@@ -135,6 +135,13 @@ nav.nav-bar {
 		width: 30%;
 	}
 	
+	.title {
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		vertical-align: bottom;
+	}
+	
 	span {
 		margin-left: 0.4em;
 	}
