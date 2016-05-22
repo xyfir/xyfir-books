@@ -17,16 +17,17 @@ export default function (library, dispatch) {
             // Get from library manager server
             request({url, success: (books2) => {
                 const books = books1.books.map(b1 => {
-                    // b1 becomes b2 with versions object property
-                    books2.books.forEach(b2 => {
-                        if (b1.id == b2.id) {
-                            b1 = Object.assign({}, b2, { versions: {
-                                metadata: b1.versionMetadata, cover: b1.versionCover
-                            }});
-                        }
-                    });
+                    let b2 = books2.books.find(b2 => b1.id == b2.id);
                     
-                    return b1;
+                    b2.versions = {
+                        metadata: b1.version_metadata,
+                        cover: b1.version_cover
+                    };
+                    b2.percent_complete = b1.percent_complete;
+                    b2.word_count = b1.word_count;
+                    b2.last_read = b1.last_read;
+                    
+                    return b2;
                 }).filter(b => b.title !== undefined);
                 
                 books1 = null, books2 = null;
