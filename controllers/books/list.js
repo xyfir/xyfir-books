@@ -6,15 +6,20 @@ const db = require("../../lib/db");
     GET api/books
     RETURN
         { books: [
-            { id: number, versionMetadata: number, versionCover: number }
+            {
+                id: number, version_metadata: number, version_cover: number,
+                percent_complete: number, word_count: number,
+                last_read: number 
+            }
         ] }
     DESCRIPTION
-        Returns metadata / cover versions for all books in library
+        Returns info for all books in library
 */
 module.exports = function(req, res) { 
 
     const sql = `
-        SELECT book_id as id, version_metadata as versionMetadata, version_cover as versionCover
+        SELECT book_id as id, version_metadata, version_cover,
+        percent_complete, word_count, last_read
         FROM books WHERE user_id = ?
     `;
     
