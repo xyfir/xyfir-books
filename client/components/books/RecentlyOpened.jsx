@@ -67,15 +67,24 @@ export default class RecentlyOpened extends React.Component {
                                 ) : (
                                     <div className="info">
                                         <span className="percent-complete">{book.percent_complete + "%"}</span>
-                                        <span className="word-count">{
-                                            book.word_count == 0 ? "" : Math.round(book.word_count / 1000) + "K"
+                                        {book.word_count == 0 ? (
+                                            <span />
+                                        ) : (
+                                            <span className="word-count">{
+                                                Math.round(book.word_count / 1000) + "K"
+                                            }</span>
+                                        )}
+                                        
+                                        <span className="last-read">{
+                                            book.last_read > 0 ? (
+                                                "Last read on "
+                                                + (new Date(book.last_read)).toLocaleDateString()
+                                            ) : (
+                                                "Book has not been read"
+                                            )
                                         }</span>
                                         
-                                        <span className="last-read">Last read on {
-                                            (new Date(book.last_read)).toLocaleDateString()
-                                        }</span>
-                                        
-                                        <a
+                                        <a 
                                             href={`#books/manage${url}`}
                                             className="icon-edit"
                                             title="View / Edit Metadata"
