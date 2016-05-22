@@ -1,0 +1,31 @@
+.recently-opened {
+    
+    .book {
+        
+        .info {
+            
+            margin-bottom: 2em;
+            
+            .title, .last-read {
+                display: block;
+            }
+            
+            .percent-complete, .word-count, .icon-edit, .icon-more {
+                margin: 0.25em;
+            }
+            
+            .percent-complete, .word-count {
+                background-color: $lllgray;
+                padding: 0em 0.2em;
+                border-radius: 0.3em;
+            }
+            
+            .icon-more, .icon-edit {
+                font-size: 110%;
+            }
+            
+        }
+        
+    }
+    
+}
