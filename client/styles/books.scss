@@ -29,3 +29,66 @@
     }
     
 }
+
+.manage-book {
+    
+    section {
+        margin-bottom: 2em;
+    }
+    
+    input[type=text] {
+        width: 25em;
+    }
+    
+    input {
+        font-size: 85%;
+    }
+    
+    section.cover {
+        
+        .dropzone, img {
+            height: 15em;
+            width: 10em;
+        }
+        
+        .dropzone {
+            border: $gray dotted 0.3em;
+            border-radius: 0.5em;
+            padding: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        
+        div {
+            margin: auto;
+        }
+        
+    }
+    
+    section.comments {
+        
+        .comments-edit {
+            width: 60%;
+            height: 15em;
+            font-size: 100%;
+        }
+        
+        div.comments {
+            width: 70%;
+            margin: auto;
+            background-color: $llgray;
+            padding: 0.5em;
+            border-radius: 0.3em;
+        }
+        
+    }
+    
+    section.formats {
+        
+        table.formats {
+            margin: auto;
+            margin-bottom: 1em;
+        }
+        
+    }
+    
+}
