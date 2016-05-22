@@ -3,7 +3,7 @@ body {
 	line-height: 142%;
 	font-family: "Source Sans Pro",Calibri,Candara,sans-serif;
     text-align: center;
-	margin: 0em;
+	margin: 3.5em 0em;
 }
 hr {
 	border: 0;
@@ -124,7 +124,11 @@ nav.nav-bar {
 	background-color: $lllgray;
 	margin-bottom: 1em;
 	padding: 0.5em 0em;
-	font-size: 115%;
+	font-size: 115%;	
+	position: fixed;
+	left: 0%;
+	right: 0%;
+	top: 0%;
 	
 	.left, .right, .title {
 		display: inline-block;
