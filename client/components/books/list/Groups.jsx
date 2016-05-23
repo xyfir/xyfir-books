@@ -36,8 +36,24 @@ export default class ListGroups extends React.Component {
                 }
                 // Non-tags groups
                 else {
-                    const val = group.property == "rating"
-                        ? Math.floor(book[group.poperty]) : book[group.poperty];
+                    let val;
+                            
+                    switch (group.property) {
+                        case "rating":
+                            val = book.rating === undefined
+                                ? 0 : Math.floor(book.rating);
+                            break;
+                        
+                        case "series":
+                            if (!book.series)
+                                return;
+                            else
+                                val = book.series;
+                            break;
+                                
+                        default:
+                            val = book[group.property];
+                    }
                     
                     if (groups[i].arr.indexOf(val) == -1)
                         groups[i].arr.push(val);
