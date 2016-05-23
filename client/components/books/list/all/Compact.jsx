@@ -46,16 +46,24 @@ export default class CompactList extends React.Component {
                                 }>{book.authors}</a>
                                 
                                 <span className="percent-complete">{book.percent_complete + "%"}</span>
-                                <span className="word-count">{
-                                    book.word_count == 0 ? "" : Math.round(book.word_count / 1000) + "K"
-                                }</span>
+                                {book.word_count > 0 ? (
+                                    <span className="word-count">{
+                                       Math.round(book.word_count / 1000) + "K"
+                                    }</span>
+                                ) : (
+                                    <span />
+                                )}
                                 <span className="date-added">{
                                     (new Date(book.timestamp)).toLocaleDateString()
                                 }</span>
-                                <span className="rating">
-                                    {!!(+book.rating) ? <span>{book.rating}</span> : ""}
-                                    {!!(+book.rating) ? <span className="icon-star" /> : ""}
-                                </span>
+                                {!!(+book.rating) ? (
+                                    <span className="rating">
+                                        {!!(+book.rating) ? <span>{book.rating}</span> : ""}
+                                        {!!(+book.rating) ? <span className="icon-star" /> : ""}
+                                    </span>
+                                ) : (
+                                    <span />
+                                )}
                             </div>
                         </div>
                     );
