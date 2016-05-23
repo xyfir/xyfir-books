@@ -117,30 +117,42 @@ export default class List extends React.Component {
             }
         }
         
+        const showText = window.screen.height < window.screen.width;
+        
         return (
             <div className="list">
                 <nav className="nav-bar">
-                    <a
-                        className="icon-home"
-                        href="#books/recently-opened"
-                        title="Home / Recently Opened"
-                    />
-                    <span className="list-title">{title}</span>
-                    <a
-                        className="icon-upload"
-                        href="#books/upload"
-                        title="Upload Books"
-                    />
-                    <a
-                        className="icon-view-mode"
-                        onClick={this.onToggleShowViewSelector}
-                        title="Select View Mode"
-                    />
-                    <a
-                        className="icon-book-open"
-                        href="#books/list"
-                        title="Books List"
-                    />
+                    <div className="left">
+                        <a href="#books/recently-opened">
+                            <span
+                                className="icon-home"
+                                title="Home / Recently Opened"
+                            />{showText ? " Home" : ""}
+                        </a>
+                        <a href="#books/upload">
+                            <span
+                                className="icon-upload"
+                                title="Upload Books"
+                            />{showText ? " Upload" : ""}
+                        </a>
+                    </div>
+                    
+                    <span className="title">{title}</span>
+                    
+                    <div className="right">
+                        <a onCLick={this.onToggleShowViewSelector}>
+                            <span
+                                className="icon-view-mode"
+                                title="Select View Mode"
+                            />{showText ? " Set View" : ""}
+                        </a>
+                        <a href="#books/list">
+                            <span
+                                className="icon-book-open"
+                                title="Book List"
+                            />{showText ? " Books" : ""}
+                        </a>
+                    </div>
                 </nav>
                 
                 { // List view selector modal
