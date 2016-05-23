@@ -17,7 +17,9 @@ export default class SubGroups extends React.Component {
         
         this.props.data.books.forEach(book => {
             if (this.props.group == "ratings") {
-                const rating = Math.floor(+book.rating); 
+                const rating = book.rating === undefined
+                    ? "Unrated" : book.rating === 0
+                        ? "No Stars" : Math.floor(book.rating) + " Stars"; 
                 
                 if (subgroups[rating] === undefined)
                     subgroups[rating] = 1;
@@ -26,13 +28,15 @@ export default class SubGroups extends React.Component {
             }
             else if (this.props.group == "tags") {
                 book.tags.forEach(tag => {
-                    if (tags[tag] === undefined)
-                        tags[tag] = 1;
+                    if (subgroups[tag] === undefined)
+                        subgroups[tag] = 1;
                     else
-                        tags[tag]++;
+                        subgroups[tag]++;
                 });
             }
             else {
+                if (book[this.props.group] === undefined)
+                    return;
                 if (subgroups[book[this.props.group]] === undefined)
                     subgroups[book[this.props.group]] = 1;
                 else
@@ -50,7 +54,7 @@ export default class SubGroups extends React.Component {
                                 <td><a href={
                                     `#books/list/all?${this.props.queryKey || this.props.group}`
                                     + `=${encodeURIComponent(subgroup)}`
-                                }>{subgroup}{this.props.group == "ratings" ? " Stars" : ""}</a></td>
+                                }>{subgroup}</a></td>
                                 <td>{subgroups[subgroup]}</td>
                             </tr>
                         )
