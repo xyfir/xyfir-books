@@ -91,10 +91,63 @@
     section.formats {
         
         table.formats {
-            margin: auto;
             margin-bottom: 1em;
         }
         
+    }
+    
+}
+
+.list-compact {
+    
+    width: 50%;
+    margin: auto;
+    text-align: left;
+    
+    .book {
+        
+        border-bottom: solid $llgray 0.1em;
+        padding: 0.5em;
+        position: relative;
+        height: 9em;
+    
+        img.cover {
+            height: 7em;
+            width: 4.5em;
+            position: absolute;
+            left: 1em;
+        }
+        
+        .info {
+            
+            position: absolute;
+            left: 6.5em;
+            
+            .authors {
+                display: block;
+            }
+            
+            .percent-complete, .date-added, .word-count, .rating {
+                background-color: $lllgray;
+                padding: 0em 0.2em;
+                border-radius: 0.3em;
+                border: solid $llgray 1px;
+                margin: 0.1em;
+            }
+            
+        }
+    
+    }
+    
+    
+}
+
+/* PORTRAIT ORIENTATION */
+
+@media all and (orientation: portrait) {
+    
+    .list-compact {
+        width: 100%;
     }
     
 }
