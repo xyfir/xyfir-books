@@ -17,6 +17,7 @@ export default class ManageBook extends React.Component {
         
         this.state = {
             id: window.location.hash.split('/')[2],
+            downloadingMetadata: false,
             editComments: false
         };
         
@@ -24,6 +25,7 @@ export default class ManageBook extends React.Component {
         this.onDownloadMetadata = this.onDownloadMetadata.bind(this);
         this.onDeleteFormat = this.onDeleteFormat.bind(this);
         this.onSaveChanges = this.onSaveChanges.bind(this);
+        this.onOpenClick = this.onOpenClick.bind(this);
     }
     
     componentDidMount() {
@@ -40,10 +42,12 @@ export default class ManageBook extends React.Component {
             return;
         }
         
+        this.setState({ downloadingMetadata: true });
+        
         let search = "";
         
         // Get metadata using ISBN
-        this.refs.identifiers.split(", ").forEach(id => {
+        this.refs.identifiers.value.split(", ").forEach(id => {
             const t = id.split(':');
             
             if (t[0] == "isbn") search = "isbn=" + t[1];
@@ -61,45 +65,42 @@ export default class ManageBook extends React.Component {
         
         request({url, dataType: "text", success: (res) => {
             if (res == '1') {
+                this.setState({ downloadingMetadata: false });
                 swal("Error", "Could not find metadata", "error");
             }
             else {
-                // res == [key, val, key, val, ...]
-                res = res.split("   : ");
-                
-                let key = "";
+                res = res.split("\n");
+                console.log("METADATA", res);
                 
                 res.forEach((kv, i) => {
-                    // Key
-                    if (i % 2 == 0) {
-                        key = kv.trim();
-                    }
-                    // Value
-                    else {
-                        kv = kv.trim();
+                    kv = kv.split("   : ");
+                    kv[1] = kv[1].trim();
                         
-                        switch (key) {
-                            case "Title":
-                                return this.refs.title.value = kv;
-                            case "Author(s)":
-                                return this.refs.authors.value = kv;
-                            case "Publisher":
-                                return this.refs.publisher.value = kv;
-                            case "Tags":
-                                return this.refs.tags.value = kv;
-                            case "Published":
-                                return this.refs.pubdate = kv.split('T')[0];
-                            case "Identifiers":
-                                return this.refs.identifiers.value = kv;
-                            case "Comments":
-                                if (this.state.editComments)
-                                    this.refs.comments.value = kv;
-                                else
-                                    this.refs.comments.innerHTML = kv;
-                            default: return;
-                        }
+                    switch (kv[0].trim()) {
+                        case "Title":
+                            return this.refs.title.value = kv[1];
+                        case "Author(s)":
+                            return this.refs.authors.value = kv[1];
+                        case "Publisher":
+                            return this.refs.publisher.value = kv[1];
+                        case "Tags":
+                            return this.refs.tags.value = kv[1];
+                        case "Published":
+                            return this.refs.pubdate.value = kv[1].split('T')[0];
+                        case "Identifiers":
+                            return this.refs.identifiers.value = kv[1];
+                        case "Comments":
+                            // Comments can have newlines and comments is always last field
+                            const comments = [kv[1]].concat(res.splice(i + 1)).join(' ');
+                            if (this.state.editComments)
+                                this.refs.comments.value = comments;
+                            else
+                                this.refs.comments.innerHTML = comments;
+                        default: return;
                     }
                 });
+                
+                this.setState({ downloadingMetadata: false });
             }
         }});
     }
@@ -222,10 +223,14 @@ export default class ManageBook extends React.Component {
             }
         });
     }
+    
+    onOpenClick() {
+        this.refs.dz.open();
+    }
 
     render() {
         const book = this.props.data.books.find(b => {
-            this.state.id == b.id;
+            return this.state.id == b.id;
         });
         
         return (
@@ -254,20 +259,27 @@ export default class ManageBook extends React.Component {
                     <input type="number" ref="series_index" defaultValue={book.series_index || 1} />
                 </section>
                 
+                <hr />
+                
                 <section className="cover">
-                    <img className="cover" id={`cover-${book.id}`} />
-                    
-                    <Dropzone onDrop={this.onUploadCover}>
-                        <button className="btn-primary btn-sm">
-                            <span className="icon-upload" /> Upload Cover
-                        </button>
+                    <Dropzone ref="dz" className="dropzone" onDrop={this.onUploadCover}>
+                        <img className="cover" id={`cover-${book.id}`} />
                     </Dropzone>
-                    <button className="btn-secondary btn-sm" onClick={
-                        () => window.open("https://www.google.com/search?tbm=isch&q=" + book.title)
+                    
+                    <button className="btn-primary" onClick={this.onOpenClick}>
+                        <span className="icon-upload" /> Upload Cover
+                    </button>
+                    <button className="btn-secondary" onClick={
+                        () => window.open(
+                            "https://www.google.com/search?tbm=isch&q="
+                            + book.authors + " " + book.title
+                        )
                     }>
-                        <span className="icon-search" /> Search Web
+                        <span className="icon-search" /> Find Cover
                     </button>
                 </section>
+                
+                <hr />
                 
                 <section className="other">
                     <label>Rating</label>
@@ -298,23 +310,29 @@ export default class ManageBook extends React.Component {
                     <input
                         type="date"
                         ref="pubdate"
-                        defaultValue={book.pubdate ? book.pudate.split('T')[0] : ""}
+                        defaultValue={book.pubdate ? book.pubdate.split('T')[0] : ""}
                     />
                     
                     <label>Publisher</label>
                     <input type="text" ref="publisher" defaultValue={book.publisher || ""} />
                 </section>
                 
+                <hr />
+                
                 <section className="download-metadata">
                     <button
-                        className="btn-secondary btn-sm"
+                        className="btn-secondary"
                         onClick={this.onDownloadMetadata}
                     >Download Metadata</button>
                     
-                    <p>
-                        We'll attempt to get this book's metadata from the internet using its authors and title, or ISBN.
-                    </p>
+                    <p>{this.state.downloadingMetadata ? (
+                        "Attempting to find metadata... This can take up to 30 seconds."
+                    ) : (
+                        "We'll attempt to get this book's metadata from the internet using its authors and title, or ISBN."
+                    )}</p>
                 </section>
+                
+                <hr />
                 
                 <section className="comments">
                     {this.state.editComments ? (
@@ -327,15 +345,22 @@ export default class ManageBook extends React.Component {
                         <div
                             ref="comments"
                             className="comments"
-                            dangerouslySetInnerHTML={{__html: book.comments || ""}}
+                            dangerouslySetInnerHTML={{
+                                __html: book.comments || "This book has no comments"
+                            }}
                         />
                     )}
                     
-                    <a onClick={this.onToggleEditComments}>{
+                    <button
+                        className="btn-primary btn-sm"
+                        onClick={this.onToggleEditComments}
+                    >{
                         this.state.editComments
-                            ? "Comments Preview" : "Edit Comments"
-                    }</a>
+                            ? "Preview Comments" : "Edit Comments"
+                    }</button>
                 </section>
+                
+                <hr />
                 
                 <section className="formats">
                     <table className="formats">{
@@ -348,6 +373,7 @@ export default class ManageBook extends React.Component {
                                     <td><span
                                         className="icon-trash"
                                         onClick={this.onDeleteFormat.bind(this, format)}
+                                        title={`Delete Format (${format})`}
                                     /></td>
                                 </tr>
                             );
@@ -358,6 +384,8 @@ export default class ManageBook extends React.Component {
                         Add Format
                     </a>
                 </section>
+                
+                <hr />
                 
                 <button className="btn-primary" onClick={this.onSaveChanges}>
                     Save Changes
