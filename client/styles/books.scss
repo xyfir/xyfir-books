@@ -139,6 +139,22 @@
     
     }
     
+}
+
+.view-selector {
+    
+    background-color: $lllgray;
+    padding: 0.2em;
+    width: 60%;
+    position: fixed;
+    left: 20%;
+    right: 20%;
+    top: 7.5%;
+    border: solid $llgray 0.1em;
+    
+    .icon-close {
+        float: right;
+    }
     
 }
 
