@@ -46,8 +46,9 @@ export default class List extends React.Component {
     
     onSelectView(i) {
         this.props.dispatch(setListView(
-            ["table", "grid", "compact"][i]
+            ["", "table", "grid", "compact"][i]
         ));
+        this.onToggleShowViewSelector();
     }
 
     render() {
@@ -140,7 +141,7 @@ export default class List extends React.Component {
                     <span className="title">{title}</span>
                     
                     <div className="right">
-                        <a onCLick={this.onToggleShowViewSelector}>
+                        <a onClick={this.onToggleShowViewSelector}>
                             <span
                                 className="icon-view-mode"
                                 title="Select View Mode"
@@ -159,6 +160,11 @@ export default class List extends React.Component {
                     this.state.showViewSelector
                     ? (
                         <div className="modal view-selector">
+                            <span
+                                title="Close"
+                                onClick={this.onToggleShowViewSelector}
+                                className="icon-close"
+                            />
                             <dl>
                                 <dt><a onClick={this.onSelectView.bind(this, 1)}>Table View</a></dt>
                                 <dd>Not recommended for mobile. Lots of data. Sorting by column features available.</dd>
