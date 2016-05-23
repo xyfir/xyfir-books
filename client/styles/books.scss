@@ -40,6 +40,11 @@
         width: 25em;
     }
     
+    input[type=date] {
+        font-size: 1em;
+        margin: 1em 0em;
+    }
+    
     input {
         font-size: 85%;
     }
@@ -78,6 +83,7 @@
             background-color: $llgray;
             padding: 0.5em;
             border-radius: 0.3em;
+            margin-bottom: 1em;
         }
         
     }
