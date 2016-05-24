@@ -4,7 +4,9 @@ import React from "react";
 import { deleteBooks } from "../../../../actions/creators/books";
 
 // Constants
-import { URL } from "../../../../constants/config";
+import {
+    URL, PATH_SEPARATOR
+} from "../../../../constants/config";
 
 // Modules
 import findMatches from "../../../../lib/books/find-matching";
@@ -278,7 +280,7 @@ export default class TableList extends React.Component {
                                 selectedBook.formats.map(format => {
                                     const url = this.props.data.account.library.address + "library/"
                                         + this.props.data.account.library.id + "/files/"
-                                        + selectedBook.cover.split('/').slice(-3).join('/');
+                                        + format.split(PATH_SEPARATOR).slice(-3).join('/');
                                     return (
                                         <a target="_blank" href={url}>{
                                             url.split('.')[1].toUpperCase()
