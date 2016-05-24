@@ -83,7 +83,7 @@ class App extends React.Component {
                             columns: [
                                 "title", "authors", "series", "added", "rating"
                             ], defaultSort: {
-                                column: "added", asc: true
+                                column: "title", asc: true
                             }
                         }
                     }
