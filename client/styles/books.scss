@@ -151,9 +151,31 @@
     right: 20%;
     top: 7.5%;
     border: solid $llgray 0.1em;
+    z-index: 1;
     
     .icon-close {
-        float: right;
+        position: absolute;
+        right: 2%;
+    }
+    
+}
+
+.list-grid {
+    
+    .book {
+        
+        display: inline-block;
+        padding: 1em;
+        
+        img.cover {
+            height: 20em;
+            width: 12.5em;
+        }
+        
+        a.authors {
+            display: block;
+        }
+        
     }
     
 }
