@@ -34,8 +34,6 @@ export default class ListAllBooks extends React.Component {
                     Use underscores in place of spaces when a search query for a field contains spaces.
                 </p>
                 
-                <hr />
-                
                 {view}
             </div>
         );
