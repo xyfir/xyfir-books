@@ -73,9 +73,9 @@ export default function(store) {
             case "book-list":
                 return store.dispatch(changeView(VIEWS.BOOK_LIST_SETTINGS));
             case "general":
-                return store.dispatch(changeView(VIEWS.GENERAL));
+                return store.dispatch(changeView(VIEWS.GENERAL_SETTINGS));
             case "reader":
-                return store.dispatch(changeView(VIEWS.READER));
+                return store.dispatch(changeView(VIEWS.READER_SETTINGS));
         }
     }
     
