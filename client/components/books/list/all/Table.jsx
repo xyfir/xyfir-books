@@ -12,6 +12,7 @@ import loadCovers from "../../../../lib/books/load-covers";
 import sortBooks from "../../../../lib/books/sort";
 import request from "../../../../lib/request/";
 import toUrl from "../../../../lib/url/clean";
+import rand from "../../../../lib/random/number";
 
 export default class TableList extends React.Component {
 
@@ -19,15 +20,20 @@ export default class TableList extends React.Component {
         super(props);
         
         this.state = {
-            selected: [], sort: {
-                field: "title", asc: true
-            }
+            selected: [
+                this.props.data.books[
+                    rand(0, this.props.data.books.length - 1)
+                ].id
+            ], sort: this.props.data.config.bookList.table.defaultSort
         };
     }
     
+    componentDidMount() {
+        loadCovers(this.props.data.books, this.props.data.account.library);
+    }
+    
     componentDidUpdate() {
-        if (this.state.selected.length)
-            loadCovers(this.props.data.books, this.props.data.account.library);
+        loadCovers(this.props.data.books, this.props.data.account.library);
     }
     
     onSelect(e, id) {
@@ -37,7 +43,7 @@ export default class TableList extends React.Component {
             if (this.state.selected.indexOf(id) == -1)
                 this.setState({ selected: this.state.selected.concat([id]) });
             // Remove item
-            else
+            else if (this.state.selected.length > 1)
                 this.setState({ selected: this.state.selected.filter(s => s != id) });
         }
         // Select single item
@@ -80,11 +86,8 @@ export default class TableList extends React.Component {
                                     return b.id == this.state.selected[i];
                                 });
                                 
-                                // Remove cover
-                                localforage.removeItem(`cover-${book.id}-${book.versions.cover}`).then(() => {
-                                    // ** Delete book file stored via epub.js
-                                    deleteFromLocalStorage(i + 1);
-                                }).catch(err => deleteFromLocalStorage(i + 1));
+                                // ** Delete book file stored via epub.js
+                                deleteFromLocalStorage(i + 1);
                             }
                         };
                         
@@ -96,12 +99,12 @@ export default class TableList extends React.Component {
     }
     
     onSort(col) {
-        // Flip state.sort.asc, retain field
-        if (this.state.sort.field == col)
-            this.setState({ sort: { field: col, asc: !this.state.sort.asc } });
-        // Change state.sort.field, asc always true
+        // Flip state.sort.asc, retain column
+        if (this.state.sort.column == col)
+            this.setState({ sort: { column: col, asc: !this.state.sort.asc } });
+        // Change state.sort.column, asc always true
         else
-            this.setState({ sort: { field: col, asc: true } });
+            this.setState({ sort: { column: col, asc: true } });
     }
 
     render() {
@@ -119,14 +122,14 @@ export default class TableList extends React.Component {
         
         return (
             <div className="list-table">
-                <table>
+                <div className="table-container"><table className="books">
                     <thead>
                         <tr>{
                             this.props.data.config.bookList.table.columns.map(col => {
                                 return (
                                     <th
                                         onContextMenu={() => window.location.hash = "settings/book-list"}
-                                        className={this.state.sort.field == col ? "sort-by" : ""}
+                                        className={this.state.sort.column == col ? "sort-by" : ""}
                                         onClick={this.onSort.bind(this, col)}
                                     >{col.replace(/\b[a-z]/g, c => c.toUpperCase())}</th>
                                 )
@@ -136,7 +139,7 @@ export default class TableList extends React.Component {
                     <tbody>{
                         sortBooks(
                             findMatches(this.props.data.books, this.props.data.search),
-                            this.state.sort.field, this.state.sort.asc
+                            this.state.sort.column, this.state.sort.asc
                         ).map(book => {
                             return (
                                 <tr
@@ -183,28 +186,28 @@ export default class TableList extends React.Component {
                             );
                         })
                     }</tbody>
-                </table>
+                </table></div>
                 
                 <div className="selected-book">
-                    {this.state.selected.length ? (
+                    {this.state.selected.length > 0 ? (
                         <div className="controls">
                             {this.state.selected.length > 1 ? (<span />) : (
                                 <a href={`#books/read/${selectedBook.url}`}>
-                                    <span className="icon-eye" /> Read
+                                    <span className="icon-eye" />Read
                                 </a>
                             )}
                             
                             <a onClick={this.onDelete}>
-                                <span className="icon-trash" /> Delete
+                                <span className="icon-trash" />Delete
                             </a>
                             
                             {this.state.selected.length > 1 ? (
                                 <a href={`#books/bulk-edit/${this.state.selected.join(',')}`}>
-                                    <span className="icon-edit" /> Bulk Edit
+                                    <span className="icon-edit" />Bulk Edit
                                 </a>
                             ) : (
                                 <a href={`#books/manage/${selectedBook.url}`}>
-                                    <span className="icon-edit" /> Manage
+                                    <span className="icon-edit" />Manage
                                 </a>
                             )}
                             
@@ -222,16 +225,25 @@ export default class TableList extends React.Component {
                         </a>
                         
                         <span className="percent-complete">{selectedBook.percent_complete + "%"}</span>
-                        <span className="word-count">{
-                            selectedBook.word_count == 0 ? "" : Math.round(selectedBook.word_count / 1000) + "K"
-                        }</span>
+                        {selectedBook.word_count > 0 ? (
+                            <span className="word-count">{
+                                Math.round(selectedBook.word_count / 1000) + "K"
+                            }</span>
+                        ) : (
+                            <span />
+                        )}
+                        
                         <span className="date-added">{
                             (new Date(selectedBook.timestamp)).toLocaleDateString()
                         }</span>
-                        <span className="rating">
-                            {!!(+selectedBook.rating) ? <span>{selectedBook.rating}</span> : ""}
-                            {!!(+selectedBook.rating) ? <span className="icon-star" /> : ""}
-                        </span>
+                        {!!(+selectedBook.rating) ? (
+                            <span className="rating">
+                                <span>{selectedBook.rating}</span>
+                                <span className="icon-star" />
+                            </span>
+                        ) : (
+                            <span />
+                        )}
                         
                         <hr />
                         
@@ -254,13 +266,16 @@ export default class TableList extends React.Component {
                             <dt>Published</dt>
                             <dd>{
                                 (new Date(selectedBook.pubdate)).toLocaleDateString()
-                            } by <a href={`#books/list/all?publisher=${selectedBook.publisher}`}>{
+                            } by <a href={
+                                "#books/list/all?publisher="
+                                + encodeURIComponent(selectedBook.publisher)
+                            }>{
                                 selectedBook.publisher
                             }</a></dd>
                             
                             <dt>Formats</dt>
                             <dd className="formats">{
-                                selectedBook.formats(format => {
+                                selectedBook.formats.map(format => {
                                     const url = this.props.data.account.library.address + "library/"
                                         + this.props.data.account.library.id + "/files/"
                                         + selectedBook.cover.split('/').slice(-3).join('/');
@@ -324,10 +339,14 @@ export default class TableList extends React.Component {
                                     );
                                 })
                             }</dd>
-                            
-                            <dt>Comments</dt>
-                            <dd dangerouslySetInnerHTML={{__html: selectedBook.comments}} />
                         </dl>
+                        
+                        <hr />
+                        
+                        <div
+                            className="comments"
+                            dangerouslySetInnerHTML={{__html: selectedBook.comments}}
+                        />
                     </div>
                 </div>
             </div>
