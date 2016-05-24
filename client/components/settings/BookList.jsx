@@ -31,12 +31,12 @@ export default class BookListSettings extends React.Component {
             asc: !!(+this.refs["sort-direction"].value)
         };
         
-        // Update state
-        this.props.dispatch(setBookList({ columns, defaultSort }));
-        
-        // Update config object in local storage
+        // Update config object
         let config = Object.assign({}, this.props.data.config);
         config.bookList.table = { columns, defaultSort };
+        
+        // Update state
+        this.props.dispatch(setBookList(config.bookList));
         
         localforage.setItem("config", config)
             .then(c => { return; }).catch(e => { return; });
@@ -45,7 +45,7 @@ export default class BookListSettings extends React.Component {
     render() {
         const columns = [
             "Title", "Authors", "Series", "Added", "Published", "Publisher", "Rating"
-        ], conf = this.state.config.bookList;
+        ], conf = this.props.data.config.bookList;
         
         return (
             <div className="settings-book-list">
@@ -59,9 +59,9 @@ export default class BookListSettings extends React.Component {
                 />
                 
                 <section className="table">
-                    <h1>Table</h1>
+                    <h2>Table</h2>
                     
-                    <h2>Columns</h2>
+                    <h3>Columns</h3>
                     <table className="columns">
                         <thead>
                             <tr>
@@ -74,7 +74,7 @@ export default class BookListSettings extends React.Component {
                             columns.map(col => {
                                 return (
                                     <tr>
-                                        <td><input type="checkbox" defaultValue={
+                                        <td><input type="checkbox" defaultChecked={
                                             conf.table.columns.indexOf(col.toLowerCase()) > -1
                                         } ref={`show-${col}`} /></td>
                                         <td>{col}</td>
@@ -84,7 +84,7 @@ export default class BookListSettings extends React.Component {
                         }</tbody>
                     </table>
                     
-                    <h2>Default Sort</h2>
+                    <h3>Default Sort</h3>
                     <div>
                         <label>Column</label>
                         <select
@@ -99,12 +99,12 @@ export default class BookListSettings extends React.Component {
                             ref="sort-direction"
                             defaultValue={+conf.table.defaultSort.asc}
                         >
-                            <option value="1">Ascending (A -> Z)</option>
-                            <option value="0">Descending (Z -> A)</option>
+                            <option value="1">Ascending (A to Z)</option>
+                            <option value="0">Descending (Z to A)</option>
                         </select>
                     </div>
                     
-                    <button className="btn-primrary" onClick={this.onSaveTable}>
+                    <button className="btn-primary" onClick={this.onSaveTable}>
                         Save Table Settings
                     </button>
                 </section>
