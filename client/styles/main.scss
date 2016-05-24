@@ -21,6 +21,10 @@ span[class^="icon-"]:hover {
 table {
 	margin: auto;
 }
+p {
+	width: 80%;
+	margin: auto;
+}
 
 
 /* LINKS */
@@ -46,8 +50,7 @@ input[type=submit], button, .btn {
 	border: 0;
 	text-transform: uppercase;
 	border-radius: 0.15em;
-	margin-left: 0.5em;
-	margin-right: 0.5em;
+	margin: 1em 0.5em;
 }
 .btn-sm {
 	height: 2.142em;
