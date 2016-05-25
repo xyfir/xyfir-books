@@ -8,7 +8,7 @@ const db = require("../../lib/db");
     REQUIRED
         bytes: number
     RETURN
-        { error: boolean, libraryServerAddress?: string }
+        { error: boolean, message?: string, libraryServerAddress?: string }
     DESCRIPTION
         Determines if user has enough space on storage server to peform action
         Attempts to move library to a server with more space if needed
@@ -17,12 +17,12 @@ module.exports = function(req, res) {
 
     let sql = "SELECT * FROM servers";
     
-    db(cn => cn.query(sql, vars, (err, rows) => {
+    db(cn => cn.query(sql, (err, rows) => {
         const server = rows.find(s => { return s.server_id == req.session.library.server; });
         
         if (server === undefined) {
             cn.release();
-            res.json({ error: true });
+            res.json({ error: true, message: "Server does not exist" });
             return;
         }
         
@@ -31,7 +31,7 @@ module.exports = function(req, res) {
             // Libyq Select users must upgrade their server
             if (!!(+server.is_select)) {
                 cn.release();
-                res.json({ error: true });
+                res.json({ error: true, message: "Not enough storage on server for action" });
             }
             // Attempt to find a server with enough space
             else {
@@ -47,7 +47,7 @@ module.exports = function(req, res) {
                 
                 if (matches.length == 0) {
                     cn.release();
-                    res.json({ error: true });
+                    res.json({ error: true, message: "Not enough remaining storage for action" });
                 }
                 // Attempt to move library to new server
                 else {
@@ -59,7 +59,7 @@ module.exports = function(req, res) {
                         
                         if (body.error) {
                             cn.release();
-                            res.json({ error: true });
+                            res.json({ error: true, message: "An unknown error occured" });
                             return;
                         }
                         
@@ -67,7 +67,7 @@ module.exports = function(req, res) {
                         
                         // Update library's old server's free space and library_count
                         sql = `
-                            UPDATE servers SET space_free = ? AND library_count = library_count - 1 WHERE server_id = ?
+                            UPDATE servers SET space_free = ?, library_count = library_count - 1 WHERE server_id = ?
                         `;
                         let vars = [body.freeSpace, req.session.library.server];
                         
