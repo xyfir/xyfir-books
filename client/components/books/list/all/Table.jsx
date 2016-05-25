@@ -214,7 +214,7 @@ export default class TableList extends React.Component {
                             )}
                             
                             {this.state.selected.length > 1 ? (<span />) : (
-                                <a href={`#books/covert-format/${selectedBook.url}`}>
+                                <a href={`#books/add-format/${selectedBook.url}`}>
                                     <span className="icon-files" /> Add Format
                                 </a>
                             )}
@@ -281,7 +281,7 @@ export default class TableList extends React.Component {
                                     const url = this.props.data.account.library.address + "library/"
                                         + this.props.data.account.library.id + "/files/"
                                         + format.split(PATH_SEPARATOR).slice(-3).join('/');
-                                    return (
+                                    return ( 
                                         <a target="_blank" href={url}>{
                                             url.split('.')[1].toUpperCase()
                                         }</a>
