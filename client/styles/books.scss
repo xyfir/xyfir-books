@@ -60,9 +60,6 @@ span.word-count, span.rating {
         }
         
         .dropzone {
-            border: $gray dotted 0.3em;
-            border-radius: 0.5em;
-            padding: 0.5em;
             margin-bottom: 0.5em;
         }
         
@@ -285,18 +282,6 @@ span.word-count, span.rating {
             
         }
         
-    }
-    
-}
-
-.upload-books {
-    
-    .dropzone {
-        border: $gray dotted 0.3em;
-        border-radius: 0.5em;
-        padding: 0.5em;
-        width: 40%;
-        margin: auto;
     }
     
 }
