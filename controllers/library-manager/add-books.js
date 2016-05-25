@@ -7,7 +7,7 @@ const db = require("../../lib/db");
     REQUIRED
         freeSpace: number, ids: string
     RETURN
-        { error: boolean }
+        { error: boolean, message?: string }
     DESCRIPTION
         Add books to library
 */
@@ -20,7 +20,7 @@ module.exports = function(req, res) {
     db(cn => cn.query(sql, vars, (err, rows) => {
         if (err || !rows.length) {
             cn.release();
-            res.json({ error: true });
+            res.json({ error: true, message: "Library does not exist" });
         }
         else {
             const uid = rows[0].user_id;
@@ -33,9 +33,9 @@ module.exports = function(req, res) {
             }).join(", ");
             
             cn.query(sql, (err, result) => {
-                if (err || !result.affectedRows) {
+                if (err) {
                     cn.release();
-                    res.json({ error: true });
+                    res.json({ error: true, message: "Could not insert books" });
                 }
                 else {
                     // Update free space for library server
@@ -45,7 +45,10 @@ module.exports = function(req, res) {
                     cn.query(sql, vars, (err, result) => {
                         cn.release();
                         
-                        res.json({ error: !!err || !result.affectedRows });
+                        if (err || !result.affectedRows)
+                            res.json({ error: true, message: err });
+                        else
+                            res.json({ error: false });
                     });
                 }
             });
