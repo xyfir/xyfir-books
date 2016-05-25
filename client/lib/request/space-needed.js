@@ -9,9 +9,9 @@ import { setLibraryAddress } from "../../actions/creators/account";
 
 export default function (bytes, dispatch, fn) {
     
-    ajax({
+    request({
         url: URL + "api/library-manager/space",
-        method: "PUT", data: {bytes},
+        method: "POST", data: {bytes},
         success: (res) => {
             if (res.error) {
                 fn(true);
