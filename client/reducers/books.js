@@ -1,5 +1,5 @@
 import {
-    LOAD_BOOKS, DELETE_BOOKS, ADD_FORMAT
+    ADD_FORMAT, DELETE_BOOKS, LOAD_BOOKS, DELETE_FORMAT
 } from "../actions/types/books";
 
 export default function(state, action) {
@@ -8,19 +8,48 @@ export default function(state, action) {
             return action.books;
             
         case DELETE_BOOKS:
-            return state.books.filter(book => action.ids.indexOf(book.id) == -1);
+            return state.filter(book => action.ids.indexOf(book.id) == -1);
             
         case ADD_FORMAT:
             return (() => {
-                let temp = Object.assign({}, state);
+                let temp = state.slice(0);
                 
                 temp.forEach((book, i) => {
                     if (action.id == book.id && book.formats.length > 0) {
-                        // Add a new format based on already existing file name
-                        let format = book.formats[0].split('.');
-                        format[1] = action.format;
+                        let exists = false;
+                        action.format = action.format.toLowerCase();
                         
-                        temp[i].formats.push(format.join('.'));
+                        // Check if user is replacing a format that already exists
+                        book.formats.forEach(format => {
+                            if (format.split('.')[1] == action.format) {
+                                exists = true;
+                            }
+                        });
+                        
+                        // If format already exists, state doesn't need to be updated
+                        if (!exists) {
+                            // Add a new format based on already existing file name
+                            let format = book.formats[0].split('.');
+                            format[1] = action.format;
+                            
+                            temp[i].formats.push(format.join('.'));
+                        }
+                    }
+                });
+                
+                return temp;
+            }).call();
+            
+        case DELETE_FORMAT:
+            return (() => {
+                let temp = state.slice(0);
+                action.format = action.format.toLowerCase();
+                
+                temp.forEach((book, i) => {
+                    if (action.id == book.id && book.formats.length > 0) {
+                        temp[i].formats = book.formats.filter(format => {
+                            return format.split('.')[1] != action.format; 
+                        });
                     }
                 });
                 
