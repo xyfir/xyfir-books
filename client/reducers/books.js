@@ -1,5 +1,6 @@
 import {
-    ADD_FORMAT, DELETE_BOOKS, LOAD_BOOKS, DELETE_FORMAT
+    ADD_FORMAT, DELETE_BOOKS, LOAD_BOOKS, DELETE_FORMAT,
+    INCREMENT_VERSION
 } from "../actions/types/books";
 
 export default function(state, action) {
@@ -50,6 +51,19 @@ export default function(state, action) {
                         temp[i].formats = book.formats.filter(format => {
                             return format.split('.')[1] != action.format; 
                         });
+                    }
+                });
+                
+                return temp;
+            }).call();
+            
+        case INCREMENT_VERSION:
+            return (() => {
+                let temp = state.slice(0);
+                
+                temp.forEach((book, i) => {
+                    if (action.id == book.id) {
+                        temp[i].versions[action.prop]++;
                     }
                 });
                 
