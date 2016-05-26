@@ -191,7 +191,7 @@ export default class ManageBook extends React.Component {
             pubdate: (new Date(this.refs.pubdate.value)).toISOString(),
             rating: this.refs.rating.value,
             title: this.refs.title.value,
-            tags: this.refs.tags.value.split(", ")
+            tags: this.refs.tags.value
         };
         
         if (this.refs.series.value != "") {
