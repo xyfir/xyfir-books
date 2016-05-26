@@ -10,6 +10,9 @@ import request from "../../lib/request/";
 // Components
 import NavBar from "../misc/NavBar";
 
+// Action creators
+import { deleteFormat } from "../../actions/creators/books";
+
 export default class ManageBook extends React.Component {
 
     constructor(props) {
