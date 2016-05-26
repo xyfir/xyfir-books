@@ -6,12 +6,13 @@ import spaceNeeded from "../../lib/request/space-needed";
 import loadCovers from "../../lib/books/load-covers";
 import loadBooks from "../../lib/books/load-from-api";
 import request from "../../lib/request/";
+import upload from "../../lib/request/upload";
 
 // Components
 import NavBar from "../misc/NavBar";
 
 // Action creators
-import { deleteFormat } from "../../actions/creators/books";
+import { deleteFormat, incrementVersion } from "../../actions/creators/books";
 
 export default class ManageBook extends React.Component {
 
@@ -28,6 +29,7 @@ export default class ManageBook extends React.Component {
         this.onDownloadMetadata = this.onDownloadMetadata.bind(this);
         this.onDeleteFormat = this.onDeleteFormat.bind(this);
         this.onSaveChanges = this.onSaveChanges.bind(this);
+        this.onUploadCover = this.onUploadCover.bind(this);
         this.onOpenClick = this.onOpenClick.bind(this);
     }
     
@@ -73,7 +75,6 @@ export default class ManageBook extends React.Component {
             }
             else {
                 res = res.split("\n");
-                console.log("METADATA", res);
                 
                 res.forEach((kv, i) => {
                     kv = kv.split("   : ");
@@ -153,15 +154,13 @@ export default class ManageBook extends React.Component {
                         // Convert image to base64 data url
                         fr.onload = () => {
                             const lfKey = "cover-" + this.state.id + "-"
-                                + this.props.data.books.find(b => this.state.id == b.id)
-                                    .versions.cover;
+                                + this.props.data.books.find(b => {
+                                    return this.state.id == b.id;
+                                }).versions.cover;
                             
                             localforage.setItem(lfKey, fr.result).then(img => {
-                                fr = null;
-                                
                                 // Load new cover
-                                document.querySelector("img.cover").src = "";
-                                loadCovers(this.props.data.books, this.props.data.account.library);
+                                document.querySelector("img.cover").src = img;
                                 
                                 // Increment book.versions.cover
                                 this.props.dispatch(incrementVersion(
@@ -169,6 +168,7 @@ export default class ManageBook extends React.Component {
                                 ));
                             }).catch(err => window.location.reload());
                         };
+                        
                         fr.readAsDataURL(files[0]);
                     }
                 });
