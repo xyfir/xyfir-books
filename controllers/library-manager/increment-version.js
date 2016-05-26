@@ -7,7 +7,7 @@ const db = require("../../lib/db");
     REQUIRED
         type: string, freeSpace: number
     RETURN
-        { error: boolean }
+        { error: boolean, message?: string }
     DESCRIPTION
         Increments an ebook's metadata or cover version
         Updates library server's free space
@@ -24,7 +24,7 @@ module.exports = function(req, res) {
     db(cn => cn.query(sql, vars, (err, rows) => {
         if (err || !rows.length) {
             cn.release();
-            res.json({ error: true });
+            res.json({ error: true, message: "Library does not exist" });
         }
         else {
             const uid = rows[0].user_id;
@@ -35,7 +35,7 @@ module.exports = function(req, res) {
             cn.query(sql, vars, (err, result) => {
                 if (err || !result.affectedRows) {
                     cn.release();
-                    res.json({ error: true });
+                    res.json({ error: true, message: "Could not increment version" });
                 }
                 else {
                     sql = "UPDATE servers SET space_free = ? WHERE server_id = ?";
