@@ -18,7 +18,8 @@ export default class AddFormat extends React.Component {
         super(props);
         
         this.state = {
-            id: window.location.hash.split('/')[2]
+            id: window.location.hash.split('/')[2],
+            converting: false, uploading: false
         };
         
         this.onConvert = this.onConvert.bind(this);
@@ -31,6 +32,8 @@ export default class AddFormat extends React.Component {
             return;
         }
         
+        this.setState({ converting: true });
+        
         const bytes = this.props.data.books.find(b => {
             return this.state.id == b.id;
         }).size;
@@ -38,6 +41,7 @@ export default class AddFormat extends React.Component {
         spaceNeeded(bytes, this.props.dispatch, (err, address) => {
             if (err) {
                 swal("Error", "An unknown error occured", "error");
+                this.setState({ converting: false });
             }
             else {
                 address = address === undefined
@@ -49,6 +53,8 @@ export default class AddFormat extends React.Component {
                     + this.refs.convertTo.value;
                     
                 request({url, method: "POST", success: (res) => {
+                    this.setState({ converting: false });
+                    
                     if (res.error) {
                         swal("Error", "Could not convert format", "error");
                     }
@@ -69,9 +75,12 @@ export default class AddFormat extends React.Component {
             return;
         }
         
+        this.setState({ upload: true });
+        
         spaceNeeded(files[0].size, this.props.dispatch, (err, address) => {
             if (err) {
                 swal("Error", "An unknown error occured", "error");
+                this.setState({ upload: false });
             }
             else {
                 address = address === undefined
@@ -81,6 +90,8 @@ export default class AddFormat extends React.Component {
                     + "/books/" + this.state.id + "/format"; 
                 
                 upload(url, "POST", "book", [files[0]], res => {
+                    this.setState({ upload: false });
+                    
                     if (res.error) {
                         swal("Error", "Could not upload file", "error");
                     }
@@ -96,7 +107,7 @@ export default class AddFormat extends React.Component {
     }
 
     render() {
-        const book = this.props.data.find(b => this.state.id == b.id);
+        const book = this.props.data.books.find(b => this.state.id == b.id);
         const formats = book.formats.map(format => {
             return format.split('.')[1].toUpperCase();
         });
@@ -116,21 +127,31 @@ export default class AddFormat extends React.Component {
                     <strong>Note:</strong> Only <a href="https://en.wikipedia.org/wiki/EPUB" target="_blank">EPUB</a> format ebooks can be read by Libyq's ebook reader.
                 </p>
                 
-                <div className="upload">
-                    <h1>Upload</h1>
-                    <p>Add a format a new format for <strong>{book.title}</strong>. If you upload a format that already exists, the old file will be replaced.</p>
+                <section className="upload">
+                    <h2>Upload</h2>
+                    <p>
+                        Add a format a new format for <strong>{book.title}</strong>. If you upload a format that already exists, the old file will be replaced.
+                    </p>
                     <p><strong>Current Available Formats:</strong> {formats.join(", ")}</p>
                     
                     <hr />
                     
-                    <Dropzone onDrop={this.onUpload}>
-                        Drag and drop ebook file or click box to choose file to upload.
-                    </Dropzone>
-                </div>
+                    <Dropzone onDrop={this.onUpload} className="dropzone">{
+                        this.state.uploading ? (
+                            "Uploading file, please wait..."
+                        ) : (
+                            "Drag and drop ebook file or click box to choose file to upload."
+                        )
+                    }</Dropzone>
+                </section>
                 
-                <div className="convert">
-                    <h1>Convert File</h1>
-                    <p>Our system can attempt to automatically convert an already existing format to a different format. This process is not perfect, and can cause formatting and other issues.</p>
+                <section className="convert">
+                    <h2>Convert Format</h2>
+                    <p>
+                        Our system can attempt to automatically convert an already existing format to a different format. This process is not perfect and can cause formatting and other issues.
+                        <br />
+                        The original format will remain untouched.
+                    </p>
                     
                     <hr />
                     
@@ -144,8 +165,10 @@ export default class AddFormat extends React.Component {
                     <label>Convert To</label>
                     <input type="text" ref="convertTo" placeholder="Format" />
                     
-                    <button className="btn-secondary" onClick={this.onConvert}>Convert</button>
-                </div>
+                    <button className="btn-secondary" onClick={this.onConvert}>{
+                        this.state.converting ? "Converting..." : "Convert"
+                    }</button>
+                </section>
             </div>
         );
     }
