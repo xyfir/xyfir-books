@@ -1,5 +1,5 @@
 import {
-    ADD_FORMAT, DELETE_BOOKS, LOAD_BOOKS
+    ADD_FORMAT, DELETE_BOOKS, LOAD_BOOKS, DELETE_FORMAT
 } from "../types/books";
 
 export function addFormat(id, format) {
@@ -17,5 +17,11 @@ export function deleteBooks(ids) {
 export function loadBooks(books) {
     return {
         type: LOAD_BOOKS, books
+    };
+}
+
+export function deleteFormat(id, format) {
+    return {
+        type: DELETE_FORMAT, id, format
     };
 }
