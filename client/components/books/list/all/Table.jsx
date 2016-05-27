@@ -117,9 +117,7 @@ export default class TableList extends React.Component {
             selectedBook.url = `${selectedBook.id}/${toUrl(selectedBook.authors)}/${toUrl(selectedBook.title)}`;
             
             if (selectedBook.identifiers === undefined)
-                selectedBook.identifiers = "search:authors,search:title";
-            else
-                selectedBook.identifiers += ",search:authors,search:title";
+                selectedBook.identifiers = "";
         }
         
         return (
@@ -291,37 +289,47 @@ export default class TableList extends React.Component {
                             
                             <dt>Links</dt>
                             <dd className="links">{
-                                selectedBook.identifiers.split(',').forEach(id => {
+                                selectedBook.identifiers.split(',').map(id => {
                                     id = id.split(':');
+                                    console.log("id ", id);
                                     
                                     switch (id[0]) {
                                         case "isbn": return (
-                                            <a href={`http://www.abebooks.com/book-search/isbn/${id[1]}`}>
+                                            <a
+                                                target="_blank"
+                                                href={`http://www.abebooks.com/book-search/isbn/${id[1]}`}
+                                            >
                                                 ISBN ({id[1]})
                                             </a>
                                         );
                                         
                                         case "goodreads": return (
-                                            <a href={`http://www.goodreads.com/book/show/${id[1]}`}>
+                                            <a
+                                                target="_blank"
+                                                href={`http://www.goodreads.com/book/show/${id[1]}`}
+                                            >
                                                 GoodReads
                                             </a>
                                         );
                                         
                                         case "mobi-asin":
                                         case "amazon": return (
-                                            <a href={`http://www.amazon.com/dp/${id[1]}`}>
+                                            <a target="_blank" href={`http://www.amazon.com/dp/${id[1]}`}>
                                                 Amazon
                                             </a>
                                         );
                                         
                                         case "google": return (
-                                            <a href={`https://books.google.com/books/about/?id=${id[1]}`}>
+                                            <a
+                                                target="_blank"
+                                                href={`https://books.google.com/books/about/?id=${id[1]}`}
+                                            >
                                                 Google Books
                                             </a>
                                         );
                                         
                                         case "barnesnoble": return (
-                                            <a href={`http://www.barnesandnoble.com/${id[1]}`}>
+                                            <a target="_blank" href={`http://www.barnesandnoble.com/${id[1]}`}>
                                                 Barnes & Noble
                                             </a>
                                         );
