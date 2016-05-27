@@ -68,24 +68,20 @@ span.word-count, span.rating {
         }
         
     }
+       
+    .comments-edit {
+        width: 60%;
+        height: 15em;
+        font-size: 100%;
+    }
     
-    section.comments {
-        
-        .comments-edit {
-            width: 60%;
-            height: 15em;
-            font-size: 100%;
-        }
-        
-        div.comments {
-            width: 70%;
-            margin: auto;
-            background-color: $llgray;
-            padding: 0.5em;
-            border-radius: 0.3em;
-            margin-bottom: 1em;
-        }
-        
+    div.comments {
+        width: 70%;
+        margin: auto;
+        background-color: $llgray;
+        padding: 0.5em;
+        border-radius: 0.3em;
+        margin-bottom: 1em;
     }
     
     section.formats {
