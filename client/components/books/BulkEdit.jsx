@@ -186,33 +186,26 @@ export default class EditBooks extends React.Component {
                     books={true}
                 />
                 
-                <div className="status">{this.state.status ? (
-                    <p>
-                        <strong>Status:</strong> {this.state.status}
-                    </p>
-                ) : (
-                    <span />
-                )}</div>
-                
                 <div className="form">
-                    <p><strong>Note:</strong> Fields left blank will not be changed</p>
-                
                     <label>Authors</label>
                     <input type="text" ref="authors" />
                     
-                    <input type="checkbox" ref="author_title_swap" />Swap Title / Authors
+                    <span className="checkbox">
+                        <input type="checkbox" ref="author_title_swap" />Swap Title / Authors
+                    </span>
                     
                     <label>Author Sort</label>
                     <input type="text" ref="author_sort" />
                     
-                    <label>Rating</label>
-                    <input type="number" ref="rating" max="5" step="0.5" />
+                    <hr />
                     
                     <label>Publisher</label>
                     <input type="text" ref="publisher" />
                     
                     <label>Published</label>
                     <input type="date" ref="published" />
+                    
+                    <hr />
                     
                     <label>Add Tags</label>
                     <input type="text" ref="add_tags" />
@@ -221,6 +214,11 @@ export default class EditBooks extends React.Component {
                     <input type="text" ref="rem_tags" />
                     <input type="checkbox" ref="clear_tags" />Clear Tags
                     
+                    <hr />
+                    
+                    <label>Rating</label>
+                    <input type="number" ref="rating" max="5" step="0.5" />
+                    
                     <label>Series</label>
                     <input type="text" ref="series" />
                     <input type="checkbox" ref="clear_series" />Clear Series
@@ -228,16 +226,32 @@ export default class EditBooks extends React.Component {
                     <label>Added</label>
                     <input type="date" ref="timestamp" />
                     
-                    <input type="checkbox" ref="title_format" />Convert Title to Title Case
-                    
                     <label>Comments</label>
-                    <textarea ref="comments" />
+                    <textarea ref="comments" className="comments-edit" />
+                    
+                    <span className="checkbox">
+                        <input type="checkbox" ref="title_format" />Convert Title to Title Case
+                    </span>
+                    
+                    <span className="checkbox">
+                        <input type="checkbox" ref="abort_on_error" />Stop Editing on Error
+                    </span>
+                    
+                    <hr />
+                    
+                    <p><strong>Note:</strong> Fields left blank will not be changed</p>
                     
                     <button className="btn-primary" onClick={this.onSaveChanges}>
                         Save Changes
                     </button>
                     
-                    <input type="checkbox" ref="abort_on_error" />Stop Editing on Error
+                    <div className="status">{this.state.status ? (
+                        <p>
+                            <strong>Status:</strong> {this.state.status}
+                        </p>
+                    ) : (
+                        <span />
+                    )}</div>
                 </div>
             </div>
         );
