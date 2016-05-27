@@ -33,7 +33,7 @@ span.word-count, span.rating {
     
 }
 
-.manage-book {
+.manage-book, .edit-books {
     
     section {
         margin-bottom: 2em;
@@ -94,6 +94,11 @@ span.word-count, span.rating {
             margin-bottom: 1em;
         }
         
+    }
+    
+    span.checkbox {
+        display: block;
+        margin: 1em;
     }
     
 }
