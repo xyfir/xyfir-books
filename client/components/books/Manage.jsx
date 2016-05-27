@@ -22,7 +22,8 @@ export default class ManageBook extends React.Component {
         this.state = {
             id: window.location.hash.split('/')[2],
             downloadingMetadata: false,
-            editComments: false
+            editComments: false,
+            saving: false
         };
         
         this.onToggleEditComments = this.onToggleEditComments.bind(this);
@@ -182,6 +183,8 @@ export default class ManageBook extends React.Component {
             return;
         }
         
+        this.setState({ saving: true });
+        
         let data = {
             identifiers: this.refs.identifiers.value,
             author_sort: this.refs.author_sort.value,
@@ -194,6 +197,11 @@ export default class ManageBook extends React.Component {
             tags: this.refs.tags.value
         };
         
+        // Calibre doubles rating for some reason...
+        if (data.rating > 0) {
+            data.rating = data.rating / 2;
+        }
+        
         if (this.refs.series.value != "") {
             data.series = this.refs.series.value;
             data.series_index = this.refs.series_index.value;
@@ -202,6 +210,7 @@ export default class ManageBook extends React.Component {
         spaceNeeded(1000000, this.props.dispatch, (err, address) => {
             if (err) {
                 swal("Error", "An unknown error occured", "error");
+                this.setState({ saving: false });
             }
             else {
                 address = address === undefined
@@ -212,6 +221,8 @@ export default class ManageBook extends React.Component {
         
                 // Send to library server
                 request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
+                    this.setState({ saving: false });
+                    
                     if (res.error) {
                         swal("Error", "An unknown error occured", "error");
                     }
@@ -291,7 +302,6 @@ export default class ManageBook extends React.Component {
                         ref="rating"
                         defaultValue={book.rating || 0}
                         max="5"
-                        step="0.5"
                     />
                     
                     <label>Tags</label>
@@ -390,9 +400,9 @@ export default class ManageBook extends React.Component {
                 
                 <hr />
                 
-                <button className="btn-primary" onClick={this.onSaveChanges}>
-                    Save Changes
-                </button>
+                <button className="btn-primary" onClick={this.onSaveChanges}>{
+                    this.state.saving ? "Saving..." : "Save Changes"
+                }</button>
             </div>
         );
     }
