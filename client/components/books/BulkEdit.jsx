@@ -81,7 +81,7 @@ export default class EditBooks extends React.Component {
                     let data = {};
                     
                     // Swap authors / title
-                    if (r.authors_title_swap.checked) {
+                    if (r.author_title_swap.checked) {
                         data.authors = book.title;
                         data.title = book.authors;
                     }
@@ -90,12 +90,16 @@ export default class EditBooks extends React.Component {
                         data.authors = r.authors.value;
                     }
                     // Format title
-                    if (r.format_title.checked) {
+                    if (r.title_format.checked) {
                         data.title = titleCase(data.title || book.title);
                     }
                     // Rating
                     if (r.rating.value != "") {
                         data.rating = +r.rating.value;
+                        
+                        if (data.rating > 0) {
+                            data.rating = data.rating / 2;
+                        }
                     }
                     // Publisher
                     if (r.publisher.value != "") {
@@ -108,22 +112,25 @@ export default class EditBooks extends React.Component {
                     // Set data.tags
                     if (r.add_tags.value != "" || r.rem_tags.value != "") {
                         data.tags = book.tags;
-                    }
-                    // Add tags
-                    if (r.add_tags.value != "") {
-                        data.tags = data.tags.concat(r.add_tags.value.split(", "));
-                    }
-                    // Remove tags
-                    if (r.rem_tags.value != "") {
-                        const remove = r.rem_tags.value.toLowerCase().split(", ");
                         
-                        data.tags = data.tags.filter(t1 => {
-                            return remove.indexOf(t1.toLowerCase()) == -1;
-                        });
+                        // Add tags
+                        if (r.add_tags.value != "") {
+                            data.tags = data.tags.concat(r.add_tags.value.split(", "));
+                        }
+                        // Remove tags
+                        if (r.rem_tags.value != "") {
+                            const remove = r.rem_tags.value.toLowerCase().split(", ");
+                            
+                            data.tags = data.tags.filter(t1 => {
+                                return remove.indexOf(t1.toLowerCase()) == -1;
+                            });
+                        }
+                        
+                        data.tags = data.tags.join(", ");
                     }
                     // Clear tags
                     if (r.clear_tags.checked) {
-                        data.tags = [];
+                        data.tags = "";
                     }
                     // Set series
                     if (r.series.value != "") {
