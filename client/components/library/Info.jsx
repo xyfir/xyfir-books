@@ -30,22 +30,21 @@ export default class LibraryInfo extends React.Component {
                 <NavBar
                     home={true}
                     account={true}
-                    title="Library - Info"
+                    title="Library Info"
                     settings={""}
                     books={true}
                 />
                 
                 <section className="info">
-                    <h2>Info</h2>
                     <p>
-                        This information details the size and book count of your library in the cloud. Locally stored size and book count may differ.
+                        This information details the size and book count of your library in the cloud.
+                        <br />
+                        Locally stored size and book count may differ.
                     </p>
                     
+                    <hr />
+                    
                     <table>
-                        <tr>
-                            <th>Books</th>
-                            <td>{this.props.data.books.length}</td>
-                        </tr>
                         <tr>
                             <th>Size</th>
                             <td>{
@@ -53,6 +52,10 @@ export default class LibraryInfo extends React.Component {
                                     ? "Could not calculate size"
                                     : (this.state.size * 0.000001) + " MB"
                             }</td>
+                        </tr>
+                        <tr>
+                            <th>Books</th>
+                            <td>{this.props.data.books.length}</td>
                         </tr>
                     </table>
                 </section>
