@@ -2,6 +2,7 @@ import React from "react";
 
 // Components
 import Purchase from "./Purchase";
+import NavBar from "../misc/NavBar";
 
 // Constants
 import { URL } from "../../constants/config";
@@ -19,30 +20,52 @@ export default class Account extends React.Component {
         
         return (
             <div className="account">
+                <NavBar
+                    home={true}
+                    title="Account"
+                    library={true}
+                    settings={""}
+                    books={true}
+                />
+                
                 <div className="subscription">{
-                    this.props.data.account.subscription > Date.now()
-                    ? (
-                       <div>
-                           Your subscription will expire on <strong>{
-                               (new Date(this.props.data.account.subscription)).toLocaleString()
-                           }</strong>
-                           <br />
-                           <a href="#account/purchase-subscription" className="btn btn-primary">
-                               Extend Subscription
-                           </a>
-                       </div> 
-                    )
-                    : (
+                    this.props.data.account.subscription > Date.now() ? (
                         <div>
-                            You do not have a Libyq subscription. Your library will be deleted after {
-                                (new Date(
-                                    this.props.data.account.subscription + 604800000
-                                )).toLocaleString()
-                            }. Purchase a subscription to prevent your library from being deleted.
-                            <br />
-                            <a href="#account/purchase-subscription" className="btn btn-primary">
+                            <p>
+                                Your subscription will expire on <strong>{
+                                    (new Date(this.props.data.account.subscription)).toLocaleString()
+                                }</strong>
+                            </p>
+                            
+                            <hr />
+                            
+                            <button
+                                className="btn-primary"
+                                onClick={() => location.hash = "account/purchase-subscription"}
+                            >
+                                Extend Subscription
+                            </button>
+                       </div> 
+                    ) : (
+                        <div>
+                            <p>
+                                You do not have a Libyq subscription. Your library will be deleted after {
+                                    (new Date(
+                                        this.props.data.account.subscription + 604800000
+                                    )).toLocaleString()
+                                }.
+                                <br />
+                                Purchase a subscription to prevent your library from being deleted.
+                            </p>
+                            
+                            <hr />
+                            
+                            <button
+                                className="btn-primary"
+                                onClick={() => location.hash = "account/purchase-subscription"}
+                            >
                                 Purchase Subscription
-                            </a>
+                            </button>
                         </div>
                     )
                 }</div>
