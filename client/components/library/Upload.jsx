@@ -14,6 +14,8 @@ export default class UploadLibrary extends React.Component {
     constructor(props) {
         super(props);
         
+        this.state = { uploading: false };
+        
         this.onUpload = this.onUpload.bind(this);
     }
     
@@ -28,9 +30,15 @@ export default class UploadLibrary extends React.Component {
             return;
         }
         
+        if (this.state.uploading)
+            return;
+        else
+            this.setState({ uploading: true })
+        
         spaceNeeded(files[0].size, this.props.dispatch, (err, address) => {
             if (err) {
                 swal("Error", "An unknown error occured", "error");
+                this.setState({ uploading: false });
             }
             else {
                 address = address === undefined
@@ -40,6 +48,8 @@ export default class UploadLibrary extends React.Component {
                     + this.props.data.account.library.id + "/upload"; 
                 
                 upload(url, "POST", "lib", [files[0]], res => {
+                    this.setState({ uploading: false })
+                    
                     if (res.error) {
                         swal("Error", "Could not upload library", "error");
                     }
@@ -67,14 +77,13 @@ export default class UploadLibrary extends React.Component {
                 <NavBar
                     home={true}
                     account={true}
-                    title="Library - Upload"
+                    title="Upload Library"
                     library={true}
                     settings={""}
                     books={true}
                 />
                 
                 <section>
-                    <h2>Upload Library</h2>
                     <p>
                         Here you can upload an entire ebook library instead of individual ebook files.
                         <br />
@@ -87,9 +96,15 @@ export default class UploadLibrary extends React.Component {
                         If you already have books in your library stored in the cloud they <strong>will</strong> be deleted. Uploading a library completely erases your old one.
                     </p>
                     
-                    <Dropzone onDrop={this.onUpload}>
-                        Drag and drop library zip file or click box to choose file to upload.
-                    </Dropzone>
+                    <hr />
+                    
+                    <Dropzone onDrop={this.onUpload} className="dropzone">{
+                        this.state.uploading ? (
+                            "Uploading library, this may take a while..."
+                        ) : (
+                            "Drag and drop library zip file or click box to choose file to upload."
+                        )
+                    }</Dropzone>
                 </section>
             </div>
         );
