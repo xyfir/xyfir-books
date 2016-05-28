@@ -9,6 +9,9 @@ import { URL, STRIPE_KEY_PUB } from "../../constants/config";
 // Modules
 import request from "../../lib/request/";
 
+// Components
+import NavBar from "../misc/NavBar";
+
 export default class Purchase extends React.Component {
 
     constructor(props) {
@@ -75,9 +78,21 @@ export default class Purchase extends React.Component {
     render() {
         return (
             <div className="purchase-subscription">
+                <NavBar
+                    home={true}
+                    account={true}
+                    title="Purchase Subscription"
+                    library={true}
+                    settings={""}
+                    books={true}
+                />
+            
                 <p>
                     If you already have a subscription, the length of the subscription you purchase will be added to your current subscription.
                 </p>
+                
+                <hr />
+                
                 <div className="form">
                     <select ref="subscription" defaultValue="0">
                         <option value="0" disabled>Subscription Length</option>
