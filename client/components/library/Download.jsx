@@ -1,10 +1,14 @@
 import React from "react";
+import { saveAs } from "file-saver";
 
 // Modules
 import download from "../../lib/request/download";
 
 // Components
 import NavBar from "../misc/NavBar";
+
+// Constants
+import { PATH_SEPARATOR } from "../../constants/config";
 
 export default class DownloadLibrary extends React.Component {
 
@@ -32,43 +36,48 @@ export default class DownloadLibrary extends React.Component {
             
             // All books downloaded
             if (book === undefined) {
+                this.setState({ status: "Downloading library database" });
+                
                 // Download metadata.db
                 download(url + "metadata.db", res => {
                     zip.file("metadata.db", res, { binary: true });
                     
+                    this.setState({ status: "Saving zip file" });
+                    
                     zip.generateAsync({ type: "blob" }).then(b => {
-                        saveAs(b, "Library - " + Date.now());
+                        saveAs(b, "Library - " + Date.now() + ".zip");
                         zip = null;
+                        
+                        this.setState({ status: "" });
                     });
                 });
             }
             // Download next book
             else {
-                let file = book.cover.split('/').slice(-3);
+                let file = book.cover.split(PATH_SEPARATOR).slice(-3);
+                
+                this.setState({
+                    status: `Downloading book (${index + 1}/${this.props.data.books.length})`
+                });
                 
                 // Download cover                    
                 download(url + file.join('/'), res => {
-                    zip.file(file, res, { binary: true });
+                    zip.file(file.join('/'), res, { binary: true });
                     
                     // Download metadata.opf
                     file[2] = "metadata.opf";
                     
                     download(url + file.join('/'), res => {
-                        zip.file(file, res);
-                        
-                        let callDownloadBook = true;
+                        zip.file(file.join('/'), res);
                         
                         // Download formats
                         book.formats.forEach(format => {
-                            const f = format.split('/').slice(-3).join('/');
+                            const f = format.split(PATH_SEPARATOR).slice(-3).join('/');
                             
                             download(url + f, res => {
                                 zip.file(f, res, { binary: true });
                                 
-                                if (callDownloadBook) {
-                                    downloadBook(index + 1);
-                                    callDownloadBook = false;
-                                }
+                                downloadBook(index + 1);
                             });
                         });
                     });
@@ -85,14 +94,13 @@ export default class DownloadLibrary extends React.Component {
                 <NavBar
                     home={true}
                     account={true}
-                    title="Library - Download"
+                    title="Download Library"
                     library={true}
                     settings={""}
                     books={true}
                 />
                 
                 <section className="">
-                    <h2>Download Library</h2>
                     <p>
                         Download your entire library in a zip file. The downloaded library will be completely compatible with <a target="_blank" href="https://calibre-ebook.com/">Calibre</a>.
                     </p>
@@ -100,7 +108,9 @@ export default class DownloadLibrary extends React.Component {
                     <hr />
                     
                     {this.state.status == "" ? (
-                        <button onClick="btn-primary" onClick={this.onDownload}>Download</button>
+                        <button className="btn-primary" onClick={this.onDownload}>
+                            Download
+                        </button>
                     ) : (
                         <span className="status">{this.state.status}</span>
                     )}
