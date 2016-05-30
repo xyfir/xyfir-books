@@ -38,4 +38,42 @@
         
     }
     
+    .modal {
+        
+        background-color: white;
+        position: fixed;
+        left: 15%;
+        right: 15%;
+        bottom: 10%;
+        top: 10%;
+        padding: 1em;
+        overflow-y: auto;
+        border: solid 0.1em $llgray;
+        box-shadow: 0.3em 0.3em 0.9em black;
+        
+        .icon-close {
+            position: absolute;
+            right: 2%;
+        }
+        
+        ul.table-of-contents {
+            
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            
+            li {
+                font-size: 110%;
+                padding: 0.1em;
+                border-bottom: solid 0.1em $llgray;
+            }
+            
+            li:nth-child(even) {
+                background-color: $lllgray;
+            }
+            
+        }
+        
+    }
+    
 }
