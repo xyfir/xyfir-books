@@ -1,6 +1,6 @@
 import {
     ADD_FORMAT, DELETE_BOOKS, LOAD_BOOKS, DELETE_FORMAT,
-    INCREMENT_VERSION
+    INCREMENT_VERSION, UPDATE_BOOK
 } from "../actions/types/books";
 
 export default function(state, action) {
@@ -64,6 +64,21 @@ export default function(state, action) {
                 temp.forEach((book, i) => {
                     if (action.id == book.id) {
                         temp[i].versions[action.prop]++;
+                    }
+                });
+                
+                return temp;
+            }).call();
+            
+        case UPDATE_BOOK:
+            return (() => {
+                let temp = state.slice(0);
+                
+                temp.forEach((book, i) => {
+                    if (action.id == book.id) {
+                        temp[i] = Object.assign(
+                            {}, book, action.obj
+                        );
                     }
                 });
                 

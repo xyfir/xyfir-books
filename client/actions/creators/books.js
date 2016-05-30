@@ -1,6 +1,6 @@
 import {
     ADD_FORMAT, DELETE_BOOKS, LOAD_BOOKS, DELETE_FORMAT,
-    INCREMENT_VERSION
+    INCREMENT_VERSION, UPDATE_BOOK
 } from "../types/books";
 
 export function addFormat(id, format) {
@@ -30,5 +30,11 @@ export function deleteFormat(id, format) {
 export function incrementVersion(id, prop) {
     return {
         type: INCREMENT_VERSION, id, prop
+    };
+}
+
+export function updateBook(id, obj) {
+    return {
+        type: INCREMENT_VERSION, id, obj
     };
 }
