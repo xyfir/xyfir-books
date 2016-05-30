@@ -1,0 +1,41 @@
+.reader {
+    
+    #book {
+        position: fixed;
+        top: 0%;
+        left: 0%;
+        right: 0%;
+        bottom: 0%;
+        padding: 1em;
+    }
+    
+    .nav-bar-hidden {
+        position: fixed;
+        top: 0%;
+        left: 30%;
+        right: 30%;
+        bottom: 95%;
+        z-index: 1;
+    }
+    
+    .controls {
+        
+        .previous-page {
+            position: fixed;
+            top: 0%;
+            left: 0%;
+            right: 90%;
+            bottom: 0%;
+        }
+        
+        .next-page {
+            position: fixed;
+            top: 0%;
+            left: 90%;
+            right: 0%;
+            bottom: 0%;
+        }
+        
+    }
+    
+}
