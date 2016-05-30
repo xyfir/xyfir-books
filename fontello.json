@@ -25,12 +25,6 @@
       "src": "elusive"
     },
     {
-      "uid": "f04a5d24e9e659145b966739c4fde82a",
-      "css": "bookmark",
-      "code": 59395,
-      "src": "fontawesome"
-    },
-    {
       "uid": "51727ca007aa35ceabcaffc28934faee",
       "css": "book-open",
       "code": 59396,
@@ -119,6 +113,18 @@
       "css": "close",
       "code": 59410,
       "src": "fontawesome"
+    },
+    {
+      "uid": "8d2b0a28ccbfc06bb840720e554d79cc",
+      "css": "bookmark",
+      "code": 59395,
+      "src": "elusive"
+    },
+    {
+      "uid": "363271b58af838dd4be5013284672322",
+      "css": "bookmark-empty",
+      "code": 59411,
+      "src": "elusive"
     }
   ]
 }
