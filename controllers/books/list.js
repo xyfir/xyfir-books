@@ -9,7 +9,7 @@ const db = require("../../lib/db");
             {
                 id: number, version_metadata: number, version_cover: number,
                 percent_complete: number, word_count: number,
-                last_read: number 
+                last_read: number, bookmarks: [], notes: []
             }
         ] }
     DESCRIPTION
@@ -25,7 +25,18 @@ module.exports = function(req, res) {
     
     db(cn => cn.query(sql, [req.session.uid], (err, rows) => {
         cn.release();
-        res.json({ books: err || !rows.length ? [] : rows });
+        
+        if (err || !rows.length) {
+            res.json({ books: [] });
+        }
+        else {
+            rows.forEach((row, i) => {
+                rows[i].bookmarks = [];
+                rows[i].notes = [];
+            });
+            
+            res.json({ books: rows });
+        }
     }));
     
 };
