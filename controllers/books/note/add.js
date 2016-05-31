@@ -15,7 +15,8 @@ module.exports = function(req, res) {
 
     const insert = {
         user_id: req.session.uid, book_id: req.params.book,
-        cfi: req.body.cfi, note: req.body.note
+        cfi: req.body.cfi, note: req.body.note,
+        created: Date.now()
     };
     const sql = `INSERT INTO notes SET ?`;
     
