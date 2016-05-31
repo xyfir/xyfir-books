@@ -2,9 +2,9 @@ import React from "react";
 
 // Components
 import TableOfContents from "./TableOfContents";
-import ViewBookmarks from "./ViewBookmarks";
-import ViewNotes from "./ViewNotes";
+import Bookmarks from "./Bookmarks";
 import Search from "./Search";
+import Notes from "./Notes";
 
 // Modules
 import request from "../../../lib/request/";
@@ -108,7 +108,9 @@ export default class Reader extends React.Component {
         this.navbarTimeout = setTimeout(() => this.onToggleShow("Navbar"), 7000);
     }
     
-    onToggleShow(prop) {
+    onToggleShow(prop, closeModal = false) {
+        if (closeModal) this.onCloseModal();
+        
         this.setState({
             ["show" + prop]: !this.state["show" + prop]
         });
@@ -171,7 +173,7 @@ export default class Reader extends React.Component {
         const cfi = this.epub.getCurrentLocationCfi();
         let value = false;
         
-        (this.state.book.bookmarks || []).forEach(bm => {
+        this.state.book.bookmarks.forEach(bm => {
             if (cfi == bm.cfi) value = true;
         });
         
@@ -185,13 +187,9 @@ export default class Reader extends React.Component {
         
         this.epub.renderTo("book").then(() => {
             // Set initial location
-            if (this.state.book.bookmarks && this.state.book.bookmarks.length > 0) {
+            if (this.state.book.bookmarks.length > 0) {
                 this.epub.gotoCfi(
-                    this.state.book.bookmarks.sort((a, b) => {
-                        if (a.created < b.created) return -1;
-                        if (a.created > b.created) return 1;
-                        return 0;
-                    }).reverse()[0].cfi
+                    this.state.book.bookmarks[0].cfi
                 );
             }
             else {
@@ -207,7 +205,7 @@ export default class Reader extends React.Component {
         if (!this.epub) return <div />;
         
         const showText = window.screen.height < window.screen.width;
-        const showModal = this.state.showBookmarks
+        const showModal = this.state.showBookmarks || this.state.showMore
             || this.state.showNotes || this.state.showSearch || this.state.showToc;
         
         return (
@@ -296,14 +294,27 @@ export default class Reader extends React.Component {
                         />
                     
                         {this.state.showBookmarks ? (
-                            <ViewBookmarks data={this.state} onClose={this.onCloseModal} />
+                            <Bookmarks
+                                data={this.state}
+                                onClose={this.onCloseModal}
+                                bookmarks={this.state.book.bookmarks}
+                            />
                         ) : (this.state.showNotes ? (
-                            <ViewNotes data={this.state} onClose={this.onCloseModal} />
+                            <Notes data={this.state} onClose={this.onCloseModal} />
                         ) : (this.state.showSearch ? (
                             <Search data={this.state} onClose={this.onCloseModal} />
                         ) : (this.state.showToc ? (
                             <TableOfContents data={this.state} onClose={this.onCloseModal} />
-                        ) : <div />)))}
+                        ) : (this.state.showMore ? (
+                            <ul className="more">
+                                <li><a onClick={this.onToggleShow.bind(this, "Bookmarks", true)}>
+                                    Bookmarks
+                                </a></li>
+                                <li><a onClick={this.onToggleShow.bind(this, "Notes", true)}>
+                                    Notes
+                                </a></li>
+                            </ul>
+                        ) : (<div />)))))}
                     </section>
                 ) : (
                     <div />
