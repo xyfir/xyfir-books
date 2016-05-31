@@ -1,5 +1,11 @@
 import React from "react";
 
+// Components
+import TableOfContents from "./TableOfContents";
+import ViewBookmarks from "./ViewBookmarks";
+import ViewNotes from "./ViewNotes";
+import Search from "./Search";
+
 // Modules
 import request from "../../../lib/request/";
 
@@ -33,33 +39,37 @@ export default class Reader extends React.Component {
             }
         });
         
-        // Get bookmarks, notes, last read time
-        request({url: URL + "api/books/" + id, success: (res) => {
-            // Update book in application and component state
-            this.props.dispatch(updateBook(id, res));
-            this.setState(
-                { book: Object.assign({}, this.state.book, res) },
-                () => {
-                    this.epub = ePub(url, {
-                        storage: true, restore: true, spreads: false
-                    });
-                    window.epub = this.epub; // ** remove
-                    
-                    this.setState({ showNavbar: true });
-                    
-                    // Count and update book's word count
-                    if (this.state.book.word_count == 0) {
+        if (navigator.onLine) {
+            // Get bookmarks, notes, last read time
+            request({url: URL + "api/books/" + id, success: (res) => {
+                // Update book in application and component state
+                this.props.dispatch(updateBook(id, res));
+                this.setState(
+                    { book: Object.assign({}, this.state.book, res) },
+                    () => {
+                        this.epub = ePub(url, {
+                            storage: true, restore: true, spreads: false
+                        });
+                        window.epub = this.epub; // ** remove
                         
+                        this.setState({ showNavbar: true });
+                        
+                        // Count and update book's word count
+                        if (this.state.book.word_count == 0) {
+                            
+                        }
                     }
-                }
-            );
-        }});
+                );
+            }});
+        }
         
         this._setInitialLocation = this._setInitialLocation.bind(this);
         this.onMouseOverNavbar = this.onMouseOverNavbar.bind(this);
         this.onMouseOutNavbar = this.onMouseOutNavbar.bind(this);
         this._isBookmarked = this._isBookmarked.bind(this);
         this.onShowNavbar = this.onShowNavbar.bind(this);
+        this.onCloseModal = this.onCloseModal.bind(this);
+        this.onBookmark = this.onBookmark.bind(this);
     }
     
     componentDidMount() {
@@ -110,11 +120,59 @@ export default class Reader extends React.Component {
         this.onMouseOutNavbar();
     }
     
+    onCloseModal() {
+        this.setState({
+            showToc: false, showBookmarks: false, showNotes: false,
+            showSearch: false, showMore: false
+        });
+    }
+    
+    onBookmark() {
+        const cfi = this.epub.getCurrentLocationCfi();
+        
+        // Update app/component state
+        const update = (bookmarks) => {
+            this.props.dispatch(updateBook(
+                this.state.book.id, { bookmarks }
+            ));
+            this.setState({
+                book: Object.assign({}, this.state.book, { bookmarks })
+            });
+        };
+        
+        // Remove bookmark
+        if (this._isBookmarked()) {
+            request({
+                url: URL + "api/books/" + this.state.book.id + "/bookmark",
+                method: "DELETE", data: { cfi }, success: (res) => {
+                    if (!res.error) {
+                        update(this.state.book.bookmarks.filter(bm => {
+                            return cfi != bm.cfi;
+                        }));
+                    }
+                }
+            });
+        }
+        // Add bookmark
+        else {
+            request({
+                url: URL + "api/books/" + this.state.book.id + "/bookmark",
+                method: "POST", data: { cfi }, success: (res) => {
+                    if (!res.error) {
+                        update(this.state.book.bookmarks.concat([{
+                            cfi, created: Date.now()
+                        }]));
+                    }
+                }
+            });
+        }
+    }
+    
     _isBookmarked() {
         const cfi = this.epub.getCurrentLocationCfi();
         let value = false;
         
-        this.state.book.bookmarks.forEach(bm => {
+        (this.state.book.bookmarks || []).forEach(bm => {
             if (cfi == bm.cfi) value = true;
         });
         
@@ -127,7 +185,7 @@ export default class Reader extends React.Component {
         this.setState({ setInitialLocation: false });
         
         this.epub.renderTo("book").then(() => {
-            if (this.state.book.bookmarks.length > 0) {
+            if (this.state.book.bookmarks && this.state.book.bookmarks.length > 0) {
                 this.epub.gotoCfi(
                     this.state.book.bookmarks.sort((a, b) => {
                         if (a.created < b.created) return -1;
@@ -146,6 +204,8 @@ export default class Reader extends React.Component {
         if (!this.epub) return <div />;
         
         const showText = window.screen.height < window.screen.width;
+        const showModal = this.state.showBookmarks
+            || this.state.showNotes || this.state.showSearch || this.state.showToc;
         
         return (
             <div className="reader">
@@ -182,8 +242,9 @@ export default class Reader extends React.Component {
                             <a onClick={this.onBookmark}>
                                 <span
                                     className={
-                                        "icon-bookmark"
-                                        + this._isBookmarked() ? "" : "-empty"
+                                        this._isBookmarked()
+                                        ? "icon-bookmark"
+                                        : "icon-bookmark-empty"
                                     }
                                     title="Bookmark"
                                 />{showText ? " Bookmark" : ""}
@@ -222,6 +283,28 @@ export default class Reader extends React.Component {
                         onClick={() => this.epub.nextPage()}
                     />
                 </div>
+                
+                {showModal ? (
+                    <section className="modal">
+                        <span
+                            title="Close"
+                            className="icon-close"
+                            onClick={this.onCloseModal}
+                        />
+                    
+                        {this.state.showBookmarks ? (
+                            <ViewBookmarks data={this.state} onClose={this.onCloseModal} />
+                        ) : (this.state.showNotes ? (
+                            <ViewNotes data={this.state} onClose={this.onCloseModal} />
+                        ) : (this.state.showSearch ? (
+                            <Search data={this.state} onClose={this.onCloseModal} />
+                        ) : (this.state.showToc ? (
+                            <TableOfContents data={this.state} onClose={this.onCloseModal} />
+                        ) : <div />)))}
+                    </section>
+                ) : (
+                    <div />
+                )}
             </div>
         );
     }
