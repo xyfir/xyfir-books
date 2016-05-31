@@ -24,9 +24,9 @@ export default class Reader extends React.Component {
         
         this.state = {
             book: this.props.data.books.find(b => id == b.id),
-            setInitialLocation: true, showToc: false,
             showBookmarks: false, showNotes: false,
             showSearch: false, showMore: false,
+            initialize: true, showToc: false,
             showNavbar: false
         };
         
@@ -49,8 +49,7 @@ export default class Reader extends React.Component {
                     () => {
                         this.epub = ePub(url, {
                             storage: true, restore: true, spreads: false
-                        });
-                        window.epub = this.epub; // ** remove
+                        }); window.epub = this.epub;
                         
                         this.setState({ showNavbar: true });
                         
@@ -63,23 +62,23 @@ export default class Reader extends React.Component {
             }});
         }
         
-        this._setInitialLocation = this._setInitialLocation.bind(this);
         this.onMouseOverNavbar = this.onMouseOverNavbar.bind(this);
         this.onMouseOutNavbar = this.onMouseOutNavbar.bind(this);
         this._isBookmarked = this._isBookmarked.bind(this);
         this.onShowNavbar = this.onShowNavbar.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
+        this._initialize = this._initialize.bind(this);
         this.onBookmark = this.onBookmark.bind(this);
     }
     
     componentDidMount() {
-        if (this.epub) this._setInitialLocation();
+        if (this.epub) this._initialize();
         
         this.onMouseOutNavbar();
     }
     
     componentDidUpdate() {
-        if (this.state.setInitialLocation) this._setInitialLocation();
+        if (this.state.initialize) this._initialize();
     }
     
     componentWillUnmount() {
@@ -98,7 +97,7 @@ export default class Reader extends React.Component {
             }
         });
         
-        this.epub.destroy();
+        this.epub.destroy(); window.epub = undefined;
     }
     
     onMouseOverNavbar() {
@@ -179,12 +178,13 @@ export default class Reader extends React.Component {
         return value;
     }
     
-    _setInitialLocation() {
+    _initialize() {
         if (!this.epub) return;
         
-        this.setState({ setInitialLocation: false });
+        this.setState({ initialize: false });
         
         this.epub.renderTo("book").then(() => {
+            // Set initial location
             if (this.state.book.bookmarks && this.state.book.bookmarks.length > 0) {
                 this.epub.gotoCfi(
                     this.state.book.bookmarks.sort((a, b) => {
@@ -197,6 +197,9 @@ export default class Reader extends React.Component {
             else {
                 this.epub.gotoPercentage(this.state.book.percent_complete);
             }
+            
+            // Event listeners
+            this.epub.on("renderer:locationChanged", (location) => this.forceUpdate());
         });
     }
 
