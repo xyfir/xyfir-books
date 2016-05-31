@@ -1,6 +1,6 @@
 import React from "react";
 
-export default class ViewNotes extends React.Component {
+export default class Notes extends React.Component {
 
     constructor(props) {
         super(props);
@@ -8,7 +8,7 @@ export default class ViewNotes extends React.Component {
 
     render() {
         return (
-            <div className="view-notes">
+            <div className="notes">
                 
             </div>
         );
