@@ -56,7 +56,7 @@
             right: 2%;
         }
         
-        ul.table-of-contents {
+        ul {
             
             list-style: none;
             padding: 0;
@@ -70,6 +70,15 @@
             
             li:nth-child(even) {
                 background-color: $lllgray;
+            }
+            
+        }
+        
+        ul.bookmarks {
+            
+            .created {
+                display: block;
+                font-size: 80%;
             }
             
         }
