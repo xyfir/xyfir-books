@@ -19,13 +19,13 @@ export default function (library, dispatch) {
                 const books = books1.books.map(b1 => {
                     let b2 = books2.books.find(b2 => b1.id == b2.id);
                     
+                    Object.assign(b2, b1);
+                    
                     b2.versions = {
-                        metadata: b1.version_metadata,
-                        cover: b1.version_cover
+                        metadata: b2.version_metadata,
+                        cover: b2.version_cover
                     };
-                    b2.percent_complete = b1.percent_complete;
-                    b2.word_count = b1.word_count;
-                    b2.last_read = b1.last_read;
+                    delete b2.version_metadata; delete b2.version_cover;
                     
                     return b2;
                 }).filter(b => b.title !== undefined);
