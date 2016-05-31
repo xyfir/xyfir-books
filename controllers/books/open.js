@@ -6,8 +6,8 @@ const db = require("../../lib/db");
     GET api/books/:book
     RETURN
         {
+            notes: [{ cfi: string, note: string, created: number }],
             bookmarks: [{ cfi: string, created: number }],
-            notes: [{ cfi: string, note }],
             last_read: number
         }
     DESCRIPTION
@@ -18,7 +18,10 @@ module.exports = function(req, res) {
 
     // Get notes
     let vars = [req.session.uid, req.params.book];
-    let sql = "SELECT cfi, note FROM notes WHERE user_id = ? AND book_id = ?";
+    let sql = `
+        SELECT cfi, note, created FROM notes WHERE user_id = ? AND book_id = ?
+        ORDER BY created DESC
+    `;
     
     db(cn => cn.query(sql, vars, (err, rows) => {
         let response = { bookmarks: [], notes: [], last_read: 0 };
@@ -31,7 +34,10 @@ module.exports = function(req, res) {
             response.notes = rows;
             
             // Get bookmarks
-            sql = "SELECT cfi, created FROM bookmarks WHERE user_id = ? AND book_id = ?";
+            sql = `
+                SELECT cfi, created FROM bookmarks WHERE user_id = ? AND book_id = ?
+                ORDER BY created DESC
+            `;
             cn.query(sql, vars, (err, rows) => {
                 response.bookmarks = rows;
                 response.last_read = Date.now();
