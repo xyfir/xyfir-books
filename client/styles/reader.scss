@@ -72,13 +72,29 @@
                 background-color: $lllgray;
             }
             
-        }
-        
-        ul.bookmarks {
-            
             .created {
                 display: block;
                 font-size: 80%;
+            }
+            
+        }
+        
+        ul.notes {
+            
+            .highlighted-text {
+                display: block;
+                font-style: italic;
+                color: $dgray;
+            }
+            
+        }
+        
+        div.notes {
+            
+            .icon-back {
+                position: absolute;
+                left: 2%;
+                top: 2%;
             }
             
         }
