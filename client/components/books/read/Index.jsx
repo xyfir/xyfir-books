@@ -67,6 +67,7 @@ export default class Reader extends React.Component {
         this._isBookmarked = this._isBookmarked.bind(this);
         this.onShowNavbar = this.onShowNavbar.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
+        this._updateBook = this._updateBook.bind(this);
         this._initialize = this._initialize.bind(this);
         this.onBookmark = this.onBookmark.bind(this);
     }
@@ -132,14 +133,7 @@ export default class Reader extends React.Component {
         const cfi = this.epub.getCurrentLocationCfi();
         
         // Update app/component state
-        const update = (bookmarks) => {
-            this.props.dispatch(updateBook(
-                this.state.book.id, { bookmarks }
-            ));
-            this.setState({
-                book: Object.assign({}, this.state.book, { bookmarks })
-            });
-        };
+        const update = (bookmarks) => this._updateBook({ bookmarks });
         
         // Remove bookmark
         if (this._isBookmarked()) {
@@ -200,6 +194,15 @@ export default class Reader extends React.Component {
             this.epub.on("renderer:locationChanged", (location) => this.forceUpdate());
         });
     }
+    
+    _updateBook(obj) {
+        this.props.dispatch(updateBook(
+            this.state.book.id, obj
+        ));
+        this.setState({
+            book: Object.assign({}, this.state.book, obj)
+        });
+    }
 
     render() {
         if (!this.epub) return <div />;
@@ -237,7 +240,12 @@ export default class Reader extends React.Component {
                             </a>
                         </div>
                         
-                        <span className="title">{this.state.book.title}</span>
+                        <span
+                            className="title"
+                            onClick={this.onToggleShow.bind(this, "Navbar")}
+                        >{
+                            this.state.book.title
+                        }</span>
                         
                         <div className="right">
                             <a onClick={this.onBookmark}>
@@ -300,7 +308,12 @@ export default class Reader extends React.Component {
                                 bookmarks={this.state.book.bookmarks}
                             />
                         ) : (this.state.showNotes ? (
-                            <Notes data={this.state} onClose={this.onCloseModal} />
+                            <Notes
+                                data={this.state}
+                                book={this.state.book}
+                                onClose={this.onCloseModal}
+                                updateBook={this._updateBook}
+                            />
                         ) : (this.state.showSearch ? (
                             <Search data={this.state} onClose={this.onCloseModal} />
                         ) : (this.state.showToc ? (
