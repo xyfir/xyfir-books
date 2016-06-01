@@ -39,6 +39,7 @@ export default class Notes extends React.Component {
                     swal("Error", "Could not delete note.", "error");
                 }
                 else {
+                    this.setState({ view: -1 });
                     this.props.updateBook({
                         notes: this.props.book.notes.filter(n => cfi != n.cfi)
                     });
@@ -59,7 +60,7 @@ export default class Notes extends React.Component {
                                 Note #{i + 1}
                             </a>
                             <span className="created">
-                                Created {(new Date(bm.created).toLocaleString())}
+                                Created {(new Date(note.created).toLocaleString())}
                             </span>
                             <span className="highlighted-text">{
                                 content.highlighted.length > 50
@@ -90,8 +91,12 @@ export default class Notes extends React.Component {
                     <h2>Highlighted Text</h2>
                     <cite className="highlighted-text">{content.highlighted}</cite>
                     
+                    <hr />
+                    
                     <h2>Note</h2>
                     <p className="note-content">{content.note}</p>
+                    
+                    <hr />
                     
                     <button className="btn-secondary" onClick={this.onGoToNote}>
                         Go To Note
