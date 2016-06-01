@@ -48,14 +48,32 @@ export default class Reader extends React.Component {
                     { book: Object.assign({}, this.state.book, res) },
                     () => {
                         this.epub = ePub(url, {
-                            storage: true, restore: true, spreads: false
+                            storage: true, spreads: false
                         }); window.epub = this.epub;
                         
                         this.setState({ showNavbar: true });
                         
                         // Count and update book's word count
                         if (this.state.book.word_count == 0) {
-                            
+                            EPUBJS.core.request(url, "binary").then(data => {
+                                const zip = new JSZip(data);
+                                let count = 0;
+                                
+                                Object.keys(zip.files).forEach(file => {
+                                    if (file.split('.')[1] != "html") return;
+                                    
+                                    count += zip.utf8decode(zip.files[file]._data.getContent())
+                                        .replace(/(<([^>]+)>)/ig, " ")
+                                        .split(/\s+/).length;
+                                });
+                                
+                                request({
+                                    url: URL + "api/books/" + this.state.book.id + "/word-count",
+                                    method: "PUT", data: { count }, success: (res) => {
+                                        this._updateBook({ word_count: count });
+                                    }
+                                });
+                            });
                         }
                     }
                 );
