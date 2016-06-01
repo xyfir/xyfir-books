@@ -35,6 +35,6 @@ export function incrementVersion(id, prop) {
 
 export function updateBook(id, obj) {
     return {
-        type: INCREMENT_VERSION, id, obj
+        type: UPDATE_BOOK, id, obj
     };
 }
