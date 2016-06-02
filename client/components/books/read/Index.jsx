@@ -24,10 +24,10 @@ export default class Reader extends React.Component {
         
         this.state = {
             book: this.props.data.books.find(b => id == b.id),
+            showNavbar: false, pagesLeft: 0, percent: 0,
             showBookmarks: false, showNotes: false,
             showSearch: false, showMore: false,
-            initialize: true, showToc: false,
-            showNavbar: false, pagesLeft: 0
+            initialize: true, showToc: false
         };
         
         let url = this.props.data.account.library.address + "library/"
@@ -80,6 +80,7 @@ export default class Reader extends React.Component {
             }});
         }
         
+        this._addEventListeners = this._addEventListeners.bind(this);
         this.onMouseOverNavbar = this.onMouseOverNavbar.bind(this);
         this.onMouseOutNavbar = this.onMouseOutNavbar.bind(this);
         this._isBookmarked = this._isBookmarked.bind(this);
@@ -101,15 +102,13 @@ export default class Reader extends React.Component {
     }
     
     componentWillUnmount() {
-        const percentage = this.epub.locations.percentageFromCfi(
-            this.epub.getCurrentLocationCfi()
-        );
-        
         // Update book's percent complete and last read time
         request({
             url: URL + "api/books/" + this.state.book.id + "/close",
-            data: { percentComplete: percentage },
+            data: { percentComplete: this.state.percent },
             method: "POST", success: (res) => {
+                res.percent_complete = this.state.percent;
+                
                 this.props.dispatch(updateBook(
                     this.state.book.id, res
                 ));
@@ -198,29 +197,60 @@ export default class Reader extends React.Component {
         this.setState({ initialize: false });
         
         this.epub.renderTo("book").then(() => {
-            // Set initial location
-            if (this.state.book.bookmarks.length > 0) {
-                this.epub.gotoCfi(
-                    this.state.book.bookmarks[0].cfi
-                );
-            }
-            else {
-                this.epub.gotoPercentage(this.state.book.percent_complete);
-            }
-            
-            // Event listeners
-            this.epub.on("renderer:locationChanged", cfi => {
-                const hasColumns = document.querySelector("#book > iframe")
-                    .contentDocument.querySelector("html")
-                    .style.width != "auto";
+            this.epub.generatePagination().then(pages => {
+                // Set initial location
+                if (this.state.book.bookmarks.length > 0) {
+                    this.epub.gotoCfi(
+                        this.state.book.bookmarks[0].cfi
+                    );
+                }
+                else {
+                    this.epub.gotoPercentage(
+                        this.state.book.percent_complete / 100
+                    );
+                }
                 
-                this.setState({
-                    pagesLeft: hasColumns
-                        ? Math.round(this.epub.renderer.getRenderedPagesLeft() / 2)
-                        : this.epub.renderer.getRenderedPagesLeft()
-                })
+                this._addEventListeners();
             });
         });
+    }
+    
+    _addEventListeners() {
+        // Update pages left in chapter / percent complete
+        this.epub.on("renderer:locationChanged", cfi => {
+            const hasColumns = document.querySelector("#book > iframe")
+                .contentDocument.querySelector("html")
+                .style.width != "auto";
+            
+            this.setState({
+                pagesLeft: (hasColumns
+                    ? Math.round(this.epub.renderer.getRenderedPagesLeft() / 2)
+                    : this.epub.renderer.getRenderedPagesLeft()
+                ),
+                percent: this._getPercentComplete()
+            })
+        });
+        
+        // Regenerate pagination and update percent
+        this.epub.on("renderer:resized", () => {
+            clearTimeout(this.resizedTimeout);
+            
+            this.resizedTimeout = setTimeout(() => {
+                epub.generatePagination().then(pages => {
+                    this.setState({
+                        percent: this._getPercentComplete()
+                    });
+                });
+            }, 500);
+        });
+    }
+    
+    _getPercentComplete() {
+        return Math.round(
+            epub.pagination.percentageFromCfi(
+                epub.getCurrentLocationCfi()
+            ) * 100
+        );
     }
     
     _updateBook(obj) {
@@ -322,10 +352,10 @@ export default class Reader extends React.Component {
                         />
                     </div>
                     
-                    <span className="pages-remaining">{
-                        !this.state.pagesLeft
+                    <span className="status">{
+                        this.state.percent + "% | " + (!this.state.pagesLeft
                             ? "Last page in chapter"
-                            : this.state.pagesLeft + " pages left in chapter" 
+                            : this.state.pagesLeft + " pages left in chapter") 
                     }</span>
                 </div>
                 
