@@ -38,6 +38,15 @@
         
     }
     
+    .pages-remaining {
+        position: fixed;
+        font-size: 70%;
+        bottom: 0%;
+        left: 0%;
+        right: 0%;
+        color: $gray;
+    }
+    
     .modal {
         
         background-color: white;
