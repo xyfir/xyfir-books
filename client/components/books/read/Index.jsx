@@ -27,7 +27,7 @@ export default class Reader extends React.Component {
             showBookmarks: false, showNotes: false,
             showSearch: false, showMore: false,
             initialize: true, showToc: false,
-            showNavbar: false
+            showNavbar: false, pagesLeft: 0
         };
         
         let url = this.props.data.account.library.address + "library/"
@@ -48,7 +48,7 @@ export default class Reader extends React.Component {
                     { book: Object.assign({}, this.state.book, res) },
                     () => {
                         this.epub = ePub(url, {
-                            storage: true, spreads: false
+                            storage: true, restore: true, spreads: false
                         }); window.epub = this.epub;
                         
                         this.setState({ showNavbar: true });
@@ -209,7 +209,17 @@ export default class Reader extends React.Component {
             }
             
             // Event listeners
-            this.epub.on("renderer:locationChanged", (location) => this.forceUpdate());
+            this.epub.on("renderer:locationChanged", cfi => {
+                const hasColumns = document.querySelector("#book > iframe")
+                    .contentDocument.querySelector("html")
+                    .style.width != "auto";
+                
+                this.setState({
+                    pagesLeft: hasColumns
+                        ? Math.round(this.epub.renderer.getRenderedPagesLeft() / 2)
+                        : this.epub.renderer.getRenderedPagesLeft()
+                })
+            });
         });
     }
     
@@ -300,15 +310,23 @@ export default class Reader extends React.Component {
                 
                 <section id="book" />
                 
-                <div className="controls">
-                    <div
-                        className="previous-page"
-                        onClick={() => this.epub.prevPage()}
-                    />
-                    <div
-                        className="next-page"
-                        onClick={() => this.epub.nextPage()}
-                    />
+                <div className="overlay">
+                    <div className="controls">
+                        <div
+                            className="previous-page"
+                            onClick={() => this.epub.prevPage()}
+                        />
+                        <div
+                            className="next-page"
+                            onClick={() => this.epub.nextPage()}
+                        />
+                    </div>
+                    
+                    <span className="pages-remaining">{
+                        !this.state.pagesLeft
+                            ? "Last page in chapter"
+                            : this.state.pagesLeft + " pages left in chapter" 
+                    }</span>
                 </div>
                 
                 {showModal ? (
