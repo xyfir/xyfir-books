@@ -27,7 +27,8 @@ export default class Reader extends React.Component {
             showNavbar: false, pagesLeft: 0, percent: 0,
             showBookmarks: false, showNotes: false,
             showCreateNote: false, showMore: false,
-            initialize: true, showToc: false
+            initialize: true, showToc: false,
+            loading: true
         };
         
         let url = this.props.data.account.library.address + "library/"
@@ -211,6 +212,7 @@ export default class Reader extends React.Component {
                     );
                 }
                 
+                this.setState({ loading: false });
                 this._addEventListeners();
                 this._highlightNotes();
             });
@@ -385,9 +387,13 @@ export default class Reader extends React.Component {
                     </div>
                     
                     <span className="status">{
-                        this.state.percent + "% | " + (!this.state.pagesLeft
-                            ? "Last page in chapter"
-                            : this.state.pagesLeft + " pages left in chapter") 
+                        this.state.loading ? (
+                            "Loading..."
+                        ) : (
+                            this.state.percent + "% | " + (!this.state.pagesLeft
+                                ? "Last page in chapter"
+                                : this.state.pagesLeft + " pages left in chapter")
+                        ) 
                     }</span>
                 </div>
                 
