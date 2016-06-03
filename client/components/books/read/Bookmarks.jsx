@@ -18,7 +18,7 @@ export default class Bookmarks extends React.Component {
                     return (
                         <li>
                             <a onClick={this.onGoToBookmark.bind(this, bm.cfi)}>
-                                Bookmark #{i + 1}
+                                Bookmark #{this.props.bookmarks.length - i}
                             </a>
                             <span className="created">
                                 Created {(new Date(bm.created).toLocaleString())}
