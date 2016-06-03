@@ -2,8 +2,8 @@ import React from "react";
 
 // Components
 import TableOfContents from "./TableOfContents";
+import CreateNote from "./CreateNote";
 import Bookmarks from "./Bookmarks";
-import Search from "./Search";
 import Notes from "./Notes";
 
 // Modules
@@ -26,7 +26,7 @@ export default class Reader extends React.Component {
             book: this.props.data.books.find(b => id == b.id),
             showNavbar: false, pagesLeft: 0, percent: 0,
             showBookmarks: false, showNotes: false,
-            showSearch: false, showMore: false,
+            showCreateNote: false, showMore: false,
             initialize: true, showToc: false
         };
         
@@ -83,6 +83,7 @@ export default class Reader extends React.Component {
         this._addEventListeners = this._addEventListeners.bind(this);
         this.onMouseOverNavbar = this.onMouseOverNavbar.bind(this);
         this.onMouseOutNavbar = this.onMouseOutNavbar.bind(this);
+        this._highlightNotes = this._highlightNotes.bind(this);
         this._isBookmarked = this._isBookmarked.bind(this);
         this.onShowNavbar = this.onShowNavbar.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
@@ -142,7 +143,7 @@ export default class Reader extends React.Component {
     onCloseModal() {
         this.setState({
             showToc: false, showBookmarks: false, showNotes: false,
-            showSearch: false, showMore: false
+            showCreateNote: false, showMore: false
         });
     }
     
@@ -211,12 +212,14 @@ export default class Reader extends React.Component {
                 }
                 
                 this._addEventListeners();
+                this._highlightNotes();
             });
         });
     }
     
     _addEventListeners() {
-        // Update pages left in chapter / percent complete
+        // Update pages left in chapter
+        // Update percent complete
         this.epub.on("renderer:locationChanged", cfi => {
             const hasColumns = document.querySelector("#book > iframe")
                 .contentDocument.querySelector("html")
@@ -228,8 +231,11 @@ export default class Reader extends React.Component {
                     : this.epub.renderer.getRenderedPagesLeft()
                 ),
                 percent: this._getPercentComplete()
-            })
+            });
         });
+        
+        // Highlight notes when chapter changes
+        this.epub.on("renderer:chapterDisplayed", this._highlightNotes);
         
         // Regenerate pagination and update percent
         this.epub.on("renderer:resized", () => {
@@ -242,6 +248,32 @@ export default class Reader extends React.Component {
                     });
                 });
             }, 500);
+        });
+    }
+    
+    _highlightNotes() {
+        const currentCfi = new EPUBJS.EpubCFI(epub.getCurrentLocationCfi());
+        const elements = Array.from(
+            document.querySelector("#book > iframe")
+                .contentDocument.body.querySelectorAll("p, a, span")
+        );
+        
+        // Remove notes not in current chapter
+        this.state.book.notes.filter(note => {
+            return currentCfi.spinePos == (new EPUBJS.EpubCFI(note.cfi)).spinePos;
+        })
+        // Highlight notes currently viewable
+        .forEach(note => {
+            const content = JSON.parse(note.note);
+            const lines = content.highlighted.split("\n");
+            
+            elements.forEach(e => {
+                lines.forEach(l => {
+                    if (e.innerText.indexOf(l) > -1) {
+                        e.style.backgroundColor = "yellow";
+                    }
+                });
+            });
         });
     }
     
@@ -267,7 +299,7 @@ export default class Reader extends React.Component {
         
         const showText = window.screen.height < window.screen.width;
         const showModal = this.state.showBookmarks || this.state.showMore
-            || this.state.showNotes || this.state.showSearch || this.state.showToc;
+            || this.state.showNotes || this.state.showCreateNote || this.state.showToc;
         
         return (
             <div className="reader">
@@ -316,11 +348,11 @@ export default class Reader extends React.Component {
                                     title="Bookmark"
                                 />{showText ? " Bookmark" : ""}
                             </a>
-                            <a onClick={this.onToggleShow.bind(this, "Search")}>
+                            <a onClick={this.onToggleShow.bind(this, "CreateNote")}>
                                 <span
-                                    className="icon-search"
-                                    title="Search"
-                                />{showText ? " Search" : ""}
+                                    className="icon-edit"
+                                    title="Create Note"
+                                />{showText ? " Note" : ""}
                             </a>
                             <a onClick={this.onToggleShow.bind(this, "More")}>
                                 <span
@@ -379,11 +411,21 @@ export default class Reader extends React.Component {
                                 book={this.state.book}
                                 onClose={this.onCloseModal}
                                 updateBook={this._updateBook}
+                                highlightNotes={this._highlightNotes}
                             />
-                        ) : (this.state.showSearch ? (
-                            <Search data={this.state} onClose={this.onCloseModal} />
+                        ) : (this.state.showCreateNote ? (
+                            <CreateNote
+                                data={this.state}
+                                book={this.state.book}
+                                onClose={this.onCloseModal}
+                                updateBook={this._updateBook}
+                                highlightNotes={this._highlightNotes}
+                            />
                         ) : (this.state.showToc ? (
-                            <TableOfContents data={this.state} onClose={this.onCloseModal} />
+                            <TableOfContents
+                                data={this.state}
+                                onClose={this.onCloseModal}
+                            />
                         ) : (this.state.showMore ? (
                             <ul className="more">
                                 <li><a onClick={this.onToggleShow.bind(this, "Bookmarks", true)}>
