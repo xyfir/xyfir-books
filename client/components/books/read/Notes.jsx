@@ -43,6 +43,7 @@ export default class Notes extends React.Component {
                     this.props.updateBook({
                         notes: this.props.book.notes.filter(n => cfi != n.cfi)
                     });
+                    this.props.highlightNotes();
                 }
             }
         })
@@ -57,7 +58,7 @@ export default class Notes extends React.Component {
                     return (
                         <li>
                             <a onClick={this.onViewNote.bind(this, i)}>
-                                Note #{i + 1}
+                                Note #{this.props.book.notes.length - i}
                             </a>
                             <span className="created">
                                 Created {(new Date(note.created).toLocaleString())}
