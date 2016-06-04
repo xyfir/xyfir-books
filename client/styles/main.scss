@@ -26,6 +26,7 @@ p {
 	margin: auto;
 }
 
+/* Dropzone */
 .dropzone {
 	border: $gray dotted 0.3em;
 	border-radius: 0.5em;
@@ -131,8 +132,12 @@ input[type=checkbox] {
     margin-bottom: 1em;
 }
 
+/* Sweet alert */
 .sweet-alert > fieldset > input {
     display: none;
+}
+.sweet-alert p {
+	margin: auto !important;
 }
 
 /* NAV-BAR */
