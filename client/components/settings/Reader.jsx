@@ -102,7 +102,7 @@ export default class ReaderSettings extends React.Component {
                             onChange={(e) => this.setState({ highlightColor: e.target.value })}
                         />
                         <span style={{
-                            color: this.state.fontColor,
+                            color: this.state.color,
                             backgroundColor: this.state.highlightColor
                         }}>Example Text</span>
                     </section>
