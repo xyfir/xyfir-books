@@ -7,10 +7,28 @@ import Grid from "./all/Grid";
 //
 import Search from "../../misc/Search";
 
+// Modules
+import parseHashQuery from "../../../lib/url/parse-hash-query";
+
 export default class ListAllBooks extends React.Component {
 
     constructor(props) {
         super(props);
+    }
+    
+    componentDidMount() {
+        const qo = parseHashQuery();
+        const qa = Object.keys(qo);
+        
+        if (qa.length > 0) {
+            let value = "";
+            
+            this.refs.search.setValue(
+                qa[0] + ":" + qo[qa[0]].replace(
+                    new RegExp(' ', 'g'), '_'
+                )
+            );
+        }
     }
 
     render() {
@@ -27,7 +45,7 @@ export default class ListAllBooks extends React.Component {
         
         return (
             <div className="list-all">
-                <Search dispatch={this.props.dispatch} />
+                <Search ref="search" dispatch={this.props.dispatch} />
                 <p>
                     For advanced searches use <em>authors:search title:contains_query ...</em>.
                     <br />
