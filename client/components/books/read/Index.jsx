@@ -30,6 +30,7 @@ export default class Reader extends React.Component {
             initialize: true, showToc: false,
             loading: true
         };
+        this.timers = {};
         
         let url = this.props.data.account.library.address + "library/"
             + this.props.data.account.library.id + "/files/";
@@ -48,8 +49,15 @@ export default class Reader extends React.Component {
                 this.setState(
                     { book: Object.assign({}, this.state.book, res) },
                     () => {
+                        const r = this.props.data.config.reader;
+                        
                         this.epub = ePub(url, {
-                            storage: true, restore: true, spreads: false
+                            storage: true, restore: true, spreads: false,
+                            styles: {
+                                fontSize: r.fontSize + "em", padding: "0em " + r.padding + "em",
+                                backgroundColor: r.backgroundColor,
+                                lineHeight: r.lineHeight + "em"
+                            }
                         }); window.epub = this.epub;
                         
                         this.setState({ showNavbar: true });
@@ -88,6 +96,7 @@ export default class Reader extends React.Component {
         this._isBookmarked = this._isBookmarked.bind(this);
         this.onShowNavbar = this.onShowNavbar.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
+        this._applyStyles = this._applyStyles.bind(this);
         this._updateBook = this._updateBook.bind(this);
         this._initialize = this._initialize.bind(this);
         this.onBookmark = this.onBookmark.bind(this);
@@ -121,11 +130,11 @@ export default class Reader extends React.Component {
     }
     
     onMouseOverNavbar() {
-        clearTimeout(this.navbarTimeout);
+        clearTimeout(this.timers.navbar);
     }
     
     onMouseOutNavbar() {
-        this.navbarTimeout = setTimeout(() => this.onToggleShow("Navbar"), 7000);
+        this.timers.navbar = setTimeout(() => this.onToggleShow("Navbar"), 7000);
     }
     
     onToggleShow(prop, closeModal = false) {
@@ -213,10 +222,21 @@ export default class Reader extends React.Component {
                 }
                 
                 this.setState({ loading: false });
+                this._applyStyles();
                 this._addEventListeners();
                 this._highlightNotes();
             });
         });
+    } 
+    
+    _applyStyles() {
+        const r = this.props.data.config.reader;
+        
+        // Font color requires more explicit CSS to override other styles
+        // Must be applied every time a chapter changes
+        let s = this.epub.renderer.doc.createElement("style");
+        s.innerHTML = `*{color: ${r.color} !important;}`;
+        this.epub.renderer.doc.head.appendChild(s);
     }
     
     _addEventListeners() {
@@ -236,14 +256,17 @@ export default class Reader extends React.Component {
             });
         });
         
-        // Highlight notes when chapter changes
-        this.epub.on("renderer:chapterDisplayed", this._highlightNotes);
+        // Set font color, highlight notes
+        this.epub.on("renderer:chapterDisplayed", () => {
+            this._applyStyles();
+            this._highlightNotes();
+        });
         
         // Regenerate pagination and update percent
         this.epub.on("renderer:resized", () => {
-            clearTimeout(this.resizedTimeout);
+            clearTimeout(this.timers.resized);
             
-            this.resizedTimeout = setTimeout(() => {
+            this.timers.resized = setTimeout(() => {
                 epub.generatePagination().then(pages => {
                     this.setState({
                         percent: this._getPercentComplete()
@@ -259,6 +282,7 @@ export default class Reader extends React.Component {
             document.querySelector("#book > iframe")
                 .contentDocument.body.querySelectorAll("p, a, span")
         );
+        const color = this.props.data.config.reader.highlightColor;
         
         // Remove notes not in current chapter
         this.state.book.notes.filter(note => {
@@ -272,7 +296,7 @@ export default class Reader extends React.Component {
             elements.forEach(e => {
                 lines.forEach(l => {
                     if (e.innerText.indexOf(l) > -1) {
-                        e.style.backgroundColor = "yellow";
+                        e.style.backgroundColor = color;
                     }
                 });
             });
