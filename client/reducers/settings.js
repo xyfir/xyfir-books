@@ -1,5 +1,5 @@
 import {
-    SET_BOOK_LIST, SET_THEME, SET_LIST_VIEW
+    SET_BOOK_LIST, SET_THEME, SET_LIST_VIEW, SET_READER
 } from "../actions/types/settings";
 
 export default function(state, action) {
@@ -22,6 +22,11 @@ export default function(state, action) {
                     theme: action.theme
                 })
             })
+            
+        case SET_READER:
+            return Object.assign({}, state, {
+                reader: action.obj
+            });
             
         default:
             return state;
