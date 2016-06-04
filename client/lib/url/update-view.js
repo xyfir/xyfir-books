@@ -13,7 +13,7 @@ export default function(store) {
     }
 
     const state = store.getState();
-    const hash = location.hash.substr(1).split('/');
+    const hash = location.hash.substr(1).split('?')[0].split('/');
 
     // Update state to reflect hash
     if (hash[0] == "account") {
