@@ -9,15 +9,32 @@ export default class BasicSearch extends React.Component {
         super(props);
         
         this.onSearch = this.onSearch.bind(this);
+        this.setValue = this.setValue.bind(this);
     }
     
-    onSearch(e) {
-        this.props.dispatch(setSearch(e.target.value.toLowerCase()));
+    componentWillUnmount() {
+        this.props.dispatch(setSearch(""));
+    }
+    
+    onSearch() {
+        this.props.dispatch(setSearch(
+            this.refs.search.value.toLowerCase()
+        ));
+    }
+    
+    setValue(val) {
+        this.refs.search.value = val;
+        this.onSearch();
     }
 
     render() {
         return (
-            <input type="text" placeholder="Search" onChange={this.onSearch} />
+            <input
+                ref="search"
+                type="text"
+                onChange={this.onSearch}
+                placeholder={this.props.placeholder || "Search"}
+            />
         );
     }
 
