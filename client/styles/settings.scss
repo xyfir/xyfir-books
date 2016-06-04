@@ -1,0 +1,24 @@
+.settings-reader {
+    
+    section {
+        background-color: $lllgray;
+        padding: 0.5em;
+        width: 80%;
+        margin: 1em auto;
+        border: solid 0.1em $llgray;
+    }
+    
+    .padding {
+        
+        .example {
+            border: solid 1px black;
+        }
+        
+    }
+    
+    input[type="color"] {
+        display: block;
+        margin: 1em auto;
+    }
+    
+}
