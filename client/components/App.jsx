@@ -16,8 +16,8 @@ import updateView from "../lib/url/update-view";
 import request from "../lib/request/";
 
 // Constants
+import initialState from "../constants/initial-state";
 import { INITIALIZE_STATE } from "../actions/types/";
-import { LIST_BOOKS } from "../constants/views";
 import { URL, XACC } from "../constants/config";
 
 const store = createStore(reducers);
@@ -69,26 +69,7 @@ class App extends React.Component {
                 return;
             }
             
-            state = {
-                books: [], view: LIST_BOOKS, account: {
-                    subscription: 0, library: {
-                        address: "", id: ""
-                    }
-                }, search: "", config: {
-                    general: {
-                        theme: "light"
-                    },
-                    bookList: {
-                        view: "compact", table: {
-                            columns: [
-                                "title", "authors", "series", "added", "rating"
-                            ], defaultSort: {
-                                column: "title", asc: true
-                            }
-                        }
-                    }
-                }
-            };
+            state = Object.assign({}, initialState);
             
             // Load initial data from API
             if (navigator.onLine) {
