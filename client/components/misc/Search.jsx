@@ -3,7 +3,7 @@ import React from "react";
 // Action creators
 import { setSearch } from "../../actions/creators/";
 
-export default class BasicSearch extends React.Component {
+export default class Search extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,9 +17,13 @@ export default class BasicSearch extends React.Component {
     }
     
     onSearch() {
-        this.props.dispatch(setSearch(
-            this.refs.search.value.toLowerCase()
-        ));
+        clearTimeout(this.timeout);
+        
+        this.timeout = setTimeout(() => {
+            this.props.dispatch(setSearch(
+                this.refs.search.value.toLowerCase()
+            ))
+        }, 150);
     }
     
     setValue(val) {
