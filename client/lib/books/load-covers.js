@@ -64,20 +64,18 @@ function loadFromApi(book, library) {
 function loadCovers(books, library) {
     
     [].forEach.call(document.querySelectorAll("img.cover"), img => {
-        if (!img.src) {
-            const id = img.id.split('-')[1];
-            const book = books.find(b => id == b.id);
-            
-            // Determine if we have book's latest cover stored
-            localforage.getItem(`cover-${id}-${book.versions.cover}`).then(cover => {
-                if (cover == null) {
-                    loadFromApi(book, library);
-                }
-                else {
-                    document.getElementById(img.id).src = cover;
-                }
-            }).catch(err => loadFromApi(book, library));
-        }
+        const id = img.id.split('-')[1];
+        const book = books.find(b => id == b.id);
+        
+        // Determine if we have book's latest cover stored
+        localforage.getItem(`cover-${id}-${book.versions.cover}`).then(cover => {
+            if (cover == null) {
+                loadFromApi(book, library);
+            }
+            else {
+                document.getElementById(img.id).src = cover;
+            }
+        }).catch(err => loadFromApi(book, library));
     });
     
     cleanUp(books);
