@@ -6,7 +6,7 @@ const state = {
         subscription: 0, library: {
             address: "", id: ""
         }
-    }, search: "", config: {
+    }, search: "", save: "", config: {
         general: {
             theme: "light"
         },
