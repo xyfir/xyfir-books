@@ -112,7 +112,7 @@ export default class List extends React.Component {
             else {
                 switch (qa[0]) {
                     case "tag": title = "Tag (" + qo[qa[0]] + ")"; break;
-                    case "rating": title = qo[qa[0]] + " Stars"; break; 
+                    case "rating": title = qo[qa[0]]; break; 
                     default: title = qo[qa[0]];
                 }
             }
