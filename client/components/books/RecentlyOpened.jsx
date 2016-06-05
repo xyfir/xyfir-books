@@ -12,10 +12,6 @@ export default class RecentlyOpened extends React.Component {
 
     constructor(props) {
         super(props);
-        
-        this.state = { infoView: 1 };
-        
-        this.onToggleView = this.onToggleView.bind(this);
     }
     
     componentDidMount() {
@@ -24,10 +20,6 @@ export default class RecentlyOpened extends React.Component {
     
     componentDidUpdate() {
         loadCovers(this.props.data.books, this.props.data.account.library);
-    }
-    
-    onToggleView() {
-        this.setState({ infoView: this.state.infoView == 1 ? 2 : 1 });
     }
 
     render() {
@@ -42,7 +34,7 @@ export default class RecentlyOpened extends React.Component {
                 />
                 
                 <div className="books">{
-                    sortBooks(this.props.data.books, "last_read").reverse().slice(-4).map(book => {
+                    sortBooks(this.props.data.books, "last_read").slice(-4).reverse().map(book => {
                         const url = `/${book.id}/${toUrl(book.authors)}/${toUrl(book.title)}`;
                         
                         return (
@@ -53,45 +45,43 @@ export default class RecentlyOpened extends React.Component {
                                     window.location.hash = `#books/manage${url}`;
                                 }}
                             >
-                                <a href={`#books/read${url}`}><img className="cover" id={`cover-${book.id}`} /></a>
+                                <a href={`#books/read${url}`}>
+                                    <img className="cover" id={`cover-${book.id}`} />
+                                </a>
                                 
-                                {this.state.infoView == 1 ? (
-                                    <div className="info">
-                                        <a className="title" href={`#books/read${url}`}>{book.title}</a>
-                                        
-                                        <a className="authors" href={
-                                            `#books/list/all?authors=${encodeURIComponent(book.authors)}`
-                                        }>{book.authors}</a>
-                                        <a className="icon-more" title="More" onClick={this.onToggleView} />
-                                    </div>
-                                ) : (
-                                    <div className="info">
-                                        <span className="percent-complete">{book.percent_complete + "%"}</span>
-                                        {book.word_count == 0 ? (
-                                            <span />
-                                        ) : (
-                                            <span className="word-count">{
-                                                Math.round(book.word_count / 1000) + "K"
-                                            }</span>
-                                        )}
-                                        
-                                        <span className="last-read">{
-                                            book.last_read > 0 ? (
-                                                "Last read on "
-                                                + (new Date(book.last_read)).toLocaleDateString()
-                                            ) : (
-                                                "Book has not been read"
-                                            )
+                                <div className="info">
+                                    <a className="title" href={`#books/read${url}`}>{book.title}</a>
+                                    
+                                    <a className="authors" href={
+                                        `#books/list/all?authors=${encodeURIComponent(book.authors)}`
+                                    }>{book.authors}</a>
+                                    
+                                    <span className="percent-complete">{book.percent_complete + "%"}</span>
+                                    {book.word_count == 0 ? (
+                                        <span />
+                                    ) : (
+                                        <span className="word-count">{
+                                            Math.round(book.word_count / 1000) + "K"
                                         }</span>
-                                        
-                                        <a 
-                                            href={`#books/manage${url}`}
-                                            className="icon-edit"
-                                            title="View / Edit Metadata"
-                                        />
-                                        <a className="icon-more" title="More" onClick={this.onToggleView} />
-                                    </div>
-                                )}
+                                    )}
+                                    {!!(+book.rating) ? (
+                                        <span className="rating">
+                                            <span>{book.rating}</span>
+                                            <span className="icon-star" />
+                                        </span>
+                                    ) : (
+                                        <span />
+                                    )}
+                                    
+                                    <span className="last-read">{
+                                        book.last_read > 0 ? (
+                                            "Last read on "
+                                            + (new Date(book.last_read)).toLocaleDateString()
+                                        ) : (
+                                            "Book has not been read"
+                                        )
+                                    }</span>
+                                </div>
                             </div>
                         );
                     })
