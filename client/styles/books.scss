@@ -11,20 +11,33 @@ span.word-count, span.rating {
     
     .book {
         
+        height: 27em;
+        width: 12.5em;
+        margin: auto;
+        
+        img.cover {
+            height: 20em;
+            width: 12.5em;
+        }
+        
         .info {
             
-            margin-bottom: 2em;
+            text-align: left;
             
-            .title, .last-read {
+            .title, .authors {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
                 display: block;
             }
             
-            .percent-complete, .word-count, .icon-edit, .icon-more {
-                margin: 0.25em;
+            .percent-complete, .word-count, .rating {
+                margin: 0em 0.25em 0em 0em;
             }
             
-            .icon-more, .icon-edit {
-                font-size: 110%;
+            .last-read {
+                display: block;
+                font-size: 80%;
             }
             
         }
