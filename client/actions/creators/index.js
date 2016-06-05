@@ -1,5 +1,5 @@
 import {
-    CHANGE_VIEW, SET_SEARCH
+    CHANGE_VIEW, SET_SEARCH, SET_SAVE
 } from "../types/";
 
 export function changeView(view) {
@@ -11,5 +11,11 @@ export function changeView(view) {
 export function setSearch(query) {
     return {
         type: SET_SEARCH, query
+    };
+}
+
+export function save(prop) {
+    return {
+        type: SET_SAVE, prop
     };
 }
