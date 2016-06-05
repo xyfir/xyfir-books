@@ -26,58 +26,54 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
-
-        store.subscribe(() => {
-            this.setState(store.getState());
-        });
-
-        if (location.href.indexOf("http://localhost") == 0) {
-            store.subscribe(() => {
-                console.log(store.getState());
-            });
-        }
+        
+        this._addStoreSubscribers = this._addStoreSubscribers.bind(this);
+        this._initialize = this._initialize.bind(this);
+        this._login = this._login.bind(this);
         
         // Configure localForage
         localforage.config({
             driver: localforage.INDEXEDDB,
             name: "Libyq"
         });
-
-        const initialize = (state) => {
-            // Set state where needed
-            if (state !== undefined) {
-                // Grab config from local storage if available
-                localforage.getItem("config").then(config => {
-                    if (config != null) state.config = config;
-                        
-                    this.state = state;
-
-                    // Push initial state to store
-                    store.dispatch({
-                        type: INITIALIZE_STATE, state
-                    });
-
-                    // Set state.view based on current url hash
-                    updateView(store);
+        
+        this._addStoreSubscribers();
+        this._login();        
+    }
+    
+    _initialize(state) {
+        // Set state where needed
+        if (state !== undefined) {
+            // Grab config from local storage if available
+            localforage.getItem("config").then(config => {
+                if (config != null) state.config = config;
                     
-                    // Update state.view when url hash changes
-                    window.onhashchange = () => updateView(store);
-                }).catch(err => {
-                    swal("Error", "Could not load user settings", "error");
+                this.state = state;
+
+                // Push initial state to store
+                store.dispatch({
+                    type: INITIALIZE_STATE, state
                 });
+
+                // Set state.view based on current url hash
+                updateView(store);
                 
-                return;
-            }
-            
+                // Update state.view when url hash changes
+                window.onhashchange = () => updateView(store);
+            }).catch(err => {
+                swal("Error", "Could not load user settings", "error");
+            });
+        }
+        else {
             state = Object.assign({}, initialState);
-            
+        
             // Load initial data from API
             if (navigator.onLine) {
                 request({
                     url: URL + "api/account", success: (res) => {
                         state.account = res;
                         
-                        initialize(state);
+                        this._initialize(state);
                     }
                 })
             }
@@ -93,7 +89,7 @@ class App extends React.Component {
                         localforage.getItem("books").then(books => {
                             state.books = books || [];
                             
-                            initialize(state);
+                            this._initialize(state);
                         }).catch(err => {
                             swal("Error", "Could not load books from local storage", "error");
                         });
@@ -102,8 +98,24 @@ class App extends React.Component {
                     swal("Error", "Could not load data from cloud or local storage", "error");
                 });
             }
-        };
-
+        }
+    }
+    
+    _addStoreSubscribers() {
+        store.subscribe(() => {
+            const state = store.getState();
+            
+            this.setState(state);
+            
+            if (location.href.indexOf("http://localhost") == 0)
+                console.log(state);
+            
+            if (state.save)
+                localforage.setItem(state.save, state[state.save]);
+        });
+    }
+    
+    _login() {
         // Attempt to login using XID/AUTH or skip to initialize()
         if (location.href.indexOf("xid=") > -1 && location.href.indexOf("auth=") > -1) {
             // Login using XID/AUTH_TOKEN
@@ -124,15 +136,15 @@ class App extends React.Component {
                         location.href = XACC + "login/14";
                     }
                     else {
-                        initialize();
+                        this._initialize();
                         history.pushState({}, '', URL + "library/");
                     }
                 }
             });
         }
         else {
-            initialize();
-        }        
+            this._initialize();
+        }
     }
 
     render() {
