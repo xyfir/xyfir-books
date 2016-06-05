@@ -12,16 +12,16 @@ function cleanUp(books) {
         
         keys.forEach(k => {
             // [ "cover", id, version ]
-            k = k.split('-');
+            const t = k.split('-');
             
-            const book = books.find(b => k[1] == b.id);
+            const book = books.find(b => t[1] == b.id);
             
             // Delete if book id no longer exists in books
             if (book === undefined) {
                 localforage.removeItem(k);
             }
             // Delete if book has a higher version number
-            else if (book.versions.cover > k[2]) {
+            else if (book.versions.cover > t[2]) {
                 localforage.removeItem(k);
             }
         });
