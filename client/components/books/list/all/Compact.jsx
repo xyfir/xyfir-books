@@ -58,8 +58,8 @@ export default class CompactList extends React.Component {
                                 }</span>
                                 {!!(+book.rating) ? (
                                     <span className="rating">
-                                        {!!(+book.rating) ? <span>{book.rating}</span> : ""}
-                                        {!!(+book.rating) ? <span className="icon-star" /> : ""}
+                                        <span>{book.rating}</span>
+                                        <span className="icon-star" />
                                     </span>
                                 ) : (
                                     <span />
