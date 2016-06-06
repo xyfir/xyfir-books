@@ -6,6 +6,8 @@ import { PATH_SEPARATOR } from "../../constants/config";
 
 function cleanUp(books) {
     
+    if (!books.length) return;
+    
     setTimeout(() => localforage.keys().then(keys => {
         // Filter out non-cover keys
         keys = keys.filter(k => k.indexOf("cover-") == 0);
