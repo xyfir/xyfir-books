@@ -31,8 +31,7 @@ export default function (state, action) {
                     account: account(state.account, action),
                     config: settings(state.config, action),
                     books: books(state.books, action),
-                    view: state.view,
-                    save: ""
+                    view: state.view
                 };
             }
     }
