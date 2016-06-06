@@ -12,6 +12,7 @@ import Library from "./library/";
 import Books from "./books/";
 
 // Modules
+import loadBooksFromApi from "../lib/books/load-from-api";
 import updateView from "../lib/url/update-view";
 import request from "../lib/request/";
 
@@ -63,6 +64,12 @@ class App extends React.Component {
                 
                 // Update state.view when url hash changes
                 window.onhashchange = () => updateView(store);
+                
+                // Save state.account, state.books to local storage
+                if (navigator.onLine) {
+                    store.dispatch(save("account"));
+                    store.dispatch(save("books"));
+                }
             }).catch(err => {
                 swal("Error", "Could not load user settings", "error");
             });
@@ -73,10 +80,13 @@ class App extends React.Component {
             // Load initial data from API
             if (navigator.onLine) {
                 request({
-                    url: URL + "api/account", success: (res) => {
-                        state.account = res;
+                    url: URL + "api/account", success: (account) => {
+                        state.account = account;
                         
-                        this._initialize(state);
+                        loadBooksFromApi(account.library, null, books => {
+                            state.books = books;
+                            this._initialize(state);
+                        });
                     }
                 })
             }
