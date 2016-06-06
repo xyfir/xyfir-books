@@ -14,6 +14,7 @@ import { URL, PATH_SEPARATOR } from "../../../constants/config";
 
 // Action creators
 import { updateBook } from "../../../actions/creators/books";
+import { save } from "../../../actions/creators/";
 
 export default class Reader extends React.Component {
 
@@ -46,6 +47,7 @@ export default class Reader extends React.Component {
             request({url: URL + "api/books/" + id, success: (res) => {
                 // Update book in application and component state
                 this.props.dispatch(updateBook(id, res));
+                this.props.dispatch(save("books"));
                 this.setState(
                     { book: Object.assign({}, this.state.book, res) },
                     () => {
@@ -123,6 +125,7 @@ export default class Reader extends React.Component {
                 this.props.dispatch(updateBook(
                     this.state.book.id, res
                 ));
+                this.props.dispatch(save("books"));
             }
         });
         
@@ -318,6 +321,7 @@ export default class Reader extends React.Component {
         this.setState({
             book: Object.assign({}, this.state.book, obj)
         });
+        this.props.dispatch(save("books"));
     }
 
     render() {
