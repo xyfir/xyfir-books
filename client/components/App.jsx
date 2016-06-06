@@ -18,7 +18,10 @@ import request from "../lib/request/";
 // Constants
 import initialState from "../constants/initial-state";
 import { INITIALIZE_STATE } from "../actions/types/";
-import { URL, XACC } from "../constants/config";
+import { URL, XACC, LOG_STATE } from "../constants/config";
+
+// Action creators
+import { save } from "../actions/creators/";
 
 const store = createStore(reducers);
 
@@ -107,11 +110,13 @@ class App extends React.Component {
             
             this.setState(state);
             
-            if (location.href.indexOf("http://localhost") == 0)
+            if (LOG_STATE)
                 console.log(state);
             
-            if (state.save)
+            if (state.save) {
                 localforage.setItem(state.save, state[state.save]);
+                store.dispatch(save(""));
+            }
         });
     }
     
