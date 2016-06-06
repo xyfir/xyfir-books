@@ -5,7 +5,6 @@ import { setListView } from "../../../actions/creators/settings";
 import { loadBooks } from "../../../actions/creators/books";
 
 // Modules
-import loadBooksFromApi from "../../../lib/books/load-from-api";
 import parseHashQuery from "../../../lib/url/parse-hash-query";
 
 // Components
@@ -22,22 +21,6 @@ export default class List extends React.Component {
         this.state = { showViewSelector: false };
         
         this.onToggleShowViewSelector = this.onToggleShowViewSelector.bind(this);
-        
-        // Determine if state.books needs to be loaded from API or LS
-        if (!this.props.data.books.length) {
-            // Load from API
-            if (navigator.onLine) {
-                loadBooksFromApi(this.props.data.account.library, this.props.dispatch);
-            }
-            // Load from local storge
-            else {
-                localforage.getItem("books").then(books => {
-                    this.props.dispatch(loadBooks(books || []));
-                }).catch(err => {
-                    swal("Error", "Could not load books from local storage", "error");
-                });
-            }
-        }
     }
     
     onToggleShowViewSelector() {
