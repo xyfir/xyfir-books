@@ -8,7 +8,7 @@ import { save } from "../../actions/creators/";
 // Modules
 import request from "../request/";
 
-export default function (library, dispatch) {
+export default function (library, dispatch, fn) {
     
     // Get from Libyq DB
     request({url: URL + "api/books", success: (books1) => {
@@ -33,9 +33,14 @@ export default function (library, dispatch) {
                 
                 books1 = null, books2 = null;
                 
-                // Load books into state and save books[] to local storage
-                dispatch(loadBooks(books));
-                dispatch(save("books"));
+                if (fn === undefined) {
+                    // Load books into state and save books[] to local storage
+                    dispatch(loadBooks(books));
+                    dispatch(save("books"));
+                }
+                else {
+                    fn(books);
+                }
             }});
         }
     }});
