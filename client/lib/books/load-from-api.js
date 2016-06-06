@@ -3,6 +3,7 @@ import { URL } from "../../constants/config";
 
 // Action creators
 import { loadBooks } from "../../actions/creators/books";
+import { save } from "../../actions/creators/";
 
 // Modules
 import request from "../request/";
@@ -32,9 +33,9 @@ export default function (library, dispatch) {
                 
                 books1 = null, books2 = null;
                 
+                // Load books into state and save books[] to local storage
                 dispatch(loadBooks(books));
-                
-                localforage.setItem("books", books);
+                dispatch(save("books"));
             }});
         }
     }});

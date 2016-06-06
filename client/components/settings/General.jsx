@@ -2,6 +2,7 @@ import React from "react";
 
 // Action creators
 import { setTheme } from "../../actions/creators/settings";
+import { save } from "../../actions/creators/";
 
 // Components
 import NavBar from "../misc/NavBar";
@@ -41,16 +42,12 @@ export default class GeneralSettings extends React.Component {
     }
     
     onSave() {
-        const config = Object.assign({}, this.props.data.config);
         const theme = this.refs.theme.value;
         
         document.body.className = "theme-" + theme;
         
         this.props.dispatch(setTheme(theme));
-        
-        config.general = { theme };
-        localforage.setItem("config", config)
-            .then((c) => { return; }).catch((e) => { return; });
+        this.props.dispatch(save("config"));
     }
 
     render() {

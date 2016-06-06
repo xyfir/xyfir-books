@@ -8,6 +8,7 @@ import initialState from "../../constants/initial-state";
 
 // Action creators
 import { setReader } from "../../actions/creators/settings";
+import { save } from "../../actions/creators/";
 
 export default class ReaderSettings extends React.Component {
 
@@ -22,12 +23,7 @@ export default class ReaderSettings extends React.Component {
     
     onSave() {
         this.props.dispatch(setReader(this.state));
-        
-        localforage.setItem(
-            "config", Object.assign(
-                {}, this.props.data.config, { reader: this.state }
-            )
-        );
+        this.props.dispatch(save("config"));
         
         swal("Saved", "Settings saved successfully", "success");
     }

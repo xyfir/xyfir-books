@@ -2,6 +2,7 @@ import React from "react";
 
 // Action creators
 import { setBookList } from "../../actions/creators/settings";
+import { save } from "../../actions/creators/";
 
 // Components
 import NavBar from "../misc/NavBar";
@@ -38,8 +39,7 @@ export default class BookListSettings extends React.Component {
         // Update state
         this.props.dispatch(setBookList(config.bookList));
         
-        localforage.setItem("config", config)
-            .then(c => { return; }).catch(e => { return; });
+        this.props.dispatch(save("config"));
     }
 
     render() {
