@@ -6,6 +6,7 @@ import { URL } from "../../constants/config";
 
 // Action creators
 import { setLibraryAddress } from "../../actions/creators/account";
+import { save } from "../../actions/creators/";
 
 export default function (bytes, dispatch, fn) {
     
@@ -19,6 +20,7 @@ export default function (bytes, dispatch, fn) {
             else if (res.libraryServerAddress !== undefined) {
                 // Update state.account.library.address
                 dispatch(setLibraryAddress(res.libraryServerAddress));
+                dispatch(save("account"));
                 
                 fn(false, res.libraryServerAddress);
             }
