@@ -63,12 +63,11 @@ gulp.task("client", function () {
 
 /*
 	copy-libs
-    - get localforage / sweetalert / jszip
+    - get localforage / sweetalert
     - copy to ./public/js
 */
 gulp.task("copy-libs", function () {
     return gulp.src([
-        "./node_modules/jszip/dist/jszip.min.js",
         "./node_modules/sweetalert/dist/sweetalert.min.js",
         "./node_modules/localforage/dist/localforage.min.js"
     ]).pipe(gulp.dest("./public/js"));
