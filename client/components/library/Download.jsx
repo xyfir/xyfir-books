@@ -44,13 +44,16 @@ export default class DownloadLibrary extends React.Component {
                     
                     this.setState({ status: "Saving zip file" });
                     
-                    zip.generateAsync({ type: "blob" }).then(b => {
-                        saveAs(b, "Library - " + Date.now() + ".zip");
-                        zip = null;
+                    let b = zip.generate({});
+
+                    saveAs(
+                        this._base64ToBlob(b, "application/zip"),
+                        "Library - " + Date.now() + ".zip"
+                    );
+                    zip = null, b = null;
                         
-                        this.setState({ status: "" });
-                    });
-                });
+                    this.setState({ status: "" });
+                }, true);
             }
             // Download next book
             else {
@@ -62,30 +65,51 @@ export default class DownloadLibrary extends React.Component {
                 
                 // Download cover                    
                 download(url + file.join('/'), res => {
-                    zip.file(file.join('/'), res, { binary: true });
+                    zip.file(file.join('/'), res, {binary: true});
                     
                     // Download metadata.opf
                     file[2] = "metadata.opf";
                     
                     download(url + file.join('/'), res => {
-                        zip.file(file.join('/'), res);
+                        zip.file(file.join('/'), res, {binary: true});
                         
                         // Download formats
                         book.formats.forEach(format => {
                             const f = format.split(PATH_SEPARATOR).slice(-3).join('/');
                             
                             download(url + f, res => {
-                                zip.file(f, res, { binary: true });
+                                zip.file(f, res, {binary: true});
                                 
                                 downloadBook(index + 1);
-                            });
+                            }, true);
                         });
-                    });
-                });
+                    }, true);
+                }, true);
             }
         };
         
         downloadBook(0);
+    }
+
+    _base64ToBlob(base64Data, contentType) {
+        contentType = contentType || '';
+        var sliceSize = 1024;
+        var byteCharacters = atob(base64Data);
+        var bytesLength = byteCharacters.length;
+        var slicesCount = Math.ceil(bytesLength / sliceSize);
+        var byteArrays = new Array(slicesCount);
+
+        for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+            var begin = sliceIndex * sliceSize;
+            var end = Math.min(begin + sliceSize, bytesLength);
+
+            var bytes = new Array(end - begin);
+            for (var offset = begin, i = 0 ; offset < end; ++i, ++offset) {
+                bytes[i] = byteCharacters[offset].charCodeAt(0);
+            }
+            byteArrays[sliceIndex] = new Uint8Array(bytes);
+        }
+        return new Blob(byteArrays, { type: contentType });
     }
 
     render() {
