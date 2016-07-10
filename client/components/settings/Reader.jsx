@@ -22,7 +22,9 @@ export default class ReaderSettings extends React.Component {
     }
     
     onSave() {
-        this.props.dispatch(setReader(this.state));
+        this.props.dispatch(setReader(Object.assign(
+            {}, this.state, { annotations_key: this.refs.annotationsKey.value }
+        )));
         this.props.dispatch(save("config"));
         
         swal("Saved", "Settings saved successfully", "success");
@@ -114,6 +116,18 @@ export default class ReaderSettings extends React.Component {
                         <div style={{lineHeight: this.state.lineHeight}}>
                             Line 1<br />Line 2<br />Line 3
                         </div>
+                    </section>
+
+                    <section className="libyq-annotations">
+                        <label>Libyq Annotations Subscription Key</label>
+                        <span className="input-description">
+                            A <a href="https://annotations.libyq.com/" target="_blank">Libyq Annotations</a> subscription key is needed to enable <em>annotations mode</em> while reading books.
+                        </span>
+                        <input
+                            ref="annotationsKey"
+                            type="text"
+                            defaultValue={this.state.annotations_key}
+                        />
                     </section>
                 
                     <button onClick={this.onSave} className="btn-primary">
