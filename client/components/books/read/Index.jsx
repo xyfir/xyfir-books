@@ -1,10 +1,12 @@
 import React from "react";
 
 // Components
+import ManageAnnotations from "./ManageAnnotations";
 import TableOfContents from "./TableOfContents";
 import CreateNote from "./CreateNote";
 import Bookmarks from "./Bookmarks";
 import Notes from "./Notes";
+import More from "./More";
 
 // Modules
 import request from "../../../lib/request/";
@@ -25,11 +27,13 @@ export default class Reader extends React.Component {
         
         this.state = {
             book: this.props.data.books.find(b => id == b.id),
-            showNavbar: false, pagesLeft: 0, percent: 0,
-            showBookmarks: false, showNotes: false,
-            showCreateNote: false, showMore: false,
-            initialize: true, showToc: false,
-            loading: true
+            pagesLeft: 0, percent: 0,
+            //
+            initialize: true, showToc: false, loading: true,
+            //
+            showManageAnnotations: false, showNavbar: false, showMore: false,
+            showBookmarks: false, showNotes: false, showCreateNote: false,
+            showAnnotations: false,
         };
         this.timers = {};
         
@@ -435,13 +439,11 @@ export default class Reader extends React.Component {
                     
                         {this.state.showBookmarks ? (
                             <Bookmarks
-                                data={this.state}
                                 onClose={this.onCloseModal}
                                 bookmarks={this.state.book.bookmarks}
                             />
                         ) : (this.state.showNotes ? (
                             <Notes
-                                data={this.state}
                                 book={this.state.book}
                                 onClose={this.onCloseModal}
                                 updateBook={this._updateBook}
@@ -449,7 +451,6 @@ export default class Reader extends React.Component {
                             />
                         ) : (this.state.showCreateNote ? (
                             <CreateNote
-                                data={this.state}
                                 book={this.state.book}
                                 onClose={this.onCloseModal}
                                 updateBook={this._updateBook}
@@ -457,19 +458,20 @@ export default class Reader extends React.Component {
                             />
                         ) : (this.state.showToc ? (
                             <TableOfContents
-                                data={this.state}
                                 onClose={this.onCloseModal}
                             />
+                        ) : (this.state.showManageAnnotations ? (
+                            <ManageAnnotations
+                                book={this.state.book}
+                                dispatch={this.props.dispatch}
+                            />
                         ) : (this.state.showMore ? (
-                            <ul className="more">
-                                <li><a onClick={this.onToggleShow.bind(this, "Bookmarks", true)}>
-                                    Bookmarks
-                                </a></li>
-                                <li><a onClick={this.onToggleShow.bind(this, "Notes", true)}>
-                                    Notes
-                                </a></li>
-                            </ul>
-                        ) : (<div />)))))}
+                            <More
+                                onToggleShow={this.onToggleShow}
+                            />
+                        ) : (
+                            <div />
+                        ))))))}
                     </section>
                 ) : (
                     <div />
