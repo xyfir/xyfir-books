@@ -44,10 +44,12 @@ gulp.task("client", function () {
     const extensions = [".jsx", ".js"];
     
     const b = browserify(
-        './client/components/App.jsx', { debug: true, extensions: extensions }
+        './client/components/App.jsx', {
+            debug: true, extensions, paths: ["./client"]
+        }
     );
     b.transform(babelify.configure({
-        extensions: extensions, presets: ["es2015", "react"]
+        extensions, presets: ["es2015", "react"]
     }));
     
     return b.bundle()
