@@ -65,7 +65,9 @@ export default function (sets, markers) {
                     });
                 }
 
-                html = wrapMatches(matches, html, set.id + "-" + item.id);
+                html = wrapMatches(
+                    matches, html, "annotation", set.id + "-" + item.id
+                );
             });
         });
     });
