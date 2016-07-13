@@ -3,6 +3,7 @@ import React from "react";
 // Components
 import ManageAnnotations from "./ManageAnnotations";
 import TableOfContents from "./TableOfContents";
+import Annotation from "./Annotation";
 import CreateNote from "./CreateNote";
 import Bookmarks from "./Bookmarks";
 import Notes from "./Notes";
@@ -36,6 +37,7 @@ export default class ReaderModal extends React.Component {
                     ) : (this.props.show.notes ? (
                         <Notes
                             book={this.props.book}
+                            target={this.props.target}
                             onClose={this.props.onCloseModal}
                             updateBook={this.props.updateBook}
                         />
@@ -58,9 +60,14 @@ export default class ReaderModal extends React.Component {
                         <More
                             onToggleShow={this.onToggleShow}
                         />
+                    ) : (this.props.show.annotation ? (
+                        <Annotation
+                            book={this.props.book}
+                            target={this.props.target}
+                        />
                     ) : (
                         <div />
-                    ))))))}
+                    )))))))}
                 </section>
             )
         }
