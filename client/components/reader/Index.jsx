@@ -6,6 +6,8 @@ import Navbar from "./Navbar";
 import Modal from "./modal/";
 
 // Modules
+import findAnnotationMarkers from "lib/reader/annotations/find-markers";
+import insertAnnotations from "lib/reader/annotations/insert";
 import highlightNotes from "lib/reader/notes/highlight";
 import request from "lib/request/";
 
@@ -33,7 +35,7 @@ export default class Reader extends React.Component {
                 manageAnnotations: false, more: false, bookmarks: false,
                 notes: false, createNote: false, annotations: false,
                 toc: false
-            }
+            }, modalViewTarget: ""
         };
         this.timers = {};
         
@@ -48,7 +50,7 @@ export default class Reader extends React.Component {
         
         // Get bookmarks, notes, last read time
         request({url: URL + "api/books/" + id, success: (res) => {
-            // Update book in application and component state
+            // Update book in app/component/storage
             this.props.dispatch(updateBook(id, res));
             this.props.dispatch(save("books"));
             
@@ -124,6 +126,11 @@ export default class Reader extends React.Component {
         
         epub.destroy(); window.epub = undefined;
     }
+
+    onToggleAnnotations() {
+        this.onToggleShow("annotation");
+        this._applyStyles();
+    }
     
     onToggleShow(prop, closeModal = false) {
         if (closeModal) this.onCloseModal();
@@ -138,16 +145,25 @@ export default class Reader extends React.Component {
     onCloseModal() {
         this.setState({ show: {
             toc: false, bookmarks: false, notes: false, createNote: false,
-            more: false, manageAnnotations: false
-        }});
+            more: false, manageAnnotations: false, annotation: false
+        }, modalViewTarget: "" });
     }
     
     _initialize() {
         if (!epub) return;
         
         this.setState({ initialize: false });
+
+        // View annotation or note
+        epub.onClick = (type, key) => {
+            this.setState({ modalViewTarget: key });
+            this.onToggleShow(type + 's');
+            this._applyStyles();
+        };
         
+        // Render ebook to pages
         epub.renderTo("book").then(() => {
+            // Generate pagination so we can get pages/percent
             epub.generatePagination().then(pages => {
                 // Set initial location
                 if (this.state.book.bookmarks.length > 0) {
@@ -160,10 +176,20 @@ export default class Reader extends React.Component {
                         this.state.book.percent_complete / 100
                     );
                 }
+
+                // Generate annotation markers
+                epub.annotationMarkers = findAnnotationMarkers(
+                    this.state.book.annotations
+                );
                 
                 this.setState({ loading: false });
                 this._applyStyles();
                 this._addEventListeners();
+
+                insertAnnotations(
+                    this.state.book.annotations,
+                    epub.annotationMarkers
+                );
                 highlightNotes(this.state.book.notes);
             });
         });
@@ -172,11 +198,27 @@ export default class Reader extends React.Component {
     _applyStyles() {
         const r = this.props.data.config.reader;
         
-        // Font color requires more explicit CSS to override other styles
-        // Must be applied every time a chapter changes
-        let s = epub.renderer.doc.createElement("style");
-        s.innerHTML = `*{color: ${r.color} !important;}`;
-        epub.renderer.doc.head.appendChild(s);
+        let s = epub.renderer.doc.getElementById("reader-styles");
+        let create = false;
+
+        if (s === null) {
+            s = epub.renderer.doc.createElement("style");
+            create = true;
+        }
+
+        s.innerHTML = `
+            * { color: ${r.color} !important; }
+            ${
+                this.state.show.annotations
+                ? `.annotation { background-color: ${r.annotationColor}; }`
+                : `.note { background-color: ${r.highlightColor}; }`
+            }
+        `;
+
+        if (create) {
+            s.setAttribute("id", "reader-styles");
+            epub.renderer.doc.head.appendChild(s);
+        }
     }
     
     _addEventListeners() {
@@ -196,9 +238,15 @@ export default class Reader extends React.Component {
             });
         });
         
-        // Set font color, highlight notes
+        // Apply styles
+        // Insert annotations / highlight notes
         epub.on("renderer:chapterDisplayed", () => {
             this._applyStyles();
+
+            insertAnnotations(
+                this.state.book.annotations,
+                epub.annotationMarkers
+            );
             highlightNotes(this.state.book.notes);
         });
         
@@ -257,10 +305,11 @@ export default class Reader extends React.Component {
                 <Modal
                     show={this.state.show}
                     book={this.state.book}
+                    target={this.state.modalViewTarget}
                     dispatch={this.props.dispatch}
-                    updateBook={this.props._updateBook}
+                    updateBook={this._updateBook}
                     onCloseModal={this.onCloseModal}
-                    onToggleShow={this.onToggleShow}
+                    onToggleAnnotations={this.onToggleAnnotations}
                 />
             </div>
         );
