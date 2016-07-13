@@ -125,6 +125,42 @@
       "css": "bookmark-empty",
       "code": 59411,
       "src": "elusive"
+    },
+    {
+      "uid": "6a06892e76b81e023da6ddfb38a26b37",
+      "css": "document",
+      "code": 59412,
+      "src": "typicons"
+    },
+    {
+      "uid": "22cfc7af2c4f158b37317c65c92b48c2",
+      "css": "location",
+      "code": 59413,
+      "src": "elusive"
+    },
+    {
+      "uid": "872d9516df93eb6b776cc4d94bd97dac",
+      "css": "video",
+      "code": 59414,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "381da2c2f7fd51f8de877c044d7f439d",
+      "css": "image",
+      "code": 59415,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "815503841e980c848f55e0271deacead",
+      "css": "link",
+      "code": 59416,
+      "src": "entypo"
+    },
+    {
+      "uid": "76857a03fbaa6857fe063b6c25aa98ed",
+      "css": "sound",
+      "code": 59417,
+      "src": "fontawesome"
     }
   ]
 }
