@@ -39,9 +39,16 @@ export default class ManageAnnotations extends React.Component {
     onDownload() {
         let annotations = this.props.book.annotations.slice(0);
 
-        annotations.push(this.state.sets.find(set => {
+        let set = this.state.sets.find(set => {
             return set.id == this.state.view;
-        }));
+        });
+
+        // Parse each set item's object
+        set.items.forEach((item, i) => {
+            set.items[i].object = JSON.parse(item.object);
+        });
+
+        annotations.push(set);
 
         this.props.dispatch(updateBook(this.props.book.id, { annotations }));
         this.props.dispatch(save("books"));
