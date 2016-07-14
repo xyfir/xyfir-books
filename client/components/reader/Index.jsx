@@ -8,6 +8,7 @@ import Modal from "./modal/";
 // Modules
 import findAnnotationMarkers from "lib/reader/annotations/find-markers";
 import insertAnnotations from "lib/reader/annotations/insert";
+import updateAnnotations from "lib/reader/annotations/update";
 import highlightNotes from "lib/reader/notes/highlight";
 import request from "lib/request/";
 
@@ -29,7 +30,7 @@ export default class Reader extends React.Component {
             book: this.props.data.books.find(b => id == b.id),
             pagesLeft: 0, percent: 0,
             //
-            initialize: true, loading: true,
+            initialize: false, loading: true,
             //
             show: {
                 manageAnnotations: false, more: false, bookmarks: false,
@@ -53,56 +54,39 @@ export default class Reader extends React.Component {
             // Update book in app/component/storage
             this.props.dispatch(updateBook(id, res));
             this.props.dispatch(save("books"));
-            
-            this.setState({
-                book: Object.assign({}, this.state.book, res)
-            }, () => {
-                const r = this.props.data.config.reader;
-                
-                // Create EPUB.JS reader object
-                window.epub = ePub(url, {
-                    storage: true, restore: true, spreads: false,
-                    styles: {
-                        fontSize: r.fontSize + "em", padding: "0em " + r.padding + "em",
-                        backgroundColor: r.backgroundColor,
-                        lineHeight: r.lineHeight + "em"
-                    }
-                });
-                
-                // Count and update book's word count
-                if (this.state.book.word_count == 0) {
-                    const files = epub.zip.zip.files;
-                    const zip = new JSZip();
-                    let count = 0;
 
-                    Object.keys(files).forEach(file => {
-                        if (file.split('.')[1] != "html") return;
-                        
-                        count += zip
-                            .utf8decode(files[file]._data.getContent())
-                            .replace(/(<([^>]+)>)/ig, " ")
-                            .split(/\s+/).length;
-                    });
-                    
-                    request({
-                        url: `${URL}api/books/${this.state.book.id}/word-count`,
-                        method: "PUT", data: { count }, success: (res) => {
-                            this._updateBook({ word_count: count });
+            const r = this.props.data.config.reader;
+
+            // Update / set book's annotations
+            updateAnnotations(this.state.book.annotations, r.annotationsKey, ans => {
+                res.annotations = ans;
+
+                this.setState({
+                    book: Object.assign({}, this.state.book, res)
+                }, () => {
+                    // Create EPUB.JS reader object
+                    window.epub = ePub(url, {
+                        storage: true, restore: true, spreads: false,
+                        styles: {
+                            fontSize: r.fontSize + "em", padding: "0em " + r.padding + "em",
+                            backgroundColor: r.backgroundColor,
+                            lineHeight: r.lineHeight + "em"
                         }
                     });
-                }
+
+                    this.setState({ initialize: true });
+                    this._getWordCount();
+                });
             });
+            
         }});
         
         this._addEventListeners = this._addEventListeners.bind(this);
+        this._getWordCount = this._getWordCount.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
         this._applyStyles = this._applyStyles.bind(this);
         this._updateBook = this._updateBook.bind(this);
         this._initialize = this._initialize.bind(this);
-    }
-    
-    componentDidMount() {
-        if (epub) this._initialize();
     }
     
     componentDidUpdate() {
@@ -150,8 +134,6 @@ export default class Reader extends React.Component {
     }
     
     _initialize() {
-        if (!epub) return;
-        
         this.setState({ initialize: false });
 
         // View annotation or note
@@ -282,8 +264,33 @@ export default class Reader extends React.Component {
         this.props.dispatch(save("books"));
     }
 
+    _getWordCount() {
+        // Count and update book's word count
+        if (this.state.book.word_count == 0) {
+            const files = epub.zip.zip.files;
+            const zip = new JSZip();
+            let count = 0;
+
+            Object.keys(files).forEach(file => {
+                if (file.split('.')[1] != "html") return;
+                
+                count += zip
+                    .utf8decode(files[file]._data.getContent())
+                    .replace(/(<([^>]+)>)/ig, " ")
+                    .split(/\s+/).length;
+            });
+            
+            request({
+                url: `${URL}api/books/${this.state.book.id}/word-count`,
+                method: "PUT", data: { count }, success: (res) => {
+                    this._updateBook({ word_count: count });
+                }
+            });
+        }
+    }
+
     render() {
-        if (!epub) return <div />;
+        if (window.epub === undefined) return <div />;
         
         return (
             <div className="reader">
