@@ -12,6 +12,8 @@ export default function (annotations) {
 
     // Loop through all files in book
     Object.keys(files).forEach((file, chapter) => {
+        if (file.split('.')[1] != "html") return;
+        
         // Convert file content into html string
         file = zip.utf8decode(files[file]._data.getContent());
 
