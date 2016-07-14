@@ -6,8 +6,8 @@ import AddFormat from "./AddFormat";
 import BulkEdit from "./BulkEdit";
 import Manage from "./Manage";
 import Upload from "./Upload";
+import Reader from "components/reader/";
 import List from "./list/";
-import Read from "./read/";
 
 export default class Books extends React.Component {
 
@@ -30,7 +30,7 @@ export default class Books extends React.Component {
             case "LIST":
                 return <List data={this.props.data} dispatch={this.props.dispatch} />;
             case "READ":
-                return <Read data={this.props.data} dispatch={this.props.dispatch} />;
+                return <Reader data={this.props.data} dispatch={this.props.dispatch} />;
         }
     }
 
