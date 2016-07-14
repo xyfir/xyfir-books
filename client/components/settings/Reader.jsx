@@ -23,7 +23,7 @@ export default class ReaderSettings extends React.Component {
     
     onSave() {
         this.props.dispatch(setReader(Object.assign(
-            {}, this.state, { annotations_key: this.refs.annotationsKey.value }
+            {}, this.state, { annotationsKey: this.refs.annotationsKey.value }
         )));
         this.props.dispatch(save("config"));
         
@@ -126,7 +126,7 @@ export default class ReaderSettings extends React.Component {
                         <input
                             ref="annotationsKey"
                             type="text"
-                            defaultValue={this.state.annotations_key}
+                            defaultValue={this.state.annotationsKey}
                         />
                     </section>
                 
