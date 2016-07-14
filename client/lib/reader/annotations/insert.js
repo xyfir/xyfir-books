@@ -9,7 +9,7 @@ export default function (sets, markers) {
     let html = epub.renderer.doc.body.innerHTML;
 
     // Loop through all annotation sets
-    this.state.book.annotations.forEach(set => {
+    sets.forEach(set => {
         // Loop through all items in set
         set.items.forEach(item => {
             // Loop through all find queries in item
@@ -31,10 +31,10 @@ export default function (sets, markers) {
                         // Get before/after marker objects
                         // Each object contains chapter index and string index
                         // of where marker occured in book
-                        const before = this.annotationMarkers[
+                        const before = markers[
                             `${set.id}-${item.id}-${findIndex}-1`
                         ];
-                        const after  = this.annotationMarkers[
+                        const after  = markers[
                             `${set.id}-${item.id}-${findIndex}-2`
                         ];
 
