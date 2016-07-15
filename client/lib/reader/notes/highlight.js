@@ -1,6 +1,6 @@
 // Modules
-import getMatchIndexes from "lib/reader/find-match-indexes";
-import wrapMatches from "lib/reader/wrap-matches";
+import getMatchIndexes from "lib/reader/matches/find-indexes";
+import wrapMatches from "lib/reader/matches/matches/wrap";
 
 export default function(notes) {
 
