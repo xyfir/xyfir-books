@@ -1,17 +1,21 @@
 import React from "react";
 
 // Modules
-import request from "../../../lib/request/";
+import highlightNotes from "lib/reader/notes/highlight";
+import request from "lib/request/";
+import unwrap from "lib/reader/matches/unwrap";
 
 // Constants
-import { URL } from "../../../constants/config";
+import { URL } from "constants/config";
 
 export default class Notes extends React.Component {
 
     constructor(props) {
         super(props);
         
-        this.state = { view: -1 };
+        this.state = {
+            view: this.props.target || -1
+        };
         
         this.onDeleteNote = this.onDeleteNote.bind(this);
         this.onGoToNote = this.onGoToNote.bind(this);
@@ -28,9 +32,7 @@ export default class Notes extends React.Component {
     }
     
     onDeleteNote() {
-        const cfi = this.props.book.notes[
-            this.state.view
-        ].cfi;
+        const cfi = this.props.book.notes[this.state.view].cfi;
         
         request({
             url: URL + "api/books/" + this.props.book.id + "/note",
@@ -39,11 +41,14 @@ export default class Notes extends React.Component {
                     swal("Error", "Could not delete note.", "error");
                 }
                 else {
+                    const notes = this.props.book.notes.filter(n => cfi != n.cfi);
+
                     this.setState({ view: -1 });
-                    this.props.updateBook({
-                        notes: this.props.book.notes.filter(n => cfi != n.cfi)
-                    });
-                    this.props.highlightNotes();
+                    this.props.updateBook({ notes });
+
+                    // Clear notes and re-highlight
+                    unwrap("note");
+                    highlightNotes(notes);
                 }
             }
         })
