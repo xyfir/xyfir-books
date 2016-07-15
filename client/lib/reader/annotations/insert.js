@@ -2,7 +2,7 @@ import escapeRegex from "escape-string-regexp";
 
 // Modules
 import getMatchIndexes from "lib/reader/matches/find-indexes";
-import wrapMatches from "lib/reader/matches/matches/wrap";
+import wrapMatches from "lib/reader/matches/wrap";
 
 export default function (sets, markers) {
 
