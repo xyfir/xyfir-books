@@ -21,7 +21,8 @@ const state = {
         },
         reader: {
             fontSize: 1, padding: 0, backgroundColor: "#FFFFFF", color: "#000000",
-			highlightColor: "#B1FB17", lineHeight: 1.4, annotationsKey: ""
+			highlightColor: "#B1FB17", lineHeight: 1.4, annotationsKey: "",
+            annotationColor: "#85C1E9"
         }
     }
 };
