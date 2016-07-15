@@ -21,7 +21,7 @@ export default class ReaderOverlay extends React.Component {
                 </div>
                 
                 <span
-                    onClick={() => this.props.onToggleAnnotations}
+                    onClick={() => this.props.onToggleAnnotations()}
                     className="status"
                 >{
                     this.props.loading ? (
