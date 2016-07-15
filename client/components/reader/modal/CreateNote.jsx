@@ -1,7 +1,9 @@
 import React from "react";
 
 // Modules
-import request from "../../../lib/request/";
+import highlightNotes from "lib/reader/notes/highlight";
+import request from "lib/request/";
+import unwrap from "lib/reader/matches/unwrap";
 
 // Constants
 import { URL } from "../../../constants/config";
@@ -58,7 +60,11 @@ export default class CreateNote extends React.Component {
                     const notes = this.props.book.notes.concat([data]);
                     
                     this.props.updateBook({ notes });
-                    this.props.highlightNotes();
+                    
+                    // Re-highlight notes
+                    unwrap("note");
+                    highlightNotes(notes);
+
                     this.props.onClose();
                 }
             }
