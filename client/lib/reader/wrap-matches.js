@@ -9,12 +9,12 @@ export default function(matches, html, type, key) {
         const end = index[1] + offset;
 
         html = html.substring(0, start)
-            + `<span class="${type}" onclick="epub.onClick('${type}','${key}')">`
+            + `<span class="${type}" onclick="parent.epub.onClick('${type}','${key}')">`
                 + html.substring(start, end)
             + "</span>"
             + html.substring(end);
 
-        offset += (52 + (type.length * 2) + key.length);
+        offset += (59 + (type.length * 2) + key.length);
     });
 
     return html;
