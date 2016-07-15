@@ -12,12 +12,12 @@ export default function(notes) {
         return currentCfi.spinePos == (new EPUBJS.EpubCFI(note.cfi)).spinePos;
     })
     // Highlight notes currently viewable
-    .forEach(note => {
+    .forEach((note, i) => {
         const matches = getMatchIndexes(
             JSON.parse(note.note).highlighted, html
         );
 
-        html = wrapMatches(matches, html, "note", note.cfi);
+        html = wrapMatches(matches, html, "note", i);
     });
 
     epub.renderer.doc.body.innerHTML = html;
