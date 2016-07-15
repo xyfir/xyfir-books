@@ -118,6 +118,19 @@ export default class ReaderSettings extends React.Component {
                         </div>
                     </section>
 
+                    <section className="annotation-color">
+                        <label>Annotation Color</label>
+                        <input
+                            type="color"
+                            value={this.state.annotationColor}
+                            onChange={(e) => this.setState({ annotationColor: e.target.value })}
+                        />
+                        <span style={{
+                            color: this.state.color,
+                            backgroundColor: this.state.annotationColor
+                        }}>Example Text</span>
+                    </section>
+
                     <section className="libyq-annotations">
                         <label>Libyq Annotations Subscription Key</label>
                         <span className="input-description">
