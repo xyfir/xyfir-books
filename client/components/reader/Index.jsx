@@ -35,7 +35,7 @@ export default class Reader extends React.Component {
             show: {
                 manageAnnotations: false, more: false, bookmarks: false,
                 notes: false, createNote: false, annotations: false,
-                toc: false
+                toc: false, annotation: false
             }, modalViewTarget: ""
         };
         this.timers = {};
@@ -81,8 +81,10 @@ export default class Reader extends React.Component {
             
         }});
         
+        this.onToggleAnnotations = this.onToggleAnnotations.bind(this);
         this._addEventListeners = this._addEventListeners.bind(this);
         this._getWordCount = this._getWordCount.bind(this);
+        this.onToggleShow = this.onToggleShow.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
         this._applyStyles = this._applyStyles.bind(this);
         this._updateBook = this._updateBook.bind(this);
@@ -112,7 +114,7 @@ export default class Reader extends React.Component {
     }
 
     onToggleAnnotations() {
-        this.onToggleShow("annotation");
+        this.onToggleShow("annotations");
         this._applyStyles();
     }
     
@@ -306,18 +308,10 @@ export default class Reader extends React.Component {
                     loading={this.state.loading}
                     percent={this.state.percent}
                     pagesLeft={this.state.pagesLeft}
-                    onToggleShow={this.onToggleShow}
-                />
-                
-                <Modal
-                    show={this.state.show}
-                    book={this.state.book}
-                    target={this.state.modalViewTarget}
-                    dispatch={this.props.dispatch}
-                    updateBook={this._updateBook}
-                    onCloseModal={this.onCloseModal}
                     onToggleAnnotations={this.onToggleAnnotations}
                 />
+                
+                <Modal parent={this} />
             </div>
         );
     }
