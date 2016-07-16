@@ -16,9 +16,11 @@ export default class ReaderModal extends React.Component {
     }
 
     render() {
-        const showModal = this.props.show.bookmarks || this.props.show.more
-            || this.props.show.manageAnnotations || this.props.show.notes
-            || this.props.show.createNote || this.props.show.toc;
+        const p = this.props.parent, show = p.state.show;
+        
+        const showModal = show.bookmarks || show.more
+            || show.manageAnnotations || show.notes
+            || show.createNote || show.toc;
         
         if (showModal) {
             return (
@@ -26,44 +28,45 @@ export default class ReaderModal extends React.Component {
                     <span
                         title="Close"
                         className="icon-close"
-                        onClick={this.props.onCloseModal}
+                        onClick={p.onCloseModal}
                     />
                 
-                    {this.props.show.bookmarks ? (
+                    {show.bookmarks ? (
                         <Bookmarks
-                            onClose={this.props.onCloseModal}
-                            bookmarks={this.props.book.bookmarks}
+                            onClose={p.onCloseModal}
+                            bookmarks={p.state.book.bookmarks}
                         />
-                    ) : (this.props.show.notes ? (
+                    ) : (show.notes ? (
                         <Notes
-                            book={this.props.book}
-                            target={this.props.target}
-                            onClose={this.props.onCloseModal}
-                            updateBook={this.props.updateBook}
+                            book={p.state.book}
+                            target={p.state.modalViewTarget}
+                            onClose={p.onCloseModal}
+                            updateBook={p._updateBook}
                         />
-                    ) : (this.props.show.createNote ? (
+                    ) : (show.createNote ? (
                         <CreateNote
-                            book={this.props.book}
-                            onClose={this.props.onCloseModal}
-                            updateBook={this.props.updateBook}
+                            book={p.state.book}
+                            onClose={p.onCloseModal}
+                            updateBook={p._updateBook}
                         />
-                    ) : (this.props.show.toc ? (
+                    ) : (show.toc ? (
                         <TableOfContents
-                            onClose={this.props.onCloseModal}
+                            onClose={p.onCloseModal}
                         />
-                    ) : (this.props.show.manageAnnotations ? (
+                    ) : (show.manageAnnotations ? (
                         <ManageAnnotations
-                            book={this.props.book}
-                            dispatch={this.props.dispatch}
+                            book={p.state.book}
+                            data={p.props.data}
+                            dispatch={p.props.dispatch}
                         />
-                    ) : (this.props.show.more ? (
+                    ) : (show.more ? (
                         <More
-                            onToggleShow={this.onToggleShow}
+                            onToggleShow={p.onToggleShow}
                         />
-                    ) : (this.props.show.annotation ? (
+                    ) : (show.annotation ? (
                         <Annotation
-                            book={this.props.book}
-                            target={this.props.target}
+                            book={p.state.book}
+                            target={p.state.modalViewTarget}
                         />
                     ) : (
                         <div />
