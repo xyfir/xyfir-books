@@ -58,6 +58,7 @@ export default class ReaderModal extends React.Component {
                             book={p.state.book}
                             data={p.props.data}
                             dispatch={p.props.dispatch}
+                            updateBook={p._updateBook}
                         />
                     ) : (show.more ? (
                         <More
