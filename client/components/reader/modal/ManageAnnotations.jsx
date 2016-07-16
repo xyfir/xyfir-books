@@ -7,18 +7,18 @@ import request from "../../../lib/request/";
 // Constants
 import { LIB_ANN } from "../../../constants/config";
 
-// Actions
-import { updateBook } from "../../../actions/creators/books";
-import { save } from "../../../actions/creators/";
-
 export default class ManageAnnotations extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
+            key: this.props.data.config.reader.annotationsKey,
             sets: [], view: 0
         };
+
+        this.onDownload = this.onDownload.bind(this);
+        this.onDelete = this.onDelete.bind(this);
     }
 
     onViewSet(id) {
@@ -43,32 +43,42 @@ export default class ManageAnnotations extends React.Component {
             return set.id == this.state.view;
         });
 
-        // Parse each set item's object
-        set.items.forEach((item, i) => {
-            set.items[i].object = JSON.parse(item.object);
-        });
+        const url = `${LIB_ANN}annotations?key=${this.state.key}&sets=${set.id}`;
 
-        annotations.push(set);
+        // Download set's items
+        request({url, success: (res) => {
+            if (res.error || !res[set.id] || !res[set.id].items) {
+                swal("Error", "Could not download set", "error");
+            }
+            else {
+                set.items = res[set.id].items;
 
-        this.props.dispatch(updateBook(this.props.book.id, { annotations }));
-        this.props.dispatch(save("books"));
+                // Parse each set item's object
+                set.items.forEach((item, i) => {
+                    set.items[i].object = JSON.parse(item.object);
+                });
+
+                annotations.push(set);
+
+                this.props.updateBook({ annotations });
+                this.setState({ view: 0 });
+            }
+        }});
     }
 
     onDelete() {
         // Remove set from book.annotations
-        this.props.dispatch(updateBook(
-            this.props.book.id,
-            { annotations: this.props.book.annotations.filter(a => {
+        this.props.updateBook({
+            annotations: this.props.book.annotations.filter(a => {
                 return a.id != this.state.view;
-            })}
-        ));
-        this.props.dispatch(save("books"));
+            })
+        })
 
         this.setState({ view: 0 });
     }
 
     render() {
-        if (this.state.set) {
+        if (this.state.view) {
             const isDownloaded = !!this.props.book.annotations.find(a => {
                 return a.id == this.state.view
             });
@@ -79,43 +89,53 @@ export default class ManageAnnotations extends React.Component {
             else
                 set = this.state.sets.find(a => a.id == this.state.view);
 
-            <div className="view-annotation-set">
-                {isDownloaded ? (
-                    <a
-                        onClick={() => this.onDelete()}
-                        className="link-lg"
-                    >Delete Annotation Set</a>
-                ) : (
-                    <a
-                        onClick={() => this.onDownload()}
-                        className="link-lg"
-                    >Download Annotation Set</a>
-                )}
-                
-                <h3 className="title">{set.set_title}</h3>
-                <span className="book">
-                    <span className="title">{set.book_title}</span>
-                    <span className="authors">{set.book_authors}</span>
-                </span>
-                <div
-                    className="markdown description"
-                    dangerouslySetInnerHTML={{
-                        __html: marked(
-                            set.set_description, { sanitize: true }
-                        )
-                    }}
-                />
-            </div>
+            return (
+                <div className="view-annotation-set">
+                    <span
+                        className="icon-back"
+                        onClick={() => this.onViewSet(0)}
+                        title="Back to Annotations"
+                    />
+
+                    {isDownloaded ? (
+                        <a onClick={this.onDelete}>
+                            Delete Annotation Set
+                        </a>
+                    ) : (
+                        <a onClick={this.onDownload}>
+                            Download Annotation Set
+                        </a>
+                    )}
+                    
+                    <h3 className="title">{set.set_title}</h3>
+                    <span className="book">
+                        {set.book_title}, {set.book_authors}
+                    </span>
+                    <div
+                        className="markdown description"
+                        dangerouslySetInnerHTML={{
+                            __html: marked(
+                                set.set_description, { sanitize: true }
+                            )
+                        }}
+                    />
+                </div>
+            );
         }
         else {
             return (
                 <div className="manage-annotations">
                     <h3>Downloaded Annotation Sets</h3>
-                    <p>
+                    {/*<p>
                         The order in which your chosen annotation sets are downloaded affect the way annotations are displayed while reading.
                         <br />
                         If multiple annotation sets have annotations for the same selection of text, the set that was chosen first will be the one that gives the text its annotations.
-                    </p>
+                    </p>*/}
+                    {this.state.key ? "" : (
+                        <p>
+                            <strong>Note:</strong> You have not set a <a href="https://annotations.libyq.com/" target="_blank">Libyq Annotations</a> subscription key. If you have a key, you can set it in your <a href="#settings/reader">reader settings</a>.
+                        </p>
+                    )}
                     <div className="downloaded-annotations">{
                         this.props.book.annotations.map(a => {
                             return (
@@ -123,12 +143,12 @@ export default class ManageAnnotations extends React.Component {
                                     <a
                                         onClick={() => this.onViewSet(a.id)}
                                         className="title"
-                                    >{a.title}</a>
+                                    >{a.set_title}</a>
                                     <span className="description">{
-                                        a.description
+                                        a.set_description
                                     }</span>
                                     <span className="contains">
-                                        Set contains {a.items.length} annotations
+                                        Contains {a.items.length} annotations
                                     </span>
                                 </div>
                             );
@@ -151,10 +171,11 @@ export default class ManageAnnotations extends React.Component {
                                     <a
                                         onClick={() => this.onViewSet(a.id)}
                                         className="title"
-                                    >{a.title}</a>
-                                    <span className="description">{
-                                        a.description
-                                    }</span>
+                                    >{a.set_title}</a>
+                                    <span className="description">{a.set_description}</span>
+                                    <span className="book">
+                                        {a.book_title}, {a.book_authors}
+                                    </span>
                                 </div>
                             );
                         })
