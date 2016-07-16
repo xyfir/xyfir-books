@@ -98,14 +98,10 @@
             
         }
         
-        div.notes {
-            
-            .icon-back {
-                position: absolute;
-                left: 2%;
-                top: 2%;
-            }
-            
+        .icon-back {
+            position: absolute;
+            left: 2%;
+            top: 2%;
         }
         
         .create-note {
@@ -117,6 +113,36 @@
                 font-size: 1em;
             }
             
+        }
+
+        .manage-annotations {
+
+            .annotation-set {
+
+                background-color: $lllgray;
+                border: solid 0.1em $llgray;
+                width: 70%;
+                margin: 1em auto;
+                padding: 0.5em;
+
+
+                .title {
+                    font-size: 110%;
+                    font-weight: bold;
+                }
+
+                .description {
+                    display: block;
+                    font-size: 90%;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    width: 80%;
+                    margin: auto;
+                }
+
+            }
+
         }
         
     }
