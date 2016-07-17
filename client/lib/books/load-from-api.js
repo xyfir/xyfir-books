@@ -8,6 +8,26 @@ import { save } from "../../actions/creators/";
 // Modules
 import request from "../request/";
 
+function mergeAnnotations(books, fn) {
+    
+    localforage.getItem("books").then(storedBooks => {
+        if (storedBooks) {
+            storedBooks.forEach(sb => {
+                if (sb.annotations && sb.annotations.length) {
+                    books.forEach((book, i) => {
+                        if (sb.id == book.id) {
+                            books[i].annotations = sb.annotations;
+                        }
+                    });
+                }
+            });
+        }
+
+        fn(books);
+    }).catch(err => fn(books));
+
+}
+
 export default function (library, dispatch, fn) {
     
     // Get from Libyq DB
@@ -33,14 +53,17 @@ export default function (library, dispatch, fn) {
                 
                 books1 = null, books2 = null;
                 
-                if (fn === undefined) {
-                    // Load books into state and save books[] to local storage
-                    dispatch(loadBooks(books));
-                    dispatch(save("books"));
-                }
-                else {
-                    fn(books);
-                }
+                // Merge annotations from books saved to local storage
+                mergeAnnotations(books, (books) => {
+                    if (fn === undefined) {
+                        // Load books into state and save books[] to local storage
+                        dispatch(loadBooks(books));
+                        dispatch(save("books"));
+                    }
+                    else {
+                        fn(books);
+                    }
+                });
             }});
         }
     }});
