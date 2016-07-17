@@ -51,10 +51,6 @@ export default class Reader extends React.Component {
         
         // Get bookmarks, notes, last read time
         request({url: URL + "api/books/" + id, success: (res) => {
-            // Update book in app/component/storage
-            this.props.dispatch(updateBook(id, res));
-            this.props.dispatch(save("books"));
-
             const r = this.props.data.config.reader;
 
             // Update / set book's annotations
@@ -64,6 +60,10 @@ export default class Reader extends React.Component {
                 this.setState({
                     book: Object.assign({}, this.state.book, res)
                 }, () => {
+                    // Update book in app/component/storage
+                    this.props.dispatch(updateBook(id, res));
+                    this.props.dispatch(save("books"));
+
                     // Create EPUB.JS reader object
                     window.epub = ePub(url, {
                         storage: true, restore: true, spreads: false,
