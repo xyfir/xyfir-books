@@ -14,10 +14,11 @@ export default function (sets, markers) {
         set.items.forEach(item => {
             // Loop through all find queries in item
             item.object.find.forEach((find, findIndex) => {
-                find.text = find.regex ? find.text : escapeRegex(find.text);
-
                 // Get start/end string indexes for each match
-                let matches = getMatchIndexes(find.text, html);
+                let matches = getMatchIndexes(
+                    find.regex ? find.text : escapeRegex(find.text),
+                    html
+                );
 
                 if (!find.range.global) {
                     // Get current chapter index to compare with chapter in markers
