@@ -22,7 +22,7 @@ export default function (annotations) {
             // Loop through all items in annotation set
             set.items.forEach(item => {
                 // Loop through all find queries in item
-                item.object.find((find, findIndex) => {
+                item.object.find.forEach((find, findIndex) => {
                     // If find query is global, it doesn't have a before or after range
                     if (!find.range.global) {
                         if (find.range.before) {

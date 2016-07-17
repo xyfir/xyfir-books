@@ -13,7 +13,7 @@ export default function (sets, markers) {
         // Loop through all items in set
         set.items.forEach(item => {
             // Loop through all find queries in item
-            item.object.find((find, findIndex) => {
+            item.object.find.forEach((find, findIndex) => {
                 find.text = find.regex ? find.text : escapeRegex(find.text);
 
                 // Get start/end string indexes for each match
