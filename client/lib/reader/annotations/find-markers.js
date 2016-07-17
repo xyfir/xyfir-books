@@ -36,7 +36,7 @@ export default function (annotations) {
                         }
                         
                         if (find.range.after) {
-                            const index = file.indexOf(f.range.after);
+                            const index = file.indexOf(find.range.after);
 
                             if (index > -1) {
                                 markers[`${set.id}-${item.id}-${findIndex}-2`] = {
