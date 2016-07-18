@@ -141,7 +141,9 @@ export default class Reader extends React.Component {
         // View annotation or note
         epub.onClick = (type, key) => {
             this.setState({ modalViewTarget: key });
-            this.onToggleShow(type + 's');
+            this.onToggleShow(
+                type == "note" ? "notes" : type
+            );
             this._applyStyles();
         };
         
