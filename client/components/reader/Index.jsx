@@ -114,24 +114,24 @@ export default class Reader extends React.Component {
     }
 
     onToggleAnnotations() {
-        this.onToggleShow("annotations");
-        this._applyStyles();
+        this.onToggleShow("annotations", false, () => this._applyStyles());
     }
     
-    onToggleShow(prop, closeModal = false) {
+    onToggleShow(prop, closeModal, fn) {
         if (closeModal) this.onCloseModal();
         
         this.setState({
             show: Object.assign({}, this.state.show, {
                 [prop]: !this.state.show[prop]
             })
-        });
+        }, fn);
     }
     
     onCloseModal() {
         this.setState({ show: {
             toc: false, bookmarks: false, notes: false, createNote: false,
-            more: false, manageAnnotations: false, annotation: false
+            more: false, manageAnnotations: false, annotation: false,
+            annotations: this.state.show.annotations
         }, modalViewTarget: "" });
     }
     
@@ -140,11 +140,12 @@ export default class Reader extends React.Component {
 
         // View annotation or note
         epub.onClick = (type, key) => {
-            this.setState({ modalViewTarget: key });
-            this.onToggleShow(
-                type == "note" ? "notes" : type
-            );
-            this._applyStyles();
+            this.setState({ modalViewTarget: key }, () => {
+                this.onToggleShow(
+                    type == "note" ? "notes" : type,
+                    false, () => this._applyStyles()
+                );
+            });
         };
         
         // Render ebook to pages
@@ -191,7 +192,7 @@ export default class Reader extends React.Component {
             s = epub.renderer.doc.createElement("style");
             create = true;
         }
-
+        console.log("styles", this.state.show);
         s.innerHTML = `
             * { color: ${r.color} !important; }
             ${
