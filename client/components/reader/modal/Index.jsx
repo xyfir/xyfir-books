@@ -18,7 +18,7 @@ export default class ReaderModal extends React.Component {
     render() {
         const p = this.props.parent, show = p.state.show;
         
-        const showModal = show.bookmarks || show.more
+        const showModal = show.bookmarks || show.more || show.annotation
             || show.manageAnnotations || show.notes
             || show.createNote || show.toc;
         
