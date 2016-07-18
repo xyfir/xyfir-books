@@ -2,10 +2,12 @@ import marked from "marked";
 import React from "react";
 
 // Modules
-import request from "../../../lib/request/";
+import request from "lib/request/";
+import unwrap from "lib/reader/matches/unwrap";
+import insertAnnotations from "lib/reader/annotations/insert";
 
 // Constants
-import { LIB_ANN } from "../../../constants/config";
+import { LIB_ANN } from "constants/config";
 
 export default class ManageAnnotations extends React.Component {
 
@@ -62,19 +64,26 @@ export default class ManageAnnotations extends React.Component {
 
                 this.props.updateBook({ annotations });
                 this.setState({ view: 0 });
+
+                // Re-insert annotations
+                unwrap("annotation");
+                insertAnnotations(annotations, epub.annotationMarkers);
             }
         }});
     }
 
     onDelete() {
-        // Remove set from book.annotations
-        this.props.updateBook({
-            annotations: this.props.book.annotations.filter(a => {
-                return a.id != this.state.view;
-            })
-        })
+        const annotations = this.props.book.annotations.filter(a => {
+            return a.id != this.state.view;
+        });
 
+        // Remove set from book.annotations
+        this.props.updateBook({ annotations });
         this.setState({ view: 0 });
+
+        // Re-insert annotations
+        unwrap("annotation");
+        insertAnnotations(annotations, epub.annotationMarkers);
     }
 
     render() {
