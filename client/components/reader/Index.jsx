@@ -192,7 +192,7 @@ export default class Reader extends React.Component {
             s = epub.renderer.doc.createElement("style");
             create = true;
         }
-        console.log("styles", this.state.show);
+        
         s.innerHTML = `
             * { color: ${r.color} !important; }
             ${
