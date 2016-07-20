@@ -1,4 +1,5 @@
 // Constants
+import * as readerThemes from "constants/reader-themes";
 import { LIST_BOOKS } from "./views";
 
 const state = {
@@ -19,11 +20,9 @@ const state = {
                 }
             }
         },
-        reader: {
-            fontSize: 1, padding: 0, backgroundColor: "#FFFFFF", color: "#000000",
-			highlightColor: "#B1FB17", lineHeight: 1.4, annotationsKey: "",
-            annotationColor: "#85C1E9"
-        }
+        reader: Object.assign({}, readerThemes.LIGHT, {
+            fontSize: 1, padding: 0, lineHeight: 1.4, annotationsKey: ""
+        })
     }
 };
 
