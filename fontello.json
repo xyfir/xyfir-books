@@ -161,6 +161,18 @@
       "css": "sound",
       "code": 59417,
       "src": "fontawesome"
+    },
+    {
+      "uid": "57776e51a50e3b4d92701bdbbba01588",
+      "css": "resize-full",
+      "code": 59419,
+      "src": "elusive"
+    },
+    {
+      "uid": "8c7e34dcc8cc90ed5f4fd59949201f41",
+      "css": "resize-small",
+      "code": 59420,
+      "src": "elusive"
     }
   ]
 }
