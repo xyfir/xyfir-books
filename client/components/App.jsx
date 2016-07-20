@@ -54,6 +54,9 @@ class App extends React.Component {
                     
                 this.state = state;
 
+                // Set theme
+                document.body.className = "theme-" + state.config.general.theme;
+
                 // Push initial state to store
                 store.dispatch({
                     type: INITIALIZE_STATE, state
