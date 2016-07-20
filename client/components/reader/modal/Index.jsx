@@ -13,6 +13,15 @@ export default class ReaderModal extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            fullscreen: window.screen.height > window.screen.width,
+            canResize: window.screen.height < window.screen.width
+        };
+    }
+
+    onResize() {
+        this.setState({ fullscreen: !this.state.fullscreen });
     }
 
     render() {
@@ -24,7 +33,21 @@ export default class ReaderModal extends React.Component {
         
         if (showModal) {
             return (
-                <section className="modal">
+                <section
+                    className={"modal" + (this.state.fullscreen ? " full" : "")}
+                >
+                    {this.state.canResize ? (
+                        <span
+                            title={
+                                this.state.fullscreen ? "Shrink" : "Full Screen"
+                            }
+                            className={
+                                "icon-resize-"
+                                + (this.state.fullscreen ? "small" : "full")
+                            }
+                            onClick={() => this.onResize()}
+                        />
+                    ) : <span />}
                     <span
                         title="Close"
                         className="icon-close"
