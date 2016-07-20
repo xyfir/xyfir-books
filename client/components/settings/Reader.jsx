@@ -4,11 +4,14 @@ import React from "react";
 import NavBar from "../misc/NavBar";
 
 // Constants
-import initialState from "../../constants/initial-state";
+import * as themes from "constants/reader-themes";
+import initialState from "constants/initial-state";
 
 // Action creators
-import { setReader } from "../../actions/creators/settings";
-import { save } from "../../actions/creators/";
+import { setReader } from "actions/creators/settings";
+import { save } from "actions/creators/";
+
+
 
 export default class ReaderSettings extends React.Component {
 
@@ -19,6 +22,15 @@ export default class ReaderSettings extends React.Component {
         
         this.onReset = this.onReset.bind(this);
         this.onSave = this.onSave.bind(this);
+    }
+
+    onSetTheme() {
+        const theme = this.refs.theme.value;
+
+        switch (theme) {
+            case "light": return this.setState(themes.LIGHT);
+            case "dark": return this.setState(themes.DARK);
+        }
     }
     
     onSave() {
@@ -46,6 +58,17 @@ export default class ReaderSettings extends React.Component {
                     books={true}
                 />
                 <div className="settings">
+                    <label>Reader Theme</label>
+                    <section className="theme">
+                        <select
+                            ref="theme"
+                            onChange={() => this.onSetTheme()}
+                        >
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </section>
+
                     <section className="font-size">
                         <label>Font Size</label>
                         <input
@@ -93,7 +116,7 @@ export default class ReaderSettings extends React.Component {
                     </section>
                     
                     <section className="highlight-color">
-                        <label>Highlight Color</label>
+                        <label>Highlight / Notes Color</label>
                         <input
                             type="color"
                             value={this.state.highlightColor}
