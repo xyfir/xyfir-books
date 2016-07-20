@@ -64,6 +64,7 @@
         .icon-close {
             position: absolute;
             right: 2%;
+            z-index: 1;
         }
         
         ul {
@@ -140,6 +141,78 @@
                     white-space: nowrap;
                     width: 80%;
                     margin: auto;
+                }
+
+            }
+
+        }
+
+        .annotation {
+
+            .head {
+
+                position: absolute;
+                top: 2%;
+                left: 2%;
+                right: 2%;
+                bottom: 85%;
+                border-bottom: solid 0.15em $gray;
+                
+                nav {
+
+                    margin-bottom: 1em;
+
+                    a {
+                        color: $dgray;
+                    }
+
+                    a.active {
+                        color: $blue;
+                    }
+
+                }
+
+                .annotation-name {
+                    font-weight: bold;
+                    font-size: 120%;
+                }
+
+            }
+
+            .value {
+
+                position: absolute;
+                top: 17%;
+                left: 0%;
+                right: 0%;
+                bottom: 0%;
+                overflow-y: auto;
+
+                a {
+                    display: block;
+                }
+
+                iframe {
+                    width: 100%;
+                    border: none;
+                }
+
+                iframe.search {
+                    height: 98%;
+                }
+
+                .map, .video, .link {
+
+                    height: 100%;
+
+                    iframe {
+                        height: 100%;
+                    }
+
+                }
+
+                .link iframe {
+                    height: 94%;
                 }
 
             }
