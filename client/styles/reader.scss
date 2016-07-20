@@ -60,11 +60,24 @@
         overflow-y: auto;
         border: solid 0.1em $llgray;
         box-shadow: 0.3em 0.3em 0.9em black;
-        
-        .icon-close {
+        z-index: 1;
+
+        span[class^="icon-"] {
             position: absolute;
+            z-index: 2;
+        }
+
+        .icon-close, span[class^="icon-resize-"] {
             right: 2%;
-            z-index: 1;
+        }
+
+        .icon-back {
+            left: 2%;
+        }
+
+        span[class^="icon-resize-"] {
+            bottom: 2%;
+            font-size: 80%;
         }
         
         ul {
@@ -219,6 +232,15 @@
 
         }
         
+    }
+
+    .modal.full {
+        left: 0%;
+        top: 0%;
+        right: 0%;
+        bottom: 0%;
+        border: none;
+        box-shadow: none;
     }
     
 }
