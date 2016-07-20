@@ -5,3 +5,5 @@
 @import "settings.scss";
 @import "home.scss";
 @import "markdown.scss";
+
+@import "themes/dark.scss";
