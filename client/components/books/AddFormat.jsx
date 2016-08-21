@@ -2,12 +2,14 @@ import React from "react";
 import Dropzone from "react-dropzone";
 
 // Action creators
-import { addFormat } from "../../actions/creators/books";
+import { addFormat } from "actions/creators/books";
 
 // Modules
-import spaceNeeded from "../../lib/request/space-needed";
-import request from "../../lib/request/";
-import upload from "../../lib/request/upload";
+import request from "lib/request/";
+import upload from "lib/request/upload";
+
+// Constants
+import { LIBRARY_URL } from "constants/config";
 
 // Components
 import NavBar from "../misc/NavBar";
@@ -34,39 +36,24 @@ export default class AddFormat extends React.Component {
         
         this.setState({ converting: true });
         
-        const bytes = this.props.data.books.find(b => {
-            return this.state.id == b.id;
-        }).size;
-        
-        spaceNeeded(bytes, this.props.dispatch, (err, address) => {
-            if (err) {
-                swal("Error", "An unknown error occured", "error");
-                this.setState({ converting: false });
+        const url = LIBRARY_URL + this.props.data.account.library
+            + "/books/" + this.state.id + "/format/convert/"
+            + this.refs.convertFrom.value + "/"
+            + this.refs.convertTo.value;
+            
+        request({url, method: "POST", success: (res) => {
+            this.setState({ converting: false });
+            
+            if (res.error) {
+                swal("Error", "Could not convert format", "error");
             }
             else {
-                address = address === undefined
-                    ? this.props.data.account.library.address : address;
-                    
-                const url = address + "library/" + this.props.data.account.library.id
-                    + "/books/" + this.state.id + "/format/convert/"
-                    + this.refs.convertFrom.value + "/"
-                    + this.refs.convertTo.value;
-                    
-                request({url, method: "POST", success: (res) => {
-                    this.setState({ converting: false });
-                    
-                    if (res.error) {
-                        swal("Error", "Could not convert format", "error");
-                    }
-                    else {
-                        this.props.dispatch(addFormat(
-                            this.state.id, this.refs.convertTo.value
-                        ));
-                        swal("Success", "Format added", "success");
-                    }
-                }});
+                this.props.dispatch(addFormat(
+                    this.state.id, this.refs.convertTo.value
+                ));
+                swal("Success", "Format added", "success");
             }
-        });
+        }});
     }
     
     onUpload(files) {
@@ -77,31 +64,20 @@ export default class AddFormat extends React.Component {
         
         this.setState({ upload: true });
         
-        spaceNeeded(files[0].size, this.props.dispatch, (err, address) => {
-            if (err) {
-                swal("Error", "An unknown error occured", "error");
-                this.setState({ upload: false });
+        const url = LIBRARY_URL + this.props.data.account.library
+            + "/books/" + this.state.id + "/format"; 
+        
+        upload(url, "POST", "book", [files[0]], res => {
+            this.setState({ upload: false });
+            
+            if (res.error) {
+                swal("Error", "Could not upload file", "error");
             }
             else {
-                address = address === undefined
-                    ? this.props.data.account.library.address : address;
-        
-                const url = address + "library/" + this.props.data.account.library.id
-                    + "/books/" + this.state.id + "/format"; 
-                
-                upload(url, "POST", "book", [files[0]], res => {
-                    this.setState({ upload: false });
-                    
-                    if (res.error) {
-                        swal("Error", "Could not upload file", "error");
-                    }
-                    else {
-                        this.props.dispatch(addFormat(
-                            this.state.id, files[0].name.split('.').pop()
-                        ));
-                        swal("Success", "Format added", "success");
-                    }
-                });
+                this.props.dispatch(addFormat(
+                    this.state.id, files[0].name.split('.').pop()
+                ));
+                swal("Success", "Format added", "success");
             }
         });
     }

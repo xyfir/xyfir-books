@@ -2,17 +2,19 @@ import React from "react";
 import Dropzone from "react-dropzone";
 
 // Modules
-import spaceNeeded from "../../lib/request/space-needed";
-import loadCovers from "../../lib/books/load-covers";
-import loadBooks from "../../lib/books/load-from-api";
-import request from "../../lib/request/";
-import upload from "../../lib/request/upload";
+import loadCovers from "lib/books/load-covers";
+import loadBooks from "lib/books/load-from-api";
+import request from "lib/request/";
+import upload from "lib/request/upload";
 
 // Components
 import NavBar from "../misc/NavBar";
 
+// Constants
+import { LIBRARY_URL } from "constants/config";
+
 // Action creators
-import { deleteFormat, incrementVersion } from "../../actions/creators/books";
+import { deleteFormat, incrementVersion } from "actions/creators/books";
 
 export default class ManageBook extends React.Component {
 
@@ -65,8 +67,8 @@ export default class ManageBook extends React.Component {
                 + "&title=" + encodeURIComponent(this.refs.title.value);
         }
         
-        let url = this.props.data.account.library.address + "library/"
-            + this.props.data.account.library.id + "/books/"
+        let url = LIBRARY_URL
+            + this.props.data.account.library + "/books/"
             + this.state.id + "/metadata?" + search;
         
         request({url, dataType: "text", success: (res) => {
@@ -116,8 +118,8 @@ export default class ManageBook extends React.Component {
             return;
         }
         
-        const url = this.props.data.account.library.address + "library/"
-            + this.props.data.account.library.id + "/books/"
+        const url = LIBRARY_URL
+            + this.props.data.account.library + "/books/"
             + this.state.id + "/format/" + f;
             
         request({url, method: "DELETE", success: (res) => {
@@ -134,45 +136,35 @@ export default class ManageBook extends React.Component {
             return;
         }
         
-        spaceNeeded(files[0].size, this.props.dispatch, (err, address) => {
-            if (err) {
-                swal("Error", "An unknown error occured", "error");
+        const url = LIBRARY_URL + this.props.data.account.library
+            + "/books/" + this.state.id + "/cover"; 
+        
+        upload(url, "PUT", "cover", [files[0]], res => {
+            if (res.error) {
+                swal("Error", "Could not upload file", "error");
             }
             else {
-                address = address === undefined
-                    ? this.props.data.account.library.address : address;
-        
-                const url = address + "library/" + this.props.data.account.library.id
-                    + "/books/" + this.state.id + "/cover"; 
+                let fr = new FileReader();
                 
-                upload(url, "PUT", "cover", [files[0]], res => {
-                    if (res.error) {
-                        swal("Error", "Could not upload file", "error");
-                    }
-                    else {
-                        let fr = new FileReader();
+                // Convert image to base64 data url
+                fr.onload = () => {
+                    const lfKey = "cover-" + this.state.id + "-"
+                        + this.props.data.books.find(b => {
+                            return this.state.id == b.id;
+                        }).versions.cover;
+                    
+                    localforage.setItem(lfKey, fr.result).then(img => {
+                        // Load new cover
+                        document.querySelector("img.cover").src = img;
                         
-                        // Convert image to base64 data url
-                        fr.onload = () => {
-                            const lfKey = "cover-" + this.state.id + "-"
-                                + this.props.data.books.find(b => {
-                                    return this.state.id == b.id;
-                                }).versions.cover;
-                            
-                            localforage.setItem(lfKey, fr.result).then(img => {
-                                // Load new cover
-                                document.querySelector("img.cover").src = img;
-                                
-                                // Increment book.versions.cover
-                                this.props.dispatch(incrementVersion(
-                                    this.state.id, "cover"
-                                ));
-                            }).catch(err => window.location.reload());
-                        };
-                        
-                        fr.readAsDataURL(files[0]);
-                    }
-                });
+                        // Increment book.versions.cover
+                        this.props.dispatch(incrementVersion(
+                            this.state.id, "cover"
+                        ));
+                    }).catch(err => window.location.reload());
+                };
+                
+                fr.readAsDataURL(files[0]);
             }
         });
     }
@@ -206,36 +198,25 @@ export default class ManageBook extends React.Component {
             data.series = this.refs.series.value;
             data.series_index = this.refs.series_index.value;
         }
-        
-        spaceNeeded(1000000, this.props.dispatch, (err, address) => {
-            if (err) {
+            
+        const url = LIBRARY_URL + this.props.data.account.library
+            + "/books/" + this.state.id + "/metadata";
+
+        // Send to library server
+        request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
+            this.setState({ saving: false });
+            
+            if (res.error) {
                 swal("Error", "An unknown error occured", "error");
-                this.setState({ saving: false });
             }
             else {
-                address = address === undefined
-                    ? this.props.data.account.library.address : address;
-                    
-                const url = address + "library/" + this.props.data.account.library.id
-                    + "/books/" + this.state.id + "/metadata";
-        
-                // Send to library server
-                request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
-                    this.setState({ saving: false });
-                    
-                    if (res.error) {
-                        swal("Error", "An unknown error occured", "error");
-                    }
-                    else {
-                        // Reload state.books and update local storage books
-                        loadBooks(
-                            Object.assign({}, this.props.data.account.library, { address }),
-                            this.props.dispatch
-                        );
-                    }
-                }});
+                // Reload state.books and update local storage books
+                loadBooks(
+                    Object.assign({}, this.props.data.account.library, { address }),
+                    this.props.dispatch
+                );
             }
-        });
+        }});
     }
     
     onOpenClick() {

@@ -2,7 +2,7 @@
 import request from "../request/";
 
 // Constants
-import { PATH_SEPARATOR } from "../../constants/config";
+import { PATH_SEPARATOR, LIBRARY_URL } from "constants/config";
 
 function cleanUp(books) {
     
@@ -53,8 +53,8 @@ function loadFromApi(book, library) {
             reader.readAsDataURL(xhr.response);
         };
 
-        // Build url using state.account.library.address|id / book.cover path
-        const url = library.address + "library/" + library.id + "/files/"
+        // Build url using state.account.library / book.cover path
+        const url = LIBRARY_URL + library + "/files/"
             + book.cover.split(PATH_SEPARATOR).slice(-3).join('/');
 
         xhr.open("GET", url);

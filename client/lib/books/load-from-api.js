@@ -1,12 +1,12 @@
 // Constants
-import { URL } from "../../constants/config";
+import { URL, LIBRARY_URL } from "constants/config";
 
 // Action creators
-import { loadBooks } from "../../actions/creators/books";
-import { save } from "../../actions/creators/";
+import { loadBooks } from "actions/creators/books";
+import { save } from "actions/creators/";
 
 // Modules
-import request from "../request/";
+import request from "lib/request/";
 
 function mergeAnnotations(books, fn) {
     
@@ -33,7 +33,7 @@ export default function (library, dispatch, fn) {
     // Get from Libyq DB
     request({url: URL + "api/books", success: (books1) => {
         if (books1.books.length > 0) {
-            const url = library.address + "library/" + library.id + "/books";
+            const url = LIBRARY_URL + library + "/books";
             
             // Get from library manager server
             request({url, success: (books2) => {

@@ -2,12 +2,14 @@ import React from "react";
 import Dropzone from "react-dropzone";
 
 // Modules
-import loadBooksFromApi from "../../lib/books/load-from-api";
-import spaceNeeded from "../../lib/request/space-needed";
-import upload from "../../lib/request/upload";
+import loadBooksFromApi from "lib/books/load-from-api";
+import upload from "lib/request/upload";
 
 // Components
 import NavBar from "../misc/NavBar";
+
+// Constants
+import { LIBRARY_URL } from "constants/config";
 
 export default class UploadBooks extends React.Component {
 
@@ -39,35 +41,23 @@ export default class UploadBooks extends React.Component {
             return;
         }
         
-        spaceNeeded(bytes, this.props.dispatch, (err, address) => {
-            if (err) {
-                swal("Error", "An unknown error occured", "error");
-                this.setState({ uploading: false });
+        const url = LIBRARY_URL + this.props.data.account.library + "/books";
+        
+        upload(url, "POST", "book", files, res => {
+            this.setState({ uploading: false });
+            
+            if (res.error) {
+                swal("Error", "Could not upload file(s)", "error");
             }
             else {
-                address = address === undefined
-                    ? this.props.data.account.library.address : address; 
+                swal("Success", "Book(s) uploaded successfully. Reloading library...", "success");
                 
-                const url = address + "library/" + this.props.data.account.library.id
-                    + "/books";
-                
-                upload(url, "POST", "book", files, res => {
-                    this.setState({ uploading: false });
-                    
-                    if (res.error) {
-                        swal("Error", "Could not upload file(s)", "error");
-                    }
-                    else {
-                        swal("Success", "Book(s) uploaded successfully. Reloading library...", "success");
-                        
-                        // Reload state.books from API
-                        loadBooksFromApi(
-                            Object.assign(
-                                {}, this.props.data.account.library, { address }
-                            ), this.props.dispatch
-                        );
-                    }
-                });
+                // Reload state.books from API
+                loadBooksFromApi(
+                    Object.assign(
+                        {}, this.props.data.account.library, { address }
+                    ), this.props.dispatch
+                );
             }
         });
     }

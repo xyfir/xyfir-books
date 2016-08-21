@@ -1,18 +1,20 @@
 import React from "react";
 
 // Modules
-import request from "../../lib/request/";
+import request from "lib/request/";
 
 // Components
 import NavBar from "../misc/NavBar";
+
+// Constants
+import { LIBRARY_URL } from "constants/config";
 
 export default class LibraryInfo extends React.Component {
 
     constructor(props) {
         super(props);
         
-        const url = this.props.data.account.library.address + "library/"
-            + this.props.data.account.library.id + "/size";
+        const url = LIBRARY_URL + this.props.data.account.library + "/size";
             
         this.state = { size: 0 };
         

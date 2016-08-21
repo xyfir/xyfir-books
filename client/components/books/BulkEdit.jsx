@@ -2,9 +2,11 @@ import React from "react";
 import titleCase from "titlecase";
 
 // Modules
-import spaceNeeded from "../../lib/request/space-needed";
-import loadBooks from "../../lib/books/load-from-api";
-import request from "../../lib/request/";
+import loadBooks from "lib/books/load-from-api";
+import request from "lib/request/";
+
+// Constants
+import { LIBRARY_URL } from "constants/config";
 
 // Components
 import NavBar from "../misc/NavBar";
@@ -30,155 +32,143 @@ export default class EditBooks extends React.Component {
         
         this.setState({ status: "Allocating space on server" });
         
-        // Allocate 1MB for each book
-        spaceNeeded(1000000 * this.state.ids.length, this.props.dispatch, (err, address) => {
-            if (err) {
-                swal("Error", "An unknown error occured", "error");
+        const r = this.refs;
+
+        const updateBook = (index) => {
+            const id = this.state.ids[index];
+            
+            // All books updated
+            if (id === undefined) {
                 this.setState({ status: "" });
+                swal("Action Complete", "", "success");
+                
+                // Update state.books and local storage
+                loadBooks(
+                    Object.assign({}, this.props.data.account.library, { address }),
+                    this.props.dispatch
+                );
+                
+                return;
+            }
+            
+            const book = this.props.data.books.find(b => id == b.id);
+            
+            // Skip book or abort editing
+            if (book === undefined) {
+                if (r.abort_on_error.checked) {
+                    this.setState({ status: `Could not find book with id '${id}'. Aborting...` });
+                    return;
+                }
+                else {
+                    this.setState({ status: `Could not find book with id '${id}'. Skipping...` });
+                    updateBook(index + 1);
+                    return;
+                }
             }
             else {
-                address = address === undefined
-                    ? this.props.data.account.library.address : address;
+                this.setState({ status: `Editing book '${book.title || id}'` });
+            }
+            
+            // Build data object to send to server
+            let data = {};
+            
+            // Swap authors / title
+            if (r.author_title_swap.checked) {
+                data.authors = book.title;
+                data.title = book.authors;
+            }
+            // Set authors
+            if (r.authors.value != "") {
+                data.authors = r.authors.value;
+            }
+            // Format title
+            if (r.title_format.checked) {
+                data.title = titleCase(data.title || book.title);
+            }
+            // Rating
+            if (r.rating.value != "") {
+                data.rating = +r.rating.value;
+                
+                if (data.rating > 0) {
+                    data.rating = data.rating / 2;
+                }
+            }
+            // Publisher
+            if (r.publisher.value != "") {
+                data.publisher = r.publisher.value;
+            }
+            // Published
+            if (r.published.value != "") {
+                data.pubdate = (new Date(r.published.value)).toISOString();
+            }
+            // Set data.tags
+            if (r.add_tags.value != "" || r.rem_tags.value != "") {
+                data.tags = book.tags;
+                
+                // Add tags
+                if (r.add_tags.value != "") {
+                    data.tags = data.tags.concat(r.add_tags.value.split(", "));
+                }
+                // Remove tags
+                if (r.rem_tags.value != "") {
+                    const remove = r.rem_tags.value.toLowerCase().split(", ");
                     
-                const r = this.refs;
-        
-                const updateBook = (index) => {
-                    const id = this.state.ids[index];
-                    
-                    // All books updated
-                    if (id === undefined) {
-                        this.setState({ status: "" });
-                        swal("Action Complete", "", "success");
-                        
-                        // Update state.books and local storage
-                        loadBooks(
-                            Object.assign({}, this.props.data.account.library, { address }),
-                            this.props.dispatch
-                        );
-                        
+                    data.tags = data.tags.filter(t1 => {
+                        return remove.indexOf(t1.toLowerCase()) == -1;
+                    });
+                }
+                
+                data.tags = data.tags.join(", ");
+            }
+            // Clear tags
+            if (r.clear_tags.checked) {
+                data.tags = "";
+            }
+            // Set series
+            if (r.series.value != "") {
+                data.series = r.series.value;
+            }
+            // Clear series
+            if (r.clear_series.checked) {
+                data.series = "";
+            }
+            // Date added
+            if (r.timestamp.value != "") {
+                data.timestamp = (new Date(r.timestamp.value)).toISOString();
+            }
+            // Comments
+            if (r.comments.value != "") {
+                data.comments = r.comments.value;
+            }
+            
+            this.setState({ status: "Sending new metadata to server" });
+            
+            const url = LIBRARY_URL + this.props.data.account.library
+                + "/books/" + id + "/metadata";
+            
+            // Update book's metadata
+            request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
+                if (res.error) {
+                    if (r.abort_on_error.checked) {
+                        this.setState({
+                            status: `Error updating book '${data.title || book.title || id}'. Aborting...`
+                        });
                         return;
                     }
-                    
-                    const book = this.props.data.books.find(b => id == b.id);
-                    
-                    // Skip book or abort editing
-                    if (book === undefined) {
-                        if (r.abort_on_error.checked) {
-                            this.setState({ status: `Could not find book with id '${id}'. Aborting...` });
-                            return;
-                        }
-                        else {
-                            this.setState({ status: `Could not find book with id '${id}'. Skipping...` });
-                            updateBook(index + 1);
-                            return;
-                        }
-                    }
                     else {
-                        this.setState({ status: `Editing book '${book.title || id}'` });
+                        this.setState({
+                            status: `Error updating book '${data.title || book.title || id}'.`
+                        });
+                        updateBook(index + 1);
                     }
-                    
-                    // Build data object to send to server
-                    let data = {};
-                    
-                    // Swap authors / title
-                    if (r.author_title_swap.checked) {
-                        data.authors = book.title;
-                        data.title = book.authors;
-                    }
-                    // Set authors
-                    if (r.authors.value != "") {
-                        data.authors = r.authors.value;
-                    }
-                    // Format title
-                    if (r.title_format.checked) {
-                        data.title = titleCase(data.title || book.title);
-                    }
-                    // Rating
-                    if (r.rating.value != "") {
-                        data.rating = +r.rating.value;
-                        
-                        if (data.rating > 0) {
-                            data.rating = data.rating / 2;
-                        }
-                    }
-                    // Publisher
-                    if (r.publisher.value != "") {
-                        data.publisher = r.publisher.value;
-                    }
-                    // Published
-                    if (r.published.value != "") {
-                        data.pubdate = (new Date(r.published.value)).toISOString();
-                    }
-                    // Set data.tags
-                    if (r.add_tags.value != "" || r.rem_tags.value != "") {
-                        data.tags = book.tags;
-                        
-                        // Add tags
-                        if (r.add_tags.value != "") {
-                            data.tags = data.tags.concat(r.add_tags.value.split(", "));
-                        }
-                        // Remove tags
-                        if (r.rem_tags.value != "") {
-                            const remove = r.rem_tags.value.toLowerCase().split(", ");
-                            
-                            data.tags = data.tags.filter(t1 => {
-                                return remove.indexOf(t1.toLowerCase()) == -1;
-                            });
-                        }
-                        
-                        data.tags = data.tags.join(", ");
-                    }
-                    // Clear tags
-                    if (r.clear_tags.checked) {
-                        data.tags = "";
-                    }
-                    // Set series
-                    if (r.series.value != "") {
-                        data.series = r.series.value;
-                    }
-                    // Clear series
-                    if (r.clear_series.checked) {
-                        data.series = "";
-                    }
-                    // Date added
-                    if (r.timestamp.value != "") {
-                        data.timestamp = (new Date(r.timestamp.value)).toISOString();
-                    }
-                    // Comments
-                    if (r.comments.value != "") {
-                        data.comments = r.comments.value;
-                    }
-                    
-                    this.setState({ status: "Sending new metadata to server" });
-                    
-                    const url = address + "library/" + this.props.data.account.library.id
-                        + "/books/" + id + "/metadata";
-                    
-                    // Update book's metadata
-                    request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
-                        if (res.error) {
-                            if (r.abort_on_error.checked) {
-                                this.setState({
-                                    status: `Error updating book '${data.title || book.title || id}'. Aborting...`
-                                });
-                                return;
-                            }
-                            else {
-                                this.setState({
-                                    status: `Error updating book '${data.title || book.title || id}'.`
-                                });
-                                updateBook(index + 1);
-                            }
-                        }
-                        else {
-                            updateBook(index + 1);
-                        }
-                    }})
-                };
-                
-                updateBook(0);
-            }
-        });
+                }
+                else {
+                    updateBook(index + 1);
+                }
+            }})
+        };
+        
+        updateBook(0);
     }
 
     render() {

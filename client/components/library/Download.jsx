@@ -2,13 +2,13 @@ import React from "react";
 import { saveAs } from "file-saver";
 
 // Modules
-import download from "../../lib/request/download";
+import download from "lib/request/download";
 
 // Components
 import NavBar from "../misc/NavBar";
 
 // Constants
-import { PATH_SEPARATOR } from "../../constants/config";
+import { PATH_SEPARATOR, LIBRARY_URL } from "constants/config";
 
 export default class DownloadLibrary extends React.Component {
 
@@ -28,8 +28,7 @@ export default class DownloadLibrary extends React.Component {
         
         let zip = new JSZip;
         
-        const url = this.props.data.account.library.address + "library/"
-            + this.props.data.account.library.id + "/files/";
+        const url = LIBRARY_URL + this.props.data.account.library + "/files/";
         
         const downloadBook = (index) => {
             const book = this.props.data.books[index];

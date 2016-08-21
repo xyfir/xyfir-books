@@ -1,20 +1,23 @@
 import React from "react";
 
 // Action creators
-import { deleteBooks } from "../../../../actions/creators/books";
+import { deleteBooks } from "actions/creators/books";
 
 // Constants
 import {
     URL, PATH_SEPARATOR
-} from "../../../../constants/config";
+} from "constants/config";
 
 // Modules
-import findMatches from "../../../../lib/books/find-matching";
-import loadCovers from "../../../../lib/books/load-covers";
-import sortBooks from "../../../../lib/books/sort";
-import request from "../../../../lib/request/";
-import toUrl from "../../../../lib/url/clean";
-import rand from "../../../../lib/random/number";
+import findMatches from "lib/books/find-matching";
+import loadCovers from "lib/books/load-covers";
+import sortBooks from "lib/books/sort";
+import request from "lib/request/";
+import toUrl from "lib/url/clean";
+import rand from "lib/random/number";
+
+// Constants
+import { LIBRARY_URL } from "constants/config";
 
 export default class TableList extends React.Component {
 
@@ -276,8 +279,8 @@ export default class TableList extends React.Component {
                             <dt>Formats</dt>
                             <dd className="formats">{
                                 selectedBook.formats.map(format => {
-                                    const url = this.props.data.account.library.address + "library/"
-                                        + this.props.data.account.library.id + "/files/"
+                                    const url = LIBRARY_URL
+                                        + this.props.data.account.library + "/files/"
                                         + format.split(PATH_SEPARATOR).slice(-3).join('/');
                                     return ( 
                                         <a target="_blank" href={url}>{
