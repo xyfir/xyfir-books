@@ -2,6 +2,8 @@ const randString = require("randomstring");
 const request = require("request");
 const db = require("lib/db");
 
+const config = require("config");
+
 /*
     POST api/account/login
     REQUIRED
@@ -14,8 +16,10 @@ const db = require("lib/db");
 */
 module.exports = function(req, res) {
 
-    let url = require("config").addresses.xacc
-        + `api/service/14/${req.body.xid}/${req.body.auth}`;
+    let url = config.addresses.xacc
+        + "api/service/14/" + config.keys.xacc
+        + "/" + req.body.xid
+        + "/" + req.body.auth;
 
     request(url, (err, response, body) => {
         body = JSON.parse(body);
