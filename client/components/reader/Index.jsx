@@ -13,7 +13,7 @@ import highlightNotes from "lib/reader/notes/highlight";
 import request from "lib/request/";
 
 // Constants
-import { URL, PATH_SEPARATOR, LIBRARY_URL } from "constants/config";
+import { URL, LIBRARY_URL } from "constants/config";
 
 // Action creators
 import { updateBook } from "actions/creators/books";
@@ -44,7 +44,7 @@ export default class Reader extends React.Component {
         
         this.state.book.formats.forEach(format => {
             if (format.split('.')[1] == "epub") {
-                url += format.split(PATH_SEPARATOR).slice(-3).join('/');
+                url += format.split('/').slice(-3).join('/');
             }
         });
         

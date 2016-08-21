@@ -2,7 +2,7 @@
 import request from "../request/";
 
 // Constants
-import { PATH_SEPARATOR, LIBRARY_URL } from "constants/config";
+import { LIBRARY_URL } from "constants/config";
 
 function cleanUp(books) {
     
@@ -55,7 +55,7 @@ function loadFromApi(book, library) {
 
         // Build url using state.account.library / book.cover path
         const url = LIBRARY_URL + library + "/files/"
-            + book.cover.split(PATH_SEPARATOR).slice(-3).join('/');
+            + book.cover.split('/').slice(-3).join('/');
 
         xhr.open("GET", url);
         xhr.send();

@@ -8,7 +8,7 @@ import download from "lib/request/download";
 import NavBar from "../misc/NavBar";
 
 // Constants
-import { PATH_SEPARATOR, LIBRARY_URL } from "constants/config";
+import { LIBRARY_URL } from "constants/config";
 
 export default class DownloadLibrary extends React.Component {
 
@@ -56,7 +56,7 @@ export default class DownloadLibrary extends React.Component {
             }
             // Download next book
             else {
-                let file = book.cover.split(PATH_SEPARATOR).slice(-3);
+                let file = book.cover.split('/').slice(-3);
                 
                 this.setState({
                     status: `Downloading book (${index + 1}/${this.props.data.books.length})`
@@ -74,7 +74,7 @@ export default class DownloadLibrary extends React.Component {
                         
                         // Download formats
                         book.formats.forEach(format => {
-                            const f = format.split(PATH_SEPARATOR).slice(-3).join('/');
+                            const f = format.split('/').slice(-3).join('/');
                             
                             download(url + f, res => {
                                 zip.file(f, res, {binary: true});
