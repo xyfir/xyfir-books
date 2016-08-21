@@ -82,7 +82,7 @@ module.exports = function (req, res) {
                         }
                         
                         // Create library on server
-                        request.post(config.addresses.library + "/" + library, (err, response, body) => {
+                        request.post(config.addresses.library + library, (err, response, body) => {
                             if (err) {
                                 cn.release();
                                 res.json({ error: true, message: "Contact support" });

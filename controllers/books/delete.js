@@ -16,7 +16,7 @@ const config = require("config");
 module.exports = function(req, res) { 
 
     request.del({
-        url: `${config.addresses.library}/${req.session.library}/books`,
+        url: config.addresses.library + req.session.library + "/books",
         form: { books: req.body.ids }
     }, (err, response, body) => {
         if (err) {

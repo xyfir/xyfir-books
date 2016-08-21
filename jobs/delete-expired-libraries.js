@@ -42,7 +42,7 @@ module.exports = function(fn) {
                     }
                     // Attempt to delete library at rows[index]
                     else {
-                        const url = config.addresses.library + "/" + rows[index].library_id;
+                        const url = config.addresses.library + rows[index].library_id;
                         
                         request.del(url, (err, response, body) => {
                             // Library deleted

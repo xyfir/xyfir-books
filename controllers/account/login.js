@@ -51,7 +51,7 @@ module.exports = function(req, res) {
                     const library = result.insertId + '-' + randString.generate(40);
 
                     // Create library on library server
-                    request.post(config.addresses.library + "/" + library, (err, response, body) => {
+                    request.post(config.addresses.library + library, (err, response, body) => {
                         if (err) {
                             cn.release();
                             res.json({ error: true, message: "Contact support" });
