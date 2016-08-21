@@ -16,14 +16,14 @@ const isDev = require("./config").environment.type == "dev";
 	- autoprefixer
 	- minifies / gzip
 */
-gulp.task("css", function () {
+gulp.task("css", function() {
     return gulp.src("./client/styles/style.css")
         .pipe(postcss([
             precss({}),
             ap({browsers: "last 1 version, > 10%"}),
             nano({ autoprefixer: false, zindex: false })
         ]))
-		.pipe(!isDev ? gzip() : gutil.noop())
+		//.pipe(!isDev ? gzip() : gutil.noop())
 		.pipe(gulp.dest("./public/css"));
 });
 
@@ -34,7 +34,7 @@ gulp.task("css", function () {
 	- bundles React components
 	- minifies / gzip
 */
-gulp.task("client", function () {
+gulp.task("client", function() {
     const browserify = require("browserify");
     const streamify = require("gulp-streamify");
     const babelify = require("babelify");
@@ -44,7 +44,7 @@ gulp.task("client", function () {
     const extensions = [".jsx", ".js"];
     
     const b = browserify(
-        './client/components/App.jsx', {
+        "./client/components/App.jsx", {
             debug: true, extensions, paths: ["./client"]
         }
     );
@@ -53,14 +53,14 @@ gulp.task("client", function () {
     }));
     
     return b.bundle()
-		.pipe(source('App.js'))
+		.pipe(source("App.js"))
         .pipe(streamify(uglify({
             mangle: false,
             compress: { unused: false }
         }))
-        .on('error', gutil.log))
-		.pipe(!isDev ? gzip() : gutil.noop())
-		.pipe(gulp.dest('./public/js/'));
+        .on("error", gutil.log))
+		//.pipe(!isDev ? gzip() : gutil.noop())
+		.pipe(gulp.dest("./public/js/"));
 });
 
 /*
@@ -68,7 +68,7 @@ gulp.task("client", function () {
     - get localforage / sweetalert
     - copy to ./public/js
 */
-gulp.task("copy-libs", function () {
+gulp.task("copy-libs", function() {
     return gulp.src([
         "./node_modules/sweetalert/dist/sweetalert.min.js",
         "./node_modules/localforage/dist/localforage.min.js"
@@ -81,15 +81,15 @@ gulp.task("copy-libs", function () {
     - postcss modifiers
     - copy to ./public/css
 */
-gulp.task("copy-css", function () {
+gulp.task("copy-css", function() {
     return gulp.src([
         "./node_modules/sweetalert/dist/sweetalert.css"
     ]).pipe(postcss([
         ap({browsers: "last 1 version, > 10%"}),
         nano({ autoprefixer: false, zindex: false })
-    ])).pipe(
-        !isDev ? gzip() : gutil.noop()
-    ).pipe(gulp.dest("./public/css"));
+    ]))
+    //.pipe(!isDev ? gzip() : gutil.noop())
+    .pipe(gulp.dest("./public/css"));
 });
 
 /*
@@ -97,7 +97,7 @@ gulp.task("copy-css", function () {
     - get font and css files from fontello
     - place in ./public/fontello
 */
-gulp.task("fontello", function () {
+gulp.task("fontello", function() {
     return gulp.src("fontello.json")
         .pipe(require("gulp-fontello")())
         .pipe(gulp.dest("./public/fontello"));
