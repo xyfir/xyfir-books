@@ -31,7 +31,7 @@ app.use(session({
 app.use(parser.json());
 app.use(parser.urlencoded({ extended: true }));
 
-app.use("/", express.static(__dirname + "/public"));
+app.use("/static", express.static(__dirname + "/static"));
 app.use("/api", require("./controllers/"));
 
 app.get("/", (req, res) => {
