@@ -3,7 +3,7 @@ import { render } from "react-dom";
 
 // Redux store / reducers
 import { createStore } from "redux";
-import reducers from "../reducers/";
+import reducers from "reducers/";
 
 // Components
 import Settings from "./settings/";
@@ -12,17 +12,18 @@ import Library from "./library/";
 import Books from "./books/";
 
 // Modules
-import loadBooksFromApi from "../lib/books/load-from-api";
-import updateView from "../lib/url/update-view";
-import request from "../lib/request/";
+import loadBooksFromApi from "lib/books/load-from-api";
+import parseHashQuery from "lib/url/parse-hash-query";
+import updateView from "lib/url/update-view";
+import request from "lib/request/";
 
 // Constants
-import initialState from "../constants/initial-state";
-import { INITIALIZE_STATE } from "../actions/types/";
-import { URL, XACC, LOG_STATE } from "../constants/config";
+import initialState from "constants/initial-state";
+import { INITIALIZE_STATE } from "actions/types/";
+import { URL, XACC, LOG_STATE } from "constants/config";
 
 // Action creators
-import { save } from "../actions/creators/";
+import { save } from "actions/creators/";
 
 const store = createStore(reducers);
 
@@ -134,28 +135,19 @@ class App extends React.Component {
     }
     
     _login() {
+        const q = parseHashQuery();
+
         // Attempt to login using XID/AUTH or skip to initialize()
-        if (location.href.indexOf("xid=") > -1 && location.href.indexOf("auth=") > -1) {
-            // Login using XID/AUTH_TOKEN
-            const xid = location.href.substring(
-                location.href.lastIndexOf("?xid=") + 5,
-                location.href.lastIndexOf("&auth")
-            );
-            const auth = location.href.substring(
-                location.href.lastIndexOf("&auth=") + 6
-            );
-            
+        if (q.xid && q.auth) {
             request({
-                url: URL + "api/account/login",
-                method: "POST",
-                data: { xid, auth },
+                url: URL + "api/account/login", method: "POST", data: q,
                 success: (res) => {
                     if (res.error ) {
                         location.href = XACC + "login/14";
                     }
                     else {
                         this._initialize();
-                        history.pushState({}, '', URL + "library/");
+                        location.hash = location.hash.split('?')[0];
                     }
                 }
             });
