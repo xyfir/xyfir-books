@@ -1,6 +1,9 @@
 const randString = require("randomstring");
 const request = require("request");
-const db = require("../../lib/db");
+const stripe = require("stripe");
+const db = require("lib/db");
+
+const config = require("config");
 
 /*
     PUT api/account/subscription
@@ -19,7 +22,7 @@ module.exports = function (req, res) {
         '3': { days: 365, cost: 3600 }
     };
 
-    const stripeKey = require("../../config").keys.stripe;
+    const stripeKey = config.keys.stripe;
 
     if (subscriptions[req.body.subscription] === undefined) {
         res.json({ error: true, message: "Invalid subscription length" });
@@ -31,7 +34,7 @@ module.exports = function (req, res) {
         description: "Ptorx - Premium Subscription", currency: "usd"
     };
 
-    require("stripe")(stripeKey).charges.create(info, (err, charge) => {
+    stripe(stripeKey).charges.create(info, (err, charge) => {
         if (err) {
             res.json({ error: true, message: "Error processing your card. Please try again." });
             return;
@@ -65,62 +68,39 @@ module.exports = function (req, res) {
                     res.json({ error: true, message: "Contact support" });
                 }
                 else if (rows[0].library_id == '') {
-                    // We need to create a library for user, find library-manager server
-                    sql = `
-                        SELECT * FROM servers WHERE is_select = 0 AND space_free > 100000000 + (space_total * 0.1)
-                        AND library_limit > library_count LIMIT 1
-                    `;
+                    const library = req.session.uid + '-' + randString.generate(40);
+                        
+                    // Update user's library / library server id
+                    sql = "UPDATE users SET library_id = ? WHERE user_id = ?";
+                    let vars = [library, req.session.uid];
                     
-                    cn.query(sql, (err, rows) => {
-                        if (err || !rows.length) {
+                    cn.query(sql, vars, (err, result) => {
+                        if (err || !result.affectedRows) {
                             cn.release();
                             res.json({ error: true, message: "Contact support" });
                             return;
                         }
                         
-                        const library = req.session.uid + '-' + randString.generate(40);
-                        
-                        // Update user's library / library server id
-                        sql = "UPDATE users SET library_id = ?, library_server_id = ? WHERE user_id = ?";
-                        let vars = [library, rows[0].server_id, req.session.uid];
-                        
-                        cn.query(sql, vars, (err, result) => {
-                            if (err || !result.affectedRows) {
+                        // Create library on server
+                        request.post(config.addresses.library + "/" + library, (err, response, body) => {
+                            if (err) {
                                 cn.release();
                                 res.json({ error: true, message: "Contact support" });
                                 return;
                             }
                             
-                            // Create library on server
-                            request.post(rows[0].address + "library/" + library, (err, response, body) => {
-                                if (err) {
-                                    cn.release();
-                                    res.json({ error: true, message: "Contact support" });
-                                    return;
-                                }
-                                
-                                body = JSON.parse(body);
-                                
-                                if (body.error) {
-                                    cn.release();
-                                    res.json({ error: true, message: "Contact support" });
-                                    return;
-                                }
-                                
-                                // Update server's library_count
-                                sql = `
-                                    UPDATE servers SET library_count = library_count + 1 WHERE server_id = ?    
-                                `;
-                                
-                                cn.query(sql, [rows[0].server_id], (err, result) => {
-                                    res.json({ error: false, message: "" });
-                                
-                                    req.session.library = {
-                                        id: library, address: rows[0].address, server: rows[0].server_id
-                                    };
-                                    req.session.subscription = subscription;
-                                });
-                            });
+                            body = JSON.parse(body);
+                            
+                            if (body.error) {
+                                cn.release();
+                                res.json({ error: true, message: "Contact support" });
+                                return;
+                            }
+                            
+                            res.json({ error: false, message: "" });
+                        
+                            req.session.library = library;
+                            req.session.subscription = subscription;
                         });
                     });
                 }

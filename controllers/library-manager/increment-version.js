@@ -1,9 +1,9 @@
-const db = require("../../lib/db");
+const db = require("lib/db");
 
 /*
     PUT api/library-manager/:server/:lib/books/:book
     REQUIRED
-        type: string, freeSpace: number
+        type: string
     RETURN
         { error: boolean, message?: string }
     DESCRIPTION
@@ -15,7 +15,7 @@ module.exports = function(req, res) {
     const column = req.body.type == "metadata" ? "version_metadata" : "version_cover";
     
     let sql = `
-        SELECT user_id FROM users WHERE library_server_id = ? AND library_id = ?
+        SELECT user_id FROM users WHERE library_id = ?
     `;
     let vars = [req.params.server, req.params.lib];
     
@@ -31,19 +31,12 @@ module.exports = function(req, res) {
             vars = [uid, req.params.book];
             
             cn.query(sql, vars, (err, result) => {
-                if (err || !result.affectedRows) {
-                    cn.release();
+                cn.release();
+
+                if (err || !result.affectedRows)
                     res.json({ error: true, message: "Could not increment version" });
-                }
-                else {
-                    sql = "UPDATE servers SET space_free = ? WHERE server_id = ?";
-                    vars = [req.body.freeSpace, req.params.server];
-                    
-                    cn.query(sql, vars, (err, result) => {
-                        cn.release();
-                        res.json({ error: false });
-                    });
-                }
+                else
+                    res.json({ error: false });
             });
         }
     }));

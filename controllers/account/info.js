@@ -2,9 +2,7 @@
     GET api/account
     RETURN
         {
-            subscription: number, library: {
-                address: string, id: string
-            }
+            subscription: number, library: string
         }
     DESCRIPTION
         Return account info
@@ -12,10 +10,8 @@
 module.exports = function(req, res) {
     
     res.json({
-        subscription: req.session.subscription, library: {
-            address: req.session.library.address,
-            id: req.session.library.id
-        }
+        subscription: req.session.subscription,
+        library: req.session.library
     });
     
 };

@@ -37,16 +37,13 @@ app.use("/api", require("./controllers/"));
 app.get("/", (req, res) => {
     if (config.environment.type == "dev") {
         req.session.uid = 1; req.session.subscription = 0;
-        req.session.library = {
-            address: "http://localhost:2085/", server: 1,
-            id: "1-libliblililibliblililibliblililibliblili"
-        };
+        req.session.library = "1-libliblililibliblililibliblililibliblili";
     }
     res.sendFile(__dirname + "/views/Home.html");
 });
 app.get("/app/*", (req, res) => res.sendFile(__dirname + "/views/App.html"));
 app.listen(config.environment.port, () => {
-    console.log("SERVER RUNNING ON", config.environment.port);
+    console.log("~~Server running on port", config.environment.port);
 });
 
 if (config.environment.runCronJobs)

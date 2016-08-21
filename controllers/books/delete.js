@@ -1,5 +1,7 @@
 const request = require("request");
-const db = require("../../lib/db");
+const db = require("lib/db");
+
+const config = require("config");
 
 /*
     DELETE api/books
@@ -14,7 +16,7 @@ const db = require("../../lib/db");
 module.exports = function(req, res) { 
 
     request.del({
-        url: `${req.session.library.address}library/${req.session.library.id}/books`,
+        url: `${config.addresses.library}/${req.session.library}/books`,
         form: { books: req.body.ids }
     }, (err, response, body) => {
         if (err) {
@@ -31,20 +33,8 @@ module.exports = function(req, res) {
                 let vars = [req.session.uid, req.body.ids.split(',')];
                 
                 db(cn => cn.query(sql, vars, (err, result) => {
-                    if (err) {
-                        cn.release();
-                        res.json({ error: true });
-                    }
-                    else {
-                        sql = "UPDATE servers SET space_free = ? WHERE server_id = ?";
-                        vars = [body.freeSpace, req.session.library.server];
-                        
-                        cn.query(sql, vars, (err, result) => {
-                            cn.release();
-                            
-                            res.json({ error: false });
-                        });
-                    }
+                    cn.release();
+                    res.json({ error: !!err });
                 }));
             }
         }

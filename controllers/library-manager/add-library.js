@@ -1,9 +1,9 @@
-const db = require("../../lib/db");
+const db = require("lib/db");
 
 /*
     POST api/library-manager/:server/:lib/library
     REQUIRED
-        freeSpace: number, ids: string
+        ids: string
     RETURN
         { error: boolean }
     DESCRIPTION
@@ -42,21 +42,8 @@ module.exports = function(req, res) {
                     }).join(", ");
                     
                     cn.query(sql, (err, result) => {
-                        if (err || !result.affectedRows) {
-                            cn.release();
-                            res.json({ error: true });
-                        }
-                        else {
-                            // Update free space for library server
-                            sql = "UPDATE servers SET space_free = ? WHERE server_id = ?";
-                            vars = [req.body.freeSpace, req.params.server];
-                            
-                            cn.query(sql, vars, (err, result) => {
-                                cn.release();
-                                
-                                res.json({ error: !!err || !result.affectedRows });
-                            });
-                        }
+                        cn.release();
+                        res.json({ error: !!err || !result.affectedRows });
                     });
                 }
             });

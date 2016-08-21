@@ -3,7 +3,7 @@ const db = require("../../lib/db");
 /*
     POST api/library-manager/:server/:lib/books
     REQUIRED
-        freeSpace: number, ids: string
+        ids: string
     RETURN
         { error: boolean, message?: string }
     DESCRIPTION
@@ -31,24 +31,12 @@ module.exports = function(req, res) {
             }).join(", ");
             
             cn.query(sql, (err, result) => {
-                if (err) {
-                    cn.release();
+                cn.release();
+
+                if (err)
                     res.json({ error: true, message: "Could not insert books" });
-                }
-                else {
-                    // Update free space for library server
-                    sql = "UPDATE servers SET space_free = ? WHERE server_id = ?";
-                    vars = [req.body.freeSpace, req.params.server];
-                    
-                    cn.query(sql, vars, (err, result) => {
-                        cn.release();
-                        
-                        if (err || !result.affectedRows)
-                            res.json({ error: true, message: err });
-                        else
-                            res.json({ error: false });
-                    });
-                }
+                else
+                    res.json({ error: false });
             });
         }
     }));
