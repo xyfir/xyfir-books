@@ -1,7 +1,4 @@
 node_modules/
 .vscode/
+static/
 config.js
-public/js/App.js
-public/js/*.min.js
-public/css/
-public/fontello/
