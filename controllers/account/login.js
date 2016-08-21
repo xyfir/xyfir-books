@@ -1,5 +1,3 @@
-"use strict";
-
 const randString = require("randomstring");
 const request = require("request");
 const db = require("../../lib/db");

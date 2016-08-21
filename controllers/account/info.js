@@ -1,5 +1,3 @@
-"use strict";
-
 /*
     GET api/account
     RETURN
