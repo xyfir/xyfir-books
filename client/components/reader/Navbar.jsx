@@ -1,7 +1,7 @@
 import React from "react";
 
 // Modules
-import request from "lib/request/";
+import request from "lib/request/index";
 
 // Constants
 import { URL } from "constants/config";

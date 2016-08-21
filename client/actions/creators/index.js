@@ -1,6 +1,6 @@
 import {
     CHANGE_VIEW, SET_SEARCH, SET_SAVE
-} from "../types/";
+} from "../types/index";
 
 export function changeView(view) {
     return {

@@ -6,8 +6,8 @@ import AddFormat from "./AddFormat";
 import BulkEdit from "./BulkEdit";
 import Manage from "./Manage";
 import Upload from "./Upload";
-import Reader from "components/reader/";
-import List from "./list/";
+import Reader from "components/reader/index";
+import List from "./list/index";
 
 export default class Books extends React.Component {
 

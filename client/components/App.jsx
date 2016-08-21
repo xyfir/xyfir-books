@@ -3,27 +3,27 @@ import { render } from "react-dom";
 
 // Redux store / reducers
 import { createStore } from "redux";
-import reducers from "reducers/";
+import reducers from "reducers/index";
 
 // Components
-import Settings from "./settings/";
-import Account from "./account/";
-import Library from "./library/";
-import Books from "./books/";
+import Settings from "./settings/index";
+import Account from "./account/index";
+import Library from "./library/index";
+import Books from "./books/index";
 
 // Modules
 import loadBooksFromApi from "lib/books/load-from-api";
 import parseHashQuery from "lib/url/parse-hash-query";
 import updateView from "lib/url/update-view";
-import request from "lib/request/";
+import request from "lib/request/index";
 
 // Constants
 import initialState from "constants/initial-state";
-import { INITIALIZE_STATE } from "actions/types/";
+import { INITIALIZE_STATE } from "actions/types/index";
 import { URL, XACC, LOG_STATE } from "constants/config";
 
 // Action creators
-import { save } from "actions/creators/";
+import { save } from "actions/creators/index";
 
 const store = createStore(reducers);
 

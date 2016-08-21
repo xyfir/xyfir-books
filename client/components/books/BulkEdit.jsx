@@ -3,7 +3,7 @@ import titleCase from "titlecase";
 
 // Modules
 import loadBooks from "lib/books/load-from-api";
-import request from "lib/request/";
+import request from "lib/request/index";
 
 // Constants
 import { LIBRARY_URL } from "constants/config";

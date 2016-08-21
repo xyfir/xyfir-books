@@ -5,7 +5,7 @@ import books from "./books";
 
 import {
     INITIALIZE_STATE, CHANGE_VIEW, SET_SEARCH, SET_SAVE
-} from "../actions/types/";
+} from "../actions/types/index";
 
 export default function (state, action) {
         

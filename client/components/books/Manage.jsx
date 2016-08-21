@@ -4,7 +4,7 @@ import Dropzone from "react-dropzone";
 // Modules
 import loadCovers from "lib/books/load-covers";
 import loadBooks from "lib/books/load-from-api";
-import request from "lib/request/";
+import request from "lib/request/index";
 import upload from "lib/request/upload";
 
 // Components

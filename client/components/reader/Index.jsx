@@ -3,21 +3,21 @@ import React from "react";
 // Components
 import Overlay from "./Overlay";
 import Navbar from "./Navbar";
-import Modal from "./modal/";
+import Modal from "./modal/index";
 
 // Modules
 import findAnnotationMarkers from "lib/reader/annotations/find-markers";
 import insertAnnotations from "lib/reader/annotations/insert";
 import updateAnnotations from "lib/reader/annotations/update";
 import highlightNotes from "lib/reader/notes/highlight";
-import request from "lib/request/";
+import request from "lib/request/index";
 
 // Constants
 import { URL, LIBRARY_URL } from "constants/config";
 
 // Action creators
 import { updateBook } from "actions/creators/books";
-import { save } from "actions/creators/";
+import { save } from "actions/creators/index";
 
 export default class Reader extends React.Component {
 

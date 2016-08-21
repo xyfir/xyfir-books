@@ -1,13 +1,13 @@
 import React from "react";
 
 // Action creators
-import { purchaseSubscription } from "../../actions/creators/account";
+import { purchaseSubscription } from "actions/creators/account";
 
 // Constants
-import { URL, STRIPE_KEY_PUB } from "../../constants/config";
+import { URL, STRIPE_KEY_PUB } from "constants/config";
 
 // Modules
-import request from "../../lib/request/";
+import request from "lib/request/index";
 
 // Components
 import NavBar from "../misc/NavBar";

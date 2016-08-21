@@ -3,10 +3,10 @@ import { URL, LIBRARY_URL } from "constants/config";
 
 // Action creators
 import { loadBooks } from "actions/creators/books";
-import { save } from "actions/creators/";
+import { save } from "actions/creators/index";
 
 // Modules
-import request from "lib/request/";
+import request from "lib/request/index";
 
 function mergeAnnotations(books, fn) {
     

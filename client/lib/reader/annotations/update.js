@@ -1,5 +1,5 @@
 // Modules
-import request from "lib/request/";
+import request from "lib/request/index";
 
 // Constants
 import { LIB_ANN } from "constants/config";

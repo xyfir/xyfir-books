@@ -2,7 +2,7 @@ import marked from "marked";
 import React from "react";
 
 // Modules
-import request from "lib/request/";
+import request from "lib/request/index";
 import unwrap from "lib/reader/matches/unwrap";
 import insertAnnotations from "lib/reader/annotations/insert";
 

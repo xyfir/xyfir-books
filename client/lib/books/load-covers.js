@@ -1,5 +1,5 @@
 // Modules
-import request from "../request/";
+import request from "lib/request/index";
 
 // Constants
 import { LIBRARY_URL } from "constants/config";

@@ -2,7 +2,7 @@ import React from "react";
 
 // Modules
 import highlightNotes from "lib/reader/notes/highlight";
-import request from "lib/request/";
+import request from "lib/request/index";
 import unwrap from "lib/reader/matches/unwrap";
 
 // Constants

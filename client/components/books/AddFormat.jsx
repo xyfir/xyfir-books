@@ -5,7 +5,7 @@ import Dropzone from "react-dropzone";
 import { addFormat } from "actions/creators/books";
 
 // Modules
-import request from "lib/request/";
+import request from "lib/request/index";
 import upload from "lib/request/upload";
 
 // Constants

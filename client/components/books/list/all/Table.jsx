@@ -10,7 +10,7 @@ import { URL } from "constants/config";
 import findMatches from "lib/books/find-matching";
 import loadCovers from "lib/books/load-covers";
 import sortBooks from "lib/books/sort";
-import request from "lib/request/";
+import request from "lib/request/index";
 import toUrl from "lib/url/clean";
 import rand from "lib/random/number";
 

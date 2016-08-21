@@ -1,8 +1,8 @@
 import React from "react";
 
 // Action creators
-import { setTheme } from "../../actions/creators/settings";
-import { save } from "../../actions/creators/";
+import { setTheme } from "actions/creators/settings";
+import { save } from "actions/creators/index";
 
 // Components
 import NavBar from "../misc/NavBar";
