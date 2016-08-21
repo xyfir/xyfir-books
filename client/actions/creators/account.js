@@ -1,5 +1,5 @@
 import {
-    PURCHASE_SUBSCRIPTION, SET_LIBRARY_ADDRESS
+    PURCHASE_SUBSCRIPTION
 } from "../types/account";
 
 export function purchaseSubscription(subscription) {
@@ -7,9 +7,3 @@ export function purchaseSubscription(subscription) {
         type: PURCHASE_SUBSCRIPTION, subscription
     };
 };
-
-export function setLibraryAddress(address) {
-    return {
-        type: SET_LIBRARY_ADDRESS, address
-    };
-}

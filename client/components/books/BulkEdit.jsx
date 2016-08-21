@@ -44,7 +44,7 @@ export default class EditBooks extends React.Component {
                 
                 // Update state.books and local storage
                 loadBooks(
-                    Object.assign({}, this.props.data.account.library, { address }),
+                    this.props.data.account.library,
                     this.props.dispatch
                 );
                 

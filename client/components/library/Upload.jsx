@@ -53,9 +53,8 @@ export default class UploadLibrary extends React.Component {
                 );
                 
                 loadBooksFromApi(
-                    Object.assign(
-                        {}, this.props.data.account.library, { address }
-                    ), this.props.dispatch
+                    this.props.data.account.library,
+                    this.props.dispatch
                 );
             }
         });

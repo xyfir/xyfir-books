@@ -4,9 +4,7 @@ import { LIST_BOOKS } from "./views";
 
 const state = {
     books: [], view: LIST_BOOKS, account: {
-        subscription: 0, library: {
-            address: "", id: ""
-        }
+        subscription: 0, library: ""
     }, search: "", save: "", config: {
         general: {
             theme: "light"

@@ -54,9 +54,8 @@ export default class UploadBooks extends React.Component {
                 
                 // Reload state.books from API
                 loadBooksFromApi(
-                    Object.assign(
-                        {}, this.props.data.account.library, { address }
-                    ), this.props.dispatch
+                    this.props.data.account.library,
+                    this.props.dispatch
                 );
             }
         });
