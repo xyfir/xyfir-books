@@ -64,6 +64,20 @@ gulp.task("client", function() {
 });
 
 /*
+	favicons
+    - generate favicons from icon.png
+    - place in static/icons
+*/
+gulp.task("favicons", function() {
+    const favicons = require("gulp-favicons");
+
+    return gulp.src("icon.png")
+    .pipe(favicons({}))
+    .on("error", gutil.log)
+    .pipe(gulp.dest("./static/icons/"));
+});
+
+/*
 	copy-libs
     - get localforage / sweetalert / epub.js / jszip
     - copy to ./static/js
