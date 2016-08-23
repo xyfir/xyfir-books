@@ -1,12 +1,11 @@
 import React from "react";
 
 // Components
-import Purchase from "./Purchase";
+import Purchase from "./Purchase/Index";
 import NavBar from "../misc/NavBar";
 
 // Constants
-import { URL } from "../../constants/config";
-import { PURCHASE_SUBSCRIPTION } from "../../constants/views";
+import { URL } from "constants/config";
 
 export default class Account extends React.Component {
 
@@ -15,7 +14,7 @@ export default class Account extends React.Component {
     }
 
     render() {
-        if (this.props.data.view == PURCHASE_SUBSCRIPTION)
+        if (this.props.data.view.split('/')[1] == "PURCHASE")
             return <Purchase data={this.props.data} dispatch={this.props.dispatch} />;
         
         return (
@@ -34,6 +33,10 @@ export default class Account extends React.Component {
                             <p>
                                 Your subscription will expire on <strong>{
                                     (new Date(this.props.data.account.subscription)).toLocaleString()
+                                }</strong>.
+                                <br />
+                                Your library size limit is <strong>{
+                                    this.props.data.account.librarySizeLimit + " GB"
                                 }</strong>
                             </p>
                             
@@ -41,9 +44,16 @@ export default class Account extends React.Component {
                             
                             <button
                                 className="btn-primary"
-                                onClick={() => location.hash = "account/purchase-subscription"}
+                                onClick={() => location.hash = "account/purchase/extend-subscription"}
                             >
                                 Extend Subscription
+                            </button>
+
+                            <button
+                                className="btn-secondary"
+                                onClick={() => location.hash = "account/purchase/increase-size-limit"}
+                            >
+                                Increase Size limit
                             </button>
                        </div> 
                     ) : (
@@ -62,7 +72,7 @@ export default class Account extends React.Component {
                             
                             <button
                                 className="btn-primary"
-                                onClick={() => location.hash = "account/purchase-subscription"}
+                                onClick={() => location.hash = "account/purchase/subscription"}
                             >
                                 Purchase Subscription
                             </button>
