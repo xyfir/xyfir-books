@@ -28,7 +28,9 @@ router.put("/books/:book/word-count", require("./books/word-count"));
 /* Account */
 
 router.get("/account", require("./account/info"));
-router.put("/account/subscription", require("./account/purchase"));
 router.post("/account/login", require("./account/login"));
+router.put("/account/size-limit", require("./account/increase-size-limit"));
+router.put("/account/subscription", require("./account/extend-subscription"));
+router.post("/account/subscription", require("./account/purchase-subscription"));
 
 module.exports = router;
