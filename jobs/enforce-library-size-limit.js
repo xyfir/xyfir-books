@@ -15,6 +15,7 @@ module.exports = function(fn) {
         SELECT
             user_id, email, library_id, library_size_limit, library_delete
         FROM users
+        WHERE library_id NOT ''
     `;
 
     db(cn => cn.query(sql, (err, rows) => {

@@ -10,8 +10,12 @@ module.exports = function(fn) {
 
     db(cn => {
         let sql = `
-            SELECT user_id, library_id FROM users
-            WHERE UNIX_TIMESTAMP() > subscription + (7 * 86400000)
+            SELECT
+                user_id, library_id
+            FROM users
+            WHERE 
+                library_id NOT ''
+                AND UNIX_TIMESTAMP() > subscription + (7 * 86400000)
         `;
         
         cn.query(sql, (err, rows) => {
