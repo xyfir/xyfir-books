@@ -3,7 +3,7 @@ import React from "react";
 // Components
 import Overlay from "./Overlay";
 import Navbar from "./Navbar";
-import Modal from "./modal/index";
+import Modal from "./modal/Index";
 
 // Modules
 import findAnnotationMarkers from "lib/reader/annotations/find-markers";

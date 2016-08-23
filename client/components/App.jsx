@@ -6,10 +6,10 @@ import { createStore } from "redux";
 import reducers from "reducers/index";
 
 // Components
-import Settings from "./settings/index";
-import Account from "./account/index";
-import Library from "./library/index";
-import Books from "./books/index";
+import Settings from "./settings/Index";
+import Account from "./account/Index";
+import Library from "./library/Index";
+import Books from "./books/Index";
 
 // Modules
 import loadBooksFromApi from "lib/books/load-from-api";
