@@ -7,6 +7,7 @@ const cron = require("cron");
 module.exports = function() {
     
     const jobs = {
+        enforceLibrarySizeLimit: require("./enforce-library-size-limit"),
         deleteExpiredLibraries: require("./delete-expired-libraries")
     };
 
@@ -15,6 +16,13 @@ module.exports = function() {
     // Retries once on failure
     new cron.CronJob("0 1/12 * * *", () => jobs.deleteExpiredLibraries(err => {
         if (err) jobs.deleteExpiredLibraries(err => { return; });
+    }), () => { return; }, true);
+
+    // Enforce library size limits
+    // Run once a day
+    // Retries once on failure
+    new cron.CronJob("0 3 * * *", () => jobs.enforceLibrarySizeLimit(err => {
+        if (err) jobs.enforceLibrarySizeLimit(err => { return; });
     }), () => { return; }, true);
 
 };
