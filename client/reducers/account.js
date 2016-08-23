@@ -1,5 +1,5 @@
 import {
-    PURCHASE_SUBSCRIPTION
+    PURCHASE_SUBSCRIPTION, SET_LIBRARY_SIZE_LIMIT
 } from "actions/types/account";
 
 export default function(state, action) {
@@ -7,6 +7,11 @@ export default function(state, action) {
         case PURCHASE_SUBSCRIPTION:
             return Object.assign({}, state, {
                 subscription: action.subscription
+            });
+
+        case SET_LIBRARY_SIZE_LIMIT:
+            return Object.assign({}, state, {
+                librarySizeLimit: action.size
             });
             
         default:
