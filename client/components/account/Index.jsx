@@ -1,7 +1,7 @@
 import React from "react";
 
 // Components
-import Purchase from "./Purchase/Index";
+import Purchase from "./purchase/Index";
 import NavBar from "../misc/NavBar";
 
 // Constants
