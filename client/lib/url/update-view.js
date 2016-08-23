@@ -17,10 +17,19 @@ export default function(store) {
 
     // Update state to reflect hash
     if (hash[0] == "account") {
-        if (hash[1] == "purchase-subscription")
-            store.dispatch(changeView(VIEWS.PURCHASE_SUBSCRIPTION));
-        else
+        if (hash[1] == "purchase") {
+            switch (hash[2]) {
+                case "subscription":
+                    return store.dispatch(changeView(VIEWS.PURCHASE_SUBSCRIPTION));
+                case "extend-subscription":
+                    return store.dispatch(changeView(VIEWS.EXTEND_SUBSCRIPTION));
+                case "increase-size-limit":
+                    return store.dispatch(changeView(VIEWS.INCREASE_SIZE_LIMIT));
+            }
+        }
+        else {
             store.dispatch(changeView(VIEWS.ACCOUNT));
+        }
     }
     else if (hash[0] == "library") {
         switch (hash[1]) {
