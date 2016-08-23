@@ -8,11 +8,12 @@ const config = require("config");
 /*
     POST api/account/subscription
     REQUIRED
-        stripeToken: string, subscription: number
+        stripeToken: string, subscription: number, addToSizeLimit: number
     RETURN
         { error: boolean, message: string }
     DESCRIPTION
-        Add time to user's subscription after charging card via Stripe
+        Subscribe user to service
+        Generates and creates library
 */
 module.exports = function (req, res) {
 
@@ -22,95 +23,68 @@ module.exports = function (req, res) {
         '3': { days: 365, cost: 3600 }
     };
 
-    const stripeKey = config.keys.stripe;
-
     if (subscriptions[req.body.subscription] === undefined) {
         res.json({ error: true, message: "Invalid subscription length" });
         return;
     }
 
-    let info = {
-        amount: subscriptions[req.body.subscription].cost, source: req.body.stripeToken,
-        description: "Ptorx - Premium Subscription", currency: "usd"
+    // Calculate cost of subscription + added storage gigabytes
+    const amount = subscriptions[req.body.subscription].cost
+        + (req.body.addToSizeLimit * 15);
+
+    // Build stripe data object
+    const data = {
+        amount, source: req.body.stripeToken, currency: "usd",
+        description: `Libyq Subscription (${
+            subscriptions[req.body.subscription].days
+        } Days)`
     };
 
-    stripe(stripeKey).charges.create(info, (err, charge) => {
+    // Attempt to charge user's card
+    stripe(config.keys.stripe).charges.create(data, (err, charge) => {
         if (err) {
-            res.json({ error: true, message: "Error processing your card. Please try again." });
-            return;
+            res.json({
+                error: true,
+                message: "Error processing your card. Please try again."
+            }); return;
         }
 
-        let sql = `
-            SELECT subscription, library_id FROM users WHERE user_id = ?
-        `;
-        db(cn => cn.query(sql, [req.session.uid], (err, rows) => {
-            if (err || !rows.length) {
-                cn.release();
-                res.json({ error: true, message: "An unknown error occured" });
-                return;
-            }
-            
-            // Add months to current subscription expiration (or now())
-            let subscription;
-            
-            // Set subscription expiration
-            if (Date.now() > rows[0].subscription)
-                subscription = Date.now() + (subscriptions[req.body.subscription].days * 86400 * 1000);
-            else
-                subscription = rows[0].subscription + (subscriptions[req.body.subscription].days * 86400 * 1000);
+        // Set subscription expiration Date
+        const subscription = Date.now()
+            + (subscriptions[req.body.subscription].days * 86400000);
+        
+        // Generate library id
+        const library = req.session.uid + '-' + randString.generate(40);
 
-            sql = `
-                UPDATE users SET subscription = ? WHERE user_id = ?
-            `;
-            cn.query(sql, [subscription, req.session.uid], (err, result) => {
-                if (err || !result.affectedRows) {
-                    cn.release();
-                    res.json({ error: true, message: "Contact support" });
-                }
-                else if (rows[0].library_id == '') {
-                    const library = req.session.uid + '-' + randString.generate(40);
-                        
-                    // Update user's library / library server id
-                    sql = "UPDATE users SET library_id = ? WHERE user_id = ?";
-                    let vars = [library, req.session.uid];
-                    
-                    cn.query(sql, vars, (err, result) => {
-                        if (err || !result.affectedRows) {
-                            cn.release();
-                            res.json({ error: true, message: "Contact support" });
-                            return;
-                        }
-                        
-                        // Create library on server
-                        request.post(config.addresses.library + library, (err, response, body) => {
-                            if (err) {
-                                cn.release();
-                                res.json({ error: true, message: "Contact support" });
-                                return;
-                            }
-                            
-                            body = JSON.parse(body);
-                            
-                            if (body.error) {
-                                cn.release();
-                                res.json({ error: true, message: "Contact support" });
-                                return;
-                            }
-                            
-                            res.json({ error: false, message: "" });
-                        
-                            req.session.library = library;
-                            req.session.subscription = subscription;
-                        });
-                    });
-                }
-                else {
-                    cn.release();
-                    
-                    req.session.subscription = subscription;
-                    res.json({ error: false, message: "" });
-                }
-            });
+        // Set users.subscription|library_id|library_size_limit
+        let sql = `
+            UPDATE users SET subscription = ?, library_id = ?, library_size_limit = ?
+            WHERE user_id = ?
+        `, vars = [
+            subscription, library, 15 + req.body.addToSizeLimit,
+            req.session.uid
+        ];
+
+        db(cn => cn.query(sql, vars, (err, result) => {
+            cn.release();
+
+            if (err || !result.affectedRows) {
+                res.json({ error: true, message: "Contact support at libyq@xyfir.com" });
+            }
+            else {
+                // Create library
+                request.post(config.addresses.library + library, (err, response, body) => {
+                    if (err || JSON.parse(body).error) {
+                        res.json({ error: true, message: "Contact support at libyq@xyfir.com" });
+                    }
+                    else {
+                        res.json({ error: false, message: "" });
+
+                        req.session.library = library;
+                        req.session.subscription = subscription;
+                    }
+                });
+            }
         }));
     });
 
