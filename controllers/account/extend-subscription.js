@@ -15,9 +15,9 @@ const config = require("config");
 module.exports = function (req, res) {
 
     const subscriptions = {
-        '1': { days: 30, cost: 400 },
-        '2': { days: 182, cost: 2100 },
-        '3': { days: 365, cost: 3600 }
+        '1': { days: 30, months: 1, cost: 400 },
+        '2': { days: 182, months: 6, cost: 2100 },
+        '3': { days: 365, months: 12, cost: 3600 }
     };
 
     if (subscriptions[req.body.subscription] === undefined) {
@@ -39,8 +39,9 @@ module.exports = function (req, res) {
         }
         else {
             // Calculate cost of subscription + added storage gigabytes
-            const amount = subscriptions[req.body.subscription].cost
-                + (rows[0].size * 15);
+            const amount = subscriptions[req.body.subscription].cost + (
+                (rows[0].size * 15) * subscriptions[req.body.subscription].months
+            );
 
             // Build stripe data object
             const data = {
