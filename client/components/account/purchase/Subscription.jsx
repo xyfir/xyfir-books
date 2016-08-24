@@ -12,7 +12,7 @@ import { URL, STRIPE_KEY_PUB } from "constants/config";
 import request from "lib/request/index";
 
 // Components
-import NavBar from "../misc/NavBar";
+import NavBar from "components/misc/NavBar";
 
 export default class PurchaseSubscription extends React.Component {
 
