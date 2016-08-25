@@ -17,7 +17,7 @@ module.exports = function (req, res) {
 
     // Grab user's current library size limit
     let sql = `
-        SELECT library_size_limit as limit FROM users WHERE user_id = ?
+        SELECT library_size_limit as sizeLimit FROM users WHERE user_id = ?
     `, vars = [
         req.session.uid
     ];
@@ -27,7 +27,7 @@ module.exports = function (req, res) {
             cn.release();
             res.json({ error: true, message: "Unknown error occured" });
         }
-        else if (rows[0].limit >= req.body.limit) {
+        else if (rows[0].sizeLimit >= req.body.sizeLimit) {
             cn.release();
             res.json({
                 error: true,
@@ -39,13 +39,22 @@ module.exports = function (req, res) {
             // 1.2 months remaining -> charge for 2 months
             const amount = Math.ceil(
                 (req.session.subscription - Date.now()) / 2592000000
-            ) * ((req.body.limit - rows[0].limit) * 15);
+            ) * ((req.body.limit - rows[0].sizeLimit) * 15);
+
+            // Stripe requires charges to be at least $0.50
+            if (amount < 50) {
+                cn.release();
+                res.json({
+                    error: true,
+                    message: "We cannot accept purchases under $0.50"
+                }); return;
+            }
 
             // Build stripe data object
             const data = {
                 amount, source: req.body.stripeToken, currency: "usd",
                 description: `Libyq - Increase Storage to ${
-                    +req.body.limit
+                    +req.body.sizeLimit
                 } GB`
             };
 
@@ -67,7 +76,7 @@ module.exports = function (req, res) {
 
                 cn.query(sql, vars, (err, result) => {
                     cn.release();
-
+                    
                     if (err || !result.affectedRows)
                         res.json({ error: true, message: "Contact support at libyq@xyfir.com" });
                     else
