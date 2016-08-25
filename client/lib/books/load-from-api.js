@@ -66,6 +66,10 @@ export default function (library, dispatch, fn) {
                 });
             }});
         }
+        // Library is empty
+        else {
+            fn([]);
+        }
     }});
     
 }
