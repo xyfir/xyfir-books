@@ -35,7 +35,7 @@ export default class PurchaseSubscription extends React.Component {
             }
             
             let data = {
-                addToSizeLimit: this.state.addToSizeLimit,
+                addToSizeLimit: +this.state.addToSizeLimit,
                 subscription: +this.refs.subscription.value,
                 stripeToken: res.id
             };
@@ -48,7 +48,7 @@ export default class PurchaseSubscription extends React.Component {
             request({
                 url: URL + "api/account/subscription",
                 method: "POST", data, success: (res) => {
-                    if (res.err) {
+                    if (res.error) {
                         swal("Error", res.message, "error");
                     }
                     else {
@@ -137,7 +137,7 @@ export default class PurchaseSubscription extends React.Component {
 
                             <span>
                                 <strong>Added cost per month:</strong> ${
-                                    this.state.addToSizeLimit * 0.15
+                                    (this.state.addToSizeLimit * 0.15).toFixed(2)
                                 }
                             </span>
                         </div>
