@@ -23,47 +23,48 @@ export default class ExtendSubscription extends React.Component {
             Stripe.setPublishableKey(STRIPE_KEY_PUB);
             
             Stripe.card.createToken(this.refs.stripeForm, (s, res) => {
-            if (res.error) {
-                swal("Error", res.error.message, "error");
-                return;
-            }
-            
-            let data = {
-                subscription: +this.refs.subscription.value,
-                stripeToken: res.id
-            };
-            
-            if (data.subscription == 0) {
-                swal("Error", "Select a subscription length", "error");
-                return;
-            }
-            
-            request({
-                url: URL + "api/account/subscription",
-                method: "PUT", data, success: (res) => {
-                    if (res.err) {
-                        swal("Error", res.message, "error");
-                    }
-                    else {
-                        const days = [0, 30, 182, 365][data.subscription];
-                        
-                        const subscription = this.props.data.account.subscription
-                            + Date.now() + (days * 86400000);
-                        
-                        // Update state.account.subscription
-                        this.props.dispatch(purchaseSubscription(subscription));
-                        
-                        swal(
-                            "Purchase Complete",
-                            `Your subscription will expire on ${
-                                (new Date(subscription)).toLocaleString()
-                            }.`,
-                            "success"
-                        );
-                    }
+                if (res.error) {
+                    swal("Error", res.error.message, "error");
+                    return;
                 }
+                
+                let data = {
+                    subscription: +this.refs.subscription.value,
+                    stripeToken: res.id
+                };
+                
+                if (data.subscription == 0) {
+                    swal("Error", "Select a subscription length", "error");
+                    return;
+                }
+                
+                request({
+                    url: URL + "api/account/subscription",
+                    method: "PUT", data, success: (res) => {
+                        if (res.error) {
+                            swal("Error", res.message, "error");
+                        }
+                        else {
+                            const days = [0, 30, 182, 365][data.subscription];
+                            
+                            const subscription = this.props.data.account.subscription
+                                + (days * 86400000);
+                            
+                            // Update state.account.subscription
+                            this.props.dispatch(purchaseSubscription(subscription));
+                            
+                            swal(
+                                "Purchase Complete",
+                                `Your subscription will expire on ${
+                                    (new Date(subscription)).toLocaleString()
+                                }.`,
+                                "success"
+                            );
+                        }
+                    }
+                });
             });
-        })};
+        };
         
         // Dynamically load Stripe.js
         let element = document.createElement("script");
@@ -89,7 +90,18 @@ export default class ExtendSubscription extends React.Component {
                     The length of the subscription you purchase will be added to your remaining subscription time.
                     <br />
                     If you have increased your library storage size limit: you will be charged $0.15 for each added GB, for each month of your subscription.
+                    <br />
+                    {this.props.data.account.librarySizeLimit > 15 ? (
+                        <span>
+                            <strong>Note: </strong> You will be charged an additional ${
+                                (this.props.data.account.librarySizeLimit - 15)
+                                * 0.15
+                            } per month due to your increased storage limit.
+                        </span>
+                    ) : <span />}
                 </p>
+
+                <hr />
                 
                 <form className="form" onSubmit={() => this.onPurchase()}>
                     <select ref="subscription" defaultValue="0">
@@ -113,15 +125,6 @@ export default class ExtendSubscription extends React.Component {
                             <input type="number" data-stripe="exp-year" placeholder="2020" />
                         </div>
                     </form>
-
-                    {this.props.data.account.librarySizeLimit > 15 ? (
-                        <span>
-                            You will be charged an additional ${
-                                (this.props.data.account.librarySizeLimit - 15)
-                                * 0.15
-                            } per month due to your increased storage limit.
-                        </span>
-                    ) : <span />}
                 </form>
 
                 <button
