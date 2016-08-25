@@ -36,8 +36,9 @@ app.use("/api", require("./controllers/"));
 
 app.get("/", (req, res) => {
     if (config.environment.type == "dev") {
-        req.session.uid = 1; req.session.subscription = 0;
-        req.session.library = "1-libliblililibliblililibliblililibliblili";
+        req.session.uid = 1;
+        req.session.library = "1-testtesttesttesttesttesttesttesttesttest";
+        req.session.subscription = Date.now() + (86400 * 30 * 1000);
     }
     res.sendFile(__dirname + "/views/Home.html");
 });
