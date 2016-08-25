@@ -39,7 +39,7 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
                 request({
                     url: URL + "api/account/size-limit",
                     method: "PUT", data, success: (res) => {
-                        if (res.err) {
+                        if (res.error) {
                             swal("Error", res.message, "error");
                         }
                         else {
@@ -76,6 +76,14 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
                     settings={""}
                     books={true}
                 />
+
+                <p>
+                    You will be charged $0.15 for each GB over your current limit for each month remaining in your subscription. Remaining months (based on 30-day months) are rounded up.
+                    <br />
+                    If you add 2 gigabytes to your current limit and you have a month and a half remaining you will be charged $0.60 <em>(0.15 * 2 * 2)</em> .
+                </p>
+
+                <hr />
                 
                 <form className="form" onSubmit={() => this.onPurchase()}>
                     <form ref="stripeForm" className="stripe-form">
@@ -94,12 +102,6 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
                     </form>
 
                     <div className="increase-size-limit">
-                        <p>
-                            You will be charged $0.15 for each GB over your current limit for each month remaining in your subscription. Remaining months (based on 30-day months) are rounded up.
-                            <br />
-                            If you add 2 gigabytes to your current limit and you have a month and a half remaining you will be charged $0.60 <em>(0.15 * 2 * 2)</em> .
-                        </p>
-
                         <label>Add GB to Size Limit</label>
                         <input
                             onChange={
@@ -112,9 +114,9 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
                         />
 
                         <span>
-                            <strong>Added cost per month:</strong> ${(
+                            <strong>Added cost per month:</strong> ${((
                                 this.state.limit - this.props.data.account.librarySizeLimit
-                            ) * 0.15}
+                            ) * 0.15).toFixed(2)}
                         </span>
                     </div>
                 </form>
