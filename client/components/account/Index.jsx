@@ -59,13 +59,21 @@ export default class Account extends React.Component {
                     ) : (
                         <div>
                             <p>
-                                You do not have a Libyq subscription. Your library will be deleted after {
-                                    (new Date(
-                                        this.props.data.account.subscription + 604800000
-                                    )).toLocaleString()
-                                }.
+                                You do not have a Libyq subscription.
                                 <br />
-                                Purchase a subscription to prevent your library from being deleted.
+                                {this.props.data.account.library != '' ? (
+                                    <span>
+                                        Your library will be deleted after {
+                                            (new Date(
+                                                this.props.data.account.subscription + 604800000
+                                            )).toLocaleString()
+                                        }.
+                                        <br />
+                                        Purchase a subscription to prevent your library from being deleted.
+                                    </span>
+                                ) : (
+                                    <span />
+                                )}
                             </p>
                             
                             <hr />
