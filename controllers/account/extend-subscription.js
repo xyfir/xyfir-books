@@ -27,7 +27,9 @@ module.exports = function (req, res) {
 
     // Grab amount of extra gigabytes user has added to library size limit
     let sql = `
-        SELECT library_size_limit - 15 as size FROM users WHERE user_id = ?
+        SELECT
+            library_size_limit - 15 as size, subscription
+        FROM users WHERE user_id = ?
     `, vars = [
         req.session.uid
     ];
@@ -61,7 +63,7 @@ module.exports = function (req, res) {
                 }
 
                 // Extend subscription expiration time
-                const subscription = req.session.subscription
+                const subscription = rows[0].subscription
                     + (subscriptions[req.body.subscription].days * 86400000);
 
                 // Update users.subscription
