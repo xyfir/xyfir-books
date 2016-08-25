@@ -4,6 +4,7 @@
 @import "reader.scss";
 @import "settings.scss";
 @import "home.scss";
+@import "account.scss";
 @import "markdown.scss";
 
 @import "themes/dark.scss";
