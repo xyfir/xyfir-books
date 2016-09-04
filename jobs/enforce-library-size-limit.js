@@ -1,4 +1,4 @@
-const sendEmail = require("lib/sendEmail")
+const sendEmail = require("lib/send-email")
 const request = require("request");
 const db = require("lib/db");
 
