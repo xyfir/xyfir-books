@@ -1,7 +1,7 @@
 const db = require("lib/db");
 
 /*
-    PUT api/library-manager/:server/:lib/books/:book
+    PUT api/library-manager/:lib/books/:book
     REQUIRED
         type: string
     RETURN
@@ -17,7 +17,7 @@ module.exports = function(req, res) {
     let sql = `
         SELECT user_id FROM users WHERE library_id = ?
     `;
-    let vars = [req.params.server, req.params.lib];
+    let vars = [req.params.lib];
     
     db(cn => cn.query(sql, vars, (err, rows) => {
         if (err || !rows.length) {

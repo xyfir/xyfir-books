@@ -1,7 +1,7 @@
 const db = require("../../lib/db");
 
 /*
-    POST api/library-manager/:server/:lib/books
+    POST api/library-manager/:lib/books
     REQUIRED
         ids: string
     RETURN
