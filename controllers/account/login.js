@@ -31,8 +31,12 @@ module.exports = function(req, res) {
 
         let sql = `SELECT user_id, subscription, xad_id FROM users WHERE xyfir_id = ?`;
         db(cn => cn.query(sql, [req.body.xid], (err, rows) => {
+            if (err) {
+                cn.release();
+                res.json({ error: true });
+            }
             // First login (registration)
-            if (!rows.length) {
+            else if (!rows.length) {
                 const subscription = Date.now() + (7 * 86400000);
 
                 // Create user
