@@ -54,7 +54,7 @@ function loadFromApi(book, library) {
         };
 
         // Build url using state.account.library / book.cover path
-        const url = LIBRARY_URL + library + "/files/"
+        const url = LIBRARY_URL + "files/" + library + "/"
             + book.cover.split('/').slice(-3).join('/');
 
         xhr.open("GET", url);

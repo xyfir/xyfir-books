@@ -40,7 +40,7 @@ export default class Reader extends React.Component {
         };
         this.timers = {};
         
-        let url = LIBRARY_URL + this.props.data.account.library + "/files/";
+        let url = LIBRARY_URL + "files/" + this.props.data.account.library + "/";
         
         this.state.book.formats.forEach(format => {
             if (format.split('.')[1] == "epub") {

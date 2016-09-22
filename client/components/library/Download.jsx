@@ -28,7 +28,7 @@ export default class DownloadLibrary extends React.Component {
         
         let zip = new JSZip;
         
-        const url = LIBRARY_URL + this.props.data.account.library + "/files/";
+        const url = LIBRARY_URL + "files/" + this.props.data.account.library + "/";
         
         const downloadBook = (index) => {
             const book = this.props.data.books[index];

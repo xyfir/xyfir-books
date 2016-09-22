@@ -278,7 +278,7 @@ export default class TableList extends React.Component {
                             <dd className="formats">{
                                 selectedBook.formats.map(format => {
                                     const url = LIBRARY_URL
-                                        + this.props.data.account.library + "/files/"
+                                        + "files/" + this.props.data.account.library + "/"
                                         + format.split('/').slice(-3).join('/');
                                     return ( 
                                         <a target="_blank" href={url}>{
