@@ -85,6 +85,11 @@ class App extends React.Component {
             if (navigator.onLine) {
                 request({
                     url: URL + "api/account", success: (account) => {
+                        // User not logged in
+                        if (!account.library) {
+                            location.href = XACC + "login/14";
+                        }
+                        
                         state.account = account;
                         
                         loadBooksFromApi(account.library, null, books => {
@@ -142,7 +147,7 @@ class App extends React.Component {
             request({
                 url: URL + "api/account/login", method: "POST", data: q,
                 success: (res) => {
-                    if (res.error ) {
+                    if (res.error) {
                         location.href = XACC + "login/14";
                     }
                     else {
