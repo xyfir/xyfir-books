@@ -39,7 +39,7 @@ export default class Reader extends React.Component {
                 annotation: false
             }, highlight: {
                 mode: this.props.data.config.reader.defaultHighlightMode,
-                set: 0
+                index: 0
             }
         };
         this.timers = {};
@@ -84,7 +84,6 @@ export default class Reader extends React.Component {
                     });
 
                     this.setState({ initialize: true });
-                    this._getWordCount();
                 });
             });
             
@@ -215,6 +214,8 @@ export default class Reader extends React.Component {
                 this._addEventListeners();
 
                 this._applyHighlights(this.state.highlight, true);
+
+                this._getWordCount();
             });
         });
     } 
@@ -291,7 +292,7 @@ export default class Reader extends React.Component {
     _applyHighlights(highlight, skipUnwrap = false) {
         // Either annotations or notes can go to none
         if (highlight.mode == "none" && !skipUnwrap) {
-            unwrap("annotations");
+            unwrap("annotation");
             unwrap("note");
         }
         // Notes can only come after none
@@ -301,12 +302,12 @@ export default class Reader extends React.Component {
         // Annotations can only come after notes
         else if (highlight.mode == "annotations") {
             // Can be skipped if "annotations" default and first load
-            if (!skipUnwrap) unwrap("notes");
+            if (!skipUnwrap) unwrap("note");
 
             // Ensure book has annotation set
-            if (this.state.book.annotations && this.state.book.annotations[highlight.set]) {
+            if (this.state.book.annotations && this.state.book.annotations[highlight.index]) {
                 insertAnnotations(
-                    this.state.book.annotations[highlight.set],
+                    this.state.book.annotations[highlight.index],
                     epub.annotationMarkers
                 );
             }
