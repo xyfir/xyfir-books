@@ -1,9 +1,7 @@
 import React from "react";
 
 // Modules
-import highlightNotes from "lib/reader/notes/highlight";
 import request from "lib/request/index";
-import unwrap from "lib/reader/matches/unwrap";
 
 // Constants
 import { URL } from "constants/config";
@@ -46,9 +44,8 @@ export default class Notes extends React.Component {
                     this.setState({ view: -1 });
                     this.props.updateBook({ notes });
 
-                    // Clear notes and re-highlight
-                    unwrap("note");
-                    highlightNotes(notes);
+                    // Ensure highlighted content in book is updated
+                    this.props.onCycleHighlightMode();
                 }
             }
         })
