@@ -11,6 +11,7 @@ import insertAnnotations from "lib/reader/annotations/insert";
 import updateAnnotations from "lib/reader/annotations/update";
 import highlightNotes from "lib/reader/notes/highlight";
 import request from "lib/request/index";
+import unwrap from "lib/reader/matches/unwrap";
 
 // Constants
 import { URL, LIBRARY_URL } from "constants/config";
@@ -32,21 +33,30 @@ export default class Reader extends React.Component {
             //
             initialize: false, loading: true,
             //
-            show: {
+            modalViewTarget: "", show: {
                 manageAnnotations: false, more: false, bookmarks: false,
-                notes: false, createNote: false, annotations: false,
-                toc: false, annotation: false
-            }, modalViewTarget: ""
+                notes: false, createNote: false, toc: false,
+                annotation: false
+            }, highlight: {
+                mode: this.props.data.config.reader.defaultHighlightMode,
+                set: 0
+            }
         };
         this.timers = {};
         
+        // Build url to .epub file to read
         let url = LIBRARY_URL + "files/" + this.props.data.account.library + "/";
+        let hasEpub = false;
         
         this.state.book.formats.forEach(format => {
             if (format.split('.')[1] == "epub") {
                 url += format.split('/').slice(-3).join('/');
+                hasEpub = true;
             }
         });
+
+        // We can only read epub files
+        if (!hasEpub) history.back();
         
         // Get bookmarks, notes, last read time
         request({url: URL + "api/books/" + id, success: (res) => {
@@ -80,8 +90,9 @@ export default class Reader extends React.Component {
             
         }});
         
-        this.onToggleAnnotations = this.onToggleAnnotations.bind(this);
+        this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
         this._addEventListeners = this._addEventListeners.bind(this);
+        this._applyHighlights = this._applyHighlights.bind(this);
         this._getWordCount = this._getWordCount.bind(this);
         this.onToggleShow = this.onToggleShow.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
@@ -112,8 +123,40 @@ export default class Reader extends React.Component {
         epub.destroy(); window.epub = undefined;
     }
 
-    onToggleAnnotations() {
-        this.onToggleShow("annotations", false, () => this._applyStyles());
+    onCycleHighlightMode() {
+        let highlight = {};
+
+        switch (this.state.highlight.mode) {
+            // none -> notes
+            case "none":
+                highlight = { mode: "notes" };
+                break;
+            
+            // notes -> first annotation set OR none
+            case "notes":
+                if (!this.state.book.annotations || !this.state.book.annotations.length)
+                    highlight = { mode: "none" };
+                else
+                    highlight = { mode: "annotations", index: 0 };
+                break;
+
+            // annotations -> next set OR none
+            case "annotations":
+                if (this.state.book.annotations[this.state.highlight.index + 1]) {
+                    highlight = {
+                        mode: "annotations",
+                        index: this.state.highlight.index + 1
+                    };
+                }
+                else {
+                    highlight = { mode: "none" };
+                }
+        }
+
+        this._applyHighlights(highlight);
+
+        this.setState({ highlight });
+        return highlight;
     }
     
     onToggleShow(prop, closeModal, fn) {
@@ -129,8 +172,7 @@ export default class Reader extends React.Component {
     onCloseModal() {
         this.setState({ show: {
             toc: false, bookmarks: false, notes: false, createNote: false,
-            more: false, manageAnnotations: false, annotation: false,
-            annotations: this.state.show.annotations
+            more: false, manageAnnotations: false, annotation: false
         }, modalViewTarget: "" });
     }
     
@@ -172,11 +214,7 @@ export default class Reader extends React.Component {
                 this._applyStyles();
                 this._addEventListeners();
 
-                insertAnnotations(
-                    this.state.book.annotations,
-                    epub.annotationMarkers
-                );
-                highlightNotes(this.state.book.notes);
+                this._applyHighlights(this.state.highlight, true);
             });
         });
     } 
@@ -194,11 +232,8 @@ export default class Reader extends React.Component {
         
         s.innerHTML = `
             * { color: ${r.color} !important; }
-            ${
-                this.state.show.annotations
-                ? `.annotation { background-color: ${r.annotationColor}; }`
-                : `.note { background-color: ${r.highlightColor}; }`
-            }
+            .annotation { background-color: ${r.annotationColor}; }
+            .note { background-color: ${r.highlightColor}; }
         `;
 
         if (create) {
@@ -228,12 +263,7 @@ export default class Reader extends React.Component {
         // Insert annotations / highlight notes
         epub.on("renderer:chapterDisplayed", () => {
             this._applyStyles();
-
-            insertAnnotations(
-                this.state.book.annotations,
-                epub.annotationMarkers
-            );
-            highlightNotes(this.state.book.notes);
+            this._applyHighlights(this.state.highlight, true);
         });
         
         // Regenerate pagination and update percent
@@ -256,6 +286,31 @@ export default class Reader extends React.Component {
                 epub.getCurrentLocationCfi()
             ) * 100
         );
+    }
+
+    _applyHighlights(highlight, skipUnwrap = false) {
+        // Either annotations or notes can go to none
+        if (highlight.mode == "none" && !skipUnwrap) {
+            unwrap("annotations");
+            unwrap("note");
+        }
+        // Notes can only come after none
+        else if (highlight.mode == "notes") {
+            highlightNotes(this.state.book.notes);
+        }
+        // Annotations can only come after notes
+        else if (highlight.mode == "annotations") {
+            // Can be skipped if "annotations" default and first load
+            if (!skipUnwrap) unwrap("notes");
+
+            // Ensure book has annotation set
+            if (this.state.book.annotations && this.state.book.annotations[highlight.set]) {
+                insertAnnotations(
+                    this.state.book.annotations[highlight.set],
+                    epub.annotationMarkers
+                );
+            }
+        }
     }
     
     _updateBook(obj) {
@@ -307,10 +362,11 @@ export default class Reader extends React.Component {
                 <section id="book" />
                 
                 <Overlay
+                    book={this.state.book}
                     loading={this.state.loading}
                     percent={this.state.percent}
                     pagesLeft={this.state.pagesLeft}
-                    onToggleAnnotations={this.onToggleAnnotations}
+                    onCycleHighlightMode={this.onCycleHighlightMode}
                 />
                 
                 <Modal parent={this} />
