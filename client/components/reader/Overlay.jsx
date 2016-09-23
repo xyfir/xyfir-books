@@ -23,7 +23,7 @@ export default class ReaderOverlay extends React.Component {
 
             case "annotations":
                 status = "Now highlighting annotations from set "
-                    + this.props.book.annotations[hl.set].set_title;
+                    + this.props.book.annotations[hl.index].set_title;
                 break;
         }
 
@@ -52,7 +52,7 @@ export default class ReaderOverlay extends React.Component {
                 
                 <span className="status">{
                     this.state.status ? (
-                        this.state.status.status
+                        this.state.status
                     ) : this.props.loading ? (
                         "Loading..."
                     ) : (
