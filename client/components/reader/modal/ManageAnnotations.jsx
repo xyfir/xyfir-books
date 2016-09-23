@@ -3,8 +3,6 @@ import React from "react";
 
 // Modules
 import request from "lib/request/index";
-import unwrap from "lib/reader/matches/unwrap";
-import insertAnnotations from "lib/reader/annotations/insert";
 
 // Constants
 import { LIB_ANN } from "constants/config";
@@ -65,9 +63,8 @@ export default class ManageAnnotations extends React.Component {
                 this.props.updateBook({ annotations });
                 this.setState({ view: 0 });
 
-                // Re-insert annotations
-                unwrap("annotation");
-                insertAnnotations(annotations, epub.annotationMarkers);
+                // Ensure current book's highlighted content is updated
+                this.props.onCycleHighlightMode();
             }
         }});
     }
@@ -81,9 +78,8 @@ export default class ManageAnnotations extends React.Component {
         this.props.updateBook({ annotations });
         this.setState({ view: 0 });
 
-        // Re-insert annotations
-        unwrap("annotation");
-        insertAnnotations(annotations, epub.annotationMarkers);
+        // Ensure current book's highlighted content is updated
+        this.props.onCycleHighlightMode();
     }
 
     render() {
