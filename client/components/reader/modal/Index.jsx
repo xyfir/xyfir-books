@@ -63,14 +63,15 @@ export default class ReaderModal extends React.Component {
                         <Notes
                             book={p.state.book}
                             target={p.state.modalViewTarget}
-                            onClose={p.onCloseModal}
                             updateBook={p._updateBook}
+                            onCycleHighlightMode={p.onCycleHighlightMode}
                         />
                     ) : (show.createNote ? (
                         <CreateNote
                             book={p.state.book}
                             onClose={p.onCloseModal}
                             updateBook={p._updateBook}
+                            onCycleHighlightMode={p.onCycleHighlightMode}
                         />
                     ) : (show.toc ? (
                         <TableOfContents
@@ -80,8 +81,8 @@ export default class ReaderModal extends React.Component {
                         <ManageAnnotations
                             book={p.state.book}
                             data={p.props.data}
-                            dispatch={p.props.dispatch}
                             updateBook={p._updateBook}
+                            onCycleHighlightMode={p.onCycleHighlightMode}
                         />
                     ) : (show.more ? (
                         <More
