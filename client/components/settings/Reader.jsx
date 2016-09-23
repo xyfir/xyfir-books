@@ -154,6 +154,20 @@ export default class ReaderSettings extends React.Component {
                         }}>Example Text</span>
                     </section>
 
+                    <section className="default-highlight-mode">
+                        <label>Default Highlight Mode</label>
+                        <select
+                            value={this.state.defaultHighlightMode}
+                            onChange={(e) => {
+                                this.setState({ defaultHighlightMode: e.target.value });
+                            }}
+                        >
+                            <option value="none">None</option>
+                            <option value="notes">Notes</option>
+                            <option value="annotations">Annotations</option>
+                        </select>
+                    </section>
+
                     <section className="libyq-annotations">
                         <label>Libyq Annotations Subscription Key</label>
                         <span className="input-description">
