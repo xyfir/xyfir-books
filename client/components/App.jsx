@@ -83,8 +83,17 @@ class App extends React.Component {
         
             // Load initial data from API
             if (navigator.onLine) {
+                // Access token is generated upon a successful login
+                // Used to create new session without forcing login each time
+                const token = localStorage.getItem("access_token") || "";
+
+                // Access token is required
+                if (!token && ENVIRONMENT != "dev") {
+                    location.href = XACC + "app/#/login/14";
+                }
+
                 request({
-                    url: URL + "api/account", success: (account) => {
+                    url: URL + "api/account?token=" + token, success: account => {
                         // User not logged in
                         if (!account.library) {
                             location.href = XACC + "login/14";
@@ -151,6 +160,7 @@ class App extends React.Component {
                         location.href = XACC + "login/14";
                     }
                     else {
+                        localStorage.setItem("access_token", res.accessToken);
                         this._initialize();
                         location.hash = location.hash.split('?')[0];
                     }
