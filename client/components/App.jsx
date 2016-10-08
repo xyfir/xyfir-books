@@ -20,7 +20,7 @@ import request from "lib/request/index";
 // Constants
 import initialState from "constants/initial-state";
 import { INITIALIZE_STATE } from "actions/types/index";
-import { URL, XACC, LOG_STATE } from "constants/config";
+import { URL, XACC, LOG_STATE, ENVIRONMENT } from "constants/config";
 
 // Action creators
 import { save } from "actions/creators/index";
@@ -89,7 +89,7 @@ class App extends React.Component {
 
                 // Access token is required
                 if (!token && ENVIRONMENT != "dev") {
-                    location.href = XACC + "app/#/login/14";
+                    location.href = XACC + "login/14";
                 }
 
                 request({
