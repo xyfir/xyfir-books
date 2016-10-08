@@ -94,7 +94,7 @@ module.exports = function(req, res) {
                             
                             res.json({
                                 error: false, accessToken: crypto.encrypt(
-                                    result.session.uid + "-" + token,
+                                    req.session.uid + "-" + token,
                                     config.keys.accessToken
                                 )
                             });
@@ -122,7 +122,7 @@ module.exports = function(req, res) {
 
                         res.json({
                             error: false, accessToken: crypto.encrypt(
-                                result.session.uid + "-" + token,
+                                req.session.uid + "-" + token,
                                 config.keys.accessToken
                             )
                         });
