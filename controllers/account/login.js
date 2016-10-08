@@ -1,5 +1,6 @@
 const randString = require("randomstring");
 const request = require("request");
+const crypto = require("lib/crypto");
 const db = require("lib/db");
 
 const config = require("config");
@@ -9,7 +10,7 @@ const config = require("config");
     REQUIRED
         xid: string, auth: string
     RETURN
-        { error: boolean }
+        { error: boolean, accessToken?: string }
     DESCRIPTION
         Register or login user
         Create a library for new users
@@ -22,6 +23,11 @@ module.exports = function(req, res) {
         + "/" + req.body.auth;
 
     request(url, (err, response, body) => {
+        if (err) {
+            res.json({ error: true });
+            return;
+        }
+
         body = JSON.parse(body);
 
         if (body.error) {
@@ -29,7 +35,12 @@ module.exports = function(req, res) {
             return;
         }
 
-        let sql = `SELECT user_id, subscription, xad_id FROM users WHERE xyfir_id = ?`;
+        const token = body.accessToken;
+
+        let sql = `
+            SELECT user_id, subscription, xad_id FROM users WHERE xyfir_id = ?
+        `;
+
         db(cn => cn.query(sql, [req.body.xid], (err, rows) => {
             if (err) {
                 cn.release();
@@ -80,7 +91,13 @@ module.exports = function(req, res) {
                         
                         cn.query(sql, vars, (err, result) => {
                             cn.release();
-                            res.json({ error: false });
+                            
+                            res.json({
+                                error: false, accessToken: crypto.encrypt(
+                                    result.session.uid + "-" + token,
+                                    config.keys.accessToken
+                                )
+                            });
                             
                             req.session.subscription = subscription;
                             req.session.library = library;
@@ -103,7 +120,12 @@ module.exports = function(req, res) {
                         req.session.xadid = rows[0].xad_id;
                         req.session.subscription = rows[0].subscription;
 
-                        res.json({ error: false });
+                        res.json({
+                            error: false, accessToken: crypto.encrypt(
+                                result.session.uid + "-" + token,
+                                config.keys.accessToken
+                            )
+                        });
                     }
                 });
             }
