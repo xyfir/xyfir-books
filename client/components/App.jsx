@@ -6,6 +6,7 @@ import { createStore } from "redux";
 import reducers from "reducers/index";
 
 // Components
+import DynamicStyles from "./misc/DynamicStyles";
 import Settings from "./settings/Index";
 import Account from "./account/Index";
 import Library from "./library/Index";
@@ -38,7 +39,7 @@ class App extends React.Component {
         
         // Configure localForage
         localforage.config({
-            driver: localforage.INDEXEDDB,
+            driver: [localforage.INDEXEDDB, localforage.WEBSQL],
             name: "Libyq"
         });
         
@@ -151,8 +152,14 @@ class App extends React.Component {
     _login() {
         const q = parseHashQuery();
 
+        // PhoneGap app opens to vynote.com/workspace/#?phonegap=1
+        if (q.phonegap) {
+            localStorage.setItem("isPhoneGap", "true");
+            location.hash = "";
+            this._initialize();
+        }
         // Attempt to login using XID/AUTH or skip to initialize()
-        if (q.xid && q.auth) {
+        else if (q.xid && q.auth) {
             request({
                 url: URL + "api/account/login", method: "POST", data: q,
                 success: (res) => {
@@ -190,6 +197,7 @@ class App extends React.Component {
         
         return (
             <div className="libyq">
+                <DynamicStyles beforeApp={true} />
                 {view}
             </div>                
         );
