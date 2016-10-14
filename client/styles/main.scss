@@ -25,6 +25,9 @@ p {
 	width: 80%;
 	margin: auto;
 }
+#content {
+	margin-top: 1em;
+}
 
 /* Dropzone */
 .dropzone {
@@ -144,7 +147,7 @@ input[type=checkbox] {
 nav.nav-bar {
 	
 	background-color: $lllgray;
-	margin-bottom: 1em;
+	border-bottom: solid 0.05em $lgray;
 	padding: 0.5em 0em;
 	font-size: 115%;	
 	position: fixed;
@@ -153,20 +156,25 @@ nav.nav-bar {
 	top: 0%;
 	z-index: 1;
 	
-	.left, .right, .title {
+	.left, .right {
+		
+		vertical-align: middle;
 		display: inline-block;
-		width: 30%;
+		width: 25%;
+
+		a {
+			margin: 1%;
+		}
+
 	}
 	
 	.title {
+		display: inline-block;
+		width: 50%;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
 		vertical-align: bottom;
-	}
-	
-	span {
-		margin-left: 0.4em;
 	}
 	
 }
