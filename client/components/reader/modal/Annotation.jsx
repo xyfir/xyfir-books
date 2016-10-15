@@ -4,6 +4,9 @@ import React from "react";
 // Constants
 import annotationTypes from "constants/annotation-types";
 
+// Components
+import DynamicIframe from "components/misc/DynamicIframe";
+
 export default class Annotation extends React.Component {
 
     constructor(props) {
@@ -71,10 +74,10 @@ export default class Annotation extends React.Component {
                         <a href={annotation.value} target="_blank">
                             Go to Link
                         </a>
-                        <iframe src={annotation.value} />
+                        <DynamicIframe src={annotation.value} />
                     </div>
                 ) : this.state.view == 3 ? (
-                    <iframe
+                    <DynamicIframe
                         src={"//www.bing.com/search?q=" + annotation.value}
                         className="search"
                     />
@@ -88,12 +91,12 @@ export default class Annotation extends React.Component {
                 ) : this.state.view == 5 ? (
                     <div className="video">{
                         annotation.value.indexOf("youtube.com/") > -1 ? (
-                            <iframe
+                            <DynamicIframe
                                 src={annotation.value}
                                 className="youtube"
                             />
                         ) : annotation.value.indexOf("vimeo.com/") > -1 ? (
-                            <iframe
+                            <DynamicIframe
                                 src={annotation.value}
                                 className="viemo"
                             />
@@ -120,10 +123,10 @@ export default class Annotation extends React.Component {
                                 <a href={annotation.value} target="_blank">
                                     Go to Map Link
                                 </a>
-                                <iframe src={annotation.value} />
+                                <DynamicIframe src={annotation.value} />
                             </div>
                         ) : (
-                            <iframe
+                            <DynamicIframe
                                 src={
                                     "https://www.google.com/maps/embed/v1/place?key="
                                     + "AIzaSyAN0om9mFmy1QN6Wf54tXAowK4eT0ZUPrU"
