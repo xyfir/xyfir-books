@@ -11,6 +11,10 @@ body.theme-dark {
         background-image: linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);
     }
 
+    a > span[class^="icon-"]:hover {
+        color: #C00000;
+    }
+
     span.date-added, span.percent-complete, span.rating, span.word-count {
         background-color: #252526;
     }
@@ -120,6 +124,10 @@ body.theme-dark {
 
         }
 
+    }
+
+    .modal.view-selector, .find-cover {
+        background-color: #252526;
     }
 
 }
