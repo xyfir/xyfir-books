@@ -121,9 +121,9 @@ span.word-count, span.rating {
     .book {
         
         border-bottom: solid $llgray 0.1em;
-        padding: 0.5em;
+        padding: 1em 0.5em;
         position: relative;
-        height: 9em;
+        height: 7em;
     
         img.cover {
             height: 7em;
@@ -150,26 +150,38 @@ span.word-count, span.rating {
             }
             
         }
+
+        .controls {
+            position: absolute;
+            bottom: 1em;
+        }
     
     }
     
 }
 
-.view-selector {
+.modal.view-selector {
     
     background-color: $lllgray;
     padding: 0.2em;
-    width: 60%;
     position: fixed;
-    left: 20%;
-    right: 20%;
-    top: 7.5%;
+    left: 15%;
+    right: 15%;
+    top: 10%;
     border: solid $llgray 0.1em;
     z-index: 1;
     
     .icon-close {
         position: absolute;
         right: 2%;
+    }
+
+    dl {
+
+        dd {
+            margin: 0em;
+        }
+
     }
     
 }
@@ -298,6 +310,15 @@ span.word-count, span.rating {
         
     }
     
+}
+
+table.list {
+
+    td {
+        border-bottom: solid 0.1em $llgray;
+        padding: 0.2em 1em;
+    }
+
 }
 
 .add-format {
