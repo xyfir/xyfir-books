@@ -25,6 +25,10 @@ p {
 	width: 80%;
 	margin: auto;
 }
+* {
+	// Text selection still works in ebook iframe
+	user-select: none;
+}
 #content {
 	margin-top: 1em;
 }
@@ -53,6 +57,9 @@ a:hover, a:focus {
 }
 .link-lg {
 	font-size: 125%;
+}
+a > span[class^="icon-"]:hover {
+	color: $lblue;
 }
 
 
