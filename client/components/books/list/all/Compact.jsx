@@ -37,7 +37,9 @@ export default class CompactList extends React.Component {
                                 window.location.hash = `#books/manage${url}`;
                             }}
                         >
-                            <a href={`#books/read${url}`}><img className="cover" id={`cover-${book.id}`} /></a>
+                            <a href={`#books/read${url}`}>
+                                <img className="cover" id={`cover-${book.id}`} />
+                            </a>
                             
                             <div className="info">
                                 <a className="title" href={`#books/read${url}`}>{book.title}</a>
@@ -64,6 +66,13 @@ export default class CompactList extends React.Component {
                                 ) : (
                                     <span />
                                 )}
+                            </div>
+
+                            <div className="controls">
+                                <a
+                                    href={`#books/manage${url}`}
+                                    className="icon-edit"
+                                >Manage</a>
                             </div>
                         </div>
                     );
