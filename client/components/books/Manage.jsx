@@ -8,7 +8,8 @@ import request from "lib/request/index";
 import upload from "lib/request/upload";
 
 // Components
-import NavBar from "../misc/NavBar";
+import DynamicIframe from "components/misc/DynamicIframe";
+import NavBar from "components/misc/NavBar";
 
 // Constants
 import { LIBRARY_URL } from "constants/config";
@@ -25,6 +26,7 @@ export default class ManageBook extends React.Component {
             id: window.location.hash.split('/')[2],
             downloadingMetadata: false,
             editComments: false,
+            findCover: false,
             saving: false
         };
         
@@ -265,13 +267,25 @@ export default class ManageBook extends React.Component {
                         <span className="icon-upload" /> Upload Cover
                     </button>
                     <button className="btn-secondary" onClick={
-                        () => window.open(
-                            "https://www.google.com/search?tbm=isch&q="
-                            + book.authors + " " + book.title
-                        )
+                        () => this.setState({ findCover: true })
                     }>
                         <span className="icon-search" /> Find Cover
                     </button>
+
+                    {this.state.findCover ? (
+                        <div class="find-cover">
+                            <span
+                                onClick={() => this.setState({ findCover: false })}
+                                className="icon-close"
+                            />
+                            <DynamicIframe src={
+                                "http://www.bing.com/images/search?q="
+                                + book.authors + " " + book.title
+                            }/>
+                        </div>
+                    ) : (
+                        <div />
+                    )}
                 </section>
                 
                 <hr />
