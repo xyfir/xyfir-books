@@ -278,11 +278,11 @@ export default class TableList extends React.Component {
                             <dd className="formats">{
                                 selectedBook.formats.map(format => {
                                     const url = LIBRARY_URL
-                                        + "files/" + this.props.data.account.library + "/"
-                                        + format.split('/').slice(-3).join('/');
+                                        + "files/" + this.props.data.account.library
+                                        + "/" + format;
                                     return ( 
                                         <a target="_blank" href={url}>{
-                                            url.split('.')[1].toUpperCase()
+                                            format.split('.')[1].toUpperCase()
                                         }</a>
                                     );
                                 })
@@ -292,7 +292,6 @@ export default class TableList extends React.Component {
                             <dd className="links">{
                                 selectedBook.identifiers.split(',').map(id => {
                                     id = id.split(':');
-                                    console.log("id ", id);
                                     
                                     switch (id[0]) {
                                         case "isbn": return (
