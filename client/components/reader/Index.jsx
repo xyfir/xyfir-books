@@ -44,14 +44,28 @@ export default class Reader extends React.Component {
         };
         this.timers = {};
         
+        this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
+        this._addEventListeners = this._addEventListeners.bind(this);
+        this._applyHighlights = this._applyHighlights.bind(this);
+        this._getWordCount = this._getWordCount.bind(this);
+        this.onToggleShow = this.onToggleShow.bind(this);
+        this.onCloseModal = this.onCloseModal.bind(this);
+        this._applyStyles = this._applyStyles.bind(this);
+        this._updateBook = this._updateBook.bind(this);
+        this._initialize = this._initialize.bind(this);
+    }
+
+    componentDidMount() {
+        const id = window.location.hash.split('/')[2];
+        
         // Build url to .epub file to read
         let url = LIBRARY_URL + "files/" + this.props.data.account.library + "/";
         let hasEpub = false;
         
         this.state.book.formats.forEach(format => {
             if (format.split('.')[1] == "epub") {
-                url += format.split('/').slice(-3).join('/');
                 hasEpub = true;
+                url += format;
             }
         });
 
@@ -73,10 +87,18 @@ export default class Reader extends React.Component {
                     this.props.dispatch(updateBook(id, res));
                     this.props.dispatch(save("books"));
 
+                    // Get #book width/height
+                    const height = parseInt(window.getComputedStyle(
+                        document.querySelector("#book")
+                    ).height);
+                    const width = parseInt(window.getComputedStyle(
+                        document.querySelector("#book")
+                    ).width);
+
                     // Create EPUB.JS reader object
                     window.epub = ePub(url, {
                         storage: true, restore: true, spreads: false,
-                        styles: {
+                        width, height, styles: {
                             fontSize: r.fontSize + "em", padding: "0em " + r.padding + "em",
                             backgroundColor: r.backgroundColor,
                             lineHeight: r.lineHeight + "em"
@@ -88,16 +110,6 @@ export default class Reader extends React.Component {
             });
             
         }});
-        
-        this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
-        this._addEventListeners = this._addEventListeners.bind(this);
-        this._applyHighlights = this._applyHighlights.bind(this);
-        this._getWordCount = this._getWordCount.bind(this);
-        this.onToggleShow = this.onToggleShow.bind(this);
-        this.onCloseModal = this.onCloseModal.bind(this);
-        this._applyStyles = this._applyStyles.bind(this);
-        this._updateBook = this._updateBook.bind(this);
-        this._initialize = this._initialize.bind(this);
     }
     
     componentDidUpdate() {
