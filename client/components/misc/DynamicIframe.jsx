@@ -6,41 +6,53 @@ export default class DynamicIframe extends React.Component {
         super(props);
 
         this._setHeight = this._setHeight.bind(this);
+        this._getHeight = this._getHeight.bind(this);
     }
 
     componentDidMount() {
-        this.refs.frame.style.border = "none";
-        this.interval = setInterval(() => this._setHeight(), 200);
+        this._setHeight();
     }
 
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
-
-    _getHeight(doc) {
-        let body = doc.body, html = doc.documentElement;
+    _getFontSize() {
+        let div = document.createElement("div");
+        div.style.width = "1000em";
         
-        return Math.max(
-            html.clientHeight, html.scrollHeight, html.offsetHeight,
-            body.scrollHeight, body.offsetHeight
+        document.body.appendChild(div);
+        
+        let pixels = div.offsetWidth / 1000;
+        parentElement.removeChild(div);
+        
+        return pixels;
+    }
+
+    _getHeight() {
+        // Get positions for top/bottom/container elements
+        const bottom = document.querySelector(
+            this.props.bottom || this.props.container
+        ).getBoundingClientRect();
+        const top = document.querySelector(
+            this.props.top || this.props.container
+        ).getBoundingClientRect();
+        
+        // Calculate space between/inside element(s)
+        // Subtract em from height if needed
+        return Math.floor(
+            bottom.top - top.bottom - Math.round(
+                (this.props.substract || 0) * _getFontSize()
+            )
         );
     }
 
     _setHeight() {
-        let doc = this.refs.frame.contentDocument
-            ? this.refs.frame.contentDocument
-            : this.refs.frame.contentWindow.document;
-        
-        this.refs.frame.style.height = this._getHeight(doc) + "px";
+        this.refs.frame.style.height = this._getHeight() + "px";
     }
 
     render() {
         return (
             <iframe
                 ref="frame"
-                src={this.props.src || ""}
+                src={this.props.src}
                 width="100%"
-                scrolling="no"
                 className={this.props.className}
             />
         );
