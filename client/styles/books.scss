@@ -96,6 +96,10 @@ span.word-count, span.rating {
                 z-index: 2;
             }
 
+            iframe {
+                margin-top: 1.5em;
+            }
+
         }
         
     }
@@ -172,6 +176,7 @@ span.word-count, span.rating {
         .controls {
             position: absolute;
             bottom: 1em;
+            left: 6.5em;
         }
     
     }
