@@ -6,7 +6,6 @@
         left: 0%;
         right: 0%;
         bottom: 0%;
-        padding: 1em;
     }
     
     .nav-bar-hidden {
@@ -16,6 +15,10 @@
         right: 30%;
         bottom: 95%;
         z-index: 1;
+    }
+
+    .overlay * {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
     
     .controls {
