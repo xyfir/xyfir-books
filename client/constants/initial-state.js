@@ -19,7 +19,7 @@ const state = {
             }
         },
         reader: Object.assign({}, readerThemes.LIGHT, {
-            fontSize: 1, padding: 0, lineHeight: 1.4, annotationsKey: "",
+            fontSize: 1, padding: 1, lineHeight: 1.4, annotationsKey: "",
             defaultHighlightMode: "none"
         })
     }
