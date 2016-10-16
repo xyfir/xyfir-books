@@ -273,13 +273,14 @@ export default class ManageBook extends React.Component {
                     </button>
 
                     {this.state.findCover ? (
-                        <div class="find-cover">
+                        <div className="find-cover">
                             <span
+                                title="Close Book Cover Finder"
                                 onClick={() => this.setState({ findCover: false })}
                                 className="icon-close"
                             />
                             <DynamicIframe src={
-                                "http://www.bing.com/images/search?q="
+                                "https://www.bing.com/images/search?q="
                                 + book.authors + " " + book.title
                             }/>
                         </div>
