@@ -41,7 +41,7 @@ export default class Annotation extends React.Component {
 
         return (
             <div className="annotation">
-                    <div className="head">
+                <div className="head">
                     {this.state.annotations.length > 1 ? (
                         <nav>{this.state.annotations.map(an => {
                             return (
@@ -74,11 +74,19 @@ export default class Annotation extends React.Component {
                         <a href={annotation.value} target="_blank">
                             Go to Link
                         </a>
-                        <DynamicIframe src={annotation.value} />
+                        <DynamicIframe
+                            src={annotation.value}
+                            top=".value > .link"
+                            bottom=".modal"
+                            subtract={1.5}
+                        />
                     </div>
                 ) : this.state.view == 3 ? (
                     <DynamicIframe
                         src={"//www.bing.com/search?q=" + annotation.value}
+                        top=".annotation > .head"
+                        bottom=".modal"
+                        subtract={1.5}
                         className="search"
                     />
                 ) : this.state.view == 4 ? (
@@ -93,11 +101,17 @@ export default class Annotation extends React.Component {
                         annotation.value.indexOf("youtube.com/") > -1 ? (
                             <DynamicIframe
                                 src={annotation.value}
+                                top=".annotation > .head"
+                                bottom=".modal"
+                                subtract={1.5}
                                 className="youtube"
                             />
                         ) : annotation.value.indexOf("vimeo.com/") > -1 ? (
                             <DynamicIframe
                                 src={annotation.value}
+                                top=".annotation > .head"
+                                bottom=".modal"
+                                subtract={1.5}
                                 className="viemo"
                             />
                         ) : (
@@ -123,7 +137,12 @@ export default class Annotation extends React.Component {
                                 <a href={annotation.value} target="_blank">
                                     Go to Map Link
                                 </a>
-                                <DynamicIframe src={annotation.value} />
+                                <DynamicIframe
+                                    src={annotation.value}
+                                    top=".map > a"
+                                    bottom=".modal"
+                                    subtract={1.5}
+                                />
                             </div>
                         ) : (
                             <DynamicIframe
@@ -132,6 +151,9 @@ export default class Annotation extends React.Component {
                                     + "AIzaSyAN0om9mFmy1QN6Wf54tXAowK4eT0ZUPrU"
                                     + "&q=" + annotation.value
                                 }
+                                top=".annotation > .head"
+                                bottom=".modal"
+                                subtract={1.5}
                                 className="gmaps"
                             />
                         )

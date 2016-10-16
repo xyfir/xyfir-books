@@ -279,10 +279,14 @@ export default class ManageBook extends React.Component {
                                 onClick={() => this.setState({ findCover: false })}
                                 className="icon-close"
                             />
-                            <DynamicIframe src={
-                                "https://www.bing.com/images/search?q="
-                                + book.authors + " " + book.title
-                            }/>
+                            <DynamicIframe
+                                src={
+                                    "https://www.bing.com/images/search?q="
+                                    + book.authors + " " + book.title
+                                }
+                                container=".find-cover"
+                                subtract="3.5" // 1.5 for iframe 2 for find-cover
+                            />
                         </div>
                     ) : (
                         <div />
