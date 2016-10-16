@@ -19,23 +19,40 @@ const config = require("config");
 */
 module.exports = function(req, res) {
 
+    // Wipe session, return empty library ID
+    const error = () => {
+        req.session.xadid = req.session.library = "";
+        req.session.uid = req.session.subscription = 0;
+
+        res.json({ library: "" });
+    };
+
     db(cn => {
         let sql = "";
 
         const getInfo = (uid) => {
             sql = `
                 SELECT
-                    library_size_limit as librarySizeLimit, subscription, library_id as library
+                    library_size_limit as librarySizeLimit, subscription,
+                    library_id as library, xad_id as xadid
                 FROM users WHERE user_id = ?
             `;
 
-            cn.query(sql, [req.session.uid], (err, rows) => {
+            cn.query(sql, [uid], (err, rows) => {
                 cn.release();
 
-                if (err || !rows.length)
-                    res.json({ library: "" });
-                else
+                if (err || !rows.length) {
+                    error();
+                }
+                else {
+                    // Set session, return account info
+                    req.session.uid = uid,
+                    req.session.xadid = rows[0].xadid,
+                    req.session.library = rows[0].library,
+                    req.session.subscription = rows[0].subscription;
+                    
                     res.json(rows[0]);
+                }
             });
         };
 
@@ -49,7 +66,7 @@ module.exports = function(req, res) {
             // Invalid token
             if (!token[0] || !token[1]) {
                 cn.release();
-                res.json({ library: "" });
+                error();
                 return;
             }
 
@@ -60,7 +77,7 @@ module.exports = function(req, res) {
                 // User doesn't exist
                 if (err || !rows.length) {
                     cn.release();
-                    res.json({ library: "" });
+                    error();
                 }
                 // Validate access token with Xyfir Accounts
                 else {
@@ -71,7 +88,7 @@ module.exports = function(req, res) {
                         // Error in request
                         if (err) {
                             cn.release();
-                            res.json({ library: "" });
+                            error();
                             return;
                         }
 
@@ -79,11 +96,8 @@ module.exports = function(req, res) {
 
                         // Error from Xyfir Accounts
                         if (body.error) {
-                            req.session.xadid = req.session.library = "";
-                            req.session.uid = req.session.subscription = 0;
-                            
                             cn.release();
-                            res.json({ library: "" });
+                            error();
                         }
                         // Access token valid
                         else {
@@ -100,7 +114,7 @@ module.exports = function(req, res) {
         // Force login
         else {
             cn.release();
-            res.json({ library: "" });
+            error();
         }
     });
     
