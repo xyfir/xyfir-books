@@ -1,5 +1,8 @@
 import React from "react";
 
+// Modules
+import emToPixels from "lib/misc/em-to-pixels";
+
 export default class DynamicIframe extends React.Component {
 
     constructor(props) {
@@ -11,18 +14,6 @@ export default class DynamicIframe extends React.Component {
 
     componentDidMount() {
         this._setHeight();
-    }
-
-    _getFontSize() {
-        let div = document.createElement("div");
-        div.style.width = "1000em";
-        
-        document.body.appendChild(div);
-        
-        let pixels = div.offsetWidth / 1000;
-        parentElement.removeChild(div);
-        
-        return pixels;
     }
 
     _getHeight() {
@@ -38,7 +29,7 @@ export default class DynamicIframe extends React.Component {
         // Subtract em from height if needed
         return Math.floor(
             bottom.top - top.bottom - Math.round(
-                (this.props.substract || 0) * _getFontSize()
+                (this.props.substract || 0) * emToPixels()
             )
         );
     }
