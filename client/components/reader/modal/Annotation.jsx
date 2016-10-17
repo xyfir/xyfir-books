@@ -4,9 +4,6 @@ import React from "react";
 // Constants
 import annotationTypes from "constants/annotation-types";
 
-// Components
-import DynamicIframe from "components/misc/DynamicIframe";
-
 export default class Annotation extends React.Component {
 
     constructor(props) {
@@ -74,21 +71,12 @@ export default class Annotation extends React.Component {
                         <a href={annotation.value} target="_blank">
                             Go to Link
                         </a>
-                        <DynamicIframe
-                            src={annotation.value}
-                            top=".value > .link"
-                            bottom=".modal"
-                            subtract={1.5}
-                        />
+                        <iframe src={annotation.value} />
                     </div>
                 ) : this.state.view == 3 ? (
-                    <DynamicIframe
-                        src={"//www.bing.com/search?q=" + annotation.value}
-                        top=".annotation > .head"
-                        bottom=".modal"
-                        subtract={1.5}
-                        className="search"
-                    />
+                    <div className="search">
+                        <iframe src={"//www.bing.com/search?q=" + annotation.value} />
+                    </div>
                 ) : this.state.view == 4 ? (
                     <div className="image">
                         <a href={annotation.value} target="_blank">
@@ -99,19 +87,13 @@ export default class Annotation extends React.Component {
                 ) : this.state.view == 5 ? (
                     <div className="video">{
                         annotation.value.indexOf("youtube.com/") > -1 ? (
-                            <DynamicIframe
+                            <iframe
                                 src={annotation.value}
-                                top=".annotation > .head"
-                                bottom=".modal"
-                                subtract={1.5}
                                 className="youtube"
                             />
                         ) : annotation.value.indexOf("vimeo.com/") > -1 ? (
-                            <DynamicIframe
+                            <iframe
                                 src={annotation.value}
-                                top=".annotation > .head"
-                                bottom=".modal"
-                                subtract={1.5}
                                 className="viemo"
                             />
                         ) : (
@@ -137,23 +119,15 @@ export default class Annotation extends React.Component {
                                 <a href={annotation.value} target="_blank">
                                     Go to Map Link
                                 </a>
-                                <DynamicIframe
-                                    src={annotation.value}
-                                    top=".map > a"
-                                    bottom=".modal"
-                                    subtract={1.5}
-                                />
+                                <iframe src={annotation.value} />
                             </div>
                         ) : (
-                            <DynamicIframe
+                            <iframe
                                 src={
                                     "https://www.google.com/maps/embed/v1/place?key="
                                     + "AIzaSyAN0om9mFmy1QN6Wf54tXAowK4eT0ZUPrU"
                                     + "&q=" + annotation.value
                                 }
-                                top=".annotation > .head"
-                                bottom=".modal"
-                                subtract={1.5}
                                 className="gmaps"
                             />
                         )
