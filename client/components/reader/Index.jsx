@@ -82,7 +82,7 @@ export default class Reader extends React.Component {
                             backgroundColor: r.backgroundColor,
                             lineHeight: r.lineHeight + "em"
                         }, width: window.innerWidth, height: (
-                            window.innerHeight - (emToPixels("#book") * 2)
+                            window.innerHeight - (emToPixels() * 2)
                         )
                     });
 
