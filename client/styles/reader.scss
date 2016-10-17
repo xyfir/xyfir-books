@@ -204,6 +204,14 @@
 
             }
 
+            .value > div {
+                position: absolute;
+                left: 0%;
+                top: 0%;
+                right: 0%;
+                bottom: 0%;
+            }
+
             .value {
 
                 position: absolute;
@@ -214,12 +222,11 @@
                 overflow: hidden;
 
                 .link, .search, .video, .map {
-                    position: absolute;
-                    left: 0%;
-                    top: 0%;
-                    right: 0%;
-                    bottom: 0%;
                     overflow-y: hidden;
+                }
+
+                .image, .document {
+                    overflow-y: auto;
                 }
 
                 a {
