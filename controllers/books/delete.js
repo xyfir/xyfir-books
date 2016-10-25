@@ -11,7 +11,7 @@ const config = require("config");
         { error: boolean }
     DESCRIPTION
         Requests books to be deleted via library manager
-        Deletes books from database and updates server's space if removed from library
+        Deletes books from database if removed from library
 */
 module.exports = function(req, res) { 
 
@@ -29,8 +29,16 @@ module.exports = function(req, res) {
                 res.json(body);
             }
             else {
-                let sql = "DELETE FROM books WHERE user_id = ? AND book_id IN (?)";
-                let vars = [req.session.uid, req.body.ids.split(',')];
+                // Delete books and their bookmarks and notes
+                let sql = `
+                    DELETE b, bm, n
+                    FROM books b
+                    JOIN bookmarks bm ON bm.user_id = b.user_id AND bm.book_id = b.book_id
+                    JOIN notes n ON n.user_id = b.user_id AND n.book_id = b.book_id
+                    WHERE b.user_id = ? AND b.book_id IN (?)
+                `, vars = [
+                    req.session.uid, req.body.ids.split(',')
+                ];
                 
                 db(cn => cn.query(sql, vars, (err, result) => {
                     cn.release();
