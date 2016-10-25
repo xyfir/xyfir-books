@@ -50,14 +50,17 @@ export default class Reader extends React.Component {
         let hasEpub = false;
         
         this.state.book.formats.forEach(format => {
-            if (format.split('.')[1] == "epub") {
+            if (format.split('.').splice(-1) == "epub") {
                 hasEpub = true;
                 url += format;
             }
         });
 
         // We can only read epub files
-        if (!hasEpub) history.back();
+        if (!hasEpub) {
+            history.back();
+            return;
+        }
         
         // Get bookmarks, notes, last read time
         request({url: URL + "api/books/" + id, success: (res) => {
