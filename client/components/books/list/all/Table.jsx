@@ -57,14 +57,19 @@ export default class TableList extends React.Component {
     
     onDelete() {
         if (!navigator.onLine) {
-            swal("No Internet Connection", "This action requires an internet connection", "error");
-            return;
+            swal(
+                "No Internet Connection",
+                "This action requires an internet connection",
+                "error"
+            ); return;
         }
         
         // Delete ids in state.selected
         swal({
             title: "Are you sure?",
-            text: `Are you sure you want to delete (${this.state.selected.length}) book(s) from your library?`,
+            text: "Are you sure you want to delete ("
+                + this.state.selected.length
+                + ") book(s) from your library?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -77,24 +82,10 @@ export default class TableList extends React.Component {
                         swal("Error", "Could not delete book(s)", "error");
                     }
                     else {
-                        const deleteFromLocalStorage = (i) => {
-                            // All deleted
-                            if (this.state.selected[i] === undefined) {
-                                this.props.dispatch(deleteBooks(this.state.selected));
-                                this.setState({ selected: [] });
-                            }
-                            // Delete book at index i in selected[] from local storage
-                            else {
-                                const book = this.props.data.books.find(b => {
-                                    return b.id == this.state.selected[i];
-                                });
-                                
-                                // ** Delete book file stored via epub.js
-                                deleteFromLocalStorage(i + 1);
-                            }
-                        };
-                        
-                        deleteFromLocalStorage(0);
+                        const selected = this.state.selected;
+
+                        this.setState({ selected: [] });
+                        this.props.dispatch(deleteBooks(selected));
                     }
                 }
             });
@@ -115,7 +106,9 @@ export default class TableList extends React.Component {
             return b.id == this.state.selected[this.state.selected.length - 1];
         });
         if (selectedBook !== undefined) {
-            selectedBook.url = `${selectedBook.id}/${toUrl(selectedBook.authors)}/${toUrl(selectedBook.title)}`;
+            selectedBook.url = selectedBook.id
+                + '/' + toUrl(selectedBook.authors)
+                + '/' + toUrl(selectedBook.title);
             
             if (selectedBook.identifiers === undefined)
                 selectedBook.identifiers = "";
@@ -282,7 +275,7 @@ export default class TableList extends React.Component {
                                         + "/" + format;
                                     return ( 
                                         <a target="_blank" href={url}>{
-                                            format.split('.')[1].toUpperCase()
+                                            format.split('.').slice(-1).toUpperCase()
                                         }</a>
                                     );
                                 })
