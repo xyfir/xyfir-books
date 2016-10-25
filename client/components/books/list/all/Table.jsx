@@ -131,7 +131,7 @@ export default class TableList extends React.Component {
                                     <th
                                         onContextMenu={() => window.location.hash = "settings/book-list"}
                                         className={this.state.sort.column == col ? "sort-by" : ""}
-                                        onClick={this.onSort.bind(this, col)}
+                                        onClick={() => this.onSort(col)}
                                     >{col.replace(/\b[a-z]/g, c => c.toUpperCase())}</th>
                                 )
                             })
@@ -198,7 +198,7 @@ export default class TableList extends React.Component {
                                 </a>
                             )}
                             
-                            <a onClick={this.onDelete}>
+                            <a onClick={() => this.onDelete()}>
                                 <span className="icon-trash" />Delete
                             </a>
                             
