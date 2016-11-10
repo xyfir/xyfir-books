@@ -1,3 +1,6 @@
+const rewardAffiliate = require("lib/purchase/reward-affiliate");
+const setSubscription = require("lib/purchase/set-subscription");
+const rewardReferrer = require("lib/purchase/reward-referrer");
 const randString = require("randomstring");
 const request = require("request");
 const stripe = require("stripe");
@@ -17,76 +20,133 @@ const config = require("config");
 */
 module.exports = function (req, res) {
 
-    const subscriptions = {
+    const subs = {
         '1': { days: 30, months: 1, cost: 400 },
         '2': { days: 182, months: 6, cost: 2100 },
         '3': { days: 365, months: 12, cost: 3600 }
     };
 
-    if (subscriptions[req.body.subscription] === undefined) {
+    if (subs[req.body.subscription] === undefined) {
         res.json({ error: true, message: "Invalid subscription length" });
         return;
     }
 
-    // Calculate cost of subscription + added storage gigabytes
-    const amount = subscriptions[req.body.subscription].cost + (
-        (+req.body.addToSizeLimit * 15) * subscriptions[req.body.subscription].months
-    );
+    let sql = `
+        SELECT subscription, library_id, referral FROM users WHERE user_id = ?
+    `, vars = [
+        req.session.uid
+    ];
 
-    // Build stripe data object
-    const data = {
-        amount, source: req.body.stripeToken, currency: "usd",
-        description: `Libyq Subscription (${
-            subscriptions[req.body.subscription].days
-        } Days)`
-    };
+    db(cn => cn.query(sql, vars, (err, rows) => {
+        let error = "", createLibrary = true, library = "";
 
-    // Attempt to charge user's card
-    stripe(config.keys.stripe).charges.create(data, (err, charge) => {
-        if (err) {
-            res.json({
-                error: true,
-                message: "Error processing your card. Please try again."
-            }); return;
+        if (err || !rows.length)
+            error = "An unknown error occured";
+        else if (rows[0].subscription > Date.now())
+            error = "You already have a subscription";
+        else if (rows[0].library_id)
+            createLibrary = false, library = rows[0].library_id;
+
+        if (error) {
+            cn.release();
+            res.json({ error: true, message: error });
+            return;
         }
 
-        // Set subscription expiration Date
-        const subscription = Date.now()
-            + (subscriptions[req.body.subscription].days * 86400000);
-        
-        // Generate library id
-        const library = req.session.uid + '-' + randString.generate(40);
+        // Calculate cost of subscription + added storage gigabytes
+        let amount = subs[req.body.subscription].cost + (
+            (+req.body.addToSizeLimit * 15) * subs[req.body.subscription].months
+        );
 
-        // Set users.subscription|library_id|library_size_limit
-        let sql = `
-            UPDATE users SET subscription = ?, library_id = ?, library_size_limit = ?
-            WHERE user_id = ?
-        `, vars = [
-            subscription, library, (15 + +req.body.addToSizeLimit),
-            req.session.uid
-        ];
+        const referral = JSON.parse(rows[0].referral);
 
-        db(cn => cn.query(sql, vars, (err, result) => {
-            cn.release();
+        // Discount 10% off of first purchase
+        if ((referral.referral || referral.affiliate) && !referral.hasMadePurchase) {
+            referral.hasMadePurchase = true;
+            amount -= amount * 0.10;
+        }
 
-            if (err || !result.affectedRows) {
-                res.json({ error: true, message: "Contact support at libyq@xyfir.com" });
+        // Build stripe data object
+        const data = {
+            amount, source: req.body.stripeToken, currency: "usd",
+            description: `Libyq Subscription (${
+                subs[req.body.subscription].days
+            } Days)`
+        };
+
+        // Attempt to charge user's card
+        stripe(config.keys.stripe).charges.create(data, (err, charge) => {
+            if (err) {
+                res.json({
+                    error: true,
+                    message: "Error processing your card. Please try again."
+                }); return;
             }
-            else {
-                // Create library
-                request.post(config.addresses.library + library, (err, response, body) => {
-                    if (err || JSON.parse(body).error) {
-                        res.json({ error: true, message: "Contact support at libyq@xyfir.com" });
-                    }
-                    else {
-                        res.json({ error: false, message: "" });
 
-                        req.session.library = library;
-                        req.session.subscription = subscription;
-                    }
-                });
-            }
-        }));
-    });
+            // Set subscription expiration Date
+            const subscription = setSubscription(
+                0, subs[req.body.subscription].days
+            );
+            
+            // Generate library id
+            if (createLibrary)
+                library = req.session.uid + '-' + randString.generate(40);
+
+            // Set users.subscription|library_id|library_size_limit|referral
+            sql = `
+                UPDATE users SET
+                    subscription = ?, referral = ?, library_id = ?,
+                    library_size_limit = ?
+                WHERE user_id = ?
+            `, vars = [
+                subscription, JSON.stringify(referral), library,
+                (15 + +req.body.addToSizeLimit),
+                req.session.uid
+            ];
+
+            cn.query(sql, vars, (err, result) => {
+                // Reward referrer / affiliate
+                if (referral.referral) {
+                    rewardReferrer(
+                        cn, referral.referral, subs[req.body.subscription].days
+                    );
+                }
+                else if (referral.affiliate) {
+                    cn.release();
+                    rewardAffiliate(referral.affiliate, amount);
+                }
+                else {
+                    cn.release();
+                }
+
+                if (err || !result.affectedRows) {
+                    res.json({
+                        error: true, message: "Contact support at libyq@xyfir.com"
+                    });
+                }
+                else if (createLibrary) {
+                    request.post({
+                        url: config.addresses.library + library
+                    }, (err, response, body) => {
+                        if (err || JSON.parse(body).error) {
+                            res.json({
+                                error: true,
+                                message: "Contact support at libyq@xyfir.com"
+                            });
+                        }
+                        else {
+                            res.json({ error: false, message: "" });
+                            req.session.library = library;
+                            req.session.subscription = subscription;
+                        }
+                    });
+                }
+                else {
+                    res.json({ error: false, message: "" });
+                    req.session.subscription = subscription;
+                }
+            });
+        });
+    }));
 
 };
