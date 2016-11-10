@@ -96,6 +96,17 @@
         </p>
     </section>
 
+    <script>
+        if (location.hash.indexOf("?")) {
+            localStorage.setItem(
+                "referral", location.hash.split("?r=")[1] || ""
+            )
+            localStorage.setItem(
+                "affiliate", location.hash.split("?promo=")[1] || ""
+            );
+        }
+    </script>
+
     <footer>
         <a href="https://xyfir.com/#/documentation/libyq/tos">Terms of Service</a>
         <a href="https://xyfir.com/#/documentation/libyq/privacy">Privacy Policy</a>
