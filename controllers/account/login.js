@@ -9,6 +9,8 @@ const config = require("config");
     POST api/account/login
     REQUIRED
         xid: string, auth: string
+    OPTIONAL
+        affiliate: string, referral: number
     RETURN
         { error: boolean, accessToken?: string }
     DESCRIPTION
@@ -46,7 +48,8 @@ module.exports = function(req, res) {
                 cn.release();
                 res.json({ error: true });
             }
-            // First login (registration)
+            
+            /* First Login (Registration) */
             else if (!rows.length) {
                 const subscription = Date.now() + (7 * 86400000);
 
@@ -67,10 +70,13 @@ module.exports = function(req, res) {
                     req.session.uid = result.insertId;
                     
                     // Generate user's library id
-                    const library = result.insertId + '-' + randString.generate(40);
+                    const library = result.insertId
+                        + '-' + randString.generate(40);
 
                     // Create library on library server
-                    request.post(config.addresses.library + library, (err, response, body) => {
+                    request.post({
+                        url: config.addresses.library + library
+                    }, (err, response, body) => {
                         if (err) {
                             cn.release();
                             res.json({ error: true, message: "Contact support" });
@@ -84,29 +90,75 @@ module.exports = function(req, res) {
                             res.json({ error: true, message: "Contact support" });
                             return;
                         }
-                        
-                        // Set user's library id
-                        sql = `UPDATE users SET library_id = ? WHERE user_id = ?`;
-                        let vars = [library, result.insertId];
-                        
-                        cn.query(sql, vars, (err, result) => {
-                            cn.release();
+
+                        let referral = "{}";
+
+                        const finish = () => {
+                            // Set user's library id
+                            sql = `
+                                UPDATE users SET library_id = ?, referral = ?
+                                WHERE user_id = ?
+                            `, vars = [
+                                library, referral,
+                                req.session.uid
+                            ];
                             
-                            res.json({
-                                error: false, accessToken: crypto.encrypt(
-                                    req.session.uid + "-" + token,
-                                    config.keys.accessToken
-                                )
+                            cn.query(sql, vars, (err, result) => {
+                                cn.release();
+                                
+                                res.json({
+                                    error: false, accessToken: crypto.encrypt(
+                                        req.session.uid + "-" + token,
+                                        config.keys.accessToken
+                                    )
+                                });
+                                
+                                req.session.subscription = subscription;
+                                req.session.library = library;
+                                req.session.xadid = body.xadid;
                             });
-                            
-                            req.session.subscription = subscription;
-                            req.session.library = library;
-                            req.session.xadid = body.xadid;
-                        });
+                        };
+
+                        if (req.body.referral) {
+                            referral = JSON.stringify({
+                                referral: req.body.referral,
+                                hasMadePurchase: false
+                            });
+                            finish();
+                        }
+                        // Validate affiliate promo code
+                        else if (req.body.affiliate) {
+                            request.post({
+                                url: config.address.xacc + "api/affiliate/signup",
+                                form: {
+                                    service: 14, serviceKey: config.keys.xacc,
+                                    promoCode: req.body.affiliate
+                                }
+                            }, (err, response, body) => {
+                                if (err) {
+                                    finish();
+                                }
+                                else {
+                                    body = JSON.parse(body);
+
+                                    if (!body.error && body.promo == 5) {
+                                        referral = JSON.stringify({
+                                            affiliate: req.body.affiliate,
+                                            hasMadePurchase: false
+                                        });
+                                    }
+                                    finish();
+                                }
+                            });
+                        }
+                        else {
+                            finish();
+                        }
                     });
                 });
             }
-            // Update data
+
+            /* Update Data */
             else {
                 sql = "UPDATE users SET email = ? WHERE user_id = ?"
                 cn.query(sql, [body.email, rows[0].user_id], (err, result) => {
