@@ -18,7 +18,9 @@ export default class ExtendSubscription extends React.Component {
         super(props);
     }
 
-    onPurchase() {
+    onPurchase(e) {
+        e.preventDefault();
+
         const purchase = () => {
             Stripe.setPublishableKey(STRIPE_KEY_PUB);
             
@@ -60,6 +62,7 @@ export default class ExtendSubscription extends React.Component {
                                 }.`,
                                 "success"
                             );
+                            location.hash = "#account";
                         }
                     }
                 });
@@ -75,6 +78,11 @@ export default class ExtendSubscription extends React.Component {
     }
 
     render() {
+        const discount = (
+            this.props.data.account.referral.referral
+            || this.props.data.account.referral.affiliate
+        ) && !this.props.data.account.referral.hasMadePurchase;
+
         return (
             <div className="extend-subscription">
                 <NavBar
@@ -86,51 +94,60 @@ export default class ExtendSubscription extends React.Component {
                     books={true}
                 />
 
-                <p>
-                    The length of the subscription you purchase will be added to your remaining subscription time.
-                    <br />
-                    If you have increased your library storage size limit: you will be charged $0.15 for each added GB, for each month of your subscription.
-                    <br />
-                    {this.props.data.account.librarySizeLimit > 15 ? (
-                        <span>
-                            <strong>Note: </strong> You will be charged an additional ${
-                                (this.props.data.account.librarySizeLimit - 15)
-                                * 0.15
-                            } per month due to your increased storage limit.
-                        </span>
-                    ) : <span />}
-                </p>
-
-                <hr />
+                <section className="info">
+                    <p>
+                        The length of the subscription you purchase will be added to your remaining subscription time.
+                        <br />
+                        If you have increased your library storage size limit: you will be charged $0.15 for each added GB, for each month of your subscription.
+                        <br />
+                        {this.props.data.account.librarySizeLimit > 15 ? (
+                            <span>
+                                <strong>Note: </strong> You will be charged an additional ${
+                                    (this.props.data.account.librarySizeLimit - 15)
+                                    * 0.15
+                                } per month due to your increased storage limit.
+                            </span>
+                        ) : <span />}
+                    </p>
+                </section>
                 
-                <form className="form" onSubmit={() => this.onPurchase()}>
-                    <select ref="subscription" defaultValue="0">
-                        <option value="0" disabled>Subscription Length</option>
-                        <option value="1">30 Days  - $4</option>
-                        <option value="2">182 Days - $21</option>
-                        <option value="3">365 Days - $36</option>
-                    </select>
-                
-                    <form ref="stripeForm" className="stripe-form">
-                        <label>Card Number</label>
-                        <input type="text" data-stripe="number"/>
-        
-                        <label>CVC</label>
-                        <input type="number" data-stripe="cvc" />
+                <section className="form">
+                    <form onSubmit={(e) => this.onPurchase(e)}>
+                        <select ref="subscription" defaultValue="0">
+                            <option value="0" disabled>Subscription Length</option>
+                            <option value="1">30 Days  - $4</option>
+                            <option value="2">182 Days - $21</option>
+                            <option value="3">365 Days - $36</option>
+                        </select>
                     
-                        <div className="expiration">
-                            <label>Expiration (MM/YYYY)</label>
-                            <input type="number" data-stripe="exp-month" placeholder="07"/>
-                            <span> / </span>
-                            <input type="number" data-stripe="exp-year" placeholder="2020" />
-                        </div>
-                    </form>
-                </form>
+                        <form ref="stripeForm" className="stripe-form">
+                            <label>Card Number</label>
+                            <input type="text" data-stripe="number"/>
+            
+                            <label>CVC</label>
+                            <input type="number" data-stripe="cvc" />
+                        
+                            <div className="expiration">
+                                <label>Expiration (MM/YYYY)</label>
+                                <input
+                                    type="number"
+                                    data-stripe="exp-month"
+                                    placeholder="07"
+                                />
+                                <span> / </span>
+                                <input
+                                    type="number"
+                                    data-stripe="exp-year"
+                                    placeholder="2020"
+                                />
+                            </div>
+                        </form>
 
-                <button
-                    onClick={() => this.onPurchase()}
-                    className="btn-primary"
-                >Extend Subscription</button>
+                        <button className="btn-primary">
+                            Extend Subscription
+                        </button>
+                    </form>
+                </section>
             </div>
         )
     }

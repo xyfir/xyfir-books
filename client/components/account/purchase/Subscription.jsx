@@ -24,7 +24,9 @@ export default class PurchaseSubscription extends React.Component {
         };
     }
 
-    onPurchase() {
+    onPurchase(e) {
+        e.preventDefault();
+
         const purchase = () => {
             Stripe.setPublishableKey(STRIPE_KEY_PUB);
             
@@ -65,9 +67,12 @@ export default class PurchaseSubscription extends React.Component {
                         
                         swal(
                             "Purchase Complete",
-                            `Your subscription will expire on ${(new Date(subscription)).toLocaleString()}.`,
+                            `Your subscription will expire on ${
+                                (new Date(subscription)).toLocaleString()
+                            }.`,
                             "success"
                         );
+                        location.hash = "#account";
                     }
                 }
             });
@@ -82,6 +87,11 @@ export default class PurchaseSubscription extends React.Component {
     }
 
     render() {
+        const discount = (
+            this.props.data.account.referral.referral
+            || this.props.data.account.referral.affiliate
+        ) && !this.props.data.account.referral.hasMadePurchase;
+
         return (
             <div className="purchase-subscription">
                 <NavBar
@@ -93,29 +103,51 @@ export default class PurchaseSubscription extends React.Component {
                     books={true}
                 />
                 
-                <form className="form" onSubmit={() => this.onPurchase()}>
-                    <select ref="subscription" defaultValue="0">
-                        <option value="0" disabled>Subscription Length</option>
-                        <option value="1">30 Days  - $4</option>
-                        <option value="2">182 Days - $21</option>
-                        <option value="3">365 Days - $36</option>
-                    </select>
-                
-                    <form ref="stripeForm" className="stripe-form">
-                        <label>Card Number</label>
-                        <input type="text" data-stripe="number"/>
-        
-                        <label>CVC</label>
-                        <input type="number" data-stripe="cvc" />
+                <section className="form">
+                    {discount ? (
+                        <p>
+                            You will receive 10% off of your first purchase.
+                        </p>
+                    ) : (
+                        <span />
+                    )}
                     
-                        <div className="expiration">
-                            <label>Expiration (MM/YYYY)</label>
-                            <input type="number" data-stripe="exp-month" placeholder="07"/>
-                            <span> / </span>
-                            <input type="number" data-stripe="exp-year" placeholder="2020" />
-                        </div>
-                    </form>
+                    <form onSubmit={(e) => this.onPurchase(e)}>
+                        <select ref="subscription" defaultValue="0">
+                            <option value="0" disabled>Subscription Length</option>
+                            <option value="1">30 Days  - $4</option>
+                            <option value="2">182 Days - $21</option>
+                            <option value="3">365 Days - $36</option>
+                        </select>
+                    
+                        <form ref="stripeForm" className="stripe-form">
+                            <label>Card Number</label>
+                            <input type="text" data-stripe="number"/>
+            
+                            <label>CVC</label>
+                            <input type="number" data-stripe="cvc" />
+                        
+                            <div className="expiration">
+                                <label>Expiration (MM/YYYY)</label>
+                                <input
+                                    type="number"
+                                    data-stripe="exp-month"
+                                    placeholder="07"
+                                />
+                                <span> / </span>
+                                <input
+                                    type="number"
+                                    data-stripe="exp-year"
+                                    placeholder="2020"
+                                />
+                            </div>
+                        </form>
 
+                        <button className="btn-primary">Purchase</button>
+                    </form>
+                </section>
+
+                <section className="increase-size">
                     {this.state.showIncreaseSizeLimit ? (
                         <div className="increase-size-limit">
                             <p>
@@ -146,12 +178,7 @@ export default class PurchaseSubscription extends React.Component {
                             () => this.setState({ showIncreaseSizeLimit: true })
                         }>Increase Library Size Limit</a>
                     )}
-                </form>
-
-                <button
-                    onClick={() => this.onPurchase()}
-                    className="btn-primary"
-                >Purchase</button>
+                </section>
             </div>
         )
     }
