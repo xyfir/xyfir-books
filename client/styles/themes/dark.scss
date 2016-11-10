@@ -3,6 +3,10 @@ body.theme-dark {
     background-color: #1E1E1E;
     color: #CCC;
 
+    section {
+        background-color: #373737;
+    }
+
     .nav-bar {
         background-color: #252526;
     }
@@ -89,15 +93,6 @@ body.theme-dark {
             background-color: #252526;
         }
         
-    }
-
-    .settings-reader {
-
-        section {
-            background-color: #252526;
-            border: 0.1em solid #3F3F46;
-        }
-
     }
 
     .reader {

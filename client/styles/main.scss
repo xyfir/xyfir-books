@@ -42,7 +42,17 @@ p {
 	margin: auto;
 }
 .dropzone:hover {
-	background-color: $lllgray;
+	background-color: $llgray;
+}
+.libyq {
+
+	section {
+		background-color: $lllgray;
+		padding: 0.5em;
+		margin: 1em auto;
+		width: 80%;
+	}
+
 }
 
 
