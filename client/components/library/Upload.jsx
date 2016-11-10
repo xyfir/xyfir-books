@@ -72,7 +72,7 @@ export default class UploadLibrary extends React.Component {
                     books={true}
                 />
                 
-                <section>
+                <section className="info">
                     <p>
                         Here you can upload an entire ebook library instead of individual ebook files.
                         <br />
@@ -84,9 +84,9 @@ export default class UploadLibrary extends React.Component {
                         <br />
                         If you already have books in your library stored in the cloud they <strong>will</strong> be deleted. Uploading a library completely erases your old one.
                     </p>
+                </section>
                     
-                    <hr />
-                    
+                <section className="upload">
                     <Dropzone onDrop={this.onUpload} className="dropzone">{
                         this.state.uploading ? (
                             "Uploading library, this may take a while..."

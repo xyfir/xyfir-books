@@ -44,8 +44,6 @@ export default class LibraryInfo extends React.Component {
                         Locally stored size and book count may differ.
                     </p>
                     
-                    <hr />
-                    
                     <table>
                         <tr>
                             <th>Size</th>
@@ -61,8 +59,6 @@ export default class LibraryInfo extends React.Component {
                         </tr>
                     </table>
                 </section>
-                
-                <hr />
                 
                 <section className="buttons">
                     <button

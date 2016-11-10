@@ -255,8 +255,6 @@ export default class ManageBook extends React.Component {
                     <input type="number" ref="series_index" defaultValue={book.series_index || 1} />
                 </section>
                 
-                <hr />
-                
                 <section className="cover">
                     <Dropzone ref="dz" className="dropzone" onDrop={this.onUploadCover}>
                         <img className="cover" id={`cover-${book.id}`} />
@@ -287,8 +285,6 @@ export default class ManageBook extends React.Component {
                         <div />
                     )}
                 </section>
-                
-                <hr />
                 
                 <section className="other">
                     <label>Rating</label>
@@ -325,8 +321,6 @@ export default class ManageBook extends React.Component {
                     <input type="text" ref="publisher" defaultValue={book.publisher || ""} />
                 </section>
                 
-                <hr />
-                
                 <section className="download-metadata">
                     <button
                         className="btn-secondary"
@@ -339,8 +333,6 @@ export default class ManageBook extends React.Component {
                         "We'll attempt to get this book's metadata from the internet using its authors and title, or ISBN."
                     )}</p>
                 </section>
-                
-                <hr />
                 
                 <section className="comments">
                     {this.state.editComments ? (
@@ -368,8 +360,6 @@ export default class ManageBook extends React.Component {
                     }</button>
                 </section>
                 
-                <hr />
-                
                 <section className="formats">
                     <table className="formats">{
                         book.formats.map(format => {
@@ -393,11 +383,11 @@ export default class ManageBook extends React.Component {
                     </a>
                 </section>
                 
-                <hr />
-                
-                <button className="btn-primary" onClick={this.onSaveChanges}>{
-                    this.state.saving ? "Saving..." : "Save Changes"
-                }</button>
+                <section>
+                    <button className="btn-primary" onClick={this.onSaveChanges}>{
+                        this.state.saving ? "Saving..." : "Save Changes"
+                    }</button>
+                </section>
             </div>
         );
     }

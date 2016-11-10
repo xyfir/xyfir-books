@@ -123,13 +123,13 @@ export default class DownloadLibrary extends React.Component {
                     books={true}
                 />
                 
-                <section className="">
+                <section className="info">
                     <p>
                         Download your entire library in a zip file. The downloaded library will be completely compatible with <a target="_blank" href="https://calibre-ebook.com/">Calibre</a>.
                     </p>
-                    
-                    <hr />
-                    
+                </section>
+
+                <section className="download">                    
                     {this.state.status == "" ? (
                         <button className="btn-primary" onClick={this.onDownload}>
                             Download

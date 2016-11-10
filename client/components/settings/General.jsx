@@ -75,8 +75,6 @@ export default class GeneralSettings extends React.Component {
                     </button>
                 </section>
                 
-                <hr />
-                
                 <section className="storage">
                     <h2>Clear Local Storage</h2>
                     <p>

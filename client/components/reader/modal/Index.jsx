@@ -33,7 +33,7 @@ export default class ReaderModal extends React.Component {
         
         if (showModal) {
             return (
-                <section
+                <div
                     className={"modal" + (this.state.fullscreen ? " full" : "")}
                 >
                     {this.state.canResize ? (
@@ -96,7 +96,7 @@ export default class ReaderModal extends React.Component {
                     ) : (
                         <div />
                     )))))))}
-                </section>
+                </div>
             )
         }
         else {

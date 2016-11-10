@@ -365,7 +365,7 @@ export default class Reader extends React.Component {
                     onToggleShow={this.onToggleShow}
                 />
                 
-                <section id="book" />
+                <div id="book" />
                 
                 <Overlay
                     book={this.state.book}
