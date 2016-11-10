@@ -1,3 +1,6 @@
+const rewardAffiliate = require("lib/purchase/reward-affiliate");
+const setSubscription = require("lib/purchase/set-subscription");
+const rewardReferrer = require("lib/purchase/reward-referrer");
 const stripe = require("stripe");
 const db = require("lib/db");
 
@@ -14,13 +17,13 @@ const config = require("config");
 */
 module.exports = function (req, res) {
 
-    const subscriptions = {
+    const subs = {
         '1': { days: 30, months: 1, cost: 400 },
         '2': { days: 182, months: 6, cost: 2100 },
         '3': { days: 365, months: 12, cost: 3600 }
     };
 
-    if (subscriptions[req.body.subscription] === undefined) {
+    if (subs[req.body.subscription] === undefined) {
         res.json({ error: true, message: "Invalid subscription length" });
         return;
     }
@@ -28,7 +31,7 @@ module.exports = function (req, res) {
     // Grab amount of extra gigabytes user has added to library size limit
     let sql = `
         SELECT
-            library_size_limit - 15 as size, subscription
+            library_size_limit - 15 as size, subscription, referral
         FROM users WHERE user_id = ?
     `, vars = [
         req.session.uid
@@ -41,15 +44,23 @@ module.exports = function (req, res) {
         }
         else {
             // Calculate cost of subscription + added storage gigabytes
-            const amount = subscriptions[req.body.subscription].cost + (
-                (rows[0].size * 15) * subscriptions[req.body.subscription].months
+            let amount = subs[req.body.subscription].cost + (
+                (rows[0].size * 15) * subs[req.body.subscription].months
             );
+
+            const referral = JSON.parse(rows[0].referral);
+
+            // Discount 10% off of first purchase
+            if ((referral.referral || referral.affiliate) && !referral.hasMadePurchase) {
+                referral.hasMadePurchase = true;
+                amount -= amount * 0.10;
+            }
 
             // Build stripe data object
             const data = {
                 amount, source: req.body.stripeToken, currency: "usd",
                 description: `Libyq Subscription (${
-                    subscriptions[req.body.subscription].days
+                    subs[req.body.subscription].days
                 } Days)`
             };
 
@@ -63,25 +74,40 @@ module.exports = function (req, res) {
                 }
 
                 // Extend subscription expiration time
-                const subscription = rows[0].subscription
-                    + (subscriptions[req.body.subscription].days * 86400000);
+                const subscription = setSubscription(
+                    rows[0].subscription, subs[req.body.subscription].days
+                );
 
-                // Update users.subscription
+                // Update users.subscription|referral
                 sql = `
-                    UPDATE users SET subscription = ? WHERE user_id = ?
+                    UPDATE users SET subscription = ?, referral = ?
+                    WHERE user_id = ?
                 `, vars = [
-                    subscription, req.session.uid
+                    subscription, JSON.stringify(referral), 
+                    req.session.uid
                 ];
 
                 cn.query(sql, vars, (err, result) => {
-                    cn.release();
+                    // Reward referrer / affiliate
+                    if (referral.referral) {
+                        rewardReferrer(
+                            cn, referral.referral,
+                            subs[req.body.subscription].days
+                        );
+                    }
+                    else if (referral.affiliate) {
+                        cn.release();
+                        rewardAffiliate(referral.affiliate, amount);
+                    }
+                    else {
+                        cn.release();
+                    }
 
                     if (err || !result.affectedRows) {
                         res.json({ error: true, message: "Contact support at libyq@xyfir.com" });
                     }
                     else {
                         res.json({ error: false, message: "" });
-
                         req.session.subscription = subscription;
                     }
                 });
