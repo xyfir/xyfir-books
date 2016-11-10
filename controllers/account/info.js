@@ -10,8 +10,11 @@ const config = require("config");
         token: string
     RETURN
         {
-            library: string, subscription:? number,
-            librarySizeLimit?: number
+            library: string, subscription:? number, uid?: number, xadid?: string,
+            librarySizeLimit?: number, referral?: {
+                referral?: number, affiliate?: string,
+                hasMadePurchase?: boolean
+            }
         }
     DESCRIPTION
         Creates a new session using access token
@@ -34,7 +37,8 @@ module.exports = function(req, res) {
             sql = `
                 SELECT
                     library_size_limit as librarySizeLimit, subscription,
-                    library_id as library, xad_id as xadid
+                    library_id as library, xad_id as xadid, referral,
+                    user_id as uid
                 FROM users WHERE user_id = ?
             `;
 
@@ -45,6 +49,8 @@ module.exports = function(req, res) {
                     error();
                 }
                 else {
+                    rows[0].referral = JSON.parse(rows[0].referral);
+
                     // Set session, return account info
                     req.session.uid = uid,
                     req.session.xadid = rows[0].xadid,
