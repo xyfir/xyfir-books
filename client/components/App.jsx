@@ -183,7 +183,13 @@ class App extends React.Component {
     }
 
     render() {
-        if (!this.state) return <div />;
+        if (!this.state) {
+            return (
+                <span className="loading">
+                    Initializing Libyq...
+                </span>
+            );
+        }
         
         let view;
 
