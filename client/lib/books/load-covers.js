@@ -47,8 +47,11 @@ function loadFromApi(book, library) {
             
             // Set image.src and save image to local storage
             reader.onloadend = () => {
-                document.getElementById(`cover-${book.id}`).src = reader.result;
-                
+                const cover = document.getElementById(`cover-${book.id}`);
+
+                // Element may no longer exist
+                if (cover != null) cover.src = reader.result;
+
                 localforage.setItem(
                     `cover-${book.id}-${book.versions.cover}`, reader.result
                 );
@@ -68,8 +71,6 @@ function loadFromApi(book, library) {
 }
 
 function loadCovers(books, library) {
-
-    const hash = location.hash;
     
     [].forEach.call(document.querySelectorAll("img.cover"), img => {
         const id = img.id.split('-')[1];
@@ -77,11 +78,8 @@ function loadCovers(books, library) {
         
         // Determine if we have book's latest cover stored
         localforage.getItem(`cover-${id}-${book.versions.cover}`).then(cover => {
-            // App view has changed
-            if (hash != location.hash)
-                return;
             // Cover not saved to localstorage, pull from API
-            else if (cover == null)
+            if (cover == null)
                 loadFromApi(book, library);
             // Set image source
             else
