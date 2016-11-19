@@ -252,7 +252,7 @@ export default class Reader extends React.Component {
         // Update pages left in chapter
         // Update percent complete
         epub.on("renderer:locationChanged", cfi => {
-            const hasColumns = document.querySelector("#book > iframe")
+            const hasColumns = document.querySelector("#book > div > iframe")
                 .contentDocument.querySelector("html")
                 .style.width != "auto";
             
