@@ -26,10 +26,17 @@ export default class UploadLibrary extends React.Component {
             swal("Error", "This action requires internet connectivity", "error");
             return;
         }
-        
-        if (files[0].type != "application/zip") {
-            swal("Invalid File", "You can only upload libraries in a zip file", "error");
-            return;
+
+        const acceptedTypes = [
+            "application/x-zip-compressed", "application/zip"
+        ];
+
+        if (acceptedTypes.indexOf(files[0].type) == -1) {
+            swal(
+                "Invalid File",
+                "You can only upload libraries in a zip file",
+                "error"
+            ); return;
         }
         
         if (this.state.uploading)
