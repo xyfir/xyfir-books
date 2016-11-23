@@ -1,10 +1,14 @@
 import React from "react";
 
+// Components
+import Pagination from "components/misc/Pagination";
+
 // Modules
-import findMatches from "../../../../lib/books/find-matching";
-import loadCovers from "../../../../lib/books/load-covers";
-import sortBooks from "../../../../lib/books/sort";
-import toUrl from "../../../../lib/url/clean";
+import findMatches from "lib/books/find-matching";
+import loadCovers from "lib/books/load-covers";
+import parseQuery from "lib/url/parse-hash-query";
+import sortBooks from "lib/books/sort";
+import toUrl from "lib/url/clean";
 
 export default class GridList extends React.Component {
 
@@ -21,34 +25,59 @@ export default class GridList extends React.Component {
     }
 
     render() {
+        let q = parseQuery(), books =
+            sortBooks(
+                findMatches(
+                    this.props.data.books, this.props.data.search.query
+                ), "title", true
+            ), booksCount = books.length;
+        books = books.splice((this.props.data.search.page - 1) * 25, 25);
+
         return (
-            <div className="list-grid">{
-                sortBooks(
-                    findMatches(this.props.data.books, this.props.data.search),
-                    "title"
-                ).map(book => {
-                    const url = `/${book.id}/${toUrl(book.authors)}/${toUrl(book.title)}`;
-                    
-                    return (
-                        <div
-                            className="book"
-                            onContextMenu={(e) => {
-                                e.preventDefault();
-                                window.location.hash = `#books/manage${url}`;
-                            }}
-                        >
-                            <a href={`#books/read${url}`}><img className="cover" id={`cover-${book.id}`} /></a>
-                            
-                            <div className="info">
-                                <a className="title" href={`#books/read${url}`}>{book.title}</a>
-                                <a className="authors" href={
-                                    `#books/list/all?authors=${encodeURIComponent(book.authors)}`
-                                }>{book.authors}</a>
+            <div>
+                <div className="list-grid">{
+                    books.map(book => {
+                        const url = "/" + book.id + "/" + toUrl(book.authors)
+                            + "/" + toUrl(book.title);
+                        
+                        return (
+                            <div
+                                className="book"
+                                onContextMenu={(e) => {
+                                    e.preventDefault();
+                                    window.location.hash = `#books/manage${url}`;
+                                }}
+                            >
+                                <a href={`#books/read${url}`}>
+                                    <img
+                                        className="cover"
+                                        id={`cover-${book.id}`}
+                                    />
+                                </a>
+                                
+                                <div className="info">
+                                    <a
+                                        className="title"
+                                        href={`#books/read${url}`}
+                                    >{book.title}</a>
+                                    <a className="authors" href={
+                                        `#books/list/all?search=1&authors=${
+                                            encodeURIComponent(book.authors)
+                                        }`
+                                    }>{book.authors}</a>
+                                </div>
                             </div>
-                        </div>
-                    );
-                })
-            }</div>
+                        );
+                    })
+                }</div>
+
+                <Pagination
+                    itemsPerPage={25}
+                    dispatch={this.props.dispatch}
+                    items={booksCount} 
+                    data={this.props.data}
+                />
+            </div>
         );
     }
 
