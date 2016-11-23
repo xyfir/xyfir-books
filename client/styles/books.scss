@@ -344,13 +344,11 @@ table.list {
 
 }
 
-.list-all > input {
+.book-search > input {
     width: 25em;
+    display: inline-block;
     font-size: 80%;
-}
-.list-all > p {
-    font-size: 70%;
-    color: $dgray;
+    margin-right: 0.4em;
 }
 
 /* PORTRAIT ORIENTATION */
