@@ -3,9 +3,9 @@ import * as readerThemes from "constants/reader-themes";
 import { LIST_BOOKS } from "./views";
 
 const state = {
-    books: [], view: LIST_BOOKS, account: {
+    books: [], view: LIST_BOOKS, save: "", account: {
         subscription: 0, library: "", librarySizeLimit: 15
-    }, search: "", save: "", config: {
+    }, config: {
         general: {
             theme: "light"
         },
@@ -22,6 +22,8 @@ const state = {
             fontSize: 1, padding: 1, lineHeight: 1.4, annotationsKey: "",
             defaultHighlightMode: "none"
         })
+    }, search: {
+        query: "", page: 1
     }
 };
 
