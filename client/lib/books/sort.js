@@ -1,7 +1,7 @@
 // asc == true for A -> Z, 0 -> 9
-export default function(books, field, asc = true) {
-    
-    return books.sort((a, b) => {
+export default function(books, field, asc) {
+
+    return books.slice(0).sort((a, b) => {
         if (a[field] < b[field]) {
             return asc ? -1 : 1;
         }
