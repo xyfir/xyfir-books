@@ -3,12 +3,14 @@ import React from "react";
 // Action creators
 import { setSearch } from "actions/creators/index";
 
+// Modules
+import parseQuery from "lib/url/parse-hash-query";
+
 export default class Search extends React.Component {
 
     constructor(props) {
         super(props);
         
-        this.onSearch = this.onSearch.bind(this);
         this.setValue = this.setValue.bind(this);
     }
     
@@ -16,8 +18,13 @@ export default class Search extends React.Component {
         this.props.dispatch(setSearch(""));
     }
     
-    onSearch() {
+    onSearch(sv) {
         clearTimeout(this.timeout);
+
+        // Clear query string
+        if (!sv && parseQuery().search) {
+            location.hash = location.hash.split('?')[0];
+        }
         
         this.timeout = setTimeout(() => {
             this.props.dispatch(setSearch(
@@ -28,7 +35,7 @@ export default class Search extends React.Component {
     
     setValue(val) {
         this.refs.search.value = val;
-        this.onSearch();
+        this.onSearch(true);
     }
 
     render() {
@@ -36,7 +43,7 @@ export default class Search extends React.Component {
             <input
                 ref="search"
                 type="text"
-                onChange={this.onSearch}
+                onChange={() => this.onSearch()}
                 placeholder={this.props.placeholder || "Search"}
             />
         );
