@@ -4,7 +4,7 @@ import account from "./account";
 import books from "./books";
 
 import {
-    INITIALIZE_STATE, CHANGE_VIEW, SET_SEARCH, SET_SAVE
+    INITIALIZE_STATE, CHANGE_VIEW, SET_SEARCH, SET_SAVE, SET_PAGE
 } from "../actions/types/index";
 
 export default function (state, action) {
@@ -17,7 +17,18 @@ export default function (state, action) {
             return Object.assign({}, state, { view: action.view });
             
         case SET_SEARCH:
-            return Object.assign({}, state, { search: action.query });
+            return Object.assign({}, state, {
+                search: Object.assign({}, state.search, {
+                    query: action.query
+                })
+            });
+
+        case SET_PAGE:
+            return Object.assign({}, state, {
+                search: Object.assign({}, state.search, {
+                    page: action.page
+                })
+            });
             
         case SET_SAVE:
             return Object.assign({}, state, { save: action.prop });
