@@ -1,10 +1,10 @@
 import React from "react";
 
 // Components
-import Search from "../../misc/Search";
+import Search from "components/misc/Search";
 
 // Modules
-import findListItems from "../../../lib/books/find-list-items";
+import findListItems from "lib/books/find-list-items";
 
 export default class SubGroups extends React.Component {
 
@@ -48,12 +48,14 @@ export default class SubGroups extends React.Component {
             <div className={`list-${this.props.group.replace('_', '-')}`}>
                 <Search dispatch={this.props.dispatch} />
                 <table className="list">{
-                    findListItems(subgroups, this.props.data.search).map(subgroup => {
+                    findListItems(subgroups, this.props.data.search.query)
+                    .map(subgroup => {
                         return (
                             <tr>
                                 <td><a href={
-                                    `#books/list/all?${this.props.queryKey || this.props.group}`
-                                    + `=${encodeURIComponent(subgroup)}`
+                                    `#books/list/all?search=1&${
+                                        this.props.queryKey || this.props.group
+                                    }=${encodeURIComponent(subgroup)}`
                                 }>{subgroup}</a></td>
                                 <td>{subgroups[subgroup]}</td>
                             </tr>
