@@ -1,7 +1,7 @@
 export default function (annotations) {
     
     let markers = {/*
-        "set_id-item_id-find_index-type": {
+        "set_id-item_id-search_index-type": {
             chapter: number, index: number
         }
     */};
@@ -21,25 +21,25 @@ export default function (annotations) {
         annotations.forEach(set => {
             // Loop through all items in annotation set
             set.items.forEach(item => {
-                // Loop through all find queries in item
-                item.object.find.forEach((find, findIndex) => {
-                    // If find query is global, it doesn't have a before or after range
-                    if (!find.range.global) {
-                        if (find.range.before) {
+                // Loop through all search queries in item
+                item.searches.forEach((search, searchIndex) => {
+                    // If search query is global, it doesn't have a before or after range
+                    if (!search.range.global) {
+                        if (search.range.before) {
                             const index = file.indexOf(f.range.before);
 
                             if (index > -1) {
-                                markers[`${set.id}-${item.id}-${findIndex}-1`] = {
+                                markers[`${set.id}-${item.id}-${searchIndex}-1`] = {
                                     chapter, index
                                 };
                             };
                         }
                         
-                        if (find.range.after) {
-                            const index = file.indexOf(find.range.after);
+                        if (search.range.after) {
+                            const index = file.indexOf(search.range.after);
 
                             if (index > -1) {
-                                markers[`${set.id}-${item.id}-${findIndex}-2`] = {
+                                markers[`${set.id}-${item.id}-${searchIndex}-2`] = {
                                     chapter, index
                                 };
                             };

@@ -10,15 +10,15 @@ export default function (set, markers) {
 
     // Loop through all items in set
     set.items.forEach(item => {
-        // Loop through all find queries in item
-        item.object.find.forEach((find, findIndex) => {
+        // Loop through all search queries in item
+        item.searches.forEach((search, searchIndex) => {
             // Get start/end string indexes for each match
             let matches = getMatchIndexes(
-                find.regex ? find.text : escapeRegex(find.text),
+                search.regex ? search.text : escapeRegex(search.text),
                 html
             );
 
-            if (!find.range.global) {
+            if (!search.range.global) {
                 // Get current chapter index to compare with chapter in markers
                 let chapter = 0;
                 Object.keys(epub.zip.zip.files).forEach((file, i) => {
@@ -31,13 +31,13 @@ export default function (set, markers) {
                     // Each object contains chapter index and string index
                     // of where marker occured in book
                     const before = markers[
-                        `${set.id}-${item.id}-${findIndex}-1`
+                        `${set.id}-${item.id}-${searchIndex}-1`
                     ];
                     const after  = markers[
-                        `${set.id}-${item.id}-${findIndex}-2`
+                        `${set.id}-${item.id}-${searchIndex}-2`
                     ];
 
-                    if (find.range.before) {
+                    if (search.range.before) {
                         // Marker could not be found
                         if (before === undefined)
                             return false;
@@ -49,7 +49,7 @@ export default function (set, markers) {
                             return false;
                     }
 
-                    if (find.range.after) {
+                    if (search.range.after) {
                         if (after === undefined)
                             return false;
                         // User has yet to reach chapter where marker occurs

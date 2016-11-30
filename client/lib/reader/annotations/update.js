@@ -34,15 +34,6 @@ export default function(sets, key, fn) {
                 }
             });
 
-            // Parse item objects
-            sets.forEach((set, si) => {
-                set.items.forEach((item, ii) => {
-                    if (typeof item.object == "string") {
-                        sets[si].items[ii].object = JSON.parse(item.object);
-                    }
-                });
-            });
-
             fn(sets);
         }
     }});

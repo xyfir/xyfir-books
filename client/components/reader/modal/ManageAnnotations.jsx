@@ -53,11 +53,6 @@ export default class ManageAnnotations extends React.Component {
             else {
                 set.items = res[set.id].items;
 
-                // Parse each set item's object
-                set.items.forEach((item, i) => {
-                    set.items[i].object = JSON.parse(item.object);
-                });
-
                 annotations.push(set);
 
                 this.props.updateBook({ annotations });
