@@ -7,6 +7,7 @@ import Modal from "./modal/Index";
 
 // Modules
 import findAnnotationMarkers from "lib/reader/annotations/find-markers";
+import updateEpubJsPrototype from "lib/reader/epubjs/update-prototype";
 import insertAnnotations from "lib/reader/annotations/insert";
 import updateAnnotations from "lib/reader/annotations/update";
 import highlightNotes from "lib/reader/notes/highlight";
@@ -77,10 +78,12 @@ export default class Reader extends React.Component {
                     this.props.dispatch(updateBook(id, res));
                     this.props.dispatch(save("books"));
 
+                    // Overwrite parts of EPUBJS prototype
+                    updateEpubJsPrototype();
+
                     // Create EPUB.JS reader object
                     window.epub = ePub(url, {
-                        storage: true, restore: true, spreads: false,
-                        styles: {
+                        bookKey: id, spreads: true, styles: {
                             fontSize: r.fontSize + "em", padding: "0em " + r.padding + "em",
                             backgroundColor: r.backgroundColor,
                             lineHeight: r.lineHeight + "em"
