@@ -79,7 +79,7 @@
             z-index: 2;
         }
 
-        .icon-close, span[class^="icon-resize-"] {
+        .icon-close {
             right: 2%;
         }
 
@@ -88,8 +88,8 @@
         }
 
         span[class^="icon-resize-"] {
-            bottom: 2%;
-            font-size: 80%;
+            right: 5%;
+            font-size: 68%;
         }
         
         ul {
