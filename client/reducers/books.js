@@ -22,7 +22,7 @@ export default function(state, action) {
                         
                         // Check if user is replacing a format that already exists
                         book.formats.forEach(format => {
-                            if (format.split('.')[1] == action.format) {
+                            if (format.split('.').slice(-1)[0] == action.format) {
                                 exists = true;
                             }
                         });
@@ -31,7 +31,7 @@ export default function(state, action) {
                         if (!exists) {
                             // Add a new format based on already existing file name
                             let format = book.formats[0].split('.');
-                            format[1] = action.format;
+                            format[format.length - 1] = action.format;
                             
                             temp[i].formats.push(format.join('.'));
                         }
@@ -49,7 +49,7 @@ export default function(state, action) {
                 temp.forEach((book, i) => {
                     if (action.id == book.id && book.formats.length > 0) {
                         temp[i].formats = book.formats.filter(format => {
-                            return format.split('.')[1] != action.format; 
+                            return format.split('.').slice(-1) != action.format; 
                         });
                     }
                 });

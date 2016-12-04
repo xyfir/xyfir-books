@@ -51,7 +51,7 @@ export default class Reader extends React.Component {
         let hasEpub = false;
         
         this.state.book.formats.forEach(format => {
-            if (format.split('.').splice(-1) == "epub") {
+            if (format.split('.').slice(-1)[0] == "epub") {
                 hasEpub = true;
                 url += format;
             }
