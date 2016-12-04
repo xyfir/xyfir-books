@@ -64,7 +64,8 @@ export default class ManageBook extends React.Component {
         
         // Get metadata using author/title
         if (search == "") {
-            let search = "author=" + encodeURIComponent(this.refs.authors.value)
+            search
+                = "author=" + encodeURIComponent(this.refs.authors.value)
                 + "&title=" + encodeURIComponent(this.refs.title.value);
         }
         
@@ -72,7 +73,7 @@ export default class ManageBook extends React.Component {
             + this.props.data.account.library + "/books/"
             + this.state.id + "/metadata?" + search;
         
-        request({url, dataType: "text", success: (res) => {
+        request({url, dataType: "text"}, (res) => {
             if (res == '1') {
                 this.setState({ downloadingMetadata: false });
                 swal("Error", "Could not find metadata", "error");
@@ -110,7 +111,7 @@ export default class ManageBook extends React.Component {
                 
                 this.setState({ downloadingMetadata: false });
             }
-        }});
+        });
     }
     
     onDeleteFormat(f) {
@@ -363,7 +364,7 @@ export default class ManageBook extends React.Component {
                 <section className="formats">
                     <table className="formats">{
                         book.formats.map(format => {
-                            format = format.split('.')[1].toUpperCase();
+                            format = format.split('.').slice(-1)[0].toUpperCase();
                             
                             return (
                                 <tr>
