@@ -85,7 +85,7 @@ export default class AddFormat extends React.Component {
     render() {
         const book = this.props.data.books.find(b => this.state.id == b.id);
         const formats = book.formats.map(format => {
-            return format.split('.')[1].toUpperCase();
+            return format.split('.').slice(-1)[0].toUpperCase();
         });
         
         return (
@@ -133,9 +133,11 @@ export default class AddFormat extends React.Component {
                     
                     <label>Convert From</label>
                     <select ref="convertFrom">{
-                        formats.map(format => {
-                            return <option value={format}>{format}</option>;
-                        })
+                        formats.map(format =>
+                            <option value={format.toLowerCase()}>{
+                                format
+                            }</option>
+                        )
                     }</select>
                     
                     <label>Convert To</label>
