@@ -24,7 +24,9 @@ export default class EditBooks extends React.Component {
         this.onSaveChanges = this.onSaveChanges.bind(this);
     }
     
-    onSaveChanges() {
+    onSaveChanges(e) {
+        e.preventDefault();
+
         if (!navigator.onLine) {
             swal("Error", "This action requires internet connectivity", "error");
             return;
@@ -183,73 +185,80 @@ export default class EditBooks extends React.Component {
                     books={true}
                 />
                 
-                <div className="form">
-                    <label>Authors</label>
-                    <input type="text" ref="authors" />
+                <form onSubmit={(e) => this.onSaveChanges(e)}>
+                    <section>
+                        <label>Authors</label>
+                        <input type="text" ref="authors" />
+                        
+                        <span className="checkbox">
+                            <input type="checkbox" ref="author_title_swap" />
+                            Swap Title / Authors
+                        </span>
+                        
+                        <label>Author Sort</label>
+                        <input type="text" ref="author_sort" />
+                    </section>
                     
-                    <span className="checkbox">
-                        <input type="checkbox" ref="author_title_swap" />Swap Title / Authors
-                    </span>
+                    <section>
+                        <label>Publisher</label>
+                        <input type="text" ref="publisher" />
+                        
+                        <label>Published</label>
+                        <input type="date" ref="published" />
+                    </section>
+                        
+                    <section>
+                        <label>Add Tags</label>
+                        <input type="text" ref="add_tags" />
+                        
+                        <label>Remove Tags</label>
+                        <input type="text" ref="rem_tags" />
+                        <input type="checkbox" ref="clear_tags" />Clear Tags
+                    </section>
                     
-                    <label>Author Sort</label>
-                    <input type="text" ref="author_sort" />
+                    <section>
+                        <label>Rating</label>
+                        <input type="number" ref="rating" max="5" step="0.5" />
+                        
+                        <label>Series</label>
+                        <input type="text" ref="series" />
+                        <input type="checkbox" ref="clear_series" />Clear Series
+                        
+                        <label>Added</label>
+                        <input type="date" ref="timestamp" />
+                        
+                        <label>Comments</label>
+                        <textarea ref="comments" className="comments-edit" />
+                        
+                        <span className="checkbox">
+                            <input type="checkbox" ref="title_format" />
+                            Convert Title to Title Case
+                        </span>
+                        
+                        <span className="checkbox">
+                            <input type="checkbox" ref="abort_on_error" />
+                            Stop Editing on Error
+                        </span>
+                    </section>
                     
-                    <hr />
-                    
-                    <label>Publisher</label>
-                    <input type="text" ref="publisher" />
-                    
-                    <label>Published</label>
-                    <input type="date" ref="published" />
-                    
-                    <hr />
-                    
-                    <label>Add Tags</label>
-                    <input type="text" ref="add_tags" />
-                    
-                    <label>Remove Tags</label>
-                    <input type="text" ref="rem_tags" />
-                    <input type="checkbox" ref="clear_tags" />Clear Tags
-                    
-                    <hr />
-                    
-                    <label>Rating</label>
-                    <input type="number" ref="rating" max="5" step="0.5" />
-                    
-                    <label>Series</label>
-                    <input type="text" ref="series" />
-                    <input type="checkbox" ref="clear_series" />Clear Series
-                    
-                    <label>Added</label>
-                    <input type="date" ref="timestamp" />
-                    
-                    <label>Comments</label>
-                    <textarea ref="comments" className="comments-edit" />
-                    
-                    <span className="checkbox">
-                        <input type="checkbox" ref="title_format" />Convert Title to Title Case
-                    </span>
-                    
-                    <span className="checkbox">
-                        <input type="checkbox" ref="abort_on_error" />Stop Editing on Error
-                    </span>
-                    
-                    <hr />
-                    
-                    <p><strong>Note:</strong> Fields left blank will not be changed</p>
-                    
-                    <button className="btn-primary" onClick={this.onSaveChanges}>
-                        Save Changes
-                    </button>
-                    
-                    <div className="status">{this.state.status ? (
+                    <section>
                         <p>
-                            <strong>Status:</strong> {this.state.status}
+                            <strong>Note:</strong> Fields left blank will not be changed
                         </p>
-                    ) : (
-                        <span />
-                    )}</div>
-                </div>
+                        
+                        <button className="btn-primary">
+                            Save Changes
+                        </button>
+                        
+                        <div className="status">{this.state.status ? (
+                            <p>
+                                <strong>Status:</strong> {this.state.status}
+                            </p>
+                        ) : (
+                            <span />
+                        )}</div>
+                    </section>
+                </form>
             </div>
         );
     }
