@@ -12,9 +12,9 @@
     .nav-bar-hidden {
         position: fixed;
         top: 0%;
-        left: 30%;
-        right: 30%;
-        bottom: 95%;
+        left: 33%;
+        right: 33%;
+        height: 2.5em;
         z-index: 1;
     }
 
@@ -28,24 +28,24 @@
             position: fixed;
             top: 0%;
             left: 0%;
-            right: 90%;
+            width: 2.5em;
             bottom: 0%;
         }
         
         .next-page {
             position: fixed;
             top: 0%;
-            left: 90%;
             right: 0%;
+            width: 2.5em;
             bottom: 0%;
         }
 
         .cycle-highlight-mode {
             position: fixed;
-            top: 90%;
-            left: 0%;
-            right: 0%;
+            left: 33%;
+            right: 33%;
             bottom: 0%;
+            height: 2.5em;
             z-index: 1;
         }
         
