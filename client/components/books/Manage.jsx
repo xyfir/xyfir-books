@@ -29,7 +29,6 @@ export default class ManageBook extends React.Component {
             saving: false
         };
         
-        this.onToggleEditComments = this.onToggleEditComments.bind(this);
         this.onDownloadMetadata = this.onDownloadMetadata.bind(this);
         this.onDeleteFormat = this.onDeleteFormat.bind(this);
         this.onSaveChanges = this.onSaveChanges.bind(this);
@@ -39,10 +38,6 @@ export default class ManageBook extends React.Component {
     
     componentDidMount() {
         loadCovers(this.props.data.books, this.props.data.account.library);
-    }
-    
-    onToggleEditComments() {
-        this.setState({ editComments: !this.state.editComments });
     }
     
     onDownloadMetadata() {
@@ -124,12 +119,12 @@ export default class ManageBook extends React.Component {
             + this.props.data.account.library + "/books/"
             + this.state.id + "/format/" + f;
             
-        request({url, method: "DELETE", success: (res) => {
+        request({url, method: "DELETE"}, (res) => {
             if (res.error)
                 swal("Error", "Could not delete format", "error");
             else
                 this.props.dispatch(deleteFormat(this.state.id, f));
-        }});
+        });
     }
     
     onUploadCover(files) {
@@ -200,12 +195,18 @@ export default class ManageBook extends React.Component {
             data.series = this.refs.series.value;
             data.series_index = this.refs.series_index.value;
         }
+
+        if (this.refs.comments.value !== undefined) {
+            data.comments = this.refs.comments.value;
+        }
             
         const url = LIBRARY_URL + this.props.data.account.library
             + "/books/" + this.state.id + "/metadata";
 
         // Send to library server
-        request({url, method: "PUT", data: { data: JSON.stringify(data) }, success: (res) => {
+        request({
+            url, method: "PUT", form: { data: JSON.stringify(data) }
+        }, (res) => {
             this.setState({ saving: false });
             
             if (res.error) {
@@ -218,7 +219,7 @@ export default class ManageBook extends React.Component {
                     this.props.dispatch
                 );
             }
-        }});
+        });
     }
     
     onOpenClick() {
@@ -337,28 +338,37 @@ export default class ManageBook extends React.Component {
                 
                 <section className="comments">
                     {this.state.editComments ? (
-                        <textarea
-                            ref="comments"
-                            className="comments-edit"
-                            defaultValue={book.comments || ""}
-                        />
+                        <div>
+                            <label>Comments</label>
+                            <span className="input-description">
+                                Despite the name, the comments metadata field is typically used for the book's description.
+                            </span>
+
+                            <textarea
+                                ref="comments"
+                                className="comments-edit"
+                                defaultValue={book.comments || ""}
+                            />
+                        </div>
                     ) : (
-                        <div
-                            ref="comments"
-                            className="comments"
-                            dangerouslySetInnerHTML={{
-                                __html: book.comments || "This book has no comments"
-                            }}
-                        />
+                        <div>
+                            <div
+                                ref="comments"
+                                className="comments"
+                                dangerouslySetInnerHTML={{
+                                    __html: book.comments
+                                        || "This book has no comments"
+                                }}
+                            />
+                            
+                            <button
+                                className="btn-primary btn-sm"
+                                onClick={() =>
+                                    this.setState({ editComments: true })
+                                }
+                            >Edit Comments</button>
+                        </div>
                     )}
-                    
-                    <button
-                        className="btn-primary btn-sm"
-                        onClick={this.onToggleEditComments}
-                    >{
-                        this.state.editComments
-                            ? "Preview Comments" : "Edit Comments"
-                    }</button>
                 </section>
                 
                 <section className="formats">
@@ -371,7 +381,7 @@ export default class ManageBook extends React.Component {
                                     <td>{format}</td>
                                     <td><span
                                         className="icon-trash"
-                                        onClick={this.onDeleteFormat.bind(this, format)}
+                                        onClick={() => this.onDeleteFormat(format)}
                                         title={`Delete Format (${format})`}
                                     /></td>
                                 </tr>
