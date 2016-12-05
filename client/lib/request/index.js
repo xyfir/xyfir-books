@@ -1,7 +1,8 @@
 export default function() {
 
     let options = {
-        url: "", fn: () => {}, method: "GET", data: {}, dataType: "json"
+        url: "", fn: () => {}, method: "GET", dataType: "json",
+        form: {}, query: {}
     };
 
     // request("url", (res) => {})
@@ -16,12 +17,22 @@ export default function() {
         // Old version used success() for callback
         if (options.success) options.fn = options.success;
     }
-    // request({ url, ?method, ?data, ?dataType }, (res) => {})
+    // request({ url, ?method, ?form, ?dataType }, (res) => {})
     else {
         Object.assign(options, arguments[0]);
         options.fn = arguments[1];
     }
-    
+
+    // Old version used data{} for form data
+    if (options.data) options.form = options.data;
+
+    // Build query string from object and append to url
+    if (Object.keys(options.query).length) {
+        options.url += "?" + Object.keys(options.query).map(q => {
+            return q + "=" + encodeURIComponent(options.query[q]);
+        }).join("&");
+    }
+
     let request = new XMLHttpRequest();
     
     // Set method and URL
@@ -39,20 +50,17 @@ export default function() {
         }
     };
     
-    // Send request + data
+    // Send request + form
     if (options.method == "GET") {
         request.send();
     }
     else {
-        const query =
-            Object.keys(options.data).map(key => {
-                return key + "=" + encodeURIComponent(options.data[key]);
-            }).join("&");
-        
         request.setRequestHeader(
             "Content-Type", "application/x-www-form-urlencoded"
         );
-        request.send(query);
+        request.send(Object.keys(options.form).map(key => 
+            key + "=" + encodeURIComponent(options.form[key])
+        ).join("&"));
     }
     
 };
