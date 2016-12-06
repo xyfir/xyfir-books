@@ -14,7 +14,7 @@
         padding: 1% 20%;
     }
 
-    section:nth-child(odd) {
+    section:nth-child(even) {
         
         background-color: $blue;
         color: white;
@@ -33,7 +33,7 @@
         
     }
     
-    section:nth-child(even) {
+    section:nth-child(odd) {
         
         background-color: white;
         text-align: right;
@@ -48,6 +48,16 @@
         font-size: 110%;
         display: inline-block;
         padding: 0.2em;
+    }
+
+    section.main {
+
+        text-align: center;
+
+        .iframe-container {
+            margin: 1em;
+        }
+
     }
 
     footer {
