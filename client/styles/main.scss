@@ -164,9 +164,10 @@ nav.nav-bar {
 	
 	background-color: $lllgray;
 	border-bottom: solid 0.05em $lgray;
-	padding: 0.5em 0em;
+	white-space: nowrap;
 	font-size: 115%;	
 	position: fixed;
+	padding: 0.5em 0em;
 	left: 0%;
 	right: 0%;
 	top: 0%;
