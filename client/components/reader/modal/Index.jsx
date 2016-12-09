@@ -15,8 +15,8 @@ export default class ReaderModal extends React.Component {
         super(props);
 
         this.state = {
-            fullscreen: window.screen.height > window.screen.width,
-            canResize: window.screen.height < window.screen.width
+            fullscreen: window.innerHeight > window.innerWidth,
+            canResize: window.innerHeight < window.innerWidth
         };
     }
 
