@@ -33,7 +33,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         
-        this._addStoreSubscribers = this._addStoreSubscribers.bind(this);
+        this._addListeners = this._addListeners.bind(this);
         this._initialize = this._initialize.bind(this);
         this._login = this._login.bind(this);
         
@@ -43,7 +43,7 @@ class App extends React.Component {
             name: "Libyq"
         });
         
-        this._addStoreSubscribers();
+        this._addListeners();
         this._login();        
     }
     
@@ -133,7 +133,7 @@ class App extends React.Component {
         }
     }
     
-    _addStoreSubscribers() {
+    _addListeners() {
         store.subscribe(() => {
             const state = store.getState();
             
@@ -147,6 +147,12 @@ class App extends React.Component {
                 store.dispatch(save(""));
             }
         });
+
+        window.onresize = () => {
+            clearInterval(this.resizeTimer);
+
+            this.resizeTimer = setTimeout(() => this.forceUpdate(), 250);
+        };
     }
     
     _login() {
