@@ -1,5 +1,8 @@
 import React from "react";
 
+// Modules
+import showNavbarText from "lib/misc/show-navbar-text";
+
 export default class NavBar extends React.Component {
 
     constructor(props) {
@@ -7,27 +10,35 @@ export default class NavBar extends React.Component {
     }
     
     render() { 
-        const showText = window.screen.height < window.screen.width;
+        const showText = showNavbarText();
         
         return (
             <nav className="nav-bar">
                 <div className="left">
                     {this.props.home ? (
-                        <a href="#books/recently-opened">
-                            <span
-                                className="icon-home"
-                                title="Home / Recently Opened"
-                            />{showText ? " Home" : ""}
-                        </a>
+                        <a
+                            href="#books/recently-opened"
+                            title="Home / Recently Opened"
+                            className="icon-home"
+                        >{showText ? "Home" : ""}</a>
                     ) : (<a />)}
                     
                     {this.props.account ? (
-                        <a href="#account">
-                            <span
-                                className="icon-user"
-                                title="Account"
-                            />{showText ? " Account" : ""}
-                        </a>
+                        <a
+                            className="icon-user"
+                            title="Account"
+                            href="#account"
+                        >{showText ? "Account" : ""}</a>
+                    ) : (<a />)}
+
+                    {this.props.settings !== undefined ? (
+                        <a
+                            href={`#settings/${
+                                this.props.settings == "" ? "general" : this.props.settings
+                            }`}
+                            className="icon-settings"
+                            title="Settings"
+                        >{showText ? "Settings" : ""}</a>
                     ) : (<a />)}
                 </div>
                 
@@ -35,32 +46,19 @@ export default class NavBar extends React.Component {
                 
                 <div className="right">
                     {this.props.library ? (
-                        <a href="#library/info">
-                            <span
-                                className="icon-book"
-                                title="Library"
-                            />{showText ? " Library" : ""}
-                        </a>
-                    ) : (<a />)}
-                    
-                    {this.props.settings !== undefined ? (
-                        <a href={`#settings/${
-                            this.props.settings == "" ? "general" : this.props.settings
-                        }`}>
-                            <span
-                                className="icon-settings"
-                                title="Settings"
-                            />{showText ? " Settings" : ""}
-                        </a>
+                        <a
+                            className="icon-book"
+                            title="Library"
+                            href="#library/info"
+                        >{showText ? "Library" : ""}</a>
                     ) : (<a />)}
                     
                     {this.props.books ? (
-                        <a href="#books/list">
-                            <span
-                                className="icon-book-open"
-                                title="Book List"
-                            />{showText ? " Books" : ""}
-                        </a>
+                        <a
+                            className="icon-book-open"
+                            title="Book List"
+                            href="#books/list"
+                        >{showText ? "Books" : ""}</a>
                     ) : (<a />)}
                 </div>
             </nav>

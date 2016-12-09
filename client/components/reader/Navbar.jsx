@@ -1,6 +1,7 @@
 import React from "react";
 
 // Modules
+import showNavbarText from "lib/misc/show-navbar-text";
 import request from "lib/request/index";
 
 // Constants
@@ -95,7 +96,7 @@ export default class ReaderNavbar extends React.Component {
     }
 
     render() {
-        const showText = window.screen.height < window.screen.width;
+        const showText = showNavbarText();
         
         if (this.state.showNavbar) {
             return (
@@ -105,24 +106,23 @@ export default class ReaderNavbar extends React.Component {
                     onMouseOut={this.onMouseOut}
                 >
                     <div className="left">
-                        <a href="#books/recently-opened">
-                            <span
-                                className="icon-home"
-                                title="Home / Recently Opened"
-                            />{showText ? " Home" : ""}
-                        </a>
-                        <a href="#settings/reader">
-                            <span
-                                className="icon-settings"
-                                title="Settings"
-                            />{showText ? " Settings" : ""}
-                        </a>
-                        <a onClick={() => this.props.onToggleShow("toc")}>
-                            <span
-                                className="icon-book"
-                                title="Table of Contents"
-                            />{showText ? " ToC" : ""}
-                        </a>
+                        <a
+                            className="icon-home"
+                            title="Home / Recently Opened"
+                            href="#books/recently-opened"
+                        >{showText ? "Home" : ""}</a>
+
+                        <a
+                            className="icon-settings"
+                            title="Settings"
+                            href="#settings/reader"
+                        >{showText ? "Settings" : ""}</a>
+
+                        <a
+                            onClick={() => this.props.onToggleShow("toc")}
+                            className="icon-book"
+                            title="Table of Contents"
+                        >{showText ? "TOC" : ""}</a>
                     </div>
                     
                     <span
@@ -131,28 +131,27 @@ export default class ReaderNavbar extends React.Component {
                     >{this.props.book.title}</span>
                     
                     <div className="right">
-                        <a onClick={this.onBookmark}>
-                            <span
-                                className={
-                                    this._isBookmarked()
-                                    ? "icon-bookmark"
-                                    : "icon-bookmark-empty"
-                                }
-                                title="Bookmark"
-                            />{showText ? " Bookmark" : ""}
-                        </a>
-                        <a onClick={() => this.props.onToggleShow("createNote")}>
-                            <span
-                                className="icon-edit"
-                                title="Create Note"
-                            />{showText ? " Note" : ""}
-                        </a>
-                        <a onClick={() => this.props.onToggleShow("more")}>
-                            <span
-                                className="icon-more"
-                                title="More..."
-                            />{showText ? " More" : ""}
-                        </a>
+                        <a
+                            onClick={this.onBookmark}
+                            className={
+                                this._isBookmarked()
+                                ? "icon-bookmark"
+                                : "icon-bookmark-empty"
+                            }
+                            title="Bookmark"
+                        >{showText ? "Bookmark" : ""}</a>
+
+                        <a
+                            onClick={() => this.props.onToggleShow("createNote")}
+                            className="icon-edit"
+                            title="Create Note"
+                        >{showText ? "Note" : ""}</a>
+
+                        <a
+                            onClick={() => this.props.onToggleShow("more")}
+                            className="icon-more"
+                            title="More..."
+                        >{showText ? "More" : ""}</a>
                     </div>
                 </nav>
             );

@@ -5,6 +5,7 @@ import { setListView } from "actions/creators/settings";
 import { loadBooks } from "actions/creators/books";
 
 // Modules
+import showNavbarText from "lib/misc/show-navbar-text";
 import parseHashQuery from "lib/url/parse-hash-query";
 
 // Components
@@ -89,41 +90,39 @@ export default class List extends React.Component {
             }
         }
         
-        const showText = window.screen.height < window.screen.width;
+        const showText = showNavbarText();
         
         return (
             <div className="list">
                 <nav className="nav-bar">
                     <div className="left">
-                        <a href="#books/recently-opened">
-                            <span
-                                className="icon-home"
-                                title="Home / Recently Opened"
-                            />{showText ? " Home" : ""}
-                        </a>
-                        <a href="#books/upload">
-                            <span
-                                className="icon-upload"
-                                title="Upload Books"
-                            />{showText ? " Upload" : ""}
-                        </a>
+                        <a
+                            className="icon-home"
+                            title="Home / Recently Opened"
+                            href="#books/recently-opened"
+                        >{showText ? "Home" : ""}</a>
+
+                        <a
+                            className="icon-upload"
+                            title="Upload Books"
+                            href="#books/upload"
+                        >{showText ? "Upload" : ""}</a>
                     </div>
                     
                     <span className="title">{title}</span>
                     
                     <div className="right">
-                        <a onClick={this.onToggleShowViewSelector}>
-                            <span
-                                className="icon-view-mode"
-                                title="Select View Mode"
-                            />{showText ? " Set View" : ""}
-                        </a>
-                        <a href="#books/list">
-                            <span
-                                className="icon-book-open"
-                                title="Book List"
-                            />{showText ? " Books" : ""}
-                        </a>
+                        <a
+                            onClick={this.onToggleShowViewSelector}
+                            className="icon-view-mode"
+                            title="Select View Mode"
+                        >{showText ? "Set View" : ""}</a>
+
+                        <a
+                            className="icon-book-open"
+                            title="Book List"
+                            href="#books/list"
+                        >{showText ? "Books" : ""}</a>
                     </div>
                 </nav>
                 
