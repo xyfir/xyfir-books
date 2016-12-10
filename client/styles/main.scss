@@ -166,7 +166,6 @@ input[type=checkbox] {
 nav.navbar {
 	
 	background-color: $lllgray;
-	border-bottom: solid 0.05em $lgray;
 	white-space: nowrap;
 	font-size: 115%;	
 	position: fixed;
@@ -174,7 +173,6 @@ nav.navbar {
 	display: flex;
 	left: 0%;
 	right: 0%;
-	top: 0%;
 	z-index: 1;
 
 	>* {
@@ -205,6 +203,14 @@ nav.navbar {
 		vertical-align: bottom;
 	}
 	
+}
+nav.navbar.top {
+	border-bottom: solid 0.05em $lgray;
+	top: 0%;
+}
+nav.navbar.bottom {
+	border-top: solid 0.05em $lgray;
+	bottom: 0%;
 }
 
 .loading {
