@@ -92,7 +92,7 @@ export default class ReaderNavbar extends React.Component {
 
         return (
             <nav
-                className="nav-bar"
+                className="navbar"
                 onMouseOver={() => this.onMouseOver()}
                 onMouseOut={() => this.onMouseOut()}
             >

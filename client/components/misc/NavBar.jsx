@@ -13,7 +13,7 @@ export default class NavBar extends React.Component {
         const showText = showNavbarText();
         
         return (
-            <nav className="nav-bar">
+            <nav className="navbar">
                 <div className="left">
                     {this.props.home ? (
                         <a

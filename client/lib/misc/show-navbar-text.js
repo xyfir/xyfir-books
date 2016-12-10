@@ -1,7 +1,7 @@
 function isNavbarOverflowed() {
     if (sessionStorage.navbarOverflow == 1) return true;
 
-    const el = document.querySelector("nav.nav-bar");
+    const el = document.querySelector("nav.navbar");
 
     if (el === null) return false;
     

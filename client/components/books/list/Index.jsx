@@ -94,7 +94,7 @@ export default class List extends React.Component {
         
         return (
             <div className="list">
-                <nav className="nav-bar">
+                <nav className="navbar">
                     <div className="left">
                         <a
                             className="icon-home"
