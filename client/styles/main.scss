@@ -171,10 +171,19 @@ nav.navbar {
 	font-size: 115%;	
 	position: fixed;
 	padding: 0.5em 0em;
+	display: flex;
 	left: 0%;
 	right: 0%;
 	top: 0%;
 	z-index: 1;
+
+	>* {
+		flex: 1;
+	}
+
+	>a, .title {
+		display: inline-block;
+	}
 	
 	.left, .right {
 		
@@ -189,7 +198,6 @@ nav.navbar {
 	}
 	
 	.title {
-		display: inline-block;
 		width: 50%;
 		text-overflow: ellipsis;
 		white-space: nowrap;
