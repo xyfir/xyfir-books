@@ -11,6 +11,8 @@ export default class CreateNote extends React.Component {
     constructor(props) {
         super(props);
         
+        const selected = epub.renderer.selectedRange.toString();
+
         if (!navigator.onLine) {
             this.props.onClose();
             swal(
@@ -18,7 +20,7 @@ export default class CreateNote extends React.Component {
             );
         }
         else if (!!epub.renderer.selectedRange) {
-            if (epub.renderer.selectedRange.toString().length < 10) {
+            if (selected.length < 10) {
                 this.props.onClose();
                 swal(
                     "Error",
