@@ -30,18 +30,17 @@ export default class Reader extends React.Component {
         super(props);
 
         const id = window.location.hash.split('/')[2];
-        
+
         this.state = {
             book: this.props.data.books.find(b => id == b.id),
             pagesLeft: 0, percent: 0,
             //
             initialize: false, loading: true,
             //
-            modalViewTarget: "", show: {
-                manageAnnotations: false, more: false, bookmarks: false,
-                notes: false, createNote: false, toc: false,
-                annotation: false, bookInfo: false
-            }, highlight: {
+            modal: {
+                target: "", show: ""
+            },
+            highlight: {
                 mode: this.props.data.config.reader.defaultHighlightMode,
                 index: 0
             }
@@ -99,7 +98,6 @@ export default class Reader extends React.Component {
             });
         }});
         
-        this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
         this._addEventListeners = this._addEventListeners.bind(this);
         this._applyHighlights = this._applyHighlights.bind(this);
         this._getWordCount = this._getWordCount.bind(this);
@@ -168,22 +166,17 @@ export default class Reader extends React.Component {
         return highlight;
     }
     
-    onToggleShow(prop, closeModal, fn) {
+    onToggleShow(show, closeModal, fn) {
         if (closeModal) this.onCloseModal();
         
-        this.setState({
-            show: Object.assign({}, this.state.show, {
-                [prop]: !this.state.show[prop]
-            })
-        }, fn);
+        if (!!this.state.show)
+            this.setState({ modal: { show: "", target: "" } });
+        else
+            this.setState({ modal: { show, target: "" } }, fn);
     }
     
     onCloseModal() {
-        this.setState({ show: {
-            toc: false, bookmarks: false, notes: false, createNote: false,
-            more: false, manageAnnotations: false, annotation: false,
-            bookInfo: false
-        }, modalViewTarget: "" });
+        this.setState({ modal: { target: "", show: "" } });
     }
 
     onSwipe(dir) {
@@ -196,6 +189,11 @@ export default class Reader extends React.Component {
     }
 
     onClick(action) {
+        if (this.state.modal.show) {
+            this.onCloseModal();
+            return;
+        }
+
         switch (action) {
             case "previous page":
                 epub.prevPage(); break;
@@ -218,7 +216,9 @@ export default class Reader extends React.Component {
 
         // View annotation or note
         epub.onClick = (type, key) => {
-            this.setState({ modalViewTarget: key }, () => {
+            this.setState({ modal: {
+                target: key, show: "" 
+            }}, () => {
                 this.onToggleShow(
                     type == "note" ? "notes" : type,
                     false, () => this._applyStyles()
