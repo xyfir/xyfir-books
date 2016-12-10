@@ -2,8 +2,7 @@ import React from "react";
 
 // Components
 import Overlay from "./Overlay";
-import Navbar from "./Navbar";
-import Modal from "./modal/Index";
+import Modal from "./Modal";
 
 // Modules
 import findAnnotationMarkers from "lib/reader/annotations/find-markers";
@@ -33,7 +32,7 @@ export default class Reader extends React.Component {
 
         this.state = {
             book: this.props.data.books.find(b => id == b.id),
-            pagesLeft: 0, percent: 0,
+            pagesLeft: 0, percent: 0, history: [],
             //
             initialize: false, loading: true,
             //
@@ -200,14 +199,14 @@ export default class Reader extends React.Component {
             case "next page":
                 epub.nextPage(); break;
             case "cycle highlights":
-                this.refs.overlay._setStatus(
+                this.refs.overlay.refs.status._setStatus(
                     this.onCycleHighlightMode()
                 ); break;
             case "show book info":
                 this.onToggleShow("bookInfo");
                 break;
             case "toggle navbar":
-                this.refs.navbar._toggleShow();
+                this.refs.overlay._toggleShowNavbars();
         }
     }
     
@@ -403,21 +402,11 @@ export default class Reader extends React.Component {
         
         return (
             <div className="reader">
-                <Navbar
-                    ref="navbar"
-                    book={this.state.book}
-                    updateBook={this._updateBook}
-                    onToggleShow={this.onToggleShow}
-                />
-                
                 <div id="book" />
                 
                 <Overlay
                     ref="overlay"
-                    book={this.state.book}
-                    loading={this.state.loading}
-                    percent={this.state.percent}
-                    pagesLeft={this.state.pagesLeft}
+                    parent={this}
                 />
                 
                 <Modal parent={this} />
