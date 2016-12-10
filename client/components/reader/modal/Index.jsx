@@ -6,6 +6,7 @@ import TableOfContents from "./TableOfContents";
 import Annotation from "./Annotation";
 import CreateNote from "./CreateNote";
 import Bookmarks from "./Bookmarks";
+import BookInfo from "./BookInfo";
 import Notes from "./Notes";
 import More from "./More";
 
@@ -25,16 +26,16 @@ export default class ReaderModal extends React.Component {
     }
 
     render() {
-        const p = this.props.parent, show = p.state.show;
+        const p = this.props.parent, show = p.state.modal.show;
         
-        const showModal = show.bookmarks || show.more || show.annotation
-            || show.manageAnnotations || show.notes
-            || show.createNote || show.toc;
+        const showModal = !!p.state.modal.show;
         
         if (showModal) {
             return (
                 <div
-                    className={"modal" + (this.state.fullscreen ? " full" : "")}
+                    className={"modal" + (
+                        this.state.fullscreen ? " full" : ""
+                    )}
                 >
                     {this.state.canResize ? (
                         <span
@@ -54,48 +55,52 @@ export default class ReaderModal extends React.Component {
                         onClick={p.onCloseModal}
                     />
                 
-                    {show.bookmarks ? (
+                    {show == "bookmarks" ? (
                         <Bookmarks
                             onClose={p.onCloseModal}
                             bookmarks={p.state.book.bookmarks}
                         />
-                    ) : (show.notes ? (
+                    ) : show == "notes" ? (
                         <Notes
                             book={p.state.book}
-                            target={p.state.modalViewTarget}
+                            target={p.state.modal.target}
                             updateBook={p._updateBook}
                             onCycleHighlightMode={p.onCycleHighlightMode}
                         />
-                    ) : (show.createNote ? (
+                    ) : show == "createNote" ? (
                         <CreateNote
                             book={p.state.book}
                             onClose={p.onCloseModal}
                             updateBook={p._updateBook}
                             onCycleHighlightMode={p.onCycleHighlightMode}
                         />
-                    ) : (show.toc ? (
+                    ) : show == "toc" ? (
                         <TableOfContents
                             onClose={p.onCloseModal}
                         />
-                    ) : (show.manageAnnotations ? (
+                    ) : show == "manageAnnotations" ? (
                         <ManageAnnotations
                             book={p.state.book}
                             data={p.props.data}
                             updateBook={p._updateBook}
                             onCycleHighlightMode={p.onCycleHighlightMode}
                         />
-                    ) : (show.more ? (
+                    ) : show == "more" ? (
                         <More
                             onToggleShow={p.onToggleShow}
                         />
-                    ) : (show.annotation ? (
+                    ) : show == "annotation" ? (
                         <Annotation
                             book={p.state.book}
-                            target={p.state.modalViewTarget}
+                            target={p.state.modal.target}
+                        />
+                    ) : show == "bookInfo" ? (
+                        <BookInfo
+                            book={p.state.book}
                         />
                     ) : (
                         <div />
-                    )))))))}
+                    )}
                 </div>
             )
         }
