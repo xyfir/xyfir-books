@@ -9,13 +9,27 @@
         padding: 1em 0em;
     }
     
-    .status {
-        position: fixed;
-        font-size: 70%;
-        bottom: 0%;
-        left: 0%;
-        right: 0%;
-        color: $gray;
+    .overlay {
+
+        .status {
+            position: fixed;
+            font-size: 70%;
+            bottom: 0%;
+            left: 0%;
+            right: 0%;
+            color: $gray;
+        }
+
+        nav {
+
+            a[disabled] {
+                pointer-events: none;
+                cursor: default;
+                color: $gray;
+            }
+
+        }
+
     }
     
     .modal {
