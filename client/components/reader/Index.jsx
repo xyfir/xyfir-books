@@ -32,7 +32,9 @@ export default class Reader extends React.Component {
 
         this.state = {
             book: this.props.data.books.find(b => id == b.id),
-            pagesLeft: 0, percent: 0, history: [],
+            pagesLeft: 0, percent: 0, history: {
+                items: [], index: -1, ignore: false
+            },
             //
             initialize: false, loading: true,
             //
@@ -163,6 +165,26 @@ export default class Reader extends React.Component {
 
         this.setState({ highlight });
         return highlight;
+    }
+
+    onAddToHistory() {
+        if (this.state.history.ignore) {
+            const history = Object.assign({}, this.state.history);
+            
+            history.ignore = false;
+            this.setState({ history });
+        }
+        else {
+            const items = this.state.history.items.slice(0);
+
+            if (items.length == 5) items.shift();
+
+            items.push(epub.getCurrentLocationCfi());
+
+            this.setState({ history: {
+                items, index: -1, ignore: false
+            } });
+        }
     }
     
     onToggleShow(show, closeModal, fn) {
@@ -300,6 +322,7 @@ export default class Reader extends React.Component {
         
         // Apply styles
         // Insert annotations / highlight notes
+        // Add swipe and click listeners
         epub.on("renderer:chapterDisplayed", () => {
             this._applyStyles();
             this._applyHighlights(this.state.highlight, true);
@@ -308,6 +331,11 @@ export default class Reader extends React.Component {
 
             swipeListener(el, (dir) => this.onSwipe(dir));
             clickListener(el, (action) => this.onClick(action));
+        });
+
+        // Add location to history
+        epub.on("renderer:chapterUnloaded", () => {
+            this.onAddToHistory();
         });
         
         // Regenerate pagination and update percent
