@@ -7,27 +7,12 @@ import request from "lib/request/index";
 // Constants
 import { URL } from "constants/config";
 
-export default class ReaderNavbar extends React.Component {
+export default class TopReaderNavbar extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = { show: true };
         
         this._isBookmarked = this._isBookmarked.bind(this);
-        this._hide = this._hide.bind(this);
-    }
-    
-    componentDidMount() {
-        this._hide();
-    }
-    
-    onMouseOver() {
-        clearTimeout(this.timeout);
-    }
-    
-    onMouseOut() {
-        this._hide();
     }
     
     onBookmark() {
@@ -74,28 +59,14 @@ export default class ReaderNavbar extends React.Component {
         
         return value;
     }
-    
-    _toggleShow() {
-        this.setState({ show: !this.state.show });
-    }
-
-    _hide() {
-        this.timeout = setTimeout(() => {
-            this.setState({ show: false })
-        }, 7000);
-    }
 
     render() {
         const showText = showNavbarText();
         
-        if (!this.state.show) return <div />;
+        if (!this.props.show) return <div />;
 
         return (
-            <nav
-                className="navbar"
-                onMouseOver={() => this.onMouseOver()}
-                onMouseOut={() => this.onMouseOut()}
-            >
+            <nav className="navbar top">
                 <a
                     className="icon-home"
                     title="Home / Recently Opened"
@@ -113,16 +84,6 @@ export default class ReaderNavbar extends React.Component {
                     className="icon-book"
                     title="Table of Contents"
                 >{showText ? "TOC" : ""}</a>
-                
-                <a
-                    onClick={() => this.onBookmark()}
-                    className={
-                        this._isBookmarked()
-                        ? "icon-bookmark"
-                        : "icon-bookmark-empty"
-                    }
-                    title="Bookmark"
-                >{showText ? "Bookmark" : ""}</a>
 
                 <a
                     onClick={() => this.props.onToggleShow("createNote")}
@@ -135,6 +96,16 @@ export default class ReaderNavbar extends React.Component {
                     className="icon-more"
                     title="More..."
                 >{showText ? "More" : ""}</a>
+
+                <a
+                    onClick={() => this.onBookmark()}
+                    className={
+                        this._isBookmarked()
+                        ? "icon-bookmark"
+                        : "icon-bookmark-empty"
+                    }
+                    title="Bookmark"
+                >{showText ? "Bookmark" : ""}</a>
             </nav>
         );
     }
