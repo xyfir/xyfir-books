@@ -12,19 +12,14 @@ export default class ReaderNavbar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { showNavbar: true };
+        this.state = { show: true };
         
         this._isBookmarked = this._isBookmarked.bind(this);
-        this.onShowNavbar = this.onShowNavbar.bind(this);
-        this.onHideNavbar = this.onHideNavbar.bind(this);
-        this._hideNavbar = this._hideNavbar.bind(this);
-        this.onMouseOver = this.onMouseOver.bind(this);
-        this.onMouseOut = this.onMouseOut.bind(this);
-        this.onBookmark = this.onBookmark.bind(this);
+        this._hide = this._hide.bind(this);
     }
     
     componentDidMount() {
-        this._hideNavbar();
+        this._hide();
     }
     
     onMouseOver() {
@@ -32,16 +27,7 @@ export default class ReaderNavbar extends React.Component {
     }
     
     onMouseOut() {
-        this._hideNavbar();
-    }
-    
-    onShowNavbar() {
-        this.setState({ showNavbar: true });
-        this._hideNavbar();
-    }
-
-    onHideNavbar() {
-        this.setState({ showNavbar: false });
+        this._hide();
     }
     
     onBookmark() {
@@ -88,83 +74,69 @@ export default class ReaderNavbar extends React.Component {
         
         return value;
     }
+    
+    _toggleShow() {
+        this.setState({ show: !this.state.show });
+    }
 
-    _hideNavbar() {
+    _hide() {
         this.timeout = setTimeout(() => {
-            this.setState({ showNavbar: false })
+            this.setState({ show: false })
         }, 7000);
     }
 
     render() {
         const showText = showNavbarText();
         
-        if (this.state.showNavbar) {
-            return (
-                <nav
-                    className="nav-bar"
-                    onMouseOver={this.onMouseOver}
-                    onMouseOut={this.onMouseOut}
-                >
-                    <div className="left">
-                        <a
-                            className="icon-home"
-                            title="Home / Recently Opened"
-                            href="#books/recently-opened"
-                        >{showText ? "Home" : ""}</a>
+        if (!this.state.show) return <div />;
 
-                        <a
-                            className="icon-settings"
-                            title="Settings"
-                            href="#settings/reader"
-                        >{showText ? "Settings" : ""}</a>
+        return (
+            <nav
+                className="nav-bar"
+                onMouseOver={() => this.onMouseOver()}
+                onMouseOut={() => this.onMouseOut()}
+            >
+                <a
+                    className="icon-home"
+                    title="Home / Recently Opened"
+                    href="#books/recently-opened"
+                >{showText ? "Home" : ""}</a>
 
-                        <a
-                            onClick={() => this.props.onToggleShow("toc")}
-                            className="icon-book"
-                            title="Table of Contents"
-                        >{showText ? "TOC" : ""}</a>
-                    </div>
-                    
-                    <span
-                        onClick={this.onHideNavbar}
-                        className="title"
-                    >{this.props.book.title}</span>
-                    
-                    <div className="right">
-                        <a
-                            onClick={this.onBookmark}
-                            className={
-                                this._isBookmarked()
-                                ? "icon-bookmark"
-                                : "icon-bookmark-empty"
-                            }
-                            title="Bookmark"
-                        >{showText ? "Bookmark" : ""}</a>
+                <a
+                    className="icon-settings"
+                    title="Settings"
+                    href="#settings/reader"
+                >{showText ? "Settings" : ""}</a>
 
-                        <a
-                            onClick={() => this.props.onToggleShow("createNote")}
-                            className="icon-edit"
-                            title="Create Note"
-                        >{showText ? "Note" : ""}</a>
+                <a
+                    onClick={() => this.props.onToggleShow("toc")}
+                    className="icon-book"
+                    title="Table of Contents"
+                >{showText ? "TOC" : ""}</a>
+                
+                <a
+                    onClick={() => this.onBookmark()}
+                    className={
+                        this._isBookmarked()
+                        ? "icon-bookmark"
+                        : "icon-bookmark-empty"
+                    }
+                    title="Bookmark"
+                >{showText ? "Bookmark" : ""}</a>
 
-                        <a
-                            onClick={() => this.props.onToggleShow("more")}
-                            className="icon-more"
-                            title="More..."
-                        >{showText ? "More" : ""}</a>
-                    </div>
-                </nav>
-            );
-        }
-        else {
-            // Invisible div for showing navbar on click
-            return (
-                <div
-                    className="nav-bar-hidden"
-                    onClick={this.onShowNavbar}
-                />
-            );
-        }
+                <a
+                    onClick={() => this.props.onToggleShow("createNote")}
+                    className="icon-edit"
+                    title="Create Note"
+                >{showText ? "Note" : ""}</a>
+
+                <a
+                    onClick={() => this.props.onToggleShow("more")}
+                    className="icon-more"
+                    title="More..."
+                >{showText ? "More" : ""}</a>
+            </nav>
+        );
     }
 
 }
