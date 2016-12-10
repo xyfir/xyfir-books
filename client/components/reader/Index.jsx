@@ -11,6 +11,8 @@ import updateEpubJsPrototype from "lib/reader/epubjs/update-prototype";
 import insertAnnotations from "lib/reader/annotations/insert";
 import updateAnnotations from "lib/reader/annotations/update";
 import highlightNotes from "lib/reader/notes/highlight";
+import swipeListener from "lib/reader/listeners/swipe";
+import clickListener from "lib/reader/listeners/click";
 import emToPixels from "lib/misc/em-to-pixels";
 import request from "lib/request/index";
 import unwrap from "lib/reader/matches/unwrap";
@@ -38,7 +40,7 @@ export default class Reader extends React.Component {
             modalViewTarget: "", show: {
                 manageAnnotations: false, more: false, bookmarks: false,
                 notes: false, createNote: false, toc: false,
-                annotation: false
+                annotation: false, bookInfo: false
             }, highlight: {
                 mode: this.props.data.config.reader.defaultHighlightMode,
                 index: 0
@@ -179,8 +181,36 @@ export default class Reader extends React.Component {
     onCloseModal() {
         this.setState({ show: {
             toc: false, bookmarks: false, notes: false, createNote: false,
-            more: false, manageAnnotations: false, annotation: false
+            more: false, manageAnnotations: false, annotation: false,
+            bookInfo: false
         }, modalViewTarget: "" });
+    }
+
+    onSwipe(dir) {
+        switch (dir) {
+            case "left":
+                epub.nextPage(); break;
+            case "right":
+                epub.prevPage();
+        }
+    }
+
+    onClick(action) {
+        switch (action) {
+            case "previous page":
+                epub.prevPage(); break;
+            case "next page":
+                epub.nextPage(); break;
+            case "cycle highlights":
+                this.refs.overlay._setStatus(
+                    this.onCycleHighlightMode()
+                ); break;
+            case "show book info":
+                this.onToggleShow("bookInfo");
+                break;
+            case "toggle navbar":
+                this.refs.navbar._toggleShow();
+        }
     }
     
     _initialize() {
@@ -212,17 +242,19 @@ export default class Reader extends React.Component {
                     );
                 }
 
+                // Initialize epub.renderer.selectedRange
+                epub.renderer.onSelectionChange();
+
                 // Generate annotation markers
                 epub.annotationMarkers = findAnnotationMarkers(
                     this.state.book.annotations
                 );
                 
                 this.setState({ loading: false });
+                
                 this._applyStyles();
                 this._addEventListeners();
-
                 this._applyHighlights(this.state.highlight, true);
-
                 this._getWordCount();
             });
         });
@@ -254,10 +286,9 @@ export default class Reader extends React.Component {
     _addEventListeners() {
         // Update pages left in chapter
         // Update percent complete
-        epub.on("renderer:locationChanged", cfi => {
-            const hasColumns = document.querySelector("#book > div > iframe")
-                .contentDocument.querySelector("html")
-                .style.width != "auto";
+        epub.on("renderer:locationChanged", (cfi) => {
+            const hasColumns =
+                epub.renderer.doc.documentElement.style.width != "auto";
             
             this.setState({
                 pagesLeft: (hasColumns
@@ -273,6 +304,11 @@ export default class Reader extends React.Component {
         epub.on("renderer:chapterDisplayed", () => {
             this._applyStyles();
             this._applyHighlights(this.state.highlight, true);
+
+            const el = epub.renderer.doc.documentElement;
+
+            swipeListener(el, (dir) => this.onSwipe(dir));
+            clickListener(el, (action) => this.onClick(action));
         });
         
         // Regenerate pagination and update percent
@@ -287,6 +323,11 @@ export default class Reader extends React.Component {
                 });
             }, 500);
         });
+
+        const el = epub.renderer.doc.documentElement;
+
+        swipeListener(el, (dir) => this.onSwipe(dir));
+        clickListener(el, (action) => this.onClick(action));
     }
     
     _getPercentComplete() {
@@ -363,6 +404,7 @@ export default class Reader extends React.Component {
         return (
             <div className="reader">
                 <Navbar
+                    ref="navbar"
                     book={this.state.book}
                     updateBook={this._updateBook}
                     onToggleShow={this.onToggleShow}
@@ -371,11 +413,11 @@ export default class Reader extends React.Component {
                 <div id="book" />
                 
                 <Overlay
+                    ref="overlay"
                     book={this.state.book}
                     loading={this.state.loading}
                     percent={this.state.percent}
                     pagesLeft={this.state.pagesLeft}
-                    onCycleHighlightMode={this.onCycleHighlightMode}
                 />
                 
                 <Modal parent={this} />
