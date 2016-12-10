@@ -9,48 +9,6 @@
         padding: 1em 0em;
     }
     
-    .nav-bar-hidden {
-        position: fixed;
-        top: 0%;
-        left: 33%;
-        right: 33%;
-        height: 2.5em;
-        z-index: 1;
-    }
-
-    .overlay * {
-        -webkit-tap-highlight-color: rgba(0,0,0,0);
-    }
-    
-    .controls {
-        
-        .previous-page {
-            position: fixed;
-            top: 0%;
-            left: 0%;
-            width: 2.5em;
-            bottom: 0%;
-        }
-        
-        .next-page {
-            position: fixed;
-            top: 0%;
-            right: 0%;
-            width: 2.5em;
-            bottom: 0%;
-        }
-
-        .cycle-highlight-mode {
-            position: fixed;
-            left: 33%;
-            right: 33%;
-            bottom: 0%;
-            height: 2.5em;
-            z-index: 1;
-        }
-        
-    }
-    
     .status {
         position: fixed;
         font-size: 70%;
