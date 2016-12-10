@@ -8,10 +8,9 @@ export default class ReaderOverlay extends React.Component {
         this.state = { status: "" };
     }
 
-    onCycleHighlightMode() {
+    _setStatus(hl) {
         clearTimeout(this.timeout);
 
-        const hl = this.props.onCycleHighlightMode();
         let status = "";
 
         switch (hl.mode) {
@@ -35,21 +34,6 @@ export default class ReaderOverlay extends React.Component {
     render() {
         return (
             <div className="overlay">
-                <div className="controls">
-                    <div
-                        className="previous-page"
-                        onClick={() => epub.prevPage()}
-                    />
-                    <div
-                        className="next-page"
-                        onClick={() => epub.nextPage()}
-                    />
-                    <div
-                        className="cycle-highlight-mode"
-                        onClick={() => this.onCycleHighlightMode()}
-                    />
-                </div>
-                
                 <span className="status">{
                     this.state.status ? (
                         this.state.status
@@ -58,9 +42,9 @@ export default class ReaderOverlay extends React.Component {
                     ) : (
                         this.props.percent + "% | " + (
                             !this.props.pagesLeft
-                                ? "Last page in chapter"
-                                : this.props.pagesLeft + " pages left in chapter"
-                            )
+                            ? "Last page in chapter"
+                            : this.props.pagesLeft + " pages left in chapter"
+                        )
                     ) 
                 }</span>
             </div>
