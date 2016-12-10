@@ -29,7 +29,7 @@
         padding: 1em;
         overflow-y: auto;
         border: solid 0.1em $llgray;
-        box-shadow: 0.3em 0.3em 0.9em black;
+        box-shadow: 0.1em 0.1em 0.3em $dgray;
         z-index: 1;
 
         span[class^="icon-"] {
@@ -244,11 +244,24 @@
 
     .modal.full {
         left: 0%;
-        top: 0%;
         right: 0%;
+    }
+
+    .modal.full.middle {
+        top: 0%;
         bottom: 0%;
         border: none;
         box-shadow: none;
+    }
+
+    .modal.top {
+        top: 0%;
+        bottom: 55%;
+    }
+
+    .modal.bottom {
+        top: 55%;
+        bottom: 0%;
     }
     
 }

@@ -33,8 +33,11 @@ export default class ReaderModal extends React.Component {
         if (showModal) {
             return (
                 <div
-                    className={"modal" + (
-                        this.state.fullscreen ? " full" : ""
+                    className={"modal " + (
+                        this.state.fullscreen ? "full " : ""
+                    ) + (
+                        ["bookInfo"].indexOf(show) > -1
+                        ? "top" : "middle"
                     )}
                 >
                     {this.state.canResize ? (
