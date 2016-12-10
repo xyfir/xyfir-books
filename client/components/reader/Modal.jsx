@@ -1,14 +1,14 @@
 import React from "react";
 
 // Components
-import ManageAnnotations from "./ManageAnnotations";
-import TableOfContents from "./TableOfContents";
-import Annotation from "./Annotation";
-import CreateNote from "./CreateNote";
-import Bookmarks from "./Bookmarks";
-import BookInfo from "./BookInfo";
-import Notes from "./Notes";
-import More from "./More";
+import ManageAnnotations from "./modal/ManageAnnotations";
+import TableOfContents from "./modal/TableOfContents";
+import Annotation from "./modal/Annotation";
+import CreateNote from "./modal/CreateNote";
+import Bookmarks from "./modal/Bookmarks";
+import BookInfo from "./modal/BookInfo";
+import Notes from "./modal/Notes";
+import More from "./modal/More";
 
 export default class ReaderModal extends React.Component {
 
