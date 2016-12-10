@@ -200,6 +200,45 @@
             }
 
         }
+
+        .book-info {
+
+            text-align: left;
+
+            table {
+                
+                width: 100%;
+
+                th {
+                    width: 30%;
+                }
+
+                td {
+                    width: 70%;
+                }
+
+                th, td {
+                    border-bottom: solid 0.1em $llgray;
+                }
+
+            }
+
+            .tag {
+                display: inline-block;
+                margin: 0em 0.2em;
+            }
+
+            .tag:first-child {
+                margin-left: 0em;
+            }
+
+            .comments {
+                border-top: solid 0.15em $lgray;
+                padding-top: 1em;
+                margin-top: 1em;
+            }
+
+        }
         
     }
 
