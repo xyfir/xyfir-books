@@ -1,52 +1,54 @@
 import React from "react";
 
+// Components
+import BottomNavbar from "./overlay/BottomNavbar";
+import TopNavbar from "./overlay/TopNavbar";
+import Status from "./overlay/Status";
+
 export default class ReaderOverlay extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.state = { status: "" };
+        this.state = { showNavbars: true };
     }
 
-    _setStatus(hl) {
-        clearTimeout(this.timeout);
-
-        let status = "";
-
-        switch (hl.mode) {
-            case "none":
-                status = "Highlights turned off"; break;
-            
-            case "notes":
-                status = "Now highlighting notes"; break;
-
-            case "annotations":
-                status = "Now highlighting annotations from set "
-                    + this.props.book.annotations[hl.index].set_title;
-                break;
-        }
-
-        // Notify user of new highlight mode for 5 seconds
-        this.setState({ status });
-        this.timeout = setTimeout(() => this.setState({ status: "" }), 5000);
+    componentDidMount() {
+        setTimeout(() => {
+            this.setState({ showNavbars: false });
+        }, 3500);
+    }
+    
+    _toggleShowNavbars() {
+        this.setState({ showNavbars: !this.state.showNavbars });
     }
 
     render() {
+        const p = this.props.parent;
+
         return (
             <div className="overlay">
-                <span className="status">{
-                    this.state.status ? (
-                        this.state.status
-                    ) : this.props.loading ? (
-                        "Loading..."
-                    ) : (
-                        this.props.percent + "% | " + (
-                            !this.props.pagesLeft
-                            ? "Last page in chapter"
-                            : this.props.pagesLeft + " pages left in chapter"
-                        )
-                    ) 
-                }</span>
+                <TopNavbar
+                    book={p.state.book}
+                    show={this.state.showNavbars}
+                    updateBook={p._updateBook}
+                    onToggleShow={p.onToggleShow}
+                />
+
+                <Status
+                    ref="status"
+                    book={p.state.book}
+                    loading={p.state.loading}
+                    percent={p.state.percent}
+                    pagesLeft={p.state.pagesLeft}
+                />
+
+                <BottomNavbar
+                    book={p.state.book}
+                    show={this.state.showNavbars}
+                    updateBook={p._updateBook}
+                    onToggleShow={p.onToggleShow}
+                />
             </div>
         );
     }
