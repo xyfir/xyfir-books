@@ -44,10 +44,8 @@ export default class ReaderOverlay extends React.Component {
                 />
 
                 <BottomNavbar
-                    book={p.state.book}
+                    reader={p}
                     show={this.state.showNavbars}
-                    updateBook={p._updateBook}
-                    onToggleShow={p.onToggleShow}
                 />
             </div>
         );
