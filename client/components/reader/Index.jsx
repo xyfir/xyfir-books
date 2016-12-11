@@ -66,11 +66,12 @@ export default class Reader extends React.Component {
         }
         
         // Get bookmarks, notes, last read time
-        request({url: URL + "api/books/" + id, success: (res) => {
+        request(`${URL}api/books/${id}`, (res) => {
             const r = this.props.data.config.reader;
 
             // Update / set book's annotations
-            updateAnnotations(this.state.book.annotations, r.annotationsKey, ans => {
+            updateAnnotations(this.state.book.annotations, r.annotationsKey,
+            ans => {
                 res.annotations = ans;
 
                 this.setState({
@@ -83,21 +84,24 @@ export default class Reader extends React.Component {
                     // Overwrite parts of EPUBJS prototype
                     updateEpubJsPrototype();
 
-                    // Create EPUB.JS reader object
-                    window.epub = ePub(url, {
-                        bookKey: id, spreads: true, styles: {
-                            fontSize: r.fontSize + "em", padding: "0em " + r.padding + "em",
-                            backgroundColor: r.backgroundColor,
-                            lineHeight: r.lineHeight + "em"
-                        }, width: window.innerWidth, height: (
-                            window.innerHeight - (emToPixels() * 2)
-                        )
-                    });
+                    this._getStyles(s => {
+                        // Create EPUB.JS reader object
+                        window.epub = ePub(url, {
+                            bookKey: id, spreads: true, width: window.innerWidth,
+                            height: (window.innerHeight - (emToPixels() * 2)),
+                            styles: {
+                                fontSize: s.fontSize + "em",
+                                padding: `0em ${s.padding}em`,
+                                lineHeight: s.lineHeight + "em",
+                                backgroundColor: s.backgroundColor
+                            }
+                        });
 
-                    this.setState({ initialize: true });
+                        this.setState({ initialize: true });
+                    });
                 });
             });
-        }});
+        });
         
         this._addEventListeners = this._addEventListeners.bind(this);
         this._applyHighlights = this._applyHighlights.bind(this);
@@ -107,6 +111,7 @@ export default class Reader extends React.Component {
         this._applyStyles = this._applyStyles.bind(this);
         this._updateBook = this._updateBook.bind(this);
         this._initialize = this._initialize.bind(this);
+        this._getStyles = this._getStyles.bind(this);
     }
     
     componentDidUpdate() {
@@ -279,29 +284,41 @@ export default class Reader extends React.Component {
                 this._getWordCount();
             });
         });
-    } 
+    }
     
+    _getStyles(fn) {
+        const styles = this.props.data.config.reader;
+
+        localforage.getItem("styling-" + this.state.book.id).then(s => {
+            if (!s)
+                fn(styles);
+            else
+                fn(Object.assign({}, styles, s));
+        }).catch(e => fn(styles));
+    }
+
     _applyStyles() {
-        const r = this.props.data.config.reader;
-        
-        let s = epub.renderer.doc.getElementById("reader-styles");
-        let create = false;
+        this._getStyles(s => {
+            let el = epub.renderer.doc.getElementById("reader-styles");
+            let create = false;
 
-        if (s === null) {
-            s = epub.renderer.doc.createElement("style");
-            create = true;
-        }
-        
-        s.innerHTML = `
-            * { color: ${r.color} !important; }
-            .annotation { background-color: ${r.annotationColor}; }
-            .note { background-color: ${r.highlightColor}; }
-        `;
+            if (!el) {
+                el = epub.renderer.doc.createElement("style");
+                create = true;
+            }
+            
+            el.innerHTML = `
+                * { color: ${s.color} !important; }
+                .annotation { background-color: ${s.annotationColor}; }
+                .note { background-color: ${s.highlightColor}; }
+            `;
+            epub.element.style.backgroundColor = s.backgroundColor;
 
-        if (create) {
-            s.setAttribute("id", "reader-styles");
-            epub.renderer.doc.head.appendChild(s);
-        }
+            if (create) {
+                el.setAttribute("id", "reader-styles");
+                epub.renderer.doc.head.appendChild(el);
+            }
+        });
     }
     
     _addEventListeners() {
