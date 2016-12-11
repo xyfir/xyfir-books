@@ -58,8 +58,8 @@ export default class ReaderSettings extends React.Component {
                     books={true}
                 />
                 <div className="settings">
-                    <label>Reader Theme</label>
                     <section className="theme">
+                        <label>Reader Theme</label>
                         <select
                             ref="theme"
                             onChange={() => this.onSetTheme()}
