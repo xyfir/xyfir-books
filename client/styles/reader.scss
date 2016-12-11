@@ -216,23 +216,13 @@
         }
 
         .book-info {
-
-            text-align: left;
-
             table {
-                
-                width: 100%;
 
-                th {
-                    width: 30%;
-                }
-
-                td {
-                    width: 70%;
-                }
+                width: 85%;
 
                 th, td {
                     border-bottom: solid 0.1em $llgray;
+                    text-align: left;
                 }
 
             }
@@ -250,6 +240,14 @@
                 border-top: solid 0.15em $lgray;
                 padding-top: 1em;
                 margin-top: 1em;
+            }
+
+        }
+
+        .book-styling {
+
+            th {
+                text-align: left;
             }
 
         }
