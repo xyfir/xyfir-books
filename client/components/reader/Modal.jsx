@@ -3,6 +3,7 @@ import React from "react";
 // Components
 import ManageAnnotations from "./modal/ManageAnnotations";
 import TableOfContents from "./modal/TableOfContents";
+import BookStyling from "./modal/BookStyling";
 import Annotation from "./modal/Annotation";
 import CreateNote from "./modal/CreateNote";
 import Bookmarks from "./modal/Bookmarks";
@@ -37,7 +38,8 @@ export default class ReaderModal extends React.Component {
                         this.state.fullscreen ? "full " : ""
                     ) + (
                         ["bookInfo"].indexOf(show) > -1
-                        ? "top" : "middle"
+                        ? "top" : ["bookStyling"].indexOf(show) > -1
+                        ? "bottom" : "middle"
                     )}
                 >
                     {this.state.canResize ? (
@@ -101,6 +103,8 @@ export default class ReaderModal extends React.Component {
                         <BookInfo
                             book={p.state.book}
                         />
+                    ) : show == "bookStyling" ? (
+                        <BookStyling reader={p} />
                     ) : (
                         <div />
                     )}

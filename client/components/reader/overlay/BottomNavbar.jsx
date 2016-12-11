@@ -43,6 +43,12 @@ export default class BottomReaderNavbar extends React.Component {
                     }
                     className="icon-history"
                 >{showText ? "Back" : ""}</a>
+
+                <a
+                    title="Book styling"
+                    onClick={() => r.onToggleShow("bookStyling")}
+                    className="icon-fontsize"
+                >{showText ? "Styling" : ""}</a>
             </nav>
         );
     }
