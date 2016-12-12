@@ -46,7 +46,7 @@
         box-shadow: 0.1em 0.1em 0.3em $dgray;
         z-index: 1;
 
-        span[class^="icon-"] {
+        .icon-close, .icon-back, span[class^="icon-resize-"] {
             position: absolute;
             z-index: 2;
         }
@@ -248,6 +248,28 @@
 
             th {
                 text-align: left;
+            }
+
+        }
+
+        .filters {
+
+            width: 85%;
+            margin: auto;
+
+            .slider {
+
+                display: flex;
+                height: 3em;
+
+                .slider-container {
+                    flex: 10;
+                }
+
+                span[class^="icon-"] {
+                    flex: 1;
+                }
+
             }
 
         }
