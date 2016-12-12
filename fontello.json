@@ -25,12 +25,6 @@
       "src": "elusive"
     },
     {
-      "uid": "51727ca007aa35ceabcaffc28934faee",
-      "css": "book-open",
-      "code": 59396,
-      "src": "entypo"
-    },
-    {
       "uid": "48b79f27e4798f23bafa07b55dbe5b73",
       "css": "book",
       "code": 59397,
@@ -263,6 +257,12 @@
       "css": "circle-empty",
       "code": 61708,
       "src": "fontawesome"
+    },
+    {
+      "uid": "56a766cedf13005162899b02cf9546b9",
+      "css": "library",
+      "code": 59427,
+      "src": "maki"
     }
   ]
 }

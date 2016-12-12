@@ -47,7 +47,7 @@ export default class NavBar extends React.Component {
                 <div className="right">
                     {this.props.library ? (
                         <a
-                            className="icon-book"
+                            className="icon-library"
                             title="Library"
                             href="#library/info"
                         >{showText ? "Library" : ""}</a>
@@ -55,7 +55,7 @@ export default class NavBar extends React.Component {
                     
                     {this.props.books ? (
                         <a
-                            className="icon-book-open"
+                            className="icon-book"
                             title="Book List"
                             href="#books/list"
                         >{showText ? "Books" : ""}</a>

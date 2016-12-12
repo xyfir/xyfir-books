@@ -119,7 +119,7 @@ export default class List extends React.Component {
                         >{showText ? "Set View" : ""}</a>
 
                         <a
-                            className="icon-book-open"
+                            className="icon-book"
                             title="Book List"
                             href="#books/list"
                         >{showText ? "Books" : ""}</a>
