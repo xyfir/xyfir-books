@@ -49,6 +49,12 @@ export default class BottomReaderNavbar extends React.Component {
                     onClick={() => r.onToggleShow("bookStyling")}
                     className="icon-fontsize"
                 >{showText ? "Styling" : ""}</a>
+
+                <a
+                    title="Filters"
+                    onClick={() => r.onToggleShow("filters")}
+                    className="icon-light-up"
+                >{showText ? "Filters" : ""}</a>
             </nav>
         );
     }
