@@ -4,6 +4,6 @@ export default function(input) {
         new RegExp("[^0-9a-zA-Z ]", "g"), ""
     ).replace(
         new RegExp(" ", "g"), "-"
-    ).substr(0, 20);
+    ).substr(0, 30);
     
 }
