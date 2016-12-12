@@ -43,7 +43,18 @@ export default function(el, fn) {
                 direction = (distY < 0) ? "up" : "down";
         }
 
-        fn(direction);
+        // User swiped in a direction
+        if (direction) {
+            fn(direction);
+        }
+        // Convert tap to a click
+        else {
+            epub.renderer.doc.documentElement.dispatchEvent(
+                new MouseEvent("click", {
+                    clientX: startX, clientY: startY
+                })
+            );
+        }
         
         e.preventDefault();
     }, false);
