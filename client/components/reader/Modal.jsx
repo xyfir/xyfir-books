@@ -8,6 +8,7 @@ import Annotation from "./modal/Annotation";
 import CreateNote from "./modal/CreateNote";
 import Bookmarks from "./modal/Bookmarks";
 import BookInfo from "./modal/BookInfo";
+import Filters from "./modal/Filters";
 import Notes from "./modal/Notes";
 import More from "./modal/More";
 
@@ -38,7 +39,7 @@ export default class ReaderModal extends React.Component {
                         this.state.fullscreen ? "full " : ""
                     ) + (
                         ["bookInfo"].indexOf(show) > -1
-                        ? "top" : ["bookStyling"].indexOf(show) > -1
+                        ? "top" : ["bookStyling", "filters"].indexOf(show) > -1
                         ? "bottom" : "middle"
                     )}
                 >
@@ -100,11 +101,11 @@ export default class ReaderModal extends React.Component {
                             target={p.state.modal.target}
                         />
                     ) : show == "bookInfo" ? (
-                        <BookInfo
-                            book={p.state.book}
-                        />
+                        <BookInfo book={p.state.book} />
                     ) : show == "bookStyling" ? (
                         <BookStyling reader={p} />
+                    ) : show == "filters" ? (
+                        <Filters reader={p} />
                     ) : (
                         <div />
                     )}
