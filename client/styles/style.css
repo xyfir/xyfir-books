@@ -5,6 +5,8 @@
 @import "settings.scss";
 @import "home.scss";
 @import "account.scss";
-@import "markdown.scss";
 
 @import "themes/dark.scss";
+
+@import "slider.scss";
+@import "markdown.scss";
