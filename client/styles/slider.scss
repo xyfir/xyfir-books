@@ -27,7 +27,7 @@
   left: 0;
   height: 4px;
   border-radius: 6px;
-  background-color: #abe2fb;
+  background-color: $llblue;
 }
 .rc-slider-handle {
   position: absolute;
@@ -37,15 +37,15 @@
   height: 14px;
   cursor: pointer;
   border-radius: 50%;
-  border: solid 2px #96dbfa;
+  border: solid 2px $lblue;
   background-color: #fff;
 }
 .rc-slider-handle:hover {
-  border-color: #57c5f7;
+  border-color: $blue;
 }
 .rc-slider-handle-active:active {
-  border-color: #57c5f7;
-  box-shadow: 0 0 5px #57c5f7;
+  border-color: $blue;
+  box-shadow: 0 0 5px $blue;
 }
 .rc-slider-mark {
   position: absolute;
