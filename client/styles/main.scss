@@ -170,14 +170,9 @@ nav.navbar {
 	font-size: 115%;	
 	position: fixed;
 	padding: 0.5em 0em;
-	display: flex;
 	left: 0%;
 	right: 0%;
 	z-index: 1;
-
-	>* {
-		flex: 1;
-	}
 
 	>a, .title {
 		display: inline-block;
@@ -206,11 +201,30 @@ nav.navbar {
 }
 nav.navbar.top {
 	border-bottom: solid 0.05em $lgray;
+	display: flex;
 	top: 0%;
+
+	>a {
+		flex: 1;
+	}
 }
 nav.navbar.bottom {
 	border-top: solid 0.05em $lgray;
 	bottom: 0%;
+
+	.progress-slider {
+		width: 90%;
+		margin: auto;
+		margin-bottom: 1em;
+	}
+
+	.items {
+		display: flex;
+
+		>a {
+			flex: 1;
+		}
+	}
 }
 
 .loading {
