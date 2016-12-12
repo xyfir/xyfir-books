@@ -106,11 +106,13 @@ export default class Reader extends React.Component {
         this._addEventListeners = this._addEventListeners.bind(this);
         this._applyHighlights = this._applyHighlights.bind(this);
         this._getWordCount = this._getWordCount.bind(this);
+        this._applyFilters = this._applyFilters.bind(this);
         this.onToggleShow = this.onToggleShow.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
         this._applyStyles = this._applyStyles.bind(this);
         this._updateBook = this._updateBook.bind(this);
         this._initialize = this._initialize.bind(this);
+        this._getFilters = this._getFilters.bind(this);
         this._getStyles = this._getStyles.bind(this);
     }
     
@@ -277,6 +279,8 @@ export default class Reader extends React.Component {
                 );
                 
                 this.setState({ loading: false });
+
+                this._getFilters(f => this._applyFilters(f));
                 
                 this._applyStyles();
                 this._addEventListeners();
@@ -319,6 +323,26 @@ export default class Reader extends React.Component {
                 epub.renderer.doc.head.appendChild(el);
             }
         });
+    }
+
+    _applyFilters(filters) {
+        document.querySelector("div.reader").style.filter
+            = `brightness(${filters.brightness}%) `
+            + `contrast(${filters.contrast}%) `
+            + `sepia(${filters.warmth}%)`;
+    }
+
+    _getFilters(fn) {
+        const filters = {
+            brightness: 100, warmth: 0, contrast: 100
+        };
+
+        localforage.getItem("filters-" + this.state.book.id).then(f => {
+            if (!f)
+                fn(filters);
+            else
+                fn(Object.assign({}, filters, f));
+        }).catch(e => fn(filters));
     }
     
     _addEventListeners() {
