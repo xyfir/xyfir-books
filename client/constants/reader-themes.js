@@ -1,5 +1,5 @@
 export const LIGHT = {
-    backgroundColor: "#FFFFFF", color: "#000000", highlightColor: "#B1FB17",
+    backgroundColor: "#E7E7E7", color: "#212121", highlightColor: "#B1FB17",
     annotationColor: "#85C1E9"
 };
 
