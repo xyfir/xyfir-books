@@ -28,8 +28,6 @@ export default class BookStyling extends React.Component {
     }
 
     onUpdateTheme(val) {
-        if (!val) return;
-
         const style = themes[val];
 
         this.setState(style, () => this._saveStyling(() => {
@@ -108,13 +106,14 @@ export default class BookStyling extends React.Component {
                     <tr>
                         <th>Theme</th>
                         <td>
-                            <select onChange={(e) => 
-                                this.onUpdateTheme(e.target.value)
-                            }>
-                                <option value="">-</option>
-                                <option value="LIGHT">Light</option>
-                                <option value="DARK">Dark</option>
-                            </select>
+                            <button
+                                className="btn-secondary"
+                                onClick={() => this.onUpdateTheme("LIGHT")}
+                            >Light</button>
+                            <button
+                                className="btn-secondary"
+                                onClick={() => this.onUpdateTheme("DARK")}
+                            >Dark</button>
                         </td>
                     </tr>
                 </tbody></table>
