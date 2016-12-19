@@ -6,10 +6,11 @@ body {
 	margin: 3.5em 0em;
 }
 hr {
-	border: 0;
-    height: 1px;
-	margin: 2em;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+	border: none;
+    height: 0.1em;
+	margin: 1em auto;
+    width: 80%;
+	background-color: $lgray;
 }
 button {
     cursor: pointer;
@@ -96,23 +97,20 @@ input[type=submit], button, .btn {
 .btn-primary {
 	background-color: $blue;
 }
-.btn-primary:hover {
+.btn-primary:hover, .btn-primary:focus {
 	background-color: $lblue; 
 }
 .btn-secondary {
 	background-color: $gray;
 }
-.btn-secondary:hover {
+.btn-secondary:hover, .btn-secondary:focus {
 	background-color: $lgray;
 }
 .btn-danger {
-	background-color: $danger;
+	background-color: $red;
 }
-.btn-danger:hover {
-	background-color: $ldanger;
-}
-input[type=submit]:focus, button:focus {
-	background-color: $lblack;
+.btn-danger:hover, .btn-danger:focus {
+	background-color: $lred;
 }
 a.btn:hover {
     color: white;
