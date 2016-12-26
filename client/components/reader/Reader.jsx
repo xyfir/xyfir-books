@@ -103,6 +103,7 @@ export default class Reader extends React.Component {
             });
         });
         
+        this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
         this._addEventListeners = this._addEventListeners.bind(this);
         this._applyHighlights = this._applyHighlights.bind(this);
         this._getWordCount = this._getWordCount.bind(this);
@@ -218,7 +219,8 @@ export default class Reader extends React.Component {
 
     onClick(action) {
         if (this.state.modal.show) {
-            this.onCloseModal();
+            if (Date.now() > this.state.modal.closeWait)
+                this.onCloseModal();
             return;
         }
 
@@ -245,13 +247,9 @@ export default class Reader extends React.Component {
         // View annotation or note
         epub.onClick = (type, key) => {
             this.setState({ modal: {
-                target: key, show: "" 
-            }}, () => {
-                this.onToggleShow(
-                    type == "note" ? "notes" : type,
-                    false, () => this._applyStyles()
-                );
-            });
+                target: key, show: (type == "note" ? "notes" : type),
+                closeWait: Date.now() + 100
+            }});
         };
         
         // Render ebook to pages
