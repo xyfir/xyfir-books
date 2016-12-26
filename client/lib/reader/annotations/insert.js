@@ -12,11 +12,13 @@ export default function (set, markers) {
     set.items.forEach(item => {
         // Loop through all search queries in item
         item.searches.forEach((search, searchIndex) => {
+            // If not regex, escape regex characters and wrap in \b
+            const needle = search.regex
+                ? search.text
+                : "\\b" + escapeRegex(search.text) + "\\b";
+
             // Get start/end string indexes for each match
-            let matches = getMatchIndexes(
-                search.regex ? search.text : escapeRegex(search.text),
-                html
-            );
+            let matches = getMatchIndexes(needle, html);
 
             if (!search.range.global) {
                 // Get current chapter index to compare with chapter in markers
