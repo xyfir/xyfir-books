@@ -50,6 +50,7 @@ span.word-count, span.rating {
     
     input[type=text] {
         width: 25em;
+        max-width: 90%;
     }
     
     input[type=date] {
@@ -348,6 +349,7 @@ table.list {
     width: 25em;
     display: inline-block;
     font-size: 80%;
+    max-width: 90%;
     margin-right: 0.4em;
 }
 
