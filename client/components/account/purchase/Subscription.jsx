@@ -151,7 +151,7 @@ export default class PurchaseSubscription extends React.Component {
                     {this.state.showIncreaseSizeLimit ? (
                         <div className="increase-size-limit">
                             <p>
-                                A subscription with Libyq gives you 15 gigabytes of storage space for your ebook library. For most people, 15 gigabytes is more than enough to store thousands of ebooks.
+                                A subscription with Xyfir Books gives you 15 gigabytes of storage space for your ebook library. For most people, 15 gigabytes is more than enough to store thousands of ebooks.
                                 <br />
                                 Some people however have very large libraries that are above and beyond the 15 GB limit. If you're one of those people, you can increase your storage limit at a cost of <strong>$0.15</strong> per additional gigabyte over 15 GB. This is a monthly cost so 5 GB extra with a 6 months subscription would cost you $4.50 <em>((5 * 0.15) * 6)</em>.
                             </p>

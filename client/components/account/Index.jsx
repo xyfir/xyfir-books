@@ -36,13 +36,13 @@ export default class Account extends React.Component {
                 <section className="referral-link">
                     <label>Referral Program</label>
                     <span className="input-description">
-                        Refer new users to Libyq and they'll receive a free week and 10% off of their first purchase.
+                        Refer new users to Xyfir Books and they'll receive a free week and 10% off of their first purchase.
                         <br />
                         You'll receive one week of subscription time for every month they purchase.
                     </span>
                     <input
                         type="text" readonly
-                        value={"https://libyq.com/#?r=" + this.props.data.account.uid}
+                        value={"https://books.xyfir.com/#?r=" + this.props.data.account.uid}
                         onFocus={(e) => e.target.select()}
                     />
                 </section>
@@ -63,7 +63,7 @@ export default class Account extends React.Component {
                 ) : (
                     <section className="subscription-info">
                         <p>
-                            You do not have a Libyq subscription.
+                            You do not have a Xyfir Books subscription.
                             <br />
                             {this.props.data.account.library != '' ? (
                                 <span>

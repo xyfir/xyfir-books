@@ -17,7 +17,7 @@ import request from "lib/request/index";
 import unwrap from "lib/reader/matches/unwrap";
 
 // Constants
-import { URL, LIBRARY_URL } from "constants/config";
+import { URL, LIBRARY } from "constants/config";
 
 // Action creators
 import { updateBook } from "actions/creators/books";
@@ -49,7 +49,7 @@ export default class Reader extends React.Component {
         this.timers = {};
 
         // Build url to .epub file to read
-        let url = LIBRARY_URL + "files/" + this.props.data.account.library + "/";
+        let url = LIBRARY + "files/" + this.props.data.account.library + "/";
         let hasEpub = false;
         
         this.state.book.formats.forEach(format => {

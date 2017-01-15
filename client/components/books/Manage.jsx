@@ -11,7 +11,7 @@ import upload from "lib/request/upload";
 import NavBar from "components/misc/NavBar";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 // Action creators
 import { deleteFormat, incrementVersion } from "actions/creators/books";
@@ -64,7 +64,7 @@ export default class ManageBook extends React.Component {
                 + "&title=" + encodeURIComponent(this.refs.title.value);
         }
         
-        let url = LIBRARY_URL
+        let url = LIBRARY
             + this.props.data.account.library + "/books/"
             + this.state.id + "/metadata?" + search;
         
@@ -115,7 +115,7 @@ export default class ManageBook extends React.Component {
             return;
         }
         
-        const url = LIBRARY_URL
+        const url = LIBRARY
             + this.props.data.account.library + "/books/"
             + this.state.id + "/format/" + f;
             
@@ -133,7 +133,7 @@ export default class ManageBook extends React.Component {
             return;
         }
         
-        const url = LIBRARY_URL + this.props.data.account.library
+        const url = LIBRARY + this.props.data.account.library
             + "/books/" + this.state.id + "/cover"; 
         
         upload(url, "PUT", "cover", [files[0]], res => {
@@ -200,7 +200,7 @@ export default class ManageBook extends React.Component {
             data.comments = this.refs.comments.value;
         }
             
-        const url = LIBRARY_URL + this.props.data.account.library
+        const url = LIBRARY + this.props.data.account.library
             + "/books/" + this.state.id + "/metadata";
 
         // Send to library server

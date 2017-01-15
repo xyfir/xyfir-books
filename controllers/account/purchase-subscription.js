@@ -69,7 +69,7 @@ module.exports = function (req, res) {
         // Build stripe data object
         const data = {
             amount, source: req.body.stripeToken, currency: "usd",
-            description: `Libyq Subscription (${
+            description: `Xyfir Books Subscription (${
                 subs[req.body.subscription].days
             } Days)`
         };
@@ -121,7 +121,7 @@ module.exports = function (req, res) {
 
                 if (err || !result.affectedRows) {
                     res.json({
-                        error: true, message: "Contact support at libyq@xyfir.com"
+                        error: true, message: "Contact support at books@xyfir.com"
                     });
                 }
                 else if (createLibrary) {
@@ -131,7 +131,7 @@ module.exports = function (req, res) {
                         if (err || JSON.parse(body).error) {
                             res.json({
                                 error: true,
-                                message: "Contact support at libyq@xyfir.com"
+                                message: "Contact support at books@xyfir.com"
                             });
                         }
                         else {

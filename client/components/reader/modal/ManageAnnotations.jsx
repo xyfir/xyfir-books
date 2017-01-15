@@ -5,7 +5,7 @@ import React from "react";
 import request from "lib/request/index";
 
 // Constants
-import { LIB_ANN } from "constants/config";
+import { XYFIR_ANNOTATIONS } from "constants/config";
 
 export default class ManageAnnotations extends React.Component {
 
@@ -30,7 +30,7 @@ export default class ManageAnnotations extends React.Component {
 
         this.searchTimeout = setTimeout(() => {
             request({
-                url: LIB_ANN + "sets?sort=top&search=" + this.refs.search.value,
+                url: XYFIR_ANNOTATIONS + "sets?sort=top&search=" + this.refs.search.value,
                 success: (res) => this.setState(res)
             });
         }, 200);
@@ -43,7 +43,7 @@ export default class ManageAnnotations extends React.Component {
             return set.id == this.state.view;
         });
 
-        const url = `${LIB_ANN}annotations?key=${this.state.key}&sets=${set.id}`;
+        const url = `${XYFIR_ANNOTATIONS}annotations?key=${this.state.key}&sets=${set.id}`;
 
         // Download set's items
         request({url, success: (res) => {
@@ -133,7 +133,7 @@ export default class ManageAnnotations extends React.Component {
                     </p>*/}
                     {this.state.key ? "" : (
                         <p>
-                            <strong>Note:</strong> You have not set a <a href="https://annotations.libyq.com/" target="_blank">Libyq Annotations</a> subscription key. If you have a key, you can set it in your <a href="#settings/reader">reader settings</a>.
+                            <strong>Note:</strong> You have not set a <a href="https://annotations.xyfir.com/" target="_blank">Xyfir Annotations</a> subscription key. If you have a key, you can set it in your <a href="#settings/reader">reader settings</a>.
                         </p>
                     )}
                     <div className="downloaded-annotations">{

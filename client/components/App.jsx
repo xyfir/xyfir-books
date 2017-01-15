@@ -40,7 +40,7 @@ class App extends React.Component {
         // Configure localForage
         localforage.config({
             driver: [localforage.INDEXEDDB, localforage.WEBSQL],
-            name: "Libyq"
+            name: "XyfirBooks"
         });
         
         this._addListeners();
@@ -192,7 +192,7 @@ class App extends React.Component {
         if (!this.state) {
             return (
                 <span className="loading">
-                    Initializing Libyq...
+                    Initializing Xyfir Books
                 </span>
             );
         }
@@ -211,7 +211,7 @@ class App extends React.Component {
         }
         
         return (
-            <div className="libyq">
+            <div className="xyfir-books">
                 <DynamicStyles beforeApp={true} />
                 {view}
             </div>                

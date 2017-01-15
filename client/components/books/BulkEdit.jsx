@@ -6,7 +6,7 @@ import loadBooks from "lib/books/load-from-api";
 import request from "lib/request/index";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 // Components
 import NavBar from "../misc/NavBar";
@@ -145,7 +145,7 @@ export default class EditBooks extends React.Component {
             
             this.setState({ status: "Sending new metadata to server" });
             
-            const url = LIBRARY_URL + this.props.data.account.library
+            const url = LIBRARY + this.props.data.account.library
                 + "/books/" + id + "/metadata";
             
             // Update book's metadata

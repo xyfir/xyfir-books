@@ -15,7 +15,7 @@ import toUrl from "lib/url/clean";
 import rand from "lib/random/number";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 export default class TableList extends React.Component {
 
@@ -301,7 +301,7 @@ export default class TableList extends React.Component {
                             <dt>Formats</dt>
                             <dd className="formats">{
                                 selectedBook.formats.map(format => {
-                                    const url = LIBRARY_URL
+                                    const url = LIBRARY
                                         + "files/"
                                         + this.props.data.account.library
                                         + "/" + format;

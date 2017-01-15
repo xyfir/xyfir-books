@@ -51,14 +51,14 @@ module.exports = function(fn) {
                         Your library has reached the size limit of '${rows[index].library_size_limit} GB'.
                         
                         You have two options to resolve this issue:
-                        - Increase your library's size limit for $0.15 per gigabyte at https://libyq.com/app/#account/purchase/increase-size-limit
+                        - Increase your library's size limit for $0.15 per gigabyte at https://books.xyfir.com/app/#account/purchase/increase-size-limit
                         - Decrease your library's size by removing books, additional formats, etc
 
                         If you do not act to increase your size limit or decrease your library size your entire library will be deleted seven days after first reaching the limit. This action cannot be undone and your files will not be retrievable.
                     `;
                     sendEmail(
                         rows[index].email,
-                        "Libyq - Library Size Limit Reached",
+                        "Xyfir Books - Library Size Limit Reached",
                         message
                     );
                     
@@ -87,7 +87,7 @@ module.exports = function(fn) {
 
                                 // Notify user that their library was deleted
                                 const message = `
-                                    Your Libyq library has been deleted.
+                                    Your Xyfir Books library has been deleted.
 
                                     This occured because your library was at or over the size limit for over 7 days.
 
@@ -96,7 +96,7 @@ module.exports = function(fn) {
 
                                 sendEmail(
                                     rows[index].email,
-                                    "Libyq - Library Deleted",
+                                    "Xyfir Books - Library Deleted",
                                     message
                                 );
                             }

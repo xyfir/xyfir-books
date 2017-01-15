@@ -2,7 +2,7 @@
 import request from "lib/request/index";
 
 // Constants
-import { LIB_ANN } from "constants/config";
+import { XYFIR_ANNOTATIONS } from "constants/config";
 
 export default function(sets, key, fn) {
 
@@ -16,8 +16,8 @@ export default function(sets, key, fn) {
         return;
     }
 
-    // annotations.libyq.com/api/annotations?key=KEY&sets=SET|VERSION,...
-    let url = LIB_ANN + "annotations?key=" + key + "&sets="
+    // annotations.xyfir.com/api/annotations?key=KEY&sets=SET|VERSION,...
+    let url = XYFIR_ANNOTATIONS + "annotations?key=" + key + "&sets="
         + sets.map(set => set.id + "|" + set.version).join(",");
 
     request({url, success: (res) => {

@@ -2,7 +2,7 @@
 import request from "lib/request/index";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 function purgeCovers(books) {
 
@@ -62,7 +62,7 @@ function loadFromApi(book, library) {
         };
 
         // Build url using state.account.library / book.cover path
-        const url = LIBRARY_URL + "files/" + library + "/" + book.cover;
+        const url = LIBRARY + "files/" + library + "/" + book.cover;
 
         xhr.open("GET", url);
         xhr.send();

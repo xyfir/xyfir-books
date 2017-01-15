@@ -9,7 +9,7 @@ import upload from "lib/request/upload";
 import NavBar from "../misc/NavBar";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 export default class UploadBooks extends React.Component {
 
@@ -41,7 +41,7 @@ export default class UploadBooks extends React.Component {
             return;
         }
         
-        const url = LIBRARY_URL + this.props.data.account.library + "/books";
+        const url = LIBRARY + this.props.data.account.library + "/books";
         
         upload(url, "POST", "book", files, res => {
             this.setState({ uploading: false });
@@ -77,7 +77,7 @@ export default class UploadBooks extends React.Component {
                     Upload ebooks to add to your library. Our system will automatically attempt to extract metadata (title, authors, ...) from the ebook files. Each book's metadata can be viewed and modified after upload.
                 </p>
                 <p>
-                    <strong>Note:</strong> Only <a href="https://en.wikipedia.org/wiki/EPUB" target="_blank">EPUB</a> format ebooks can be read by Libyq's ebook reader.
+                    <strong>Note:</strong> Only <a href="https://en.wikipedia.org/wiki/EPUB" target="_blank">EPUB</a> format ebooks can be read by Xyfir Books' ebook reader.
                 </p>
                 
                 <hr />

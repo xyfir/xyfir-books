@@ -9,7 +9,7 @@ import request from "lib/request/index";
 import upload from "lib/request/upload";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 // Components
 import NavBar from "../misc/NavBar";
@@ -36,7 +36,7 @@ export default class AddFormat extends React.Component {
         
         this.setState({ converting: true });
         
-        const url = LIBRARY_URL + this.props.data.account.library
+        const url = LIBRARY + this.props.data.account.library
             + "/books/" + this.state.id + "/format/convert/"
             + this.refs.convertFrom.value + "/"
             + this.refs.convertTo.value;
@@ -64,7 +64,7 @@ export default class AddFormat extends React.Component {
         
         this.setState({ upload: true });
         
-        const url = LIBRARY_URL + this.props.data.account.library
+        const url = LIBRARY + this.props.data.account.library
             + "/books/" + this.state.id + "/format"; 
         
         upload(url, "POST", "book", [files[0]], res => {
@@ -100,7 +100,7 @@ export default class AddFormat extends React.Component {
                 />
                 
                 <p>
-                    <strong>Note:</strong> Only <a href="https://en.wikipedia.org/wiki/EPUB" target="_blank">EPUB</a> format ebooks can be read by Libyq's ebook reader.
+                    <strong>Note:</strong> Only <a href="https://en.wikipedia.org/wiki/EPUB" target="_blank">EPUB</a> format ebooks can be read by Xyfir Books' ebook reader.
                 </p>
                 
                 <section className="upload">

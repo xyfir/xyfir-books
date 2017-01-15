@@ -168,10 +168,10 @@ export default class ReaderSettings extends React.Component {
                         </select>
                     </section>
 
-                    <section className="libyq-annotations">
-                        <label>Libyq Annotations Subscription Key</label>
+                    <section className="xyfir-annotations">
+                        <label>Xyfir Annotations Subscription Key</label>
                         <span className="input-description">
-                            A <a href="https://annotations.libyq.com/" target="_blank">Libyq Annotations</a> subscription key is needed to enable <em>annotations mode</em> while reading books.
+                            A <a href="https://annotations.xyfir.com/" target="_blank">Xyfir Annotations</a> subscription key is needed to enable <em>annotations mode</em> while reading books.
                         </span>
                         <input
                             ref="annotationsKey"

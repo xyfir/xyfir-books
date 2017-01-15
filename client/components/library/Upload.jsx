@@ -9,7 +9,7 @@ import upload from "lib/request/upload";
 import NavBar from "../misc/NavBar";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 export default class UploadLibrary extends React.Component {
 
@@ -44,7 +44,7 @@ export default class UploadLibrary extends React.Component {
         else
             this.setState({ uploading: true })
         
-        const url = LIBRARY_URL + this.props.data.account.library + "/upload"; 
+        const url = LIBRARY + this.props.data.account.library + "/upload"; 
         
         upload(url, "POST", "lib", [files[0]], res => {
             this.setState({ uploading: false })

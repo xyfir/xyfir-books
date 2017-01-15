@@ -1,5 +1,5 @@
 // Constants
-import { URL, LIBRARY_URL } from "constants/config";
+import { URL, LIBRARY } from "constants/config";
 
 // Action creators
 import { loadBooks } from "actions/creators/books";
@@ -30,10 +30,10 @@ function mergeAnnotations(books, fn) {
 
 export default function (library, dispatch, fn) {
     
-    // Get from Libyq DB
+    // Get from Xyfir Books DB
     request({url: URL + "api/books", success: (books1) => {
         if (books1.books.length > 0) {
-            const url = LIBRARY_URL + library + "/books";
+            const url = LIBRARY + library + "/books";
             
             // Get from library manager server
             request({url, success: (books2) => {

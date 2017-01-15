@@ -7,14 +7,14 @@ import request from "lib/request/index";
 import NavBar from "../misc/NavBar";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 export default class LibraryInfo extends React.Component {
 
     constructor(props) {
         super(props);
         
-        const url = LIBRARY_URL + this.props.data.account.library + "/size";
+        const url = LIBRARY + this.props.data.account.library + "/size";
             
         this.state = { size: 0 };
         

@@ -8,7 +8,7 @@ import download from "lib/request/download";
 import NavBar from "../misc/NavBar";
 
 // Constants
-import { LIBRARY_URL } from "constants/config";
+import { LIBRARY } from "constants/config";
 
 export default class DownloadLibrary extends React.Component {
 
@@ -28,7 +28,7 @@ export default class DownloadLibrary extends React.Component {
         
         let zip = new JSZip;
         
-        const url = LIBRARY_URL + "files/" + this.props.data.account.library + "/";
+        const url = LIBRARY + "files/" + this.props.data.account.library + "/";
         
         const downloadBook = (index) => {
             const book = this.props.data.books[index];
