@@ -32,6 +32,18 @@ export default function(el, fn) {
             else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint)
                 // If dist traveled is negative, it indicates up swipe
                 fn((distY < 0) ? "up" : "down");
+            // Tap
+            else {
+                epub.renderer.doc.defaultView.getSelection().removeAllRanges();
+
+                epub.renderer.doc.documentElement.dispatchEvent(
+                    new MouseEvent("click", {
+                        clientX: startX, clientY: startY
+                    })
+                );
+                
+                e.preventDefault();
+            }
         }
     }, false);
 
