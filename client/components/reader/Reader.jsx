@@ -251,40 +251,44 @@ export default class Reader extends React.Component {
                 closeWait: Date.now() + 100
             }});
         };
-        
+
+        this._getStyles(s => {
+            epub.element.style.backgroundColor = s.backgroundColor;
+        });
+
         // Render ebook to pages
         epub.renderTo("book").then(() => {
-            // Generate pagination so we can get pages/percent
-            epub.generatePagination().then(pages => {
-                // Set initial location
-                if (this.state.book.bookmarks.length > 0) {
-                    epub.gotoCfi(
-                        this.state.book.bookmarks[0].cfi
-                    );
-                }
-                else {
-                    epub.gotoPercentage(
-                        this.state.book.percent_complete / 100
-                    );
-                }
-
-                // Initialize epub.renderer.selectedRange
-                epub.renderer.onSelectionChange();
-
-                // Generate annotation markers
-                epub.annotationMarkers = findAnnotationMarkers(
-                    this.state.book.annotations
+            return epub.generatePagination();
+        // Generate pagination so we can get pages/percent
+        }).then(pages => {
+            // Set initial location
+            if (this.state.book.bookmarks.length > 0) {
+                epub.gotoCfi(
+                    this.state.book.bookmarks[0].cfi
                 );
-                
-                this.setState({ loading: false });
+            }
+            else {
+                epub.gotoPercentage(
+                    this.state.book.percent_complete / 100
+                );
+            }
 
-                this._getFilters(f => this._applyFilters(f));
-                
-                this._applyStyles();
-                this._addEventListeners();
-                this._applyHighlights(this.state.highlight, true);
-                this._getWordCount();
-            });
+            // Initialize epub.renderer.selectedRange
+            epub.renderer.onSelectionChange();
+
+            // Generate annotation markers
+            epub.annotationMarkers = findAnnotationMarkers(
+                this.state.book.annotations
+            );
+            
+            this.setState({ loading: false });
+
+            this._getFilters(f => this._applyFilters(f));
+            
+            this._applyStyles();
+            this._addEventListeners();
+            this._applyHighlights(this.state.highlight, true);
+            this._getWordCount();
         });
     }
     
