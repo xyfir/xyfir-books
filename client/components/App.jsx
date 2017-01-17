@@ -191,9 +191,9 @@ class App extends React.Component {
     render() {
         if (!this.state) {
             return (
-                <span className="loading">
-                    Initializing Xyfir Books
-                </span>
+                <div className="loading">
+                    <span>Loading Xyfir Books</span>
+                </div>
             );
         }
         

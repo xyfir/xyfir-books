@@ -226,11 +226,17 @@ nav.navbar.bottom {
 }
 
 .loading {
-    display: block;
+	align-items: center;
     text-align: center;
     font-size: 2em;
     position: fixed;
-    left: 0%;
-    right: 0%;
-    bottom: 5%;    
+	display: flex;
+	bottom: 0%;
+	right: 0%;
+	left: 0%;
+	top: 0%;
+
+	>span {
+		flex: 1;
+	} 
 }
