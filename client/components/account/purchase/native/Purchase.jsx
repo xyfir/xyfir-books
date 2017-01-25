@@ -6,6 +6,9 @@ import products from "constants/products";
 // Modules
 import request from "lib/request";
 
+// Components
+import NavBar from "components/misc/NavBar";
+
 export default class NativePurchase extends React.Component {
 
     constructor(props) {
@@ -73,6 +76,15 @@ export default class NativePurchase extends React.Component {
     render() {
         return (
             <div className="purchase-subscription native">
+                <NavBar
+                    home={true}
+                    account={true}
+                    title="Purchase Subscription"
+                    library={true}
+                    settings={""}
+                    books={true}
+                />
+
                 {this.props.data.account.librarySizeLimit == 15 ? (
                     this.state.products.map(p =>
                         <div className="product" key={p.productId}>
