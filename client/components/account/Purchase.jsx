@@ -1,10 +1,10 @@
 import React from "react";
 
 // Components
-import StripePurchaseSubscription from "./stripe/Subscription";
-import StripeExtendSubscription from "./stripe/ExtendSubscription";
-import StripeIncreaseSizeLimit from "./stripe/IncreaseSizeLimit";
-import NativePurchase from "./native/Purchase";
+import StripePurchaseSubscription from "./purchase/stripe/Subscription";
+import StripeExtendSubscription from "./purchase/stripe/ExtendSubscription";
+import StripeIncreaseSizeLimit from "./purchase/stripe/IncreaseSizeLimit";
+import NativePurchase from "./purchase/native/Purchase";
 
 // Constants
 import {

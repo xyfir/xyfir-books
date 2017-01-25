@@ -1,7 +1,7 @@
 import React from "react";
 
 // Components
-import NativePurchase from "./Purchase";
+import Purchase from "./Purchase";
 import NavBar from "components/misc/NavBar";
 
 // Constants
@@ -20,7 +20,7 @@ export default class Account extends React.Component {
     render() {
         if (this.props.data.view.split('/')[1] == "PURCHASE") {
             return (
-                <Purchase {...this.props} useNative={this.state.useNative} />;
+                <Purchase {...this.props} useNative={this.state.useNative} />
             );
         }
         
