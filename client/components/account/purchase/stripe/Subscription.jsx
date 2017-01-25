@@ -14,7 +14,7 @@ import request from "lib/request/index";
 // Components
 import NavBar from "components/misc/NavBar";
 
-export default class PurchaseSubscription extends React.Component {
+export default class StripePurchaseSubscription extends React.Component {
 
     constructor(props) {
         super(props);
@@ -93,7 +93,7 @@ export default class PurchaseSubscription extends React.Component {
         ) && !this.props.data.account.referral.hasMadePurchase;
 
         return (
-            <div className="purchase-subscription">
+            <div className="purchase-subscription stripe">
                 <NavBar
                     home={true}
                     account={true}

@@ -1,7 +1,7 @@
 import React from "react";
 
 // Action creators
-import { setLibrarySizeLimit } from "actions/creators/account";
+import { purchaseSubscription } from "actions/creators/account";
 
 // Constants
 import { URL, STRIPE_KEY_PUB } from "constants/config";
@@ -12,14 +12,10 @@ import request from "lib/request/index";
 // Components
 import NavBar from "components/misc/NavBar";
 
-export default class IncreaseLibrarySizeLimit extends React.Component {
+export default class StripeExtendSubscription extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            limit: this.props.data.account.librarySizeLimit
-        };
     }
 
     onPurchase(e) {
@@ -35,22 +31,35 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
                 }
                 
                 let data = {
-                    limit: this.state.limit, stripeToken: res.id
+                    subscription: +this.refs.subscription.value,
+                    stripeToken: res.id
                 };
                 
+                if (data.subscription == 0) {
+                    swal("Error", "Select a subscription length", "error");
+                    return;
+                }
+                
                 request({
-                    url: URL + "api/account/size-limit",
+                    url: URL + "api/account/subscription",
                     method: "PUT", data, success: (res) => {
                         if (res.error) {
                             swal("Error", res.message, "error");
                         }
                         else {
-                            // Update state.account.librarySizeLimit
-                            this.props.dispatch(setLibrarySizeLimit(data.limit));
+                            const days = [0, 30, 182, 365][data.subscription];
+                            
+                            const subscription = this.props.data.account.subscription
+                                + (days * 86400000);
+                            
+                            // Update state.account.subscription
+                            this.props.dispatch(purchaseSubscription(subscription));
                             
                             swal(
                                 "Purchase Complete",
-                                `Your new storage limit is ${data.limit} GB.`,
+                                `Your subscription will expire on ${
+                                    (new Date(subscription)).toLocaleString()
+                                }.`,
                                 "success"
                             );
                             location.hash = "#account";
@@ -69,12 +78,17 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
     }
 
     render() {
+        const discount = (
+            this.props.data.account.referral.referral
+            || this.props.data.account.referral.affiliate
+        ) && !this.props.data.account.referral.hasMadePurchase;
+
         return (
-            <div className="increase-library-size-limit">
+            <div className="extend-subscription">
                 <NavBar
                     home={true}
                     account={true}
-                    title="Increase Size Limit"
+                    title="Extend Subscription"
                     library={true}
                     settings={""}
                     books={true}
@@ -82,14 +96,30 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
 
                 <section className="info">
                     <p>
-                        You will be charged $0.15 for each GB over your current limit for each month remaining in your subscription. Remaining months (based on 30-day months) are rounded up.
+                        The length of the subscription you purchase will be added to your remaining subscription time.
                         <br />
-                        If you add 2 gigabytes to your current limit and you have a month and a half remaining you will be charged $0.60 <em>(0.15 * 2 * 2)</em> .
+                        If you have increased your library storage size limit: you will be charged $0.15 for each added GB, for each month of your subscription.
+                        <br />
+                        {this.props.data.account.librarySizeLimit > 15 ? (
+                            <span>
+                                <strong>Note: </strong> You will be charged an additional ${
+                                    (this.props.data.account.librarySizeLimit - 15)
+                                    * 0.15
+                                } per month due to your increased storage limit.
+                            </span>
+                        ) : <span />}
                     </p>
                 </section>
                 
                 <section className="form">
                     <form onSubmit={(e) => this.onPurchase(e)}>
+                        <select ref="subscription" defaultValue="0">
+                            <option value="0" disabled>Subscription Length</option>
+                            <option value="1">30 Days  - $4</option>
+                            <option value="2">182 Days - $21</option>
+                            <option value="3">365 Days - $36</option>
+                        </select>
+                    
                         <form ref="stripeForm" className="stripe-form">
                             <label>Card Number</label>
                             <input type="text" data-stripe="number"/>
@@ -113,28 +143,8 @@ export default class IncreaseLibrarySizeLimit extends React.Component {
                             </div>
                         </form>
 
-                        <div className="increase-size-limit">
-                            <label>Add GB to Size Limit</label>
-                            <input
-                                onChange={
-                                    (e) => this.setState({ limit: e.target.value })
-                                }
-                                value={this.state.limit}
-                                type="number"
-                                step="1"
-                                min={this.props.data.account.librarySizeLimit + 1}
-                            />
-
-                            <span>
-                                <strong>Added cost per month:</strong> ${((
-                                    this.state.limit
-                                    - this.props.data.account.librarySizeLimit
-                                ) * 0.15).toFixed(2)}
-                            </span>
-                        </div>
-
                         <button className="btn-primary">
-                            Increase Storage Limit
+                            Extend Subscription
                         </button>
                     </form>
                 </section>
