@@ -1,7 +1,7 @@
 import React from "react";
 
 // Components
-import Purchase from "./purchase/Index";
+import NativePurchase from "./Purchase";
 import NavBar from "components/misc/NavBar";
 
 // Constants
@@ -11,15 +11,16 @@ export default class Account extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            useNative: localStorage.getItem("isPhoneGap") == "true"
+        }
     }
 
     render() {
         if (this.props.data.view.split('/')[1] == "PURCHASE") {
             return (
-                <Purchase
-                    data={this.props.data}
-                    dispatch={this.props.dispatch}
-                />
+                <Purchase {...this.props} useNative={this.state.useNative} />;
             );
         }
         
@@ -93,13 +94,15 @@ export default class Account extends React.Component {
                             }}
                         >Extend Subscription</button>
 
-                        <button
-                            className="btn-secondary"
-                            onClick={() => {
-                                location.hash
-                                    = "account/purchase/increase-size-limit";
-                            }}
-                        >Increase Size limit</button>
+                        {!this.state.useNative ? (
+                            <button
+                                className="btn-secondary"
+                                onClick={() => {
+                                    location.hash
+                                        = "account/purchase/increase-size-limit";
+                                }}
+                            >Increase Size limit</button>
+                        ) : (<span />)}
                     </section>
                 ) : (
                     <section className="subscription-controls">
