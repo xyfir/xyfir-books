@@ -32,5 +32,6 @@ router.post("/account/login", require("./account/login"));
 router.put("/account/size-limit", require("./account/increase-size-limit"));
 router.put("/account/subscription", require("./account/extend-subscription"));
 router.post("/account/subscription", require("./account/purchase-subscription"));
+router.post("/account/native-purchase", require("./account/native-purchase"));
 
 module.exports = router;
