@@ -6,7 +6,7 @@ const db = require("lib/db");
 
 const config = require("config");
 
-function applySubscriptions(purchases) {
+function applySubscriptions(req, res, purchases) {
     const subscriptions = {
         "com.xyfir.books.premium.30days": 30,
         "com.xyfir.books.premium.182days": 182,
@@ -17,59 +17,65 @@ function applySubscriptions(purchases) {
         vars = [req.session.uid];
 
     db(cn => cn.query(sql, vars, (err, rows) => {
-        if (err || !rows.length) throw "Please contact support";
+        try {
+            if (err || !rows.length) throw "Please contact support";
 
-        let subscription = rows[0].subscription;
+            let subscription = rows[0].subscription;
 
-        // Get subscription time from product id
-        // Update subscription expiration date
-        purchases.forEach(purchase => {
-            subscription = setSubscription(
-                subscription, subscriptions[purchase.productId] || 0
-            );
-        });
-
-        // Generate new library id if needed
-        const generateLibrary = !rows[0].library_id;
-        const library = generateLibrary
-            ? req.session.uid + '-' + randString.generate(40)
-            : rows[0].library_id;
-
-        const updateUser = () => {
-            // Apply new subscription expiration date / library id
-            // to user's account
-            sql = `
-                UPDATE users SET subscription = ?, library_id = ?
-                WHERE user_id = ?
-            `, vars = [
-                subscription, library, req.session.uid
-            ];
-
-            cn.query(sql, vars, (err, response) => {
-                cn.release();
-
-                if (err || !response.affectedRows)
-                    throw "Please contact support";
-                
-                req.session.library = library;
-                req.session.subscription = subscription;
-                
-                res.json({ error: false });
+            // Get subscription time from product id
+            // Update subscription expiration date
+            purchases.forEach(purchase => {
+                subscription = setSubscription(
+                    subscription, subscriptions[purchase.productId] || 0
+                );
             });
-        }
 
-        // Generate library id if user does not have a library
-        if (generateLibrary) {
-            request.post({
-                url: config.addresses.library + library
-            }, (err, response, body) => {
-                if (err || JSON.parse(body).error)
-                    throw "Contact support at books@xyfir.com";
-                else
-                    updateUser();
-            });
+            // Generate new library id if needed
+            const generateLibrary = !rows[0].library_id;
+            const library = generateLibrary
+                ? req.session.uid + '-' + randString.generate(40)
+                : rows[0].library_id;
+
+            const updateUser = () => {
+                // Apply new subscription expiration date / library id
+                // to user's account
+                sql = `
+                    UPDATE users SET subscription = ?, library_id = ?
+                    WHERE user_id = ?
+                `, vars = [
+                    subscription, library, req.session.uid
+                ];
+
+                cn.query(sql, vars, (err, response) => {
+                    if (err || !response.affectedRows)
+                        throw "Please contact support";
+
+                    cn.release();
+                    
+                    req.session.library = library;
+                    req.session.subscription = subscription;
+                    
+                    res.json({ error: false });
+                });
+            }
+
+            // Generate library id if user does not have a library
+            if (generateLibrary) {
+                request.post({
+                    url: config.addresses.library + library
+                }, (err, response, body) => {
+                    if (err || JSON.parse(body).error)
+                        throw "Contact support at books@xyfir.com";
+                    else
+                        updateUser();
+                });
+            }
+            else updateUser();
         }
-        else updateUser();
+        catch (e) {
+            cn.release();
+            res.json({ error: true, message: e });
+        }
     }));
 }
 
@@ -84,15 +90,16 @@ function applySubscriptions(purchases) {
 */
 module.exports = function(req, res) {
 
+    req.body.data = JSON.parse(req.body.data);
     let data;
 
     // Signature property is empty string if from Apple
-    const store = !req.body.signature
+    const store = !req.body.data.signature
         ? iap.APPLE : iap.GOOGLE;
 
     // Set data to validate
     if (store == iap.APPLE) {
-        data = req.body.receipt;
+        data = req.body.data.receipt;
     }
     else {
         if (config.environment.type == "prod") {
@@ -107,7 +114,7 @@ module.exports = function(req, res) {
         }
 
         data = {
-            receipt: req.body.receipt, signature: req.body.signature
+            receipt: req.body.data.receipt, signature: req.body.data.signature
         };
     }
 
@@ -122,7 +129,7 @@ module.exports = function(req, res) {
                 if (!iap.isValidated(response))
                     throw "Invalid purchase receipt received";
                 
-                applySubscriptions(iap.getPurchaseData(response));
+                applySubscriptions(req, res, iap.getPurchaseData(response));
             });
         });
     }
