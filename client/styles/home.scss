@@ -1,144 +1,130 @@
 .home {
-    
-    margin: 0em;
+  margin: 0em;
 
+  p {
+    width: 100%;
+  }
+
+  section.trial, section.main, nav, footer {
+    text-align: center;
+  }
+
+  nav.navbar {
+    display: flex;
+
+    >a {
+      flex: 1;
+    }
+  }
+
+  section:nth-child(even) {
+    background-color: $blue;
+    color: white;
+    
+    h1, h2 {
+      color: $black;
+    }
+    
+    a {
+      color: $lblack;
+    }
+    a:hover {
+      color: $ddgray;
+    }
+  }
+  
+  section:nth-child(odd) {
+    background-color: white;
+    
+    h1, h2 {
+      color: $blue;
+    }
+  }
+
+  section.with-screenshot {
+    display: flex;
+    align-items: center;
+
+    >img {
+      height: 24em;
+      flex: 1;
+    }
+    >div {
+      flex: 3;
+    }
+  }
+
+  section.install {
     p {
-        width: 100%;
-    }
-
-    section {
-        padding: 1% 20%;
-    }
-
-    section.trial, section.main, nav, footer {
-        text-align: center;
-    }
-
-    nav.navbar {
-        display: flex;
-
-        >a {
-            flex: 1;
-        }
-    }
-
-    section:nth-child(even) {
-        
-        background-color: $blue;
-        color: white;
-        
-        h1, h2 {
-            color: $black;
-        }
-        
-        a {
-            color: $lblack;
-        }
-        a:hover {
-            color: $ddgray;
-        }
-        
+      margin-bottom: 1em;
     }
     
-    section:nth-child(odd) {
-        
-        background-color: white;
-        
-        h1, h2 {
-            color: $blue;
-        }
-        
+    a[class^="icon-"] {
+      font-size: 125%;
+      display: inline-block;
+      padding: 0.2em;
     }
+  }
+
+  section.trial {
+    .note {
+      display: block;
+    }
+
+    button {
+      background-color: $lblue;
+
+      &:hover {
+        filter: saturate(90%);
+      }
+
+      margin-bottom: 0.5em;
+    }
+  }
+
+  section.main {
+    display: flex;
+    align-items: center;
+    height: 70vh;
+    font-size: 200%;
+
+    .subtitle {
+      line-height: 1.5;
+    }
+
+    .platforms {
+      display: block;
+      font-size: 50%;
+      color: $dgray;
+      margin-top: 2em;
+    }
+  }
+
+  footer {
+    background-color: $llgray;
+
+    a {
+      margin: 0.5em;
+    }
+  }
+
+  @media (max-width: 400px) {
+    text-align: center;
 
     section.with-screenshot {
-        display: flex;
-        align-items: center;
+      display: block !important;
 
-        >img {
-            height: 24em;
-            flex: 1;
-        }
-        >div {
-            flex: 3;
-        }
+      >img {
+        height: 10em;
+      }
     }
+  }
 
-    section.install {
+  @media (min-width: 401px) {
+    text-align: justify;
 
-        p {
-            margin-bottom: 1em;
-        }
-        
-        a[class^="icon-"] {
-            font-size: 125%;
-            display: inline-block;
-            padding: 0.2em;
-        }
-
+    section {
+      padding: 1% 20%;
     }
-
-    section.trial {
-        .note {
-            display: block;
-        }
-
-        button {
-            background-color: $lblue;
-
-            &:hover {
-                filter: saturate(90%);
-            }
-
-            margin-bottom: 0.5em;
-        }
-    }
-
-    section.main {
-        
-        display: flex;
-        align-items: center;
-        height: 70vh;
-        font-size: 200%;
-
-        .subtitle {
-            line-height: 1.5;
-        }
-
-        .platforms {
-            display: block;
-            font-size: 50%;
-            color: $dgray;
-            margin-top: 2em;
-        }
-
-    }
-
-    footer {
-
-        background-color: $llgray;
-
-        a {
-            margin: 0.5em;
-        }
-
-    }
-
-    @media (max-width: 400px) {
-        
-        text-align: center;
-
-        section.with-screenshot {
-            display: block !important;
-
-            >img {
-                height: 10em;
-            }
-        }
-
-    }
-
-    @media (min-width: 401px) {
-        text-align: justify;
-    }
-    
+  }
 }
