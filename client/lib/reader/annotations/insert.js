@@ -1,77 +1,86 @@
-import escapeRegex from "escape-string-regexp";
+import buildAnnotationSearchOrder from 'lib/reader/annotations/build-search-order';
+import findAnnotationMarkers from 'lib/reader/annotations/find-markers';
+import escapeRegex from 'escape-string-regexp';
 
 // Modules
-import getMatchIndexes from "lib/reader/matches/find-indexes";
-import wrapMatches from "lib/reader/matches/wrap";
+import getMatchIndexes from 'lib/reader/matches/find-indexes';
+import wrapMatches from 'lib/reader/matches/wrap';
 
-export default function (set, markers) {
+/**
+ * Finds and highlights an annotation set's items within the ebook's rendered
+ * HTML.
+ * @module client/lib/reader/annotations/insert
+ * @param {object} set - An annotation set.
+ */
+export default function(set) {
 
-    let html = epub.renderer.doc.body.innerHTML;
+  const markers = findAnnotationMarkers(set.items);
+  const order = buildAnnotationSearchOrder(set.items);
+  let html = epub.renderer.doc.body.innerHTML;
 
-    // Loop through all items in set
-    set.items.forEach(item => {
-        // Loop through all search queries in item
-        item.searches.forEach((search, searchIndex) => {
-            // If not regex, escape regex characters and wrap in \b
-            const needle = search.regex
-                ? search.text
-                : "\\b" + escapeRegex(search.text) + "\\b";
+  order.forEach(o => {
+    const item = set.items[o.item];
+    const search = item.searches[o.search];
 
-            // Get start/end string indexes for each match
-            let matches = getMatchIndexes(needle, html);
+    // If not regex, escape regex characters and wrap in \b
+    const needle = search.regex
+      ? search.text
+      : '\\b' + escapeRegex(search.text) + '\\b';
 
-            if (!search.range.global) {
-                // Get current chapter index to compare with chapter in markers
-                let chapter = 0;
-                Object.keys(epub.zip.zip.files).forEach((file, i) => {
-                    if (file == epub.currentChapter.href) chapter = i;
-                });
+    // Get start/end string indexes for each match
+    let matches = getMatchIndexes(needle, html);
 
-                // Filter out invalid matches based on range.before|after
-                matches = matches.filter(match => {
-                    // Get before/after marker objects
-                    // Each object contains chapter index and string index
-                    // of where marker occured in book
-                    const before = markers[
-                        `${set.id}-${item.id}-${searchIndex}-1`
-                    ];
-                    const after  = markers[
-                        `${set.id}-${item.id}-${searchIndex}-2`
-                    ];
+    if (!search.range.global) {
+      // Get current chapter index to compare with chapter in markers
+      let chapter = 0;
+      Object.keys(epub.zip.zip.files).forEach((file, i) => {
+        if (file == epub.currentChapter.href) chapter = i;
+      });
 
-                    if (search.range.before) {
-                        // Marker could not be found
-                        if (before === undefined)
-                            return false;
-                        // User has passed chapter where marker occurs
-                        else if (before.chapter < chapter)
-                            return false;
-                        // User has passed index within chapter where marker occurs
-                        else if (before.chapter == chapter && before.index < match[0])
-                            return false;
-                    }
+      // Filter out invalid matches based on range.before|after
+      matches = matches.filter(match => {
+        // Get before/after marker objects
+        // Each object contains chapter index and string index
+        // of where marker occured in book
+        const before = markers[
+          `${item.id}-${o.search}-1`
+        ];
+        const after  = markers[
+          `${item.id}-${o.search}-2`
+        ];
 
-                    if (search.range.after) {
-                        if (after === undefined)
-                            return false;
-                        // User has yet to reach chapter where marker occurs
-                        else if (after.chapter > chapter)
-                            return false;
-                        // User has yet to reach index in chapter where marker occurs
-                        else if (after.chapter == chapter && after.index > match[0])
-                            return false;
-                    }
+        if (search.range.before) {
+          // Marker could not be found
+          if (before === undefined)
+            return false;
+          // User has passed chapter where marker occurs
+          else if (before.chapter < chapter)
+            return false;
+          // User has passed index within chapter where marker occurs
+          else if (before.chapter == chapter && before.index < match[0])
+            return false;
+        }
 
-                    return true;
-                });
-            }
+        if (search.range.after) {
+          if (after === undefined)
+            return false;
+          // User has yet to reach chapter where marker occurs
+          else if (after.chapter > chapter)
+            return false;
+          // User has yet to reach index in chapter where marker occurs
+          else if (after.chapter == chapter && after.index > match[0])
+            return false;
+        }
 
-            html = wrapMatches(
-                matches, html, "annotation", set.id + "-" + item.id
-            );
-        });
-    });
+        return true;
+      });
+    }
 
-    epub.renderer.doc.body.innerHTML = html;
+    html = wrapMatches(
+      matches, html, 'annotation', set.id + '-' + item.id
+    );
+  });
+
+  epub.renderer.doc.body.innerHTML = html;
 
 }
