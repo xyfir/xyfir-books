@@ -105,6 +105,7 @@ export default class Reader extends React.Component {
     this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
     this._addEventListeners = this._addEventListeners.bind(this);
     this._applyHighlights = this._applyHighlights.bind(this);
+    this.onHighlightClicked = this.onHighlightClicked.bind(this);
     this._getWordCount = this._getWordCount.bind(this);
     this._applyFilters = this._applyFilters.bind(this);
     this.onToggleShow = this.onToggleShow.bind(this);
@@ -239,17 +240,46 @@ export default class Reader extends React.Component {
         this.refs.overlay._toggleShowNavbars();
     }
   }
+
+  /**
+   * Triggered when highlighted text within the book's content is clicked.
+   * @param {MouseEvent} event
+   * @param {string} type - The type of highlight. 'annotation', 'note'
+   * @param {number|string} key - Which highlight was clicked.
+   */
+  onHighlightClicked(event, type, key) {
+    const elements = [];
+    let element = event.target;
+
+    // Get all of the clicked element's parents
+    while (element) {
+      elements.unshift(element);
+      element = element.parentNode;
+    }
+    elements.splice(-1, 1);
+
+    // Pass click to parent element of same type and exit
+    for (let el of elements) {
+      if (el.classList && el.classList.contains(type)) {
+        el.click();
+        return;
+      }
+    }
+
+    // Show item
+    this.setState({
+      modal: {
+        target: key, closeWait: Date.now() + 100,
+        show: (type == 'note' ? 'notes' : type)
+      }
+    });
+  }
   
   _initialize() {
     this.setState({ initialize: false });
 
     // View annotation or note
-    epub.onClick = (type, key) => {
-      this.setState({ modal: {
-        target: key, show: (type == 'note' ? 'notes' : type),
-        closeWait: Date.now() + 100
-      }});
-    };
+    epub.onClick = this.onHighlightClicked;
 
     this._getStyles(s => {
       epub.element.style.backgroundColor = s.backgroundColor;
