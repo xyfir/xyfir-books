@@ -83,10 +83,11 @@
   }
 
   section.main {
-    display: flex;
-    align-items: center;
     height: 70vh;
+    display: flex;
     font-size: 200%;
+    align-items: center;
+    justify-content: center;
 
     .subtitle {
       line-height: 1.5;
