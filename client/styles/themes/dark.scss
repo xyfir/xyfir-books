@@ -1,124 +1,111 @@
 body.theme-dark {
-    
-    background-color: #1E1E1E;
+  background-color: #1E1E1E;
+  color: #CCC;
+
+  section {
+    background-color: #373737;
+  }
+
+  .navbar {
+    background-color: #252526;
+  }
+
+  a > span[class^="icon-"]:hover {
+    color: #C00000;
+  }
+
+  span.date-added, span.percent-complete, span.rating, span.word-count {
+    background-color: #252526;
+  }
+
+  .dropzone:hover {
+    background-color: #3F3F46;
+  }
+
+  .list > .list-all > .list-table {
+    .selected-book {
+      .controls {
+        background-color: #252526;
+        border: 0.1em solid #3F3F46;
+      }
+    }
+
+    table.books {
+      thead > tr {
+        background-color: #252526;
+      }
+
+      thead > tr > th:hover {
+        background-color: #3F3F46;
+      }
+
+      .book.selected {
+        background-color: #C7444A;
+      }
+
+      .book:hover, .book:nth-child(even) {
+        background-color: #3F3F46;
+      }
+    }
+  }
+
+  .edit-books div.comments, .manage-book div.comments {
+    background-color: #3F3F46;
+  }
+
+  input, select, textarea {
+    background-color: #3C3C3C;
     color: #CCC;
+  }
 
-    section {
-        background-color: #373737;
+  a {
+    color: #C7444A;
+
+    &:hover {
+      color: #C00000;
     }
-
-    .navbar {
-        background-color: #252526;
-    }
-
-    a > span[class^="icon-"]:hover {
-        color: #C00000;
-    }
-
-    span.date-added, span.percent-complete, span.rating, span.word-count {
-        background-color: #252526;
-    }
-
-    .dropzone:hover {
-        background-color: #3F3F46;
-    }
-
-    .list > .list-all > .list-table {
-
-        .selected-book {
-
-            .controls {
-                background-color: #252526;
-                border: 0.1em solid #3F3F46;
-            }
-
-        }
-
-        table.books {
-
-            thead > tr {
-                background-color: #252526;
-            }
-
-            thead > tr > th:hover {
-                background-color: #3F3F46;
-            }
-
-            .book.selected {
-                background-color: #C7444A;
-            }
-
-            .book:hover, .book:nth-child(even) {
-                background-color: #3F3F46;
-            }
-
-        }
-
-    }
-
-    .edit-books div.comments, .manage-book div.comments {
-        background-color: #3F3F46;
-    }
-
-    input, select, textarea {
-        background-color: #3C3C3C;
-        color: #CCC;
-    }
-
-    a {
-        color: #C7444A;
-    }
-    a:hover {
-        color: #C00000;
+  }
+  
+  .markdown-body {
+    color: #DDD;
+    
+    code {
+      background-color: rgba(255,255,255,0.1);
+      color: #D7BA7D;
     }
     
-    .markdown {
-        
-        color: #DDD;
-        
-        code {
-            background-color: rgba(255,255,255,0.1);
-            color: #D7BA7D;
-        }
-        
-        pre, pre > code {
-            background-color: #252526;
-        }
-        
-        td, th {
-            background-color: #252526;
-        }
-        
+    pre, pre > code {
+      background-color: #252526;
     }
-
-    .reader {
-
-        .modal {
-
-            background-color: #252526;
-
-            ul > li:nth-child(even) {
-                background-color: #3F3F46;
-            }
-
-            .annotation-set {
-                background-color: #3F3F46
-            }
-
-            .annotation > .head > nav > a.active {
-                color: #C00000;
-            }
-
-            .annotation > .head > nav > a:hover {
-                color: #C7444A;
-            }
-
-        }
-
+    
+    td, th {
+      background-color: #252526;
     }
+  }
 
-    .modal.view-selector, .find-cover {
-        background-color: #252526 !important;
+  .reader {
+    .modal {
+      background-color: #252526;
+
+      ul > li:nth-child(even) {
+        background-color: #3F3F46;
+      }
+
+      .annotation-set {
+        background-color: #3F3F46
+      }
+
+      .annotation > .head > nav > a.active {
+        color: #C00000;
+      }
+
+      .annotation > .head > nav > a:hover {
+        color: #C7444A;
+      }
     }
+  }
 
+  .modal.view-selector, .find-cover {
+    background-color: #252526 !important;
+  }
 }
