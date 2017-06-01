@@ -127,9 +127,8 @@ class App extends React.Component {
       const token = localStorage.getItem('accessToken') || '';
 
       // Access token is required
-      if (!token && ENVIRONMENT != 'dev') {
-        location.href = XACC + 'login/14';
-      }
+      if (!token && ENVIRONMENT != 'dev')
+        location.replace(XACC + 'login/service/14');
 
       request
         .get('../api/account')
