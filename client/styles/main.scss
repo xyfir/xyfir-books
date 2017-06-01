@@ -1,242 +1,252 @@
-/* MISC */
 body {
-	line-height: 142%;
-	font-family: "Source Sans Pro",Calibri,Candara,sans-serif;
-    text-align: center;
-	margin: 3.5em 0em;
-}
-hr {
-	border: none;
-    height: 0.1em;
-	margin: 1em auto;
-    width: 80%;
-	background-color: $lgray;
-}
-button {
-    cursor: pointer;
-}
-span[class^="icon-"]:hover {
-    cursor: pointer;
-    color: $dgray;
-}
-table {
-	margin: auto;
-}
-p {
-	width: 80%;
-	margin: auto;
-}
-nav, a:not([href]) {
-	user-select: none;
-}
-#content {
-	margin-top: 1em;
-}
-* {
-	-webkit-tap-highlight-color: rgba(0,0,0,0);
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  flex-direction: column;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-/* Dropzone */
+main#content {
+  flex: 1;
+  padding-bottom: 1em;
+}
+
+footer {
+  padding: 0.2em;
+
+  >a {
+    display: inline-block;
+    margin: 0em 0.5em;
+  }
+}
+
+a {
+  color: $md-primary-color;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: $md-secondary-color;
+  }
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .dropzone {
-	border: $gray dotted 0.3em;
-	border-radius: 0.5em;
-	padding: 0.5em;
-	width: 40%;
-	margin: auto;
+  border: $gray dotted 0.3em;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  width: 40%;
+  margin: auto;
 }
 .dropzone:hover {
-	background-color: $llgray;
-}
-.xyfir-books {
-
-	section {
-		background-color: $lllgray;
-		padding: 0.5em;
-		margin: 1em auto;
-		width: 80%;
-	}
-
+  background-color: $llgray;
 }
 
+.loading {
+  align-items: center;
+  text-align: center;
+  font-size: 2em;
+  position: fixed;
+  display: flex;
+  bottom: 0%;
+  right: 0%;
+  left: 0%;
+  top: 0%;
 
-/* LINKS */
-a {
-	color: $blue;
+  >span {
+    flex: 1;
+  } 
+}
+
+.old {
+  hr {
+    border: none;
+    height: 0.1em;
+    margin: 1em auto;
+    width: 80%;
+    background-color: $lgray;
+  }
+  button {
     cursor: pointer;
-	text-decoration: none;
-}
-a:hover, a:focus {
-	color: $lblue;
-}
-.link-lg {
-	font-size: 125%;
-}
-a > span[class^="icon-"]:hover {
-	color: $lblue;
-}
+  }
+  span[class^="icon-"]:hover {
+    cursor: pointer;
+    color: $dgray;
+  }
+  table {
+    margin: auto;
+  }
+  p {
+    width: 80%;
+    margin: auto;
+  }
+  nav, a:not([href]) {
+    user-select: none;
+  }
 
+  .xyfir-books {
+    section {
+      background-color: $lllgray;
+      padding: 0.5em;
+      margin: 1em auto;
+      width: 80%;
+    }
+  }
 
-/* BUTTONS */
-input[type=submit], button, .btn {
-	height: 3.142em;
-	min-width: 7em;
-	color:#fff;
-	padding: 5px 10px;
-	border: 0;
-	text-transform: uppercase;
-	border-radius: 0.15em;
-	margin: 1em 0.5em;
-}
-.btn-sm {
-	height: 2.142em;
-	min-width: 5em;
-}
-.btn-lg {
-	font-size: 140%;
-}
-.btn-primary {
-	background-color: $blue;
-}
-.btn-primary:hover, .btn-primary:focus {
-	background-color: $lblue; 
-}
-.btn-secondary {
-	background-color: $gray;
-}
-.btn-secondary:hover, .btn-secondary:focus {
-	background-color: $lgray;
-}
-.btn-danger {
-	background-color: $red;
-}
-.btn-danger:hover, .btn-danger:focus {
-	background-color: $lred;
-}
-a.btn:hover {
+  a {
+    color: $blue;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  a:hover, a:focus {
+    color: $lblue;
+  }
+  .link-lg {
+    font-size: 125%;
+  }
+  a > span[class^="icon-"]:hover {
+    color: $lblue;
+  }
+
+  input[type=submit], button, .btn {
+    height: 3.142em;
+    min-width: 7em;
+    color:#fff;
+    padding: 5px 10px;
+    border: 0;
+    text-transform: uppercase;
+    border-radius: 0.15em;
+    margin: 1em 0.5em;
+  }
+  .btn-sm {
+    height: 2.142em;
+    min-width: 5em;
+  }
+  .btn-lg {
+    font-size: 140%;
+  }
+  .btn-primary {
+    background-color: $blue;
+  }
+  .btn-primary:hover, .btn-primary:focus {
+    background-color: $lblue; 
+  }
+  .btn-secondary {
+    background-color: $gray;
+  }
+  .btn-secondary:hover, .btn-secondary:focus {
+    background-color: $lgray;
+  }
+  .btn-danger {
+    background-color: $red;
+  }
+  .btn-danger:hover, .btn-danger:focus {
+    background-color: $lred;
+  }
+  a.btn:hover {
     color: white;
-}
+  }
 
-
-/* FORMS */
-input[type=text], input[type=password], input[type=email], input[type=number], input[type=tel] {
+  input[type=text], input[type=password], input[type=email], input[type=number], input[type=tel] {
     text-align: center;
-	height: 1.571em;
-}
-input[type=text], input[type=password], input[type=email], input[type=tel] {
-	width: 16em;
-}
-input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=number]:focus, input[type=tel]:focus, textarea:focus, select:focus {
-	border-color: $gray;
-	outline: none;
-}
-input[type=text], input[type=password], input[type=email], input[type=number], input[type=tel], textarea, select {
-	padding: 4px 8px;
-	color: $lblack;
-	border: 1px solid $llgray;
-	background-color: rgba(255,255,255,.8);
-	display: block;
-	margin: 1em auto;
-}
-label {
+    height: 1.571em;
+  }
+  input[type=text], input[type=password], input[type=email], input[type=tel] {
+    width: 16em;
+  }
+  input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=number]:focus, input[type=tel]:focus, textarea:focus, select:focus {
+    border-color: $gray;
+    outline: none;
+  }
+  input[type=text], input[type=password], input[type=email], input[type=number], input[type=tel], textarea, select {
+    padding: 4px 8px;
+    color: $lblack;
+    border: 1px solid $llgray;
+    background-color: rgba(255,255,255,.8);
+    display: block;
+    margin: 1em auto;
+  }
+  label {
     display: block;
     font-weight: bold;
-}
-.input-description {
+  }
+  .input-description {
     font-size: 90%;
     color: $dgray;
     display: block;
     width: 80%;
     margin: auto;
-}
-input[type=checkbox] {
+  }
+  input[type=checkbox] {
     margin-bottom: 1em;
-}
+  }
 
-/* Sweet alert */
-.sweet-alert > fieldset > input {
-    display: none;
-}
-.sweet-alert p {
-	margin: auto !important;
-}
-
-/* NAVBAR */
-nav.navbar {
-	
-	background-color: $lllgray;
-	white-space: nowrap;
-	font-size: 115%;	
-	position: fixed;
-	padding: 0.5em 0em;
-	left: 0%;
-	right: 0%;
-	z-index: 1;
-
-	>a, .title {
-		display: inline-block;
-	}
-	
-	.left, .right {
-		
-		vertical-align: middle;
-		display: inline-block;
-		width: 25%;
-
-		a {
-			margin: 1%;
-		}
-
-	}
-	
-	.title {
-		width: 50%;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		overflow: hidden;
-		vertical-align: bottom;
-	}
-	
-}
-nav.navbar.top {
-	border-bottom: solid 0.05em $lgray;
-	display: flex;
-	top: 0%;
-
-	>a {
-		flex: 1;
-	}
-}
-nav.navbar.bottom {
-	border-top: solid 0.05em $lgray;
-	bottom: 0%;
-
-	.progress-slider {
-		width: 90%;
-		margin: auto;
-		margin-bottom: 1em;
-	}
-
-	.items {
-		display: flex;
-
-		>a {
-			flex: 1;
-		}
-	}
-}
-
-.loading {
-	align-items: center;
-    text-align: center;
-    font-size: 2em;
+  nav.navbar {
+    background-color: $lllgray;
+    white-space: nowrap;
+    font-size: 115%;  
     position: fixed;
-	display: flex;
-	bottom: 0%;
-	right: 0%;
-	left: 0%;
-	top: 0%;
+    padding: 0.5em 0em;
+    left: 0%;
+    right: 0%;
+    z-index: 1;
 
-	>span {
-		flex: 1;
-	} 
+    >a, .title {
+      display: inline-block;
+    }
+    
+    .left, .right {
+      vertical-align: middle;
+      display: inline-block;
+      width: 25%;
+
+      a {
+        margin: 1%;
+      }
+    }
+    
+    .title {
+      width: 50%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+    
+  }
+  nav.navbar.top {
+    border-bottom: solid 0.05em $lgray;
+    display: flex;
+    top: 0%;
+
+    >a {
+      flex: 1;
+    }
+  }
+  nav.navbar.bottom {
+    border-top: solid 0.05em $lgray;
+    bottom: 0%;
+
+    .progress-slider {
+      width: 90%;
+      margin: auto;
+      margin-bottom: 1em;
+    }
+
+    .items {
+      display: flex;
+
+      >a {
+        flex: 1;
+      }
+    }
+  }
 }
