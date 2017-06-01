@@ -56,7 +56,7 @@ export default class Annotation extends React.Component {
                 
                 <div className="value">{annotation.type == 1 ? (
                     <div
-                        className="markdown document"
+                        className="markdown-body document"
                         dangerouslySetInnerHTML={{
                             __html: marked(
                                 annotation.value, { sanitize: true }

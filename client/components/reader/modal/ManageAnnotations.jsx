@@ -120,7 +120,7 @@ export default class ManageAnnotations extends React.Component {
 						{set.book_title}, {set.book_authors}
 					</span>
 					<div
-						className='markdown description'
+						className='markdown-body description'
 						dangerouslySetInnerHTML={{
 							__html: marked(
 								set.set_description, { sanitize: true }
