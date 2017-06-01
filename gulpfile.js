@@ -57,16 +57,6 @@ gulp.task('copy-libs', () =>
   .pipe(gulp.dest('./static/js'))
 );
 
-gulp.task('copy-css', () =>
-  gulp.src([
-    './node_modules/sweetalert/dist/sweetalert.css'
-  ])
-  .pipe(
-    sass({ outputStyle: 'compressed' }).on('error', sass.logError)
-  )
-  .pipe(gulp.dest('./static/css'))
-);
-
 gulp.task('fontello', () =>
   gulp.src('fontello.json')
     .pipe(require('gulp-fontello')())

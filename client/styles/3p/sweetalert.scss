@@ -1,0 +1,11 @@
+@import '../../../node_modules/sweetalert/dist/sweetalert.css';
+
+.sweet-alert {
+  p {
+    margin: auto !important;
+  }
+  
+  >fieldset > input {
+    display: none;
+  }
+}
