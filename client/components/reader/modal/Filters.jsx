@@ -1,83 +1,76 @@
-import Slider from "rc-slider";
-import React from "react";
+import React from 'react';
+
+// react-md
+import Slider from 'react-md/lib/Sliders';
 
 export default class Filters extends React.Component {
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = { loading: true };
+    this.state = { loading: true };
 
-        this.props.reader._getFilters(f => {
-            this.setState(Object.assign({}, f, { loading: false }))
-        });
-    }
+    this.props.reader._getFilters(f =>
+      this.setState(Object.assign({}, f, { loading: false }))
+    );
+  }
 
-    onUpdate(prop, val) {
-        clearTimeout(this.timeout);
+  onUpdate(prop, val) {
+    clearTimeout(this.timeout);
 
-        this.timeout = setTimeout(() => {
-            const filters = Object.assign({}, this.state);
-            
-            filters[prop] = val;
+    this.timeout = setTimeout(() => {
+      const filters = Object.assign({}, this.state);
+      
+      filters[prop] = val;
 
-            this.props.reader._applyFilters(filters);
-            this.setState(filters);
-        }, 100);
-    }
+      this.props.reader._applyFilters(filters);
+      this.setState(filters);
+    }, 100);
+  }
 
-    componentWillUnmount() {
-        localforage.setItem(
-            "filters-" + this.props.reader.state.book.id,
-            this.state
-        );
-    }
+  componentWillUnmount() {
+    localforage.setItem(
+      'filters-' + this.props.reader.state.book.id,
+      this.state
+    );
+  }
 
-    render() {
-        if (this.state.loading) return <div />
-        
-        return (
-            <div className="filters">
-                <div className="slider">
-                    <span className="icon-light-down" />
-                    <div className="slider-container">
-                        <Slider
-                            tipTransitionName="rc-slider-tooltip-zoom-down"
-                            defaultValue={this.state.brightness}
-                            onChange={(v) => this.onUpdate("brightness", v)}
-                            min={50} max={100}
-                        />
-                    </div>
-                    <span className="icon-light-up" />
-                </div>
+  render() {
+    if (this.state.loading) return <div />
+    
+    return (
+      <div className='filters'>
+        <Slider
+          id='slider--brightness'
+          min={50}
+          max={100}
+          label='Brightness'
+          leftIcon={<i className='icon-light-up' />}
+          onChange={v => this.onUpdate('brightness', v)}
+          defaultValue={this.state.brightness}
+        />
 
-                <div className="slider">
-                    <span className="icon-snow" />
-                    <div className="slider-container">
-                        <Slider
-                            tipTransitionName="rc-slider-tooltip-zoom-down"
-                            defaultValue={this.state.warmth}
-                            onChange={(v) => this.onUpdate("warmth", v)}
-                            min={0} max={100}
-                        />
-                    </div>
-                    <span className="icon-fire" />
-                </div>
+        <Slider
+          id='slider--warmth'
+          min={0}
+          max={100}
+          label='Warmth'
+          leftIcon={<i className='icon-fire' />}
+          onChange={v => this.onUpdate('warmth', v)}
+          defaultValue={this.state.warmth}
+        />
 
-                <div className="slider">
-                    <span className="icon-circle-empty" />
-                    <div className="slider-container">
-                        <Slider
-                            tipTransitionName="rc-slider-tooltip-zoom-down"
-                            defaultValue={this.state.contrast}
-                            onChange={(v) => this.onUpdate("contrast", v)}
-                            min={50} max={150}
-                        />
-                    </div>
-                    <span className="icon-contrast" />
-                </div>
-            </div>
-        )
-    }
+        <Slider
+          id='slider--contrast'
+          min={50}
+          max={150}
+          label='Contrast'
+          leftIcon={<icon className='icon-contrast' />}
+          onChange={v => this.onUpdate('contrast', v)}
+          defaultValue={this.state.contrast}
+        />
+      </div>
+    )
+  }
 
 }
