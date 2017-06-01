@@ -8,7 +8,7 @@ const prod = config.environment.type == 'prod';
 process.env.NODE_ENV = prod ? 'production' : config.environment.type;
 
 gulp.task('css', () =>
-  gulp.src('./client/styles/style.css')
+  gulp.src('./client/styles/style.scss')
     .pipe(
       sass({ outputStyle: 'compressed' }).on('error', sass.logError)
     )
@@ -49,10 +49,7 @@ gulp.task('client', () => {
 
 gulp.task('copy-libs', () =>
   gulp.src([
-    './node_modules/sweetalert/dist/sweetalert.min.js',
-    './node_modules/localforage/dist/localforage.min.js',
-    './node_modules/epubjs/build/epub.min.js',
-    './client/lib/import/jszip.js'
+    './node_modules/epubjs/build/epub.min.js'
   ])
   .pipe(gulp.dest('./static/js'))
 );

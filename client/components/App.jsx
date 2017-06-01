@@ -1,6 +1,9 @@
+import localForage from 'localforage';
+import SweetAlert from 'sweetalert';
 import { render } from 'react-dom';
 import request from 'superagent';
 import React from 'react';
+import JSZip from 'jszip';
 
 // Redux store / reducers
 import { createStore } from 'redux';
@@ -36,6 +39,16 @@ import { save } from 'actions/creators/index';
 
 const store = createStore(reducers);
 
+// Globals
+window.localforage = localForage,
+window.JSZip = JSZip,
+window.swal = SweetAlert;
+
+localforage.config({
+  driver: [localforage.INDEXEDDB, localforage.WEBSQL],
+  name: 'XyfirBooks'
+});
+
 class App extends React.Component {
 
   constructor(props) {
@@ -45,12 +58,6 @@ class App extends React.Component {
     this._initialize2 = this._initialize2.bind(this);
     this._initialize = this._initialize.bind(this);
     this._alert = this._alert.bind(this);
-    
-    // Configure localForage
-    localforage.config({
-      driver: [localforage.INDEXEDDB, localforage.WEBSQL],
-      name: 'XyfirBooks'
-    });
     
     this._addListeners();
   }
