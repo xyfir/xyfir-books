@@ -1,12 +1,11 @@
-@import "constants.scss";
-@import "main.scss";
-@import "books.scss";
-@import "reader.scss";
-@import "settings.scss";
-@import "home.scss";
-@import "account.scss";
-
-@import "themes/dark.scss";
-
-@import "slider.scss";
-@import "markdown.scss";
+@import '3p/react-md.scss';
+@import '3p/markdown.scss';
+@import '3p/sweetalert.scss';
+@import 'constants.scss';
+@import 'main.scss';
+@import 'sections/books.scss';
+@import 'sections/reader.scss';
+@import 'sections/settings.scss';
+@import 'sections/home.scss';
+@import 'sections/account.scss';
+@import 'themes/dark.scss';
