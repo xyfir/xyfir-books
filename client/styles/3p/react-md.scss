@@ -1,0 +1,38 @@
+@import '../../../node_modules/react-md/src/scss/_react-md.scss';
+
+$md-primary-color: $md-blue-500;
+$md-secondary-color: $md-blue-grey-500;
+
+@include react-md-everything;
+
+/*
+  Overwrite styles set by react-md or add styling to react-md components.
+*/
+
+.md-no-scroll {
+  width: 100%;
+}
+
+.md-tabs-content > div > div {
+  height: initial !important;
+}
+
+html {
+  font-size: initial;
+}
+
+div.main.md-toolbar-relative {
+  padding-top: 1em;
+}
+
+.md-paper.section, .md-btn--raised {
+  margin: 1em;
+}
+
+.md-tabs-content {
+  padding: 1em;
+}
+
+.md-select-field-menu, .md-text-field-container {
+  text-align: left;
+}
