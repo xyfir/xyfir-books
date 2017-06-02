@@ -1,75 +1,95 @@
+import request from 'superagent';
+
 // Constants
-import { URL, LIBRARY } from "constants/config";
+import { LIBRARY } from 'constants/config';
 
 // Action creators
-import { loadBooks } from "actions/creators/books";
-import { save } from "actions/creators/index";
+import { loadBooks } from 'actions/creators/books';
+import { save } from 'actions/creators/index';
 
-// Modules
-import request from "lib/request/index";
+/**
+ * Pull annotations from stored books and merge with books downloaded from api.
+ * @param {object[]} books
+ * @returns {Promise} Resolves to books array.
+ */
+function mergeAnnotations(books) {
+  
+  return new Promise(resolve =>
+    localforage.getItem('books')
+      .then(storedBooks => {
+        if (!storedBooks) throw '';
 
-function mergeAnnotations(books, fn) {
-    
-    localforage.getItem("books").then(storedBooks => {
-        if (storedBooks) {
-            storedBooks.forEach(sb => {
-                if (sb.annotations && sb.annotations.length) {
-                    books.forEach((book, i) => {
-                        if (sb.id == book.id) {
-                            books[i].annotations = sb.annotations;
-                        }
-                    });
-                }
+        storedBooks.forEach(sb => {
+          if (sb.annotations && sb.annotations.length) {
+            books.forEach((book, i) => {
+              if (sb.id == book.id) {
+                books[i].annotations = sb.annotations;
+              }
             });
-        }
+          }
+        });
 
-        fn(books);
-    }).catch(err => fn(books));
+        resolve(books);
+      })
+      .catch(err => resolve(books))
+  );
 
 }
 
-export default function (library, dispatch, fn) {
-    
-    // Get from Xyfir Books DB
-    request({url: URL + "api/books", success: (books1) => {
-        if (books1.books.length > 0) {
-            const url = LIBRARY + library + "/books";
-            
-            // Get from library manager server
-            request({url, success: (books2) => {
-                const books = books1.books.map(b1 => {
-                    let b2 = books2.books.find(b2 => b1.id == b2.id);
-                    
-                    Object.assign(b2, b1);
-                    
-                    b2.versions = {
-                        metadata: b2.version_metadata,
-                        cover: b2.version_cover
-                    };
-                    delete b2.version_metadata; delete b2.version_cover;
-                    
-                    return b2;
-                }).filter(b => b.title !== undefined);
-                
-                books1 = null, books2 = null;
-                
-                // Merge annotations from books saved to local storage
-                mergeAnnotations(books, (books) => {
-                    if (fn === undefined) {
-                        // Load books into state and save books[] to local storage
-                        dispatch(loadBooks(books));
-                        dispatch(save("books"));
-                    }
-                    else {
-                        fn(books);
-                    }
-                });
-            }});
-        }
-        // Library is empty
-        else {
-            fn([]);
-        }
-    }});
-    
+/**
+ * Load an array of all books in the library.
+ * @param {string} library 
+ * @param {function} dispatch 
+ * @param {function} [fn] 
+ */
+export default function(library, dispatch, fn) {
+  
+  let books1;
+
+  // Get from Xyfir Books DB
+  request
+    .get('../api/books')
+    .then(res => {
+      books1 = res.body.books;
+      
+      return request.get(LIBRARY + library + '/books');
+    })
+    .then(res => {
+      let books2 = res.body.books;
+      
+      if (!books1.length) return fn([]);
+
+      const books = books1
+        .map(b1 => {
+          const b2 = books2.find(b2 => b1.id == b2.id) || {};
+          
+          Object.assign(b2, b1);
+          
+          b2.versions = {
+            metadata: b2.version_metadata,
+            cover: b2.version_cover
+          };
+          delete b2.version_metadata; delete b2.version_cover;
+          
+          return b2;
+        })
+        .filter(b => b.title !== undefined);
+      
+      books1 = null, books2 = null;
+      
+      // Merge annotations from books saved to local storage
+      return mergeAnnotations(books);
+    })
+    .then(books => {
+      if (fn === undefined) {
+        // Load books into state and save books[] to local storage
+        dispatch(loadBooks(books));
+        dispatch(save('books'));
+      }
+      else {
+        fn(books);
+      }
+    })
+    .catch(err => 1);
+  
 }
