@@ -1,364 +1,323 @@
 span.percent-complete, span.date-added,
 span.word-count, span.rating {
-    background-color: $lllgray;
-    padding: 0em 0.2em;
-    border-radius: 0.3em;
-    border: solid $llgray 1px;
-    margin: 0.2em;
+  background-color: $lllgray;
+  padding: 0em 0.2em;
+  border-radius: 0.3em;
+  border: solid $llgray 1px;
+  margin: 0.2em;
 }
 
 .recently-opened {
+  .book {
+    height: 27em;
+    width: 12.5em;
+    margin: auto;
     
-    .book {
-        
-        height: 27em;
-        width: 12.5em;
-        margin: auto;
-        
-        img.cover {
-            height: 20em;
-            width: 12.5em;
-        }
-        
-        .info {
-            
-            text-align: left;
-            
-            .title, .authors {
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                display: block;
-            }
-            
-            .percent-complete, .word-count, .rating {
-                margin: 0em 0.25em 0em 0em;
-            }
-            
-            .last-read {
-                display: block;
-                font-size: 80%;
-            }
-            
-        }
-        
+    img.cover {
+      height: 20em;
+      width: 12.5em;
     }
     
+    .info {
+      text-align: left;
+      
+      .title, .authors {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+      }
+      
+      .percent-complete, .word-count, .rating {
+        margin: 0em 0.25em 0em 0em;
+      }
+      
+      .last-read {
+        display: block;
+        font-size: 80%;
+      } 
+    } 
+  }
 }
 
 .manage-book, .edit-books {
-    
-    input[type=text] {
-        width: 25em;
-        max-width: 90%;
-    }
-    
-    input[type=date] {
-        font-size: 1em;
-        margin: 1em 0em;
-    }
-    
-    input {
-        font-size: 85%;
-    }
-    
-    section.cover {
-        
-        .dropzone, img {
-            height: 15em;
-            width: 10em;
-        }
-        
-        .dropzone {
-            margin-bottom: 0.5em;
-        }
-        
-        div {
-            margin: auto;
-        }
+  input[type=text] {
+    width: 25em;
+    max-width: 90%;
+  }
+  
+  input[type=date] {
+    font-size: 1em;
+    margin: 1em 0em;
+  }
+  
+  input {
+    font-size: 85%;
+  }
+  
+  section.cover {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 
-        .find-cover {
-
-            position: fixed;
-            top: 0%;
-            left: 0%;
-            right: 0%;
-            bottom: 0%;
-            z-index: 1;
-            background-color: white;
-            padding: 1em;
-
-            .icon-close {
-                position: absolute;
-                right: 3%;
-                z-index: 2;
-                background-color: white;
-            }
-
-            iframe {
-                height: 100%;
-                width: 100%;
-                border: none;
-            }
-
-        }
-        
-    }
-       
-    .comments-edit {
-        width: 60%;
-        height: 15em;
-        font-size: 100%;
+    img.cover {
+      height: 15em;
     }
     
-    div.comments {
-        width: 70%;
-        margin: auto;
-        background-color: $llgray;
-        padding: 0.5em;
-        border-radius: 0.3em;
-        margin-bottom: 1em;
+    .dropzone {
+      width: initial;
+      display: inline-block;
+      margin-bottom: 0.5em;
     }
     
-    section.formats {
-        
-        table.formats {
-            margin-bottom: 1em;
-        }
-        
+    div {
+      margin: auto;
     }
-    
-    span.checkbox {
-        display: block;
-        margin: 1em;
+
+    .find-cover {
+      position: fixed;
+      top: 0%;
+      left: 0%;
+      right: 0%;
+      bottom: 0%;
+      z-index: 1;
+      background-color: white;
+      padding: 1em;
+
+      .icon-close {
+        position: absolute;
+        right: 3%;
+        z-index: 2;
+        background-color: white;
+      }
+
+      iframe {
+        height: 100%;
+        width: 100%;
+        border: none;
+      }
     }
-    
+  }
+     
+  .comments-edit {
+    width: 60%;
+    height: 15em;
+    font-size: 100%;
+  }
+  
+  div.comments {
+    width: 70%;
+    margin: auto;
+    background-color: $llgray;
+    padding: 0.5em;
+    border-radius: 0.3em;
+    margin-bottom: 1em;
+  }
+  
+  section.formats {
+    table.formats {
+      margin-bottom: 1em;
+    }
+  }
+  
+  span.checkbox {
+    display: block;
+    margin: 1em;
+  }
 }
 
 .list-compact {
-    
-    width: 50%;
-    margin: auto;
-    text-align: left;
-    
-    .book {
-        
-        border-bottom: solid $llgray 0.1em;
-        padding: 1em 0.5em;
-        position: relative;
-        height: 7em;
-    
-        img.cover {
-            height: 7em;
-            width: 4.5em;
-            position: absolute;
-            left: 1em;
-        }
-        
-        .info {
-            
-            position: absolute;
-            left: 6.5em;
-            
-            .authors {
-                display: block;
-            }
-            
-            img.cover {
-                height: 10em;
-                width: 6.3em;
-                display: block;
-                margin: auto;
-                margin-bottom: 1em;
-            }
-            
-        }
-
-        .controls {
-            position: absolute;
-            bottom: 1em;
-            left: 6.5em;
-        }
-    
+  width: 50%;
+  margin: auto;
+  text-align: left;
+  
+  .book {
+    border-bottom: solid $llgray 0.1em;
+    padding: 1em 0.5em;
+    position: relative;
+    height: 9em;
+  
+    img.cover {
+      height: 7em;
+      width: 4.5em;
+      position: absolute;
+      left: 1em;
     }
     
+    .info {
+      position: absolute;
+      left: 6.5em;
+      
+      .authors {
+        display: block;
+      }
+      
+      img.cover {
+        height: 10em;
+        width: 6.3em;
+        display: block;
+        margin: auto;
+        margin-bottom: 1em;
+      } 
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 1em;
+      left: 6.5em;
+    }
+  }
 }
 
 .modal.view-selector {
-    
-    background-color: $lllgray;
-    padding: 0.2em;
-    position: fixed;
-    left: 15%;
-    right: 15%;
-    top: 10%;
-    border: solid $llgray 0.1em;
-    z-index: 1;
-    
-    .icon-close {
-        position: absolute;
-        right: 2%;
+  background-color: $lllgray;
+  padding: 0.2em;
+  position: fixed;
+  left: 15%;
+  right: 15%;
+  top: 10%;
+  border: solid $llgray 0.1em;
+  z-index: 1;
+  
+  .icon-close {
+    position: absolute;
+    right: 2%;
+  }
+
+  dl {
+    dd {
+      margin: 0em;
     }
-
-    dl {
-
-        dd {
-            margin: 0em;
-        }
-
-    }
-    
+  }
 }
 
 .list-grid {
+  .book {
+    display: inline-block;
+    padding: 1em;
     
-    .book {
-        
-        display: inline-block;
-        padding: 1em;
-        
-        img.cover {
-            height: 20em;
-            width: 12.5em;
-        }
-        
-        a.authors {
-            display: block;
-        }
-        
+    img.cover {
+      height: 20em;
+      width: 12.5em;
     }
     
+    a.authors {
+      display: block;
+    } 
+  }
 }
 
 .list-table {
+  .table-container {
+    width: 70%;
+    float: left;
+  }
+  
+  .selected-book {
+    display: inline-block;
+    width: 30%;
     
-    .table-container {
-        width: 70%;
-        float: left;
+    .controls {
+      background-color: $lllgray;
+      padding: 0.3em 0.1em;
+      margin-bottom: 1em;
+      border: solid 0.1em $llgray;
+      
+      a {
+        margin: 0.1em;
+      }
     }
     
-    .selected-book {
-        
-        display: inline-block;
-        width: 30%;
-        
-        .controls {
-            
-            background-color: $lllgray;
-            padding: 0.3em 0.1em;
-            margin-bottom: 1em;
-            border: solid 0.1em $llgray;
-            
-            a {
-                margin: 0.1em;
-            }
-            
-        }
-        
-        .info {
-            
-            img.cover {
-                height: 10em;
-                width: 6.3em;
-                display: block;
-                margin: auto;
-                margin-bottom: 1em;
-            }
-            
-            dt {
-                font-weight: bold;
-            }
-            
-            dd {
-                margin: 0em;
-                margin-bottom: 0.1em;
-            }
-            
-            .tags > a, .links > a, .formats > a {
-                margin: 0.2em;
-            }
-            
-            .comments {
-                max-height: 25em;
-                overflow-y: auto;
-            }
-            
-        }
-        
+    .info {
+      img.cover {
+        height: 10em;
+        width: 6.3em;
+        display: block;
+        margin: auto;
+        margin-bottom: 1em;
+      }
+      
+      dt {
+        font-weight: bold;
+      }
+      
+      dd {
+        margin: 0em;
+        margin-bottom: 0.1em;
+      }
+      
+      .tags > a, .links > a, .formats > a {
+        margin: 0.2em;
+      }
+      
+      .comments {
+        max-height: 25em;
+        overflow-y: auto;
+      } 
+    }
+  }
+  
+  table.books {
+    width: 100%;
+    
+    thead > tr {
+      background-color: $llgray;
+      border: solid 0.1em $lllgray;
+      height: 1.9em;
+      
+      th {
+        cursor: pointer;
+      }
+      
+      th:hover {
+        background-color: $lllgray;
+      }
+      
+      th.sort-by {
+        font-style: italic;
+      }
     }
     
-    table.books {
-        
-        width: 100%;
-        
-        thead > tr {
-            
-            background-color: $llgray;
-            border: solid 0.1em $lllgray;
-            height: 1.9em;
-            
-            th {
-                cursor: pointer;
-            }
-            
-            th:hover {
-                background-color: $lllgray;
-            }
-            
-            th.sort-by {
-                font-style: italic;
-            }
-            
-        }
-        
-        tbody {
-            
-            tr {
-                cursor: pointer;
-            }
-            
-            tr:nth-child(even) {
-                background-color: $lllgray;
-            }
-            
-            tr:hover {
-                background-color: $llgray;
-            }
-            
-            tr.selected {
-                background-color: $lblue;
-                color: white;
-            }
-            
-        }
-        
-    }
-    
+    tbody {
+      tr {
+        cursor: pointer;
+      }
+      
+      tr:nth-child(even) {
+        background-color: $lllgray;
+      }
+      
+      tr:hover {
+        background-color: $llgray;
+      }
+      
+      tr.selected {
+        background-color: $lblue;
+        color: white;
+      } 
+    } 
+  }
 }
 
 table.list {
-
-    td {
-        border-bottom: solid 0.1em $llgray;
-        padding: 0.2em 1em;
-    }
-
+  td {
+    border-bottom: solid 0.1em $llgray;
+    padding: 0.2em 1em;
+  }
 }
 
-.book-search > input {
-    width: 25em;
-    display: inline-block;
-    font-size: 80%;
-    max-width: 90%;
-    margin-right: 0.4em;
+.book-search > input[type=text] {
+  width: 25em;
+  display: inline-block;
+  font-size: 80%;
+  max-width: 90%;
+  margin-right: 0.4em;
 }
 
 /* PORTRAIT ORIENTATION */
 
 @media all and (orientation: portrait) {
-    
-    .list-compact {
-        width: 100%;
-    }
-    
+  .list-compact {
+    width: 100%;
+  } 
 }
