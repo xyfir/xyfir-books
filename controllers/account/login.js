@@ -48,7 +48,7 @@ module.exports = async function(req, res) {
       const insert = {
         subscription: moment().add(7, 'days').unix() * 1000,
         xyfir_id: req.body.xid, email: xyAccRes.body.email,
-        library_id: rstring.generate(40),
+        library_id: rstring.generate(64),
         xad_id: xyAccRes.body.xadid
       };
       sql = `

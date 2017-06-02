@@ -21,7 +21,7 @@ const config = require("config");
 module.exports = function (req, res) {
 
     const subs = {
-        '1': { days: 30, months: 1, cost: 400 },
+        '1': { days: 30, months: 1, cost: 640 },
         '2': { days: 182, months: 6, cost: 2100 },
         '3': { days: 365, months: 12, cost: 3600 }
     };
@@ -90,7 +90,7 @@ module.exports = function (req, res) {
             
             // Generate library id
             if (createLibrary)
-                library = req.session.uid + '-' + randString.generate(40);
+                library = req.session.uid + '-' + randString.generate(64);
 
             // Set users.subscription|library_id|library_size_limit|referral
             sql = `

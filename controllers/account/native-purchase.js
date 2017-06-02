@@ -36,7 +36,7 @@ function applySubscriptions(req, res, purchases) {
       // Generate new library id if needed
       const generateLibrary = !rows[0].library_id;
       const library = generateLibrary
-        ? req.session.uid + '-' + randString.generate(40)
+        ? req.session.uid + '-' + randString.generate(64)
         : rows[0].library_id;
 
       const updateUser = () => {
