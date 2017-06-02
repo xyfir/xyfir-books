@@ -83,7 +83,7 @@ export default class NativePurchase extends React.Component {
 
   render() {
     return (
-      <div className='purchase-subscription native'>
+      <div className='purchase-subscription native old'>
         {this.props.data.account.librarySizeLimit == 15 ? (
           this.state.products.map(p =>
             <div className='product' key={p.productId}>

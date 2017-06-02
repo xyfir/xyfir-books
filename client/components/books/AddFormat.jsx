@@ -86,7 +86,7 @@ export default class AddFormat extends React.Component {
     });
     
     return (
-      <div className='add-format'>
+      <div className='add-format old'>
         <p>
           <strong>Note:</strong> Only <a href='https://en.wikipedia.org/wiki/EPUB' target='_blank'>EPUB</a> format ebooks can be read by Xyfir Books' ebook reader.
         </p>

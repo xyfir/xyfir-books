@@ -60,7 +60,7 @@ export default class UploadBooks extends React.Component {
 
   render() {
     return (
-      <div className='upload-books'>
+      <div className='upload-books old'>
         <p>
           Upload ebooks to add to your library. Our system will automatically attempt to extract metadata (title, authors, ...) from the ebook files. Each book's metadata can be viewed and modified after upload.
         </p>

@@ -67,7 +67,7 @@ export default class StripeIncreaseLibrarySizeLimit extends React.Component {
 
   render() {
     return (
-      <div className='increase-library-size-limit'>
+      <div className='increase-library-size-limit old'>
         <section className='info'>
           <p>
             You will be charged $0.15 for each GB over your current limit for each month remaining in your subscription. Remaining months (based on 30-day months) are rounded up.

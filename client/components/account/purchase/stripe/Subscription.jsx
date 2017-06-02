@@ -90,7 +90,7 @@ export default class StripePurchaseSubscription extends React.Component {
 		) && !this.props.data.account.referral.hasMadePurchase;
 
 		return (
-			<div className='purchase-subscription stripe'>
+			<div className='purchase-subscription stripe old'>
 				<section className='form'>
 					{discount ? (
 						<p>

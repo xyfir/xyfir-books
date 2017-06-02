@@ -21,7 +21,7 @@ export default class RecentlyOpened extends React.Component {
 
   render() {
     return (
-      <div className='recently-opened'>
+      <div className='recently-opened old'>
         <div className='books'>{
           sortBooks(this.props.data.books, 'last_read', true)
           .slice(-4).reverse().map(book => {

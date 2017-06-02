@@ -25,7 +25,7 @@ export default class LibraryInfo extends React.Component {
 
   render() {
     return (
-      <div className='library-info'>
+      <div className='library-info old'>
         <section className='info'>
           <p>
             This information details the size and book count of your library in the cloud.

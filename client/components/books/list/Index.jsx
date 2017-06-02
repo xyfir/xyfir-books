@@ -48,7 +48,7 @@ export default class BookList extends React.Component {
       }
     })();
     
-    return <div className='list'>{view}</div>;
+    return <div className='list old'>{view}</div>;
   }
 
 }

@@ -51,7 +51,7 @@ export default class GeneralSettings extends React.Component {
     const conf = this.props.data.config;
     
     return (
-      <div className='settings-general'>
+      <div className='settings-general old'>
         <section className='main'>
           <label>Theme</label>
           <select ref='theme' defaultValue={conf.general.theme}>

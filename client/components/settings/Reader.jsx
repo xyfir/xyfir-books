@@ -43,7 +43,7 @@ export default class ReaderSettings extends React.Component {
 
   render() {
     return (
-      <div className='settings-reader'>
+      <div className='settings-reader old'>
         <div className='settings'>
           <section className='theme'>
             <label>Reader Theme</label>

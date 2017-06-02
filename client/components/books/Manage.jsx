@@ -218,7 +218,7 @@ export default class ManageBook extends React.Component {
     const book = this.props.data.books.find(b => this.state.id == b.id);
     
     return (
-      <div className='manage-book'>
+      <div className='manage-book old'>
         <section className='main'>
           <label>Title</label>
           <input type='text' ref='title' defaultValue={book.title} />
@@ -247,14 +247,16 @@ export default class ManageBook extends React.Component {
             <img className='cover' id={`cover-${book.id}`} />
           </Dropzone>
           
-          <button className='btn-primary' onClick={() => this.refs.dz.open()}>
-            <span className='icon-upload' /> Upload Cover
-          </button>
-          <button className='btn-secondary' onClick={
-            () => this.setState({ findCover: true })
-          }>
-            <span className='icon-search' /> Find Cover
-          </button>
+          <div>
+            <button className='btn-primary' onClick={() => this.refs.dz.open()}>
+              <span className='icon-upload' /> Upload Cover
+            </button>
+            <button className='btn-secondary' onClick={
+              () => this.setState({ findCover: true })
+            }>
+              <span className='icon-search' /> Find Cover
+            </button>
+          </div>
 
           {this.state.findCover ? (
             <div className='find-cover'>

@@ -66,7 +66,7 @@ export default class UploadLibrary extends React.Component {
 
   render() {
     return (
-      <div className='library-upload'>
+      <div className='library-upload old'>
         <section className='info'>
           <p>
             Here you can upload an entire ebook library instead of individual ebook files.

@@ -81,7 +81,7 @@ export default class StripeExtendSubscription extends React.Component {
     ) && !this.props.data.account.referral.hasMadePurchase;
 
     return (
-      <div className='extend-subscription'>
+      <div className='extend-subscription old'>
         <section className='info'>
           <p>
             The length of the subscription you purchase will be added to your remaining subscription time.

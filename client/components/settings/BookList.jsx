@@ -45,7 +45,7 @@ export default class BookListSettings extends React.Component {
     ], conf = this.props.data.config.bookList;
     
     return (
-      <div className='settings-book-list'>
+      <div className='settings-book-list old'>
         <section className='table'>
           <h2>Table</h2>
           

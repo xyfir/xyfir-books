@@ -172,7 +172,7 @@ export default class EditBooks extends React.Component {
 
   render() {
     return (
-      <div className='edit-books'>
+      <div className='edit-books old'>
         <form onSubmit={(e) => this.onSaveChanges(e)}>
           <section>
             <label>Authors</label>
