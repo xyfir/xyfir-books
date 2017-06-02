@@ -1,187 +1,151 @@
-const randString = require("randomstring");
-const request = require("request");
-const crypto = require("lib/crypto");
-const db = require("lib/db");
+const rstring = require('randomstring');
+const request = require('superagent');
+const moment = require('moment');
+const crypto = require('lib/crypto');
+const mysql = require('lib/mysql');
 
-const config = require("config");
+const config = require('config');
 
 /*
-    POST api/account/login
-    REQUIRED
-        xid: string, auth: string
-    OPTIONAL
-        affiliate: string, referral: number
-    RETURN
-        { error: boolean, accessToken?: string }
-    DESCRIPTION
-        Register or login user
-        Create a library for new users
+  POST api/account/login
+  REQUIRED
+    xid: string, auth: string
+  OPTIONAL
+    affiliate: string, referral: number
+  RETURN
+    { error: boolean, message?: string, accessToken?: string }
+  DESCRIPTION
+    Register or login user
+    Create a library for new users
 */
-module.exports = function(req, res) {
+module.exports = async function(req, res) {
 
-    let url = config.addresses.xacc
-        + "api/service/14/" + config.keys.xacc
-        + "/" + req.body.xid
-        + "/" + req.body.auth;
+  const db = new mysql;
 
-    request(url, (err, response, body) => {
-        if (err) {
-            res.json({ error: true });
-            return;
+  try {
+    const xyAccRes = await request
+      .get(config.addresses.xyAccounts + 'api/service/14/user')
+      .query({
+        key: config.keys.xyAccounts, xid: req.body.xid, token: req.body.auth
+      });
+    
+    if (xyAccRes.body.error)
+      throw 'xyAccounts error: ' + xyAccRes.body.message;
+
+    await db.getConnection();
+
+    let result,
+    sql = `
+      SELECT user_id, subscription, xad_id FROM users WHERE xyfir_id = ?
+    `,
+    vars = [
+      req.body.xid
+    ],
+    rows = await db.query(sql, vars);
+
+    // Register user
+    if (!rows.length) {
+      const insert = {
+        subscription: moment().add(7, 'days').unix() * 1000,
+        xyfir_id: req.body.xid, email: xyAccRes.body.email,
+        library_id: rstring.generate(40),
+        xad_id: xyAccRes.body.xadid
+      };
+      sql = `
+        INSERT INTO users SET ?
+      `,
+      result = await db.query(sql, insert);
+
+      if (!result.insertId) throw 'Could not create account';
+      
+      req.session.uid = result.insertId;
+        
+      // Generate user's library id
+      const library = result.insertId + '-' + insert.library_id;
+      
+      // Create library on xyLibrary
+      const xyLibRes = await request
+        .post(config.addresses.library + library);
+      
+      if (xyLibRes.body.error) throw 'Could not create new library';
+
+      let referral = '{}';
+
+      // Save referral data
+      if (req.body.referral) {
+        referral = JSON.stringify({
+          referral: req.body.referral,
+          hasMadePurchase: false
+        });
+      }
+      // Validate affiliate promo code
+      else if (req.body.affiliate) {
+        const xyAccAffRes = await request
+          .post(config.address.xyAccounts + 'api/affiliate/signup')
+          .send({
+            service: 14, serviceKey: config.keys.xyAccounts,
+            promoCode: req.body.affiliate
+          });
+        
+        if (!xyAccAffRes.body.error && xyAccAffRes.body.promo == 5) {
+          referral = JSON.stringify({
+            affiliate: req.body.affiliate,
+            hasMadePurchase: false
+          });
         }
+      }
 
-        body = JSON.parse(body);
+      // Set user's library id
+      sql = `
+        UPDATE users SET library_id = ?, referral = ?
+        WHERE user_id = ?
+      `,
+      vars = [
+        library, referral,
+        req.session.uid
+      ],
+      result = await db.query(sql, vars);
 
-        if (body.error) {
-            res.json({ error: true });
-            return;
-        }
+      db.release();
+      
+      res.json({
+        error: false, accessToken: crypto.encrypt(
+          req.session.uid + '-' + xyAccRes.body.accessToken,
+          config.keys.accessToken
+        )
+      });
+        
+      req.session.subscription = insert.subscription;
+      req.session.library = library;
+      req.session.xadid = xyAccRes.body.xadid;
+    }
+    // Update user
+    else {
+      sql = `
+        UPDATE users SET email = ? WHERE user_id = ?
+      `,
+      vars = [
+        xyAccRes.body.email, rows[0].user_id
+      ],
+      result = await db.query(sql, vars);
 
-        const token = body.accessToken;
+      db.release();
 
-        let sql = `
-            SELECT user_id, subscription, xad_id FROM users WHERE xyfir_id = ?
-        `;
+      req.session.uid = rows[0].user_id;
+      req.session.xadid = rows[0].xad_id;
+      req.session.subscription = rows[0].subscription;
 
-        db(cn => cn.query(sql, [req.body.xid], (err, rows) => {
-            if (err) {
-                cn.release();
-                res.json({ error: true });
-            }
-            
-            /* First Login (Registration) */
-            else if (!rows.length) {
-                const subscription = Date.now() + (7 * 86400000);
-
-                // Create user
-                let insert = {
-                    xyfir_id: req.body.xid, email: body.email, xad_id: body.xadid,
-                    subscription
-                };
-                sql = "INSERT INTO users SET ?";
-                
-                cn.query(sql, insert, (err, result) => {
-                    if (err || !result.affectedRows) {
-                        cn.release();
-                        res.json({ error: true });
-                        return;
-                    }
-                    
-                    req.session.uid = result.insertId;
-                    
-                    // Generate user's library id
-                    const library = result.insertId
-                        + '-' + randString.generate(40);
-
-                    // Create library on library server
-                    request.post({
-                        url: config.addresses.library + library
-                    }, (err, response, body) => {
-                        if (err) {
-                            cn.release();
-                            res.json({ error: true, message: "Contact support" });
-                            return;
-                        }
-                        
-                        body = JSON.parse(body);
-                        
-                        if (body.error) {
-                            cn.release();
-                            res.json({ error: true, message: "Contact support" });
-                            return;
-                        }
-
-                        let referral = "{}";
-
-                        const finish = () => {
-                            // Set user's library id
-                            sql = `
-                                UPDATE users SET library_id = ?, referral = ?
-                                WHERE user_id = ?
-                            `, vars = [
-                                library, referral,
-                                req.session.uid
-                            ];
-                            
-                            cn.query(sql, vars, (err, result) => {
-                                cn.release();
-                                
-                                res.json({
-                                    error: false, accessToken: crypto.encrypt(
-                                        req.session.uid + "-" + token,
-                                        config.keys.accessToken
-                                    )
-                                });
-                                
-                                req.session.subscription = subscription;
-                                req.session.library = library;
-                                req.session.xadid = body.xadid;
-                            });
-                        };
-
-                        if (req.body.referral) {
-                            referral = JSON.stringify({
-                                referral: req.body.referral,
-                                hasMadePurchase: false
-                            });
-                            finish();
-                        }
-                        // Validate affiliate promo code
-                        else if (req.body.affiliate) {
-                            request.post({
-                                url: config.address.xacc + "api/affiliate/signup",
-                                form: {
-                                    service: 14, serviceKey: config.keys.xacc,
-                                    promoCode: req.body.affiliate
-                                }
-                            }, (err, response, body) => {
-                                if (err) {
-                                    finish();
-                                }
-                                else {
-                                    body = JSON.parse(body);
-
-                                    if (!body.error && body.promo == 5) {
-                                        referral = JSON.stringify({
-                                            affiliate: req.body.affiliate,
-                                            hasMadePurchase: false
-                                        });
-                                    }
-                                    finish();
-                                }
-                            });
-                        }
-                        else {
-                            finish();
-                        }
-                    });
-                });
-            }
-
-            /* Update Data */
-            else {
-                sql = "UPDATE users SET email = ? WHERE user_id = ?"
-                cn.query(sql, [body.email, rows[0].user_id], (err, result) => {
-                    cn.release();
-
-                    if (err) {
-                        res.json({ error: true });
-                    }
-                    else {
-                        req.session.uid = rows[0].user_id;
-                        req.session.xadid = rows[0].xad_id;
-                        req.session.subscription = rows[0].subscription;
-
-                        res.json({
-                            error: false, accessToken: crypto.encrypt(
-                                req.session.uid + "-" + token,
-                                config.keys.accessToken
-                            )
-                        });
-                    }
-                });
-            }
-        }));
-    });
+      res.json({
+        error: false, accessToken: crypto.encrypt(
+          req.session.uid + '-' + xyAccRes.body.accessToken,
+          config.keys.accessToken
+        )
+      });
+    }
+  }
+  catch (err) {
+    db.release();
+    res.json({ error: true, message: err });
+  }
 
 };
