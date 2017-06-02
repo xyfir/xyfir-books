@@ -11,9 +11,6 @@ import upload from 'lib/request/upload';
 // Constants
 import { LIBRARY } from 'constants/config';
 
-// Components
-import NavBar from '../misc/NavBar';
-
 export default class AddFormat extends React.Component {
 
   constructor(props) {
@@ -90,15 +87,6 @@ export default class AddFormat extends React.Component {
     
     return (
       <div className='add-format'>
-        <NavBar
-          home={true}
-          account={true}
-          title='Add Format'
-          library={true}
-          settings={''}
-          books={true}
-        />
-        
         <p>
           <strong>Note:</strong> Only <a href='https://en.wikipedia.org/wiki/EPUB' target='_blank'>EPUB</a> format ebooks can be read by Xyfir Books' ebook reader.
         </p>

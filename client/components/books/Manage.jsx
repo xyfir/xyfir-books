@@ -7,9 +7,6 @@ import loadCovers from 'lib/books/load-covers';
 import loadBooks from 'lib/books/load-from-api';
 import upload from 'lib/request/upload';
 
-// Components
-import NavBar from 'components/misc/NavBar';
-
 // Constants
 import { LIBRARY } from 'constants/config';
 
@@ -222,15 +219,6 @@ export default class ManageBook extends React.Component {
     
     return (
       <div className='manage-book'>
-        <NavBar
-          home={true}
-          account={true}
-          title={`Manage - ${book.title}`} 
-          library={true}
-          settings={''}
-          books={true}
-        />
-        
         <section className='main'>
           <label>Title</label>
           <input type='text' ref='title' defaultValue={book.title} />

@@ -3,9 +3,6 @@ import request from 'superagent';
 import React from 'react';
 import b from 'based-blob';
 
-// Components
-import NavBar from '../misc/NavBar';
-
 // Constants
 import { LIBRARY } from 'constants/config';
 
@@ -102,15 +99,6 @@ export default class DownloadLibrary extends React.Component {
   render() {
     return (
       <div className='library-download'>
-        <NavBar
-          home={true}
-          account={true}
-          title='Download Library'
-          library={true}
-          settings={''}
-          books={true}
-        />
-        
         <section className='info'>
           <p>
             Download your entire library in a zip file. The downloaded library will be completely compatible with <a target='_blank' href='https://calibre-ebook.com/'>Calibre</a>.
