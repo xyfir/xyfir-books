@@ -34,6 +34,7 @@ import updateView from 'lib/url/update-view';
 // Constants
 import { XACC, LOG_STATE, ENVIRONMENT } from 'constants/config';
 import { INITIALIZE_STATE } from 'actions/types/index';
+import { READ_BOOK } from 'constants/views';
 import initialState from 'constants/initial-state';
 
 // Actions
@@ -277,6 +278,7 @@ class App extends React.Component {
       <div className='xyfir-books'>
         <Toolbar
           colored fixed
+          className={this.state.view == READ_BOOK ? 'hidden' : ''}
           actions={[
             <Button
               icon
@@ -317,9 +319,9 @@ class App extends React.Component {
 
             <Subheader primary primaryText='Books' />,
             <a href='#books/list'>
-              <ListItem primaryText='View' />
+              <ListItem primaryText='List' />
             </a>,
-            <a href='#books/list'>
+            <a href='#books/upload'>
               <ListItem primaryText='Upload' />
             </a>,
 
