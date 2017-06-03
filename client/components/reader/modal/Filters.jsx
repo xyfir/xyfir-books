@@ -10,9 +10,10 @@ export default class Filters extends React.Component {
 
     this.state = { loading: true };
 
-    this.props.reader._getFilters(f =>
-      this.setState(Object.assign({}, f, { loading: false }))
-    );
+    this.props.reader._getFilters()
+      .then(f =>
+        this.setState(Object.assign({}, f, { loading: false }))
+      );
   }
 
   onUpdate(prop, val) {
