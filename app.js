@@ -1,51 +1,52 @@
-require("app-module-path").addPath(__dirname);
+require('app-module-path').addPath(__dirname);
 
-const express = require("express");
-const session = require("express-session");
-const parser = require("body-parser");
+const SessionStore = require('express-mysql-session');
+const express = require('express');
+const session = require('express-session');
+const parser = require('body-parser');
+const moment = require('moment');
 const app = express();
 
-const sstore = require("express-mysql-session");
-const config = require("./config");
+const config = require('./config');
 
-/* Sessions */
-const sessionStore = new sstore({
-    host: config.database.mysql.host,
-    port: config.database.mysql.port,
-    user: config.database.mysql.user,
-    password: config.database.mysql.password,
-    database: config.database.mysql.database,
-    useConnectionPooling: true
-});
-app.use(session({
-    secret: config.keys.session,
-    store: sessionStore,
+app.use(
+  session({
     saveUninitialized: true,
+    secret: config.keys.session,
+    store: SessionStore({
+      useConnectionPooling: true,
+      password: config.database.mysql.password,
+      database: config.database.mysql.database,
+      host: config.database.mysql.host,
+      port: config.database.mysql.port,
+      user: config.database.mysql.user
+    }),
     resave: true,
     cookie: {
-        httpOnly: false
+      httpOnly: false
     }
-}));
+  })
+);
 
-/* Body Parser */
-app.use(parser.json());
-app.use(parser.urlencoded({ extended: true }));
+app.use(parser.json({ limit: '5mb' }));
+app.use(parser.urlencoded({ extended: true, limit: '5mb' }));
 
-app.use("/static", express.static(__dirname + "/static"));
-app.use("/api", require("./controllers/"));
+app.use('/static', express.static(__dirname + '/static'));
+app.use('/api', require('./controllers/'));
 
-app.get("/", (req, res) => {
-    if (config.environment.type == "dev") {
-        req.session.uid = 1;
-        req.session.library = "1-testtesttesttesttesttesttesttesttesttest";
-        req.session.subscription = Date.now() + (86400 * 30 * 1000);
-    }
-    res.sendFile(__dirname + "/views/Home.html");
+app.get('/', (req, res) => {
+  if (config.environment.type == 'dev') {
+    req.session.uid = 1,
+    req.session.library = '1-testtesttesttesttesttesttesttesttesttest',
+    req.session.subscription = moment().add(30, 'days').unix() * 1000;
+  }
+
+  res.sendFile(__dirname + '/views/Home.html');
 });
-app.get("/app/*", (req, res) => res.sendFile(__dirname + "/views/App.html"));
-app.listen(config.environment.port, () => {
-    console.log("~~Server running on port", config.environment.port);
-});
+app.get('/app/*', (req, res) => res.sendFile(__dirname + '/views/App.html'));
 
-if (config.environment.runCronJobs)
-    require("./jobs/start")();
+app.listen(config.environment.port, () =>
+  console.log('~~Server running on port', config.environment.port)
+);
+
+if (config.environment.runCronJobs) require('./jobs/start')();
