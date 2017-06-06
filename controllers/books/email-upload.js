@@ -38,17 +38,22 @@ module.exports = async function(req, res) {
     if (!Array.isArray(files)) throw 'No files uploaded';
 
     for (let file of files) {
-      const fpath = path.resolve(__dirname, '../../../uploads') +
-        Date.now() + file.name;
+      const fpath = path.resolve(
+        __dirname, '../../../uploads/', Date.now() + ' - ' + file.name
+      );
 
       try {
         // Download attachment
         const dl = await request
-          .get(`https://api:${config.keys.mailgun}@${file.url.substr(8)}`);
+          .get(`https://api:${config.keys.mailgun}@${file.url.substr(8)}`)
+          .buffer(true)
+          .parse(request.parse['application/octet-stream']);
 
         // Write to file so path can be passed to superagent
         await (new Promise((resolve, reject) =>
-          fs.writeFile(fpath, dl.body, err => err ? reject(err) : resolve())
+          fs.writeFile(
+            fpath, dl.body, err => err ? reject(err) : resolve()
+          )
         ));
 
         // Upload file to xyLibrary
