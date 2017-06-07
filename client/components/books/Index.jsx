@@ -1,37 +1,37 @@
-import React from "react";
+import React from 'react';
 
 // Components
-import RecentlyOpened from "./RecentlyOpened";
-import AddFormat from "./AddFormat";
-import BulkEdit from "./BulkEdit";
-import Manage from "./Manage";
-import Upload from "./Upload";
-import Reader from "components/reader/Reader";
-import List from "./list/Index";
+import RecentlyOpened from 'components/books/RecentlyOpened';
+import AddFormat from 'components/books/AddFormat';
+import BulkEdit from 'components/books/BulkEdit';
+import Manage from 'components/books/Manage';
+import Upload from 'components/books/Upload';
+import Reader from 'components/reader/Reader';
+import List from 'components/books/list/Index';
 
 export default class Books extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render() {
-        switch (this.props.data.view.split('/')[1]) {
-            case "RECENTLY_OPENED":
-                return <RecentlyOpened data={this.props.data} dispatch={this.props.dispatch} />;
-            case "ADD_FORMAT":
-                return <AddFormat data={this.props.data} dispatch={this.props.dispatch} />;
-            case "BULK_EDIT":
-                return <BulkEdit data={this.props.data} dispatch={this.props.dispatch} />;
-            case "MANAGE":
-                return <Manage data={this.props.data} dispatch={this.props.dispatch} />;
-            case "UPLOAD":
-                return <Upload data={this.props.data} dispatch={this.props.dispatch} />;
-            case "LIST":
-                return <List data={this.props.data} dispatch={this.props.dispatch} />;
-            case "READ":
-                return <Reader data={this.props.data} dispatch={this.props.dispatch} />;
-        }
+  render() {
+    switch (this.props.data.view.split('/')[1]) {
+      case 'RECENTLY_OPENED':
+        return <RecentlyOpened {...this.props} />;
+      case 'ADD_FORMAT':
+        return <AddFormat {...this.props} />;
+      case 'BULK_EDIT':
+        return <BulkEdit {...this.props} />;
+      case 'MANAGE':
+        return <Manage {...this.props} />;
+      case 'UPLOAD':
+        return <Upload {...this.props} />;
+      case 'LIST':
+        return <List {...this.props} />;
+      case 'READ':
+        return <Reader {...this.props} />;
     }
+  }
 
 }
