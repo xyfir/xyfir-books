@@ -1,301 +1,165 @@
 .reader {
-    
-    #book {
-        position: fixed;
-        top: 0%;
-        left: 0%;
-        right: 0%;
-        bottom: 0%;
-        padding: 1.1em 0em;
-    }
-    
-    .overlay {
-
-        .status {
-            position: fixed;
-            font-size: 70%;
-            bottom: 0%;
-            left: 0%;
-            right: 0%;
-            color: $gray;
-        }
-
-        nav {
-
-            a[disabled] {
-                pointer-events: none;
-                cursor: default;
-                color: $gray;
-            }
-
-        }
-
-    }
-    
-    .modal {
-        
-        background-color: white;
-        position: fixed;
-        left: 15%;
-        right: 15%;
-        bottom: 10%;
-        top: 10%;
-        padding: 1em;
-        overflow-y: auto;
-        border: solid 0.1em $llgray;
-        box-shadow: 0.1em 0.1em 0.3em $dgray;
-        z-index: 1;
-
-        .icon-close, .icon-back, span[class^="icon-resize-"] {
-            position: absolute;
-            z-index: 2;
-        }
-
-        .icon-close {
-            right: 2%;
-        }
-
-        .icon-back {
-            left: 2%;
-        }
-
-        span[class^="icon-resize-"] {
-            right: 5%;
-            font-size: 68%;
-        }
-        
-        ul {
-            
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            
-            li {
-                font-size: 110%;
-                padding: 0.1em;
-                border-bottom: solid 0.1em $llgray;
-            }
-            
-            li:nth-child(even) {
-                background-color: $lllgray;
-            }
-            
-            .created {
-                display: block;
-                font-size: 80%;
-            }
-            
-        }
-        
-        ul.notes {
-            
-            .highlighted-text {
-                display: block;
-                font-style: italic;
-                color: $dgray;
-            }
-            
-        }
-        
-        .icon-back {
-            position: absolute;
-            left: 2%;
-            top: 2%;
-        }
-        
-        .create-note {
-            
-            textarea.note {
-                width: 60%;
-                height: 15em;
-                text-align: center;
-                font-size: 1em;
-            }
-            
-        }
-
-        .manage-annotations {
-
-            .annotation-set {
-
-                background-color: $lllgray;
-                border: solid 0.1em $llgray;
-                width: 70%;
-                margin: 1em auto;
-                padding: 0.5em;
-
-
-                .title {
-                    font-size: 110%;
-                    font-weight: bold;
-                }
-
-                .description {
-                    display: block;
-                    font-size: 90%;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    width: 80%;
-                    margin: auto;
-                }
-
-            }
-
-        }
-
-        .annotation {
-
-            .head {
-
-                position: absolute;
-                top: 2%;
-                left: 2%;
-                right: 2%;
-                bottom: 85%;
-                border-bottom: solid 0.15em $gray;
-                
-                nav {
-
-                    margin-bottom: 1em;
-
-                    a {
-                        color: $dgray;
-                    }
-
-                    a.active {
-                        color: $blue;
-                    }
-
-                }
-
-                .annotation-name {
-                    font-weight: bold;
-                    font-size: 120%;
-                }
-
-            }
-
-            .value > div {
-                position: absolute;
-                left: 0%;
-                top: 0%;
-                right: 0%;
-                bottom: 0%;
-            }
-
-            .value {
-
-                position: absolute;
-                top: 17%;
-                left: 0%;
-                right: 0%;
-                bottom: 0%;
-                overflow: hidden;
-
-                .link, .search, .video, .map {
-                    overflow-y: hidden;
-                }
-
-                .image, .document {
-                    overflow-y: auto;
-                }
-
-                a {
-                    display: block;
-                }
-
-                iframe {
-                    width: 100%;
-                    height: 100%;
-                    border: none;
-                }
-
-            }
-
-        }
-
-        .book-info {
-            table {
-
-                width: 85%;
-
-                th, td {
-                    border-bottom: solid 0.1em $llgray;
-                    text-align: left;
-                }
-
-            }
-
-            .tag {
-                display: inline-block;
-                margin: 0em 0.2em;
-            }
-
-            .tag:first-child {
-                margin-left: 0em;
-            }
-
-            .comments {
-                border-top: solid 0.15em $lgray;
-                padding-top: 1em;
-                margin-top: 1em;
-            }
-
-        }
-
-        .book-styling {
-
-            th {
-                text-align: left;
-            }
-
-        }
-
-        .filters {
-
-            width: 85%;
-            margin: auto;
-
-            .slider {
-
-                display: flex;
-                height: 3em;
-
-                .slider-container {
-                    flex: 10;
-                }
-
-                span[class^="icon-"] {
-                    flex: 1;
-                }
-
-            }
-
-        }
-        
+  #book {
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    bottom: 0%;
+    padding: 1.1em 0em;
+  }
+  
+  div.overlay {
+    span.status {
+      position: fixed;
+      font-size: 70%;
+      bottom: 0%;
+      left: 0%;
+      right: 0%;
+      color: $gray;
     }
 
-    .modal.full {
-        left: 0%;
-        right: 0%;
+    div.progress-slider {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-color: $md-primary-color;
+      padding: 0em 1em;
+
+      .md-slider-track-fill {
+        background: white;
+      }
+
+      .md-slider-thumb--on {
+        background: white;
+      }
+    }
+  }
+}
+
+.reader-dialog {
+  div.create-note {
+    >div.highlight {
+      >div.visible-text {
+        max-height: 12em;
+        overflow: auto;
+      }
     }
 
-    .modal.full.middle {
-        top: 0%;
-        bottom: 0%;
+    >div.md-text-field-container {
+      width: 100%;
+    }
+  }
+
+  div.note {
+    >div.highlights {
+      >span {
+        font-style: italic;
+        font-size: 90%;
+        display: block;
+        color: #666;
+
+        &:before, &:after {
+          font-style: normal;
+          content: '"';
+          color: black;
+        }
+      }
+    }
+
+    >div.content {
+      margin: 1em 0em;
+    }
+  }
+
+  section.manage-annotations.find {
+    div.discover {
+      >div.md-text-field-container {
+        width: 100%;
+      }
+    }
+  }
+
+  div.manage-annotations.view-set {
+    >span.book {
+      display: block;
+      margin-top: -0.5em;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  div.annotation {
+    height: 100%;
+    overflow: hidden;
+
+    >div.content, >div.content > div {
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+
+      >iframe {
+        flex: 1 1 auto;
         border: none;
-        box-shadow: none;
+      }
     }
 
-    .modal.top {
-        top: 0%;
-        bottom: 55%;
+    >div.content {
+      >div.document {
+        padding: 1em;
+      }
+
+      >div.audio > audio {
+        width: 100%;
+      }
+    }
+  }
+
+  .book-info {
+    table {
+      width: 100%;
+
+      th, td {
+        border-bottom: solid 0.1em $llgray;
+        text-align: left;
+      }
     }
 
-    .modal.bottom {
-        top: 55%;
-        bottom: 0%;
+    .tag {
+      display: inline-block;
+      margin: 0em 0.2em;
     }
-    
+
+    .tag:first-child {
+      margin-left: 0em;
+    }
+
+    .comments {
+      padding-top: 1em;
+      margin-top: 1em;
+    }
+  }
+
+  .book-styling {
+    th {
+      text-align: left;
+    }
+  }
+
+  .filters {
+    width: 85%;
+    margin: auto;
+
+    .slider {
+      display: flex;
+      height: 3em;
+
+      .slider-container {
+        flex: 10;
+      }
+
+      span[class^="icon-"] {
+        flex: 1;
+      }
+    }
+  } 
 }

@@ -2,8 +2,8 @@ import request from 'superagent';
 import React from 'react';
 
 // Components
-import Overlay from 'components/reader/Overlay';
-import Modal from 'components/reader/Modal';
+import Overlay from 'components/reader/overlay/Overlay';
+import Modal from 'components/reader/modal/Modal';
 
 // Modules
 import updateEpubJsPrototype from 'lib/reader/epubjs/update-prototype';
@@ -31,7 +31,8 @@ export default class Reader extends React.Component {
     
     this.state = {
       book: this.props.data.books.find(b => id == b.id),
-      pagesLeft: 0, percent: 0, history: {
+      pagesLeft: 0, percent: 0,
+      history: {
         items: [], index: -1, ignore: false
       },
       //
@@ -48,9 +49,9 @@ export default class Reader extends React.Component {
     this.timers = {};
     
     this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
+    this.onHighlightClicked = this.onHighlightClicked.bind(this);
     this._addEventListeners = this._addEventListeners.bind(this);
     this._applyHighlights = this._applyHighlights.bind(this);
-    this.onHighlightClicked = this.onHighlightClicked.bind(this);
     this._getWordCount = this._getWordCount.bind(this);
     this._applyFilters = this._applyFilters.bind(this);
     this.onToggleShow = this.onToggleShow.bind(this);
@@ -239,14 +240,14 @@ export default class Reader extends React.Component {
 
   /**
    * Handle next / previous page on swipes.
-   * @param {string} dir 
+   * @param {string} dir - 'left|right'
    */
   onSwipe(dir) {
     switch (dir) {
       case 'left':
-        epub.nextPage(); break;
+        return epub.nextPage();
       case 'right':
-        epub.prevPage();
+        return epub.prevPage();
     }
   }
 
@@ -275,7 +276,7 @@ export default class Reader extends React.Component {
         this.onToggleShow('bookInfo');
         break;
       case 'toggle navbar':
-        this.refs.overlay._toggleShowNavbars();
+        this.refs.overlay._toggleShow();
     }
   }
 
@@ -308,7 +309,7 @@ export default class Reader extends React.Component {
     this.setState({
       modal: {
         target: key, closeWait: Date.now() + 100,
-        show: (type == 'note' ? 'notes' : type)
+        show: (type == 'note' ? 'notes' : 'viewAnnotations')
       }
     });
   }
@@ -574,7 +575,7 @@ export default class Reader extends React.Component {
     if (window.epub === undefined) return <div />;
     
     return (
-      <div className='reader old'>
+      <div className='reader'>
         <div id='book' />
         
         <Overlay
@@ -582,7 +583,7 @@ export default class Reader extends React.Component {
           parent={this}
         />
         
-        <Modal parent={this} />
+        <Modal reader={this} />
       </div>
     );
   }

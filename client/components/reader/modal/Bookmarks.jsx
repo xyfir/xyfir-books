@@ -1,33 +1,41 @@
-import React from "react";
+import React from 'react';
+
+// react-md
+import ListItem from 'react-md/lib/Lists/ListItem';
+import List from 'react-md/lib/Lists/List';
 
 export default class Bookmarks extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-    
-    onGoToBookmark(cfi) {
-        epub.gotoCfi(cfi);
-        this.props.onClose();
-    }
+  constructor(props) {
+    super(props);
+  }
+  
+  /**
+   * Go to the bookmark's CFI.
+   * @param {string} cfi 
+   */
+  onGoToBookmark(cfi) {
+    epub.gotoCfi(cfi);
+    this.props.reader.onCloseModal();
+  }
 
-    render() {
-        return (
-            <ul className="bookmarks">{
-                this.props.bookmarks.map((bm, i) => {
-                    return (
-                        <li>
-                            <a onClick={this.onGoToBookmark.bind(this, bm.cfi)}>
-                                Bookmark #{this.props.bookmarks.length - i}
-                            </a>
-                            <span className="created">
-                                Created {(new Date(bm.created).toLocaleString())}
-                            </span>
-                        </li>
-                    );
-                })
-            }</ul>
-        );
-    }
+  render() {
+    const { bookmarks } = this.props.reader.state.book;
+
+    return (
+      <List className='bookmarks'>{
+        bookmarks.reverse().map((bm, i) =>
+          <ListItem
+            key={i}
+            onClick={() => this.onGoToBookmark(bm.cfi)}
+            primaryText={`Bookmark #${bookmarks.length - i}`}
+            secondaryText={
+              `Created ${new Date(bm.created).toLocaleString()}`
+            }
+          />
+        )
+      }</List>
+    );
+  }
 
 }

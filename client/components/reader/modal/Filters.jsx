@@ -75,3 +75,5 @@ export default class Filters extends React.Component {
   }
 
 }
+
+Filters.noFullscreen = true;
