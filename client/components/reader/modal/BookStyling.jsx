@@ -1,5 +1,8 @@
 import React from 'react';
 
+// react-md
+import Button from 'react-md/lib/Buttons/Button';
+
 // Constants
 import * as themes from 'constants/reader-themes';
 
@@ -16,6 +19,11 @@ export default class BookStyling extends React.Component {
       );
   }
 
+  /**
+   * Increment or decrement a state property.
+   * @param {string} prop 
+   * @param {string} op
+   */
   onUpdate(prop, op) {
     let value = +this.state[prop] + (op == '+' ? 0.1 : -0.1);
     value = value < 1 ? 1 : value;
@@ -28,6 +36,10 @@ export default class BookStyling extends React.Component {
     );
   }
 
+  /**
+   * Change the reader theme.
+   * @param {string} val
+   */
   onUpdateTheme(val) {
     const style = themes[val];
 
@@ -37,6 +49,10 @@ export default class BookStyling extends React.Component {
     }));
   }
 
+  /**
+   * Save the style changes to local storage.
+   * @param {function} [fn]
+   */
   _saveStyling(fn) {
     localforage.setItem(
       'styling-' + this.props.reader.state.book.id,
@@ -53,68 +69,58 @@ export default class BookStyling extends React.Component {
           <tr>
             <th>Text Size</th>
             <td>
-              <button
-                className='btn-secondary icon-plus'
-                onClick={() =>
-                  this.onUpdate('fontSize', '+')
-                }
-              />
-              <button
-                className='btn-secondary icon-minus'
-                onClick={() =>
-                  this.onUpdate('fontSize', '-')
-                }
-              />
+              <Button
+                flat primary
+                onClick={() => this.onUpdate('fontSize', '+')}
+              >add</Button>
+              <Button
+                flat secondary
+                onClick={() => this.onUpdate('fontSize', '-')}
+              >remove</Button>
             </td>
           </tr>
 
           <tr>
             <th>Page Padding</th>
             <td>
-              <button
-                className='btn-secondary icon-plus'
-                onClick={() =>
-                  this.onUpdate('padding', '+')
-                }
-              />
-              <button
-                className='btn-secondary icon-minus'
-                onClick={() =>
-                  this.onUpdate('padding', '-')
-                }
-              />
+              <Button
+                flat primary
+                onClick={() => this.onUpdate('padding', '+')}
+              >add</Button>
+              <Button
+                flat secondary
+                onClick={() => this.onUpdate('padding', '-')}
+              >remove</Button>
             </td>
           </tr>
 
           <tr>
             <th>Line Spacing</th>
             <td>
-              <button
-                className='btn-secondary icon-plus'
-                onClick={() =>
-                  this.onUpdate('lineHeight', '+')
-                }
-              />
-              <button
-                className='btn-secondary icon-minus'
-                onClick={() =>
-                  this.onUpdate('lineHeight', '-')
-                }
-              />
+              <Button
+                flat primary
+                onClick={() => this.onUpdate('lineHeight', '+')}
+              >add</Button>
+              <Button
+                flat secondary
+                onClick={() => this.onUpdate('lineHeight', '-')}
+              >remove</Button>
             </td>
           </tr>
 
           <tr>
             <th>Theme</th>
             <td>
-              <button
-                className='btn-secondary'
+              <Button
+                flat primary
+                label='Light'
                 onClick={() => this.onUpdateTheme('LIGHT')}
-              >Light</button>
-              <button
-                className='btn-secondary'
+              >brightness_7</Button>
+              <Button
+                flat secondary
+                label='Dark'
                 onClick={() => this.onUpdateTheme('DARK')}
-              >Dark</button>
+              >brightness_2</Button>
             </td>
           </tr>
         </tbody></table>
@@ -123,3 +129,5 @@ export default class BookStyling extends React.Component {
   }
 
 }
+
+BookStyling.noFullscreen = true;
