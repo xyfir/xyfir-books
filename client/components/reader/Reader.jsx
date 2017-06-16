@@ -161,38 +161,39 @@ export default class Reader extends React.Component {
    * Cycle through highlight modes.
    */
   onCycleHighlightMode() {
-    let highlight = {};
+    const highlight = (() => {
+      switch (this.state.highlight.mode) {
+        // none -> notes
+        case 'none':
+          return { mode: 'notes' };
+        
+        // notes -> first annotation set OR none
+        case 'notes':
+          if (
+            !this.state.book.annotations ||
+            !this.state.book.annotations.length
+          )
+            return { mode: 'none' };
+          else
+            return { mode: 'annotations', index: 0 };
 
-    switch (this.state.highlight.mode) {
-      // none -> notes
-      case 'none':
-        highlight = { mode: 'notes' };
-        break;
-      
-      // notes -> first annotation set OR none
-      case 'notes':
-        if (!this.state.book.annotations || !this.state.book.annotations.length)
-          highlight = { mode: 'none' };
-        else
-          highlight = { mode: 'annotations', index: 0 };
-        break;
-
-      // annotations -> next set OR none
-      case 'annotations':
-        if (this.state.book.annotations[this.state.highlight.index + 1]) {
-          highlight = {
-            mode: 'annotations',
-            index: this.state.highlight.index + 1
-          };
-        }
-        else {
-          highlight = { mode: 'none' };
-        }
-    }
+        // annotations -> next set OR none
+        case 'annotations':
+          if (this.state.book.annotations[this.state.highlight.index + 1]) {
+            return {
+              mode: 'annotations',
+              index: this.state.highlight.index + 1
+            };
+          }
+          else {
+            return { mode: 'none' };
+          }
+      }
+    })();
 
     this._applyHighlights(highlight);
-
     this.setState({ highlight });
+    
     return highlight;
   }
 
@@ -474,11 +475,9 @@ export default class Reader extends React.Component {
       
       this.timers.resized = setTimeout(() => {
         epub.generatePagination()
-          .then(pages => {
-            this.setState({
-              percent: this._getPercentComplete()
-            });
-          });
+          .then(pages =>
+            this.setState({ percent: this._getPercentComplete() })
+          );
       }, 500);
     });
 
