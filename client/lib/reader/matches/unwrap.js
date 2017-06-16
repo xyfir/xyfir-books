@@ -1,15 +1,14 @@
+/**
+ * Unwrap elements with the provided class name.
+ * @param {string} className
+ */
 export default function(className) {
 
-    const regex = new RegExp(
-        `<span class="${className}" onclick=".+">`, 'm'
-    );
+  epub.renderer.doc.querySelectorAll('.' + className).forEach(el => {
+    const parent = el.parentElement;
 
-    let element, parent;
-
-    while (element = epub.renderer.doc.querySelector('.' + className)) {
-        parent = element.parentElement;
-
-        parent.innerHTML = parent.innerHTML.replace(regex, '').replace("</span>", '');
-    }
+    parent.insertBefore(el.firstChild, el);
+    el.remove();
+  });
 
 }
