@@ -37,7 +37,13 @@
   }
 }
 
-.reader-dialog {
+span.reader-dialog {
+  >div.md-dialog--full-page {
+    >div.create-note, >div.note {
+      padding: 1em;
+    }
+  }
+
   div.create-note {
     >div.highlight {
       >div.visible-text {
@@ -140,8 +146,12 @@
   }
 
   .book-styling {
-    th {
-      text-align: left;
+    >table {
+      margin: auto;
+
+      th {
+        text-align: left;
+      }
     }
   }
 
