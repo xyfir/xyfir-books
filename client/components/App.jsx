@@ -17,7 +17,6 @@ import Toolbar from 'react-md/lib/Toolbars';
 import Divider from 'react-md/lib/Dividers';
 import Drawer from 'react-md/lib/Drawers';
 import Button from 'react-md/lib/Buttons/Button';
-import Dialog from 'react-md/lib/Dialogs';
 import List from 'react-md/lib/Lists/List';
 
 // Components
@@ -38,7 +37,6 @@ import { READ_BOOK } from 'constants/views';
 import initialState from 'constants/initial-state';
 
 // Actions
-import { setListView } from 'actions/creators/settings';
 import { save } from 'actions/creators/index';
 
 const store = createStore(reducers);
@@ -113,16 +111,6 @@ class App extends React.Component {
   onLogout() {
     delete localStorage.accessToken;
     location.href = '../api/account/logout';
-  }
-
-  /**
-   * Set the value for state.config.bookList.view.
-   * @param {string} view - 'compact|grid|table'
-   */
-  onSetListView(view) {
-    store.dispatch(setListView(view));
-    store.dispatch(save('config'));
-    this.setState({ setListViewDialog: false });
   }
 
   /**
@@ -282,12 +270,6 @@ class App extends React.Component {
           actions={[
             <Button
               icon
-              key='view'
-              onClick={() => this.setState({ setListViewDialog: true })}
-            >pageview</Button>,
-
-            <Button
-              icon
               key='home'
               onClick={() => location.hash = '#'}
             >home</Button>
@@ -355,33 +337,6 @@ class App extends React.Component {
         />
 
         <div className='main md-toolbar-relative'>{view}</div>
-
-        <Dialog
-          id='dialog--set-view'
-          title='Set View'
-          onHide={() => this.setState({ setListViewDialog: false })}
-          visible={this.state.setListViewDialog}
-        >
-          <List>
-            <ListItem
-              primaryText='Table'
-              secondaryText='Lots of data. Not for mobile.'
-              onClick={() => this.onSetListView('table')}
-            />
-            <ListItem
-              primaryText='Grid'
-              secondaryText={
-                'Minimal data, large covers.'
-              }
-              onClick={() => this.onSetListView('grid')}
-            />
-            <ListItem
-              primaryText='Compact'
-              secondaryText='Fits well on any device.'
-              onClick={() => this.onSetListView('compact')}
-            />
-          </List>
-        </Dialog>
 
         <Snackbar
           toasts={this.state.toasts}
