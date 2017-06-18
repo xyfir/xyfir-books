@@ -7,7 +7,7 @@ import BulkEdit from 'components/books/BulkEdit';
 import Manage from 'components/books/Manage';
 import Upload from 'components/books/Upload';
 import Reader from 'components/reader/Reader';
-import List from 'components/books/list/Index';
+import List from 'components/books/list/List';
 
 export default class Books extends React.Component {
 
