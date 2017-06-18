@@ -5,10 +5,9 @@ import showNavbarText from 'lib/misc/show-navbar-text';
 import parseHashQuery from 'lib/url/parse-hash-query';
 
 // Components
-import SubGroups from './SubGroups';
-import Groups from './Groups';
-//
-import All from './All';
+import SubGroups from 'components/books/list/SubGroups';
+import Groups from 'components/books/list/Groups';
+import All from 'components/books/list/all/All';
 
 export default class BookList extends React.Component {
 
@@ -48,7 +47,7 @@ export default class BookList extends React.Component {
       }
     })();
     
-    return <div className='list old'>{view}</div>;
+    return <div className='book-list'>{view}</div>;
   }
 
 }
