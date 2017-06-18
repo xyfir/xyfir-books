@@ -1,10 +1,10 @@
 // Constants
 import * as readerThemes from 'constants/reader-themes';
-import { LIST_BOOKS } from './views';
+import { RECENTLY_OPENED } from './views';
 
 export default {
-  drawer: false, toasts: [],
-  books: [], view: LIST_BOOKS, save: '',
+  drawer: false, toasts: [], view: RECENTLY_OPENED, save: '',
+  books: [],
   account: {
     subscription: 0, library: '', librarySizeLimit: 15
   },
@@ -13,7 +13,8 @@ export default {
       theme: 'light'
     },
     bookList: {
-      view: 'compact', table: {
+      view: 'compact',
+      table: {
         columns: [
           'title', 'authors', 'series', 'added', 'rating'
         ],
