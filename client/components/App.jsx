@@ -23,7 +23,7 @@ import List from 'react-md/lib/Lists/List';
 import Settings from 'components/settings/Index';
 import Account from 'components/account/Index';
 import Library from 'components/library/Index';
-import Books from 'components/books/Index';
+import Books from 'components/books/Books';
 
 // Modules
 import loadBooksFromApi from 'lib/books/load-from-api';
@@ -268,6 +268,12 @@ class App extends React.Component {
           colored fixed
           className={this.state.view == READ_BOOK ? 'hidden' : ''}
           actions={[
+            <Button
+              icon
+              key='search'
+              onClick={() => location.hash = '#books/list/all'}
+            >search</Button>,
+
             <Button
               icon
               key='home'
