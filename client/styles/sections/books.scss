@@ -299,21 +299,6 @@ span.word-count, span.rating {
   }
 }
 
-table.list {
-  td {
-    border-bottom: solid 0.1em $llgray;
-    padding: 0.2em 1em;
-  }
-}
-
-.book-search > input[type=text] {
-  width: 25em;
-  display: inline-block;
-  font-size: 80%;
-  max-width: 90%;
-  margin-right: 0.4em;
-}
-
 div.upload-books {
   padding: 1em;
 }
