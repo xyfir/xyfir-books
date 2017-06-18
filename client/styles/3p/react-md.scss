@@ -38,7 +38,7 @@ div.main.md-toolbar-relative {
 }
 
 .md-dialog--centered {
-  width: 50%;
+  min-width: 50%;
 
   >section.md-dialog-content {
     overflow-y: auto;
