@@ -356,6 +356,8 @@ export default class Reader extends React.Component {
         this._applyStyles();
         this._applyHighlights(this.state.highlight, true);
         this._getWordCount();
+
+        epub.renderer.triggerEvent({ type: 'locationChanged' });
       });
   }
   
