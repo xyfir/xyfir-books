@@ -38,22 +38,6 @@ export default class ListAllBooks extends React.Component {
     this._updateSearch();
   }
 
-  onSearchInfo() {
-    swal({
-      title: 'Advanced Search Information',
-      text: `
-        For advanced searches you can search by metadata field
-        <br/><br />
-        <strong>Example:</strong> <code>authors:search title:contains_query</code>
-        <br /><br />
-        Use underscores in place of spaces when a search query for a field contains spaces.
-        <br />
-        Using multiple fields will return all books that match any of fields.
-      `,
-      html: true
-    });
-  }
-
   /**
    * Set the value for APP.state.config.bookList.view.
    * @param {string} view - 'compact|grid|table'
@@ -94,13 +78,7 @@ export default class ListAllBooks extends React.Component {
     
     return (
       <div className='list-all'>
-        <div className='book-search'>
-          <Search ref='search' dispatch={this.props.dispatch} />
-          <a
-            onClick={() => this.onSearchInfo()}
-            className='icon-info'
-          />
-        </div>
+        <Search ref='search' dispatch={this.props.dispatch} />
         
         <div className='old'>{view}</div>
 
