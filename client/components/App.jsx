@@ -67,16 +67,17 @@ class App extends React.Component {
   componentWillMount() {
     const q = parseQuery();
 
-    // PhoneGap app opens to vynote.com/workspace/#?phonegap=1
-    if (q.phonegap) {
-      localStorage.setItem('isPhoneGap', 'true');
+    // PhoneGap app opens to #?phonegap=1
+    if (q.phonegap && !localStorage.isPhoneGap) {
+      localStorage.isPhoneGap = 'true',
       location.hash = '';
-      this._initialize();
+      
+      location.reload();
     }
     // Attempt to login using XID/AUTH or skip to initialize()
     else if (q.xid && q.auth) {
-      q.affiliate = localStorage.getItem('affiliate') || '';
-      q.referral = localStorage.getItem('referral') || '';
+      q.affiliate = localStorage.affiliate || '';
+      q.referral = localStorage.referral || '';
       
       request
         .post('../api/account/login')
@@ -133,7 +134,7 @@ class App extends React.Component {
     if (navigator.onLine) {
       // Access token is generated upon a successful login
       // Used to create new session without forcing login each time
-      const token = localStorage.getItem('accessToken') || '';
+      const token = localStorage.accessToken || '';
 
       // Access token is required
       if (!token && ENVIRONMENT != 'dev')
