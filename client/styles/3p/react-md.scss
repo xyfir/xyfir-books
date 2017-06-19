@@ -5,6 +5,13 @@ $md-secondary-color: $md-blue-grey-500;
 
 @include react-md-everything;
 
+@include react-md-theme-everything(
+  $md-primary-color,
+  $md-secondary-color,
+  false, // Dark theme
+  'theme-dark'
+);
+
 /*
   Overwrite styles set by react-md or add styling to react-md components.
 */
