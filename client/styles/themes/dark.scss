@@ -1,17 +1,16 @@
 body.theme-dark {
-  background-color: #1E1E1E;
-  color: #CCC;
+  .old {
+    background-color: #1E1E1E;
+    color: #CCC;
 
-  section {
-    background-color: #373737;
-  }
+    section {
+      background-color: #373737;
+    }
 
-  .navbar {
-    background-color: #252526;
-  }
-
-  a > span[class^="icon-"]:hover {
-    color: #C00000;
+    input, select, textarea {
+      background-color: #3C3C3C;
+      color: #CCC;
+    }
   }
 
   span.date-added, span.percent-complete, span.rating, span.word-count {
@@ -22,11 +21,10 @@ body.theme-dark {
     background-color: #3F3F46;
   }
 
-  .list > .list-all > .list-table {
+  div.list-table {
     .selected-book {
       .controls {
         background-color: #252526;
-        border: 0.1em solid #3F3F46;
       }
     }
 
@@ -39,10 +37,6 @@ body.theme-dark {
         background-color: #3F3F46;
       }
 
-      .book.selected {
-        background-color: #C7444A;
-      }
-
       .book:hover, .book:nth-child(even) {
         background-color: #3F3F46;
       }
@@ -51,19 +45,6 @@ body.theme-dark {
 
   .edit-books div.comments, .manage-book div.comments {
     background-color: #3F3F46;
-  }
-
-  input, select, textarea {
-    background-color: #3C3C3C;
-    color: #CCC;
-  }
-
-  a {
-    color: #C7444A;
-
-    &:hover {
-      color: #C00000;
-    }
   }
   
   .markdown-body {
@@ -83,29 +64,7 @@ body.theme-dark {
     }
   }
 
-  .reader {
-    .modal {
-      background-color: #252526;
-
-      ul > li:nth-child(even) {
-        background-color: #3F3F46;
-      }
-
-      .annotation-set {
-        background-color: #3F3F46
-      }
-
-      .annotation > .head > nav > a.active {
-        color: #C00000;
-      }
-
-      .annotation > .head > nav > a:hover {
-        color: #C7444A;
-      }
-    }
-  }
-
-  .modal.view-selector, .find-cover {
+  .find-cover {
     background-color: #252526 !important;
   }
 }
