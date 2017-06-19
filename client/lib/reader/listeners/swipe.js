@@ -48,7 +48,8 @@ export default function(el, fn) {
           })
         );
         
-        e.preventDefault();
+        // !! Needed when emulating touch events to prevent double 'clicks'
+        //e.preventDefault();
       }
     }
   }, false);
