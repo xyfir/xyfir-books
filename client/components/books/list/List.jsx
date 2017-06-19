@@ -1,7 +1,6 @@
 import React from 'react';
 
 // Modules
-import showNavbarText from 'lib/misc/show-navbar-text';
 import parseHashQuery from 'lib/url/parse-hash-query';
 
 // Components
