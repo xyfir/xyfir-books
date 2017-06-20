@@ -87,9 +87,10 @@ class App extends React.Component {
             location.replace(XACC + 'login/service/14');
           }
           else {
-            localStorage.accessToken = res.body.accessToken;
-            this._initialize();
-            location.hash = location.hash.split('?')[0];
+            localStorage.accessToken = res.body.accessToken,
+            location.hash = '';
+
+            location.reload();
           }
         });
     }
