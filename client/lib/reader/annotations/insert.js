@@ -9,11 +9,11 @@ import wrapMatches from 'lib/reader/matches/wrap';
 /**
  * Finds and highlights an annotation set's items within the ebook's rendered
  * HTML.
- * @module client/lib/reader/annotations/insert
  * @param {object} set - An annotation set.
  */
 export default function(set) {
 
+  const wordChar = /[A-Za-z0-9]/;
   const markers = findAnnotationMarkers(set.items);
   const order = buildAnnotationSearchOrder(set.items);
   let html = epub.renderer.doc.body.innerHTML;
@@ -23,9 +23,18 @@ export default function(set) {
     const search = item.searches[o.search];
 
     // If not regex, escape regex characters and wrap in \b
-    const needle = search.regex
-      ? search.text
-      : '\\b' + escapeRegex(search.text) + '\\b';
+    let needle;
+    if (search.regex) {
+      needle = search.text;
+    }
+    else {
+      // Add \b start/end of regex if start/end is a non-word character
+      // Prevents words from being highlighted within longer words
+      needle =
+        (wordChar.test(search.text[0] ? '\\b' : '')) +
+        escapeRegex(search.text) +
+        (wordChar.test(search.text[search.text.length - 1] ? '\\b' : ''));
+    }
 
     // Get start/end string indexes for each match
     let matches = getMatchIndexes(needle, html);
