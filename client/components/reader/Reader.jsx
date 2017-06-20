@@ -514,10 +514,13 @@ export default class Reader extends React.Component {
     else if (highlight.mode == 'notes') {
       highlightNotes(this.state.book.notes);
     }
-    // Annotations can only come after notes
+    // Annotations can come after notes or another annotation set
     else if (highlight.mode == 'annotations') {
       // Can be skipped if 'annotations' default and first load
-      if (!skipUnwrap) unwrap('note');
+      if (!skipUnwrap) {
+        unwrap('note');
+        unwrap('annotation');
+      }
 
       // Ensure book has annotation set
       if (
