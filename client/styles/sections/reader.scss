@@ -112,10 +112,19 @@ span.reader-dialog {
     >div.content {
       >div.document {
         padding: 1em;
+
+        p {
+          font-size: 100%;
+        }
       }
 
       >div.audio > audio {
         width: 100%;
+      }
+
+      >div.image img {
+        max-height: 100%;
+        max-width: 100%;
       }
     }
   }
