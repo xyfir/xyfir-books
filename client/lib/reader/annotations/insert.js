@@ -31,9 +31,9 @@ export default function(set) {
       // Add \b start/end of regex if start/end is a non-word character
       // Prevents words from being highlighted within longer words
       needle =
-        (wordChar.test(search.text[0] ? '\\b' : '')) +
+        (wordChar.test(search.text[0]) ? '\\b' : '') +
         escapeRegex(search.text) +
-        (wordChar.test(search.text[search.text.length - 1] ? '\\b' : ''));
+        (wordChar.test(search.text[search.text.length - 1]) ? '\\b' : '');
     }
 
     // Get start/end string indexes for each match
