@@ -92,11 +92,17 @@ span.reader-dialog {
       margin-top: -0.5em;
       margin-bottom: 0.5em;
     }
+
+    >div.description, >span.book {
+      padding: 0em 1em;
+    }
   }
 
   div.annotation {
     height: 100%;
+    display: flex;
     overflow: hidden;
+    flex-direction: column;
 
     >div.content, >div.content > div {
       display: flex;
