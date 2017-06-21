@@ -22,7 +22,8 @@ export default ({ annotation }) =>
         src={
           'https://www.google.com/maps/embed/v1/place' +
           '?key=AIzaSyAezY_0Z_q0G_WPm-UXwkGmLBYURLLDKfE' +
-          '&q=' + annotation.value
+          '&q=' + encodeURIComponent(annotation.value) +
+          '&maptype=satellite'
         }
         className='gmaps'
       />
