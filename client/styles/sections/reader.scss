@@ -79,6 +79,10 @@ span.reader-dialog {
   }
 
   section.manage-annotations.find {
+    >ul {
+      padding: 0.5em 0em;
+    }
+
     div.discover {
       >div.md-text-field-container {
         width: 100%;
@@ -87,14 +91,12 @@ span.reader-dialog {
   }
 
   div.manage-annotations.view-set {
+    padding: 1em;
+
     >span.book {
       display: block;
       margin-top: -0.5em;
       margin-bottom: 0.5em;
-    }
-
-    >div.description, >span.book {
-      padding: 0em 1em;
     }
   }
 
@@ -105,9 +107,13 @@ span.reader-dialog {
     flex-direction: column;
 
     >div.content, >div.content > div {
-      display: flex;
       flex-flow: column;
+      display: flex;
       height: 100%;
+
+      /* allow scrolling on iOS */
+      -webkit-overflow-scrolling: touch;
+  	  overflow-y: auto;
 
       >iframe {
         flex: 1 1 auto;
@@ -128,9 +134,13 @@ span.reader-dialog {
         width: 100%;
       }
 
-      >div.image img {
-        max-height: 100%;
-        max-width: 100%;
+      >div.image > span {
+        padding: 1em;
+
+        >img {
+          max-height: 100%;
+          max-width: 100%;
+        }
       }
     }
   }
