@@ -3,16 +3,16 @@ import React from 'react';
 // react-md
 import Button from 'react-md/lib/Buttons/Button';
 
-export default ({ annotation }) => (
+export default ({ link }) => (
   <div className='video'>{
-    annotation.value.indexOf('youtube.com/') > -1 ? (
+    link.indexOf('youtube.com/') > -1 ? (
       <iframe
-        src={annotation.value}
+        src={link}
         className='youtube'
       />
-    ) : annotation.value.indexOf('vimeo.com/') > -1 ? (
+    ) : link.indexOf('vimeo.com/') > -1 ? (
       <iframe
-        src={annotation.value}
+        src={link}
         className='vimeo'
       />
     ) : (
@@ -22,10 +22,10 @@ export default ({ annotation }) => (
           tooltipPosition='right'
           fixedPosition='bl'
           tooltipLabel='Go to source'
-          onClick={() => window.open(annotation.value)}
+          onClick={() => window.open(link)}
         >link</Button>
         
-        <video src={annotation.value} controls />
+        <video src={link} controls />
       </div>
     )
   }</div>
