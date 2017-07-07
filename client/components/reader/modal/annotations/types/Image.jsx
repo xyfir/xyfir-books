@@ -5,14 +5,12 @@ import Button from 'react-md/lib/Buttons/Button';
 
 export default ({ annotation }) => (
   <div className='image'>
-    <Button
-      floating fixed secondary
-      tooltipPosition='right'
-      fixedPosition='bl'
-      tooltipLabel='Go to source'
-      onClick={() => window.open(annotation.value)}
-    >link</Button>
-
-    <span><img src={annotation.value} /></span>
+    {(
+      Array.isArray(annotation.value) ? annotation.value : [annotation.value]
+    ).map(img =>
+      <a href={img} key={img} target='_blank'>
+        <img src={annotation.value} />
+      </a>
+    )}
   </div>
 );
