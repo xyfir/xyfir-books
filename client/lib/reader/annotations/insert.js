@@ -18,6 +18,11 @@ export default function(set) {
   const order = buildAnnotationSearchOrder(set.items);
   let html = epub.renderer.doc.body.innerHTML;
 
+  // Get current chapter index to compare with chapter in markers
+  const chapter = Object
+    .keys(epub.zip.zip.files)
+    .findIndex(file => file == epub.currentChapter.href);
+
   order.forEach(o => {
     const item = set.items[o.item];
     const search = item.searches[o.search];
@@ -40,23 +45,13 @@ export default function(set) {
     let matches = getMatchIndexes(needle, html);
 
     if (!search.range.global) {
-      // Get current chapter index to compare with chapter in markers
-      let chapter = 0;
-      Object.keys(epub.zip.zip.files).forEach((file, i) => {
-        if (file == epub.currentChapter.href) chapter = i;
-      });
-
       // Filter out invalid matches based on range.before|after
       matches = matches.filter(match => {
         // Get before/after marker objects
         // Each object contains chapter index and string index
         // of where marker occured in book
-        const before = markers[
-          `${item.id}-${o.search}-1`
-        ];
-        const after  = markers[
-          `${item.id}-${o.search}-2`
-        ];
+        const before = markers[`${item.id}-${o.search}-1`];
+        const after  = markers[`${item.id}-${o.search}-2`];
 
         if (search.range.before) {
           // Marker could not be found
@@ -85,9 +80,24 @@ export default function(set) {
       });
     }
 
-    html = wrapMatches(
+    const wrapped = wrapMatches(
       matches, html, 'annotation', set.id + '-' + item.id
     );
+
+    html = wrapped.html;
+
+    // Update string indexes within markers{}
+    Object
+      .keys(markers)
+      .filter(marker => marker.chapter != chapter)
+      .map(marker => {
+        // Increase marker's string index by the wrapper's length every time
+        // an annotation was inserted before the marker
+        wrapped.inserts.map(insertIndex => {
+          if (markers[marker].index > insertIndex)
+            markers[marker].index += wrapped.wrapLength;
+        });
+      });
   });
 
   epub.renderer.doc.body.innerHTML = html;
