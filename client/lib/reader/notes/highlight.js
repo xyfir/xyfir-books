@@ -21,7 +21,7 @@ export default function(notes) {
       // Loop through the note's highlights
       note.highlights.forEach(hl => {
         const matches = getMatchIndexes(hl, html);
-        html = wrapMatches(matches, html, 'note', i);
+        html = wrapMatches(matches, html, 'note', i).html;
       })
     );
 
