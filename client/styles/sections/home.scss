@@ -7,6 +7,10 @@
 
   table {
     margin: initial;
+
+    th {
+      font-weight: bold;
+    }
   }
 
   section.trial, section.main, nav, footer {
@@ -27,15 +31,16 @@
     background-color: $blue;
     color: white;
     
-    h1, h2 {
-      color: $black;
+    h1, h2, p {
+      color: white;
     }
     
     a {
       color: $lblack;
-    }
-    a:hover {
-      color: $ddgray;
+
+      &:hover {
+        color: $ddgray;
+      }
     }
   }
   
@@ -50,13 +55,10 @@
   section.with-screenshot {
     display: flex;
     align-items: center;
+    flex-direction: column;
 
     >img {
-      height: 24em;
-      flex: 1;
-    }
-    >div {
-      flex: 3;
+      height: 30em;
     }
   }
 
@@ -68,7 +70,7 @@
     a[class^="icon-"] {
       font-size: 125%;
       display: inline-block;
-      padding: 0.2em;
+      padding-right: 0.4em;
     }
   }
 
@@ -119,10 +121,8 @@
     text-align: center;
 
     section.with-screenshot {
-      display: block !important;
-
       >img {
-        height: 10em;
+        height: 24em;
       }
     }
   }
