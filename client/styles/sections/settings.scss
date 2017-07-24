@@ -1,16 +1,16 @@
-.settings-reader {
-    
-    .padding {
-        
-        .example {
-            border: solid 1px black;
-        }
-        
-    }
-    
-    input[type="color"] {
-        display: block;
-        margin: 1em auto;
-    }
-    
+div.reader-settings {
+  span.example.page-padding {
+    border: solid 1px black;
+  }
+
+  div.color-picker {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+div.color-picker-dialog header.color {
+  height: 2em;
 }
