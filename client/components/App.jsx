@@ -282,7 +282,9 @@ class App extends React.Component {
               onClick={() => location.hash = '#'}
             >home</Button>
           ]}
-          title='xyBooks'
+          title={'xyBooks' + (
+            Date.now() > this.state.account.subscription ? ' (free)' : ''
+          )}
           nav={
             <Button
               icon
