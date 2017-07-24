@@ -4,42 +4,19 @@ import React from 'react';
 import { setTheme } from 'actions/creators/settings';
 import { save } from 'actions/creators/index';
 
+// react-md
+import SelectField from 'react-md/lib/SelectFields';
+import Button from 'react-md/lib/Buttons/Button';
+import Paper from 'react-md/lib/Papers';
+
 export default class GeneralSettings extends React.Component {
 
   constructor(props) {
     super(props);
-    
-    this.onClear = this.onClear.bind(this);
-    this.onSave = this.onSave.bind(this);
-  }
-  
-  onClear() {
-    // Covers
-    if (this.refs['clear-covers'].checked) {
-      localforage.keys().then(keys => keys.forEach(key => {
-        if (key.indexOf('cover-') == 0) {
-          localforage.removeItem(key)
-            .then(() => { return; }).catch((e) => { return; });
-        }
-      })).catch(err => {
-        return;
-      });
-    }
-    
-    // ** Books
-    if (this.refs['clear-books'].checked) {
-      
-    }
-    
-    // Metadata
-    if (this.refs['clear-metadata'].checked) {
-      localforage.removeItem('books')
-        .then(() => { return; }).catch((e) => { return; });
-    }
   }
   
   onSave() {
-    const theme = this.refs.theme.value;
+    const theme = this.refs.theme.state.value;
     
     document.body.className = 'theme-' + theme;
     
@@ -47,39 +24,57 @@ export default class GeneralSettings extends React.Component {
     this.props.dispatch(save('config'));
   }
 
+  onClear() {
+    const next = location.reload();
+    localforage.clear().then(next).catch(next);
+  }
+
   render() {
-    const conf = this.props.data.config;
+    const { config, account } = this.props.data;
     
     return (
-      <div className='settings-general old'>
-        <section className='main'>
-          <label>Theme</label>
-          <select ref='theme' defaultValue={conf.general.theme}>
-            <option value='light'>Light</option>
-            <option value='dark'>Dark</option>
-          </select>
+      <div className='general-settings'>
+        <Paper
+          zDepth={1}
+          component='section'
+          className='section flex'
+        >
+          <SelectField
+            id='select--theme'
+            ref='theme'
+            label='Theme'
+            disabled={Date.now() > account.subscription}
+            menuItems={[
+              { label: 'Light', value: 'light' },
+              { label: 'Dark', value: 'dark' }
+            ]}
+            className='md-cell'
+            defaultValue={config.general.theme}
+          />
         
-          <button className='btn-primary' onClick={this.onSave}>
-            Save Settings
-          </button>
-        </section>
+          <Button
+            primary raised
+            onClick={() => this.onSave()}
+            label='Save'
+          >save</Button>
+        </Paper>
         
-        <section className='storage'>
+        <Paper
+          zDepth={1}
+          component='section'
+          className='storage section flex'
+        >
           <h2>Clear Local Storage</h2>
           <p>
-            Choose data to remove from your local storage. This data will still be available in the cloud and will be redownloaded and saved locally when you access it.
+            This data will still be available in the cloud and will be redownloaded and saved locally when you access it.
           </p>
           
-          <button className='btn-secondary' onClick={this.onClear}>
-            Clear Data
-          </button>
-          
-          <div>
-            <input type='checkbox' ref='clear-covers' />Book Covers
-            <input type='checkbox' ref='clear-books' />Book Files
-            <input type='checkbox' ref='clear-metadata' />Book Metadata
-          </div>
-        </section>
+          <Button
+            secondary raised
+            onClick={() => this.onClear()}
+            label='Clear'
+          >clear</Button>
+        </Paper>
       </div>
     );
   }
