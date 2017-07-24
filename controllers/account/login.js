@@ -46,7 +46,6 @@ module.exports = async function(req, res) {
     // Register user
     if (!rows.length) {
       const insert = {
-        subscription: moment().add(7, 'days').unix() * 1000,
         xyfir_id: req.body.xid, email: xyAccRes.body.email,
         library_id: rstring.generate(64),
         xad_id: xyAccRes.body.xadid
@@ -115,7 +114,7 @@ module.exports = async function(req, res) {
         )
       });
         
-      req.session.subscription = insert.subscription;
+      req.session.subscription = 0;
       req.session.library = library;
       req.session.xadid = xyAccRes.body.xadid;
     }
