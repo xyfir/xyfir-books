@@ -1,25 +1,24 @@
-import React from "react";
+import React from 'react';
 
 // Components
-import Download from "./Download";
-import Upload from "./Upload";
-import Info from "./Info";
+import Upload from 'components/library/Upload';
+import Info from 'components/library/Info';
 
 export default class ManageLibrary extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+	constructor(props) {
+		super(props);
+	}
 
-    render() {
-        switch (this.props.data.view.split('/')[1]) {
-            case "DOWNLOAD":
-                return <Download data={this.props.data} dispatch={this.props.dispatch} />;
-            case "UPLOAD":
-                return <Upload data={this.props.data} dispatch={this.props.dispatch} />;
-            case "INFO":
-                return <Info data={this.props.data} dispatch={this.props.dispatch} />;
-        }
-    }
+	render() {
+		switch (this.props.data.view.split('/')[1]) {
+			case 'DOWNLOAD':
+				return <Download data={this.props.data} dispatch={this.props.dispatch} />
+			case 'UPLOAD':
+				return <Upload data={this.props.data} dispatch={this.props.dispatch} />
+			case 'INFO':
+				return <Info data={this.props.data} dispatch={this.props.dispatch} />
+		}
+	}
 
 }
