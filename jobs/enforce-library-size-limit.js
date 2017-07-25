@@ -78,7 +78,9 @@ module.exports = function(fn) {
       else if (rows[index].deleteLibrary) {
         // Delete library
         request
-          .delete(config.addresses.library + rows[index].library_id)
+          .delete(
+            config.addresses.library + 'libraries/' + rows[index].library_id
+          )
           .end((err, res) => {
             if (!err && !res.body.error) {
               doUpdates(cn, index + 1);
@@ -108,12 +110,11 @@ module.exports = function(fn) {
     const getLibrarySize = (index) => {
       // All libraries checked
       if (rows[index] === undefined) {
-        db(cn => doUpdates(cn, 0));
-        return;
+        return db(cn => doUpdates(cn, 0));
       }
 
       request
-        .get(config.addresses.library + rows[index].library_id + '/size')
+        .get(config.addresses.library + 'libraries/' + rows[index].library_id)
         .end((err, res) => {
           if (!err && !res.body.error) {
             // Library is at or over limit

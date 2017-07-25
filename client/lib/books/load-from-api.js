@@ -52,7 +52,7 @@ export default function(library, dispatch, fn) {
     .then(res => {
       books1 = res.body.books;
       
-      return request.get(LIBRARY + library + '/books');
+      return request.get(`${LIBRARY}libraries/${library}/books`);
     })
     .then(res => {
       let books2 = res.body.books;

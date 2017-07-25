@@ -142,8 +142,9 @@ export default class EditBooks extends React.Component {
       
       this.setState({ status: 'Sending new metadata to server' });
       
-      const url = LIBRARY + this.props.data.account.library
-        + '/books/' + id + '/metadata';
+      const url = LIBRARY +
+        'libraries/' + this.props.data.account.library +
+        '/books/' + id + '/metadata';
       
       // Update book's metadata
       request({url, method: 'PUT', data: { data: JSON.stringify(data) }, success: (res) => {

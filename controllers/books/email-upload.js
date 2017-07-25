@@ -58,7 +58,10 @@ module.exports = async function(req, res) {
 
         // Upload file to xyLibrary
         await request
-          .post(config.addresses.library + rows[0].library_id + '/books')
+          .post(
+            config.addresses.library + 'libraries/' +
+            rows[0].library_id + '/books'
+          )
           .attach('book', fpath);
       }
       catch (err) { }

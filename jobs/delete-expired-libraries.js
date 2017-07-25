@@ -50,7 +50,10 @@ module.exports = function(fn) {
           // Attempt to delete library at rows[index]
           else {
             request
-              .delete(config.addresses.library + rows[index].library_id)
+              .delete(
+                config.addresses.library + 'libraries/' +
+                rows[index].library_id
+              )
               .end((err, res) => {
                 // Library deleted
                 if (!err && !res.body.error) {

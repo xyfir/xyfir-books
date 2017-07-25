@@ -127,7 +127,7 @@ module.exports = function (req, res) {
         }
         else if (createLibrary) {
           request.post({
-            url: config.addresses.library + library
+            url: config.addresses.library + 'libraries/' + library
           }, (err, response, body) => {
             if (err || JSON.parse(body).error) {
               res.json({

@@ -59,8 +59,8 @@ export default class ManageBook extends React.Component {
 
     request
       .get(
-        LIBRARY + this.props.data.account.library + '/books/' +
-        this.state.id + '/metadata?' + search
+        LIBRARY + 'libraries/' + this.props.data.account.library +
+        '/books/' + this.state.id + '/metadata?' + search
       )
       .end((err, res) => {
         if (res.text == '1') {
@@ -110,8 +110,8 @@ export default class ManageBook extends React.Component {
 
     request
       .delete(
-        LIBRARY + this.props.data.account.library + '/books/' +
-        this.state.id + '/format/' + f
+        LIBRARY + 'libraries/' + this.props.data.account.library +
+        '/books/' + this.state.id + '/format/' + f
       )
       .end((err, res) => {
         if (err || res.body.error)
@@ -127,8 +127,8 @@ export default class ManageBook extends React.Component {
       return;
     }
 
-    const url =
-      LIBRARY + this.props.data.account.library +
+    const url = LIBRARY +
+      'libraries/' + this.props.data.account.library +
       '/books/' + this.state.id + '/cover';
     
     upload(url, 'PUT', 'cover', [files[0]], res => {
@@ -192,7 +192,7 @@ export default class ManageBook extends React.Component {
     // Send to library server
     request
       .put(
-        LIBRARY + this.props.data.account.library +
+        LIBRARY + 'libraries/' + this.props.data.account.library +
         '/books/' + this.state.id + '/metadata'
       )
       .send({

@@ -65,7 +65,7 @@ function applySubscriptions(req, res, purchases) {
       // Generate library id if user does not have a library
       if (generateLibrary) {
         request.post({
-          url: config.addresses.library + library
+          url: config.addresses.library + 'libraries/' + library
         }, (err, response, body) => {
           if (err || JSON.parse(body).error)
             throw 'Contact support at books@xyfir.com';

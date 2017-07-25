@@ -64,7 +64,7 @@ module.exports = async function(req, res) {
       
       // Create library on xyLibrary
       const xyLibRes = await request
-        .post(config.addresses.library + library);
+        .post(config.addresses.library + 'libraries/' + library);
       
       if (xyLibRes.body.error) throw 'Could not create new library';
 

@@ -41,7 +41,7 @@ export default class UploadBooks extends React.Component {
       
       // Upload files
       const req = request
-        .post(LIBRARY + this.props.data.account.library + '/books');
+        .post(`${LIBRARY}libraries/${this.props.data.account.library}/books`);
       
       files.forEach(file => req.attach('book', file));
 

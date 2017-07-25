@@ -33,10 +33,11 @@ export default class AddFormat extends React.Component {
     
     this.setState({ converting: true });
     
-    const url = LIBRARY + this.props.data.account.library
-      + '/books/' + this.state.id
-      + '/format/convert?from=' + this.refs.convertFrom.value
-      + '&to=' + this.refs.convertTo.value;
+    const url = LIBRARY +
+      'libraries/' + this.props.data.account.library +
+      '/books/' + this.state.id +
+      '/format/convert?from=' + this.refs.convertFrom.value +
+      '&to=' + this.refs.convertTo.value;
       
     request({url, method: 'POST'}, res => {
       this.setState({ converting: false });
@@ -61,8 +62,9 @@ export default class AddFormat extends React.Component {
     
     this.setState({ upload: true });
     
-    const url = LIBRARY + this.props.data.account.library
-      + '/books/' + this.state.id + '/format'; 
+    const url = LIBRARY +
+      'libraries/' + this.props.data.account.library +
+      '/books/' + this.state.id + '/format'; 
     
     upload(url, 'POST', 'book', [files[0]], res => {
       this.setState({ upload: false });

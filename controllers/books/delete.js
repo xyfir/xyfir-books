@@ -19,7 +19,10 @@ module.exports = async function(req, res) {
 
   try {
     const xyLibRes = await request
-      .delete(config.addresses.library + req.session.library + '/books')
+      .delete(
+        config.addresses.library + 'libraries/' +
+        req.session.library + '/books'
+      )
       .send({ books: req.body.ids });
 
     if (xyLibRes.body.error) throw xyLibRes.body.message || 'xyLibrary error';
