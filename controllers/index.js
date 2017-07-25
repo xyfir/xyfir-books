@@ -1,17 +1,35 @@
 const router = require('express').Router();
 
-/* Library Manager */
-router.post(
-  '/library-manager/:lib/library',
-  require('./library-manager/add-library')
+router.get('/ad', require('./get-ad'));
+
+/* Account */
+router.get(
+  '/account',
+  require('./account/info')
 );
 router.post(
-  '/library-manager/:lib/books',
-  require('./library-manager/add-books')
+  '/account/login',
+  require('./account/login')
+);
+router.get(
+  '/account/logout',
+  require('./account/logout')
 );
 router.put(
-  '/library-manager/:lib/books/:book',
-  require('./library-manager/increment-version')
+  '/account/size-limit',
+  require('./account/increase-size-limit')
+);
+router.put(
+  '/account/subscription',
+  require('./account/extend-subscription')
+);
+router.post(
+  '/account/subscription',
+  require('./account/purchase-subscription')
+);
+router.post(
+  '/account/native-purchase',
+  require('./account/native-purchase')
 );
 
 /* Books */
@@ -56,13 +74,18 @@ router.post(
   require('./books/note/remove')
 );
 
-/* Account */
-router.get('/account', require('./account/info'));
-router.post('/account/login', require('./account/login'));
-router.get('/account/logout', require('./account/logout'));
-router.put('/account/size-limit', require('./account/increase-size-limit'));
-router.put('/account/subscription', require('./account/extend-subscription'));
-router.post('/account/subscription', require('./account/purchase-subscription'));
-router.post('/account/native-purchase', require('./account/native-purchase'));
+/* Library Manager */
+router.post(
+  '/library-manager/:lib/library',
+  require('./library-manager/add-library')
+);
+router.post(
+  '/library-manager/:lib/books',
+  require('./library-manager/add-books')
+);
+router.put(
+  '/library-manager/:lib/books/:book',
+  require('./library-manager/increment-version')
+);
 
 module.exports = router;
