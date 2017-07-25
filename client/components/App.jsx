@@ -20,6 +20,7 @@ import Button from 'react-md/lib/Buttons/Button';
 import List from 'react-md/lib/Lists/List';
 
 // Components
+import Advertisement from 'components/misc/Advertisement';
 import Settings from 'components/settings/Index';
 import Account from 'components/account/Index';
 import Library from 'components/library/Index';
@@ -297,11 +298,11 @@ class App extends React.Component {
           onVisibilityToggle={v => this.setState({ drawer: v })}
           autoclose={true}
           navItems={[
-            <a href='#account'>
-              <ListItem primaryText='Account' />
-            </a>,
             <a href='#library/info'>
               <ListItem primaryText='Manage Library' />
+            </a>,
+            <a href='#account'>
+              <ListItem primaryText='Account' />
             </a>,
             <a onClick={() => this.onLogout()}>
               <ListItem primaryText='Logout' />
@@ -346,7 +347,10 @@ class App extends React.Component {
           type={Drawer.DrawerTypes.TEMPORARY}
         />
 
-        <div className='main md-toolbar-relative'>{view}</div>
+        <div className='main md-toolbar-relative'>
+          <Advertisement data={this.state} />
+          {view}
+        </div>
 
         <Snackbar
           toasts={this.state.toasts}
