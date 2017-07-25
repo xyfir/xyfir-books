@@ -1,69 +1,86 @@
+import request from 'superagent';
 import React from 'react';
-
-// Modules
-import request from 'lib/request/index';
 
 // Constants
 import { LIBRARY } from 'constants/config';
+
+// react-md
+import Button from 'react-md/lib/Buttons/Button';
+import Paper from 'react-md/lib/Papers';
 
 export default class LibraryInfo extends React.Component {
 
   constructor(props) {
     super(props);
-    
-    const url = LIBRARY + this.props.data.account.library + '/size';
       
     this.state = { size: 0 };
     
-    request({url, success: (res) => {
-      if (res.error)
-        this.setState({ size: -1 });
-      else
-        this.setState({ size: res.size });
-    }});
+    request
+      .get(`${LIBRARY}libraries/${this.props.data.account.library}`)
+      .end((err, res) => {
+        if (err || res.body.error)
+          this.setState({ size: -1 });
+        else
+          this.setState({ size: res.body.size });
+      });
+  }
+
+  onDownload() {
+    request
+      .post(`${LIBRARY}libraries/${this.props.data.account.library}/zip`)
+      .send({
+        email: this.props.data.account.email
+      })
+      .end((err, res) => {
+        if (err || res.body.error)
+          return swal('Error', 'Something went wrong...', 'error');
+
+        swal(
+          'Processing...',
+          'A download link will be sent to your email once it\'s ready. \
+          The download link will be available for 24 hours after being sent.'
+        );
+      });
   }
 
   render() {
     return (
-      <div className='library-info old'>
-        <section className='info'>
-          <p>
-            This information details the size and book count of your library in the cloud.
-            <br />
-            Locally stored size and book count may differ.
-          </p>
-          
-          <table>
-            <tr>
-              <th>Size</th>
-              <td>{
-                this.state.size == -1
-                  ? 'Could not calculate size'
-                  : (this.state.size * 0.000001) + ' MB'
-              }</td>
-            </tr>
-            <tr>
-              <th>Books</th>
-              <td>{this.props.data.books.length}</td>
-            </tr>
-          </table>
-        </section>
-        
-        <section className='buttons'>
-          <button
-            className='btn-secondary'
-            onClick={() => {
-              location.hash = 'library/download';
-            }}
-          ><span className='icon-download' />Download</button>
-          <button
-            className='btn-secondary'
-            onClick={() => {
-              location.hash = 'library/upload';
-            }}
-          ><span className='icon-upload' />Upload</button>
-        </section>
-      </div>
+      <Paper
+        zDepth={1}
+        component='section'
+        className='library-info section flex'
+      > 
+        <table>
+          <tr>
+            <th>Id</th>
+            <td>{this.props.data.account.library}</td>
+          </tr>
+          <tr>
+            <th>Size</th>
+            <td>{
+              this.state.size == -1
+                ? 'Could not calculate size'
+                : (this.state.size * 0.000001) + 'MB'
+            }</td>
+          </tr>
+        </table>
+
+        <Button
+          floating fixed primary
+          tooltipPosition='right'
+          tooltipLabel='Upload new library'
+          fixedPosition='bl'
+          onClick={() => location.hash = '#library/upload'}
+        >cloud_upload</Button>
+
+        <Button
+          floating fixed primary
+          tooltipPosition='left'
+          tooltipLabel='Download library'
+          fixedPosition='br'
+          onClick={() => this.onDownload()}
+        >cloud_download</Button>
+      </Paper>
     );
   }
 
