@@ -11,8 +11,9 @@ const config = require('config');
   RETURN
     {
       error: boolean, message?: string,
+
       library: string, subscription:? number, uid?: number, xadid?: string,
-      librarySizeLimit?: number,
+      librarySizeLimit?: number, email?: string,
       referral?: {
         referral?: number, affiliate?: string,
         hasMadePurchase?: boolean
@@ -75,7 +76,7 @@ module.exports = async function(req, res) {
 
     sql = `
       SELECT
-        library_size_limit AS librarySizeLimit, subscription,
+        library_size_limit AS librarySizeLimit, subscription, email,
         library_id AS library, xad_id AS xadid, referral,
         user_id AS uid
       FROM users WHERE user_id = ?
