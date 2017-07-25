@@ -1,0 +1,19 @@
+section.upload-library {
+  padding: 1em;
+}
+
+section.library-info {
+  th {
+    font-weight: bold;
+    text-align: right;
+
+    &:after {
+      content: ":";
+    }
+  }
+    
+  td {
+    padding-left: 0.5em;
+    text-align: left;
+  }
+}
