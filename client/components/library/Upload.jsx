@@ -1,12 +1,15 @@
-import React from 'react';
 import Dropzone from 'react-dropzone';
+import request from 'superagent';
+import React from 'react';
 
 // Modules
 import loadBooksFromApi from 'lib/books/load-from-api';
-import upload from 'lib/request/upload';
 
 // Constants
 import { LIBRARY } from 'constants/config';
+
+// react-md
+import Paper from 'react-md/lib/Papers';
 
 export default class UploadLibrary extends React.Component {
 
@@ -14,8 +17,6 @@ export default class UploadLibrary extends React.Component {
     super(props);
     
     this.state = { uploading: false };
-    
-    this.onUpload = this.onUpload.bind(this);
   }
   
   onUpload(files) {
@@ -29,68 +30,66 @@ export default class UploadLibrary extends React.Component {
     ];
 
     if (acceptedTypes.indexOf(files[0].type) == -1) {
-      swal(
+      return swal(
         'Invalid File',
         'You can only upload libraries in a zip file',
         'error'
-      ); return;
+      );
     }
     
-    if (this.state.uploading)
-      return;
-    else
-      this.setState({ uploading: true })
-    
-    const url = LIBRARY + this.props.data.account.library + '/upload'; 
-    
-    upload(url, 'POST', 'lib', [files[0]], res => {
-      this.setState({ uploading: false })
-      
-      if (res.error) {
-        swal('Error', 'Could not upload library', 'error');
-      }
-      else {
-        swal(
-          'Success',
-          'Library uploaded successfully. Reloading library...',
-          'success'
-        );
+    if (this.state.uploading) return;
+
+    this.setState({ uploading: true })
+
+    request
+      .put(LIBRARY + 'libraries/' + this.props.data.account.library)
+      .attach('lib', files[0])
+      .end((err, res) => {
+        this.setState({ uploading: false })
         
-        loadBooksFromApi(
-          this.props.data.account.library,
-          this.props.dispatch
-        );
-      }
-    });
+        if (err || res.body.error) {
+          swal('Error', 'Could not upload library', 'error');
+        }
+        else {
+          swal(
+            'Success',
+            'Library uploaded successfully. Reloading library...',
+            'success'
+          );
+          
+          loadBooksFromApi(
+            this.props.data.account.library,
+            this.props.dispatch
+          );
+        }
+      });
   }
 
   render() {
     return (
-      <div className='library-upload old'>
-        <section className='info'>
-          <p>
-            Here you can upload an entire ebook library instead of individual ebook files.
-            <br />
-            Only <a target='_blank' href='https://calibre-ebook.com/'>Calibre</a> libraries are accepted.
-            <br /> 
-            The library must be zipped at the library's root folder. This means when you look inside the zip file you should see folders for all of the authors in your library and then your library's <em>metadata.db</em> database file.
-            <br />
-            Library zip file size is limited to 500 MB.
-            <br />
-            If you already have books in your library stored in the cloud they <strong>will</strong> be deleted. Uploading a library completely erases your old one.
-          </p>
-        </section>
+      <Paper
+        zDepth={1}
+        component='section'
+        className='upload-library section'
+      >
+        <p>
+          Here you can upload an entire ebook library instead of individual ebook files.
+          <br />
+          Only <a target='_blank' href='https://calibre-ebook.com/'>Calibre</a>-compatible libraries are accepted.
+          <br /> 
+          The library must be zipped at the library's root folder. This means when you look inside the zip file you should see folders for all of the authors in your library and then your library's <em>metadata.db</em> database file.
+          <br />
+          Library zip file size is limited to 500 MB.
+          <br />
+          If you already have books in your library stored in the cloud they <strong>will</strong> be deleted. Uploading a library completely erases your old one.
+        </p>
           
-        <section className='upload'>
-          <Dropzone onDrop={this.onUpload} className='dropzone'>{
-            this.state.uploading ? (
-              'Uploading library, this may take a while...'
-            ) : (
-              'Drag and drop library zip file or click box to choose file to upload.'
-            )
-          }</Dropzone>
-        </section>
-      </div>
+        <Dropzone onDrop={f => this.onUpload(f)} className='dropzone'>{
+          this.state.uploading
+            ? 'Uploading library, this may take a while...'
+            : 'Drag and drop zip file or click to choose a file to upload.'
+        }</Dropzone>
+      </Paper>
     );
   }
 
