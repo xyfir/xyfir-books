@@ -71,19 +71,19 @@ export default class UploadBooks extends React.Component {
     return (
       <Paper zDepth={1} className='upload-books section'>
         <p>
-          Upload ebooks to add to your library. Our system will automatically attempt to extract metadata (title, authors, ...) from the ebook files. Each book's metadata can be viewed and modified after upload.
+          Upload ebooks to your library. Our system will automatically attempt to extract metadata (title, authors, etc) from the ebook files. Each book's metadata can be viewed and modified after upload.
         </p>
         <p>
-          While only EPUB format ebooks can be read by the xyBooks ebook reader, any format can be uploaded and managed.
+          While only EPUB format ebooks can be read by xyBooks' ebook reader, any format can be uploaded and managed.
         </p>
         <p>
-          You can also upload books by sending an email to <code>upload-books@xyfir.com</code> with ebook files attached. Books will only be uploaded to your account if the email is sent from the email address that is linked to your xyBooks account.
+          You can also upload books by sending emails to <a href='mailto:upload-books@xyfir.com'>upload-books@xyfir.com</a> with ebook files attached. Books will only be uploaded to your account if the email is sent from the email address that is linked to your xyBooks account. You may upload up to 25MB worth of ebooks per email.
         </p>
         
         <Dropzone onDrop={f => this.onUpload(f)} className='dropzone'>{
           this.state.uploading
-          ? 'Uploading file(s), please wait...'
-          : 'Drag and drop ebook files or click box to choose files to upload'
+            ? 'Uploading file(s), please wait...'
+            : 'Drag and drop ebooks or click box to choose files to upload'
         }</Dropzone>
       </Paper>
     );
