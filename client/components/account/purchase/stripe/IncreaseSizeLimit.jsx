@@ -36,8 +36,8 @@ export default class StripeIncreaseLibrarySizeLimit extends React.Component {
         };
         
         request({
-          url: URL + 'api/account/size-limit',
-          method: 'PUT', data, success: (res) => {
+          url: URL + 'api/account/purchase/increase-size-limit',
+          method: 'POST', data, success: (res) => {
             if (res.error) {
               swal('Error', res.message, 'error');
             }

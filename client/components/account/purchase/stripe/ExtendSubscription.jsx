@@ -38,8 +38,8 @@ export default class StripeExtendSubscription extends React.Component {
         }
         
         request({
-          url: URL + 'api/account/subscription',
-          method: 'PUT', data, success: (res) => {
+          url: URL + 'api/account/purchase/extend-subscription',
+          method: 'POST', data, success: (res) => {
             if (res.error) {
               swal('Error', res.message, 'error');
             }

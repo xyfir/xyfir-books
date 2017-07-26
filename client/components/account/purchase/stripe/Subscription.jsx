@@ -45,7 +45,7 @@ export default class StripePurchaseSubscription extends React.Component {
 			}
 			
 			request({
-				url: URL + 'api/account/subscription',
+				url: URL + 'api/account/purchase/subscription',
 				method: 'POST', data, success: (res) => {
 					if (res.error) {
 						swal('Error', res.message, 'error');

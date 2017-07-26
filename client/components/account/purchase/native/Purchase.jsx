@@ -63,7 +63,7 @@ export default class NativePurchase extends React.Component {
         })
         .then(() => {
           request({
-            url: '../api/account/native-purchase',
+            url: '../api/account/purchase/subscription-native',
             method: 'POST', data: { data }
           }, (res) => {
             if (res.error) {
@@ -84,7 +84,7 @@ export default class NativePurchase extends React.Component {
   render() {
     return (
       <div className='purchase-subscription native old'>
-        {this.props.data.account.librarySizeLimit == 15 ? (
+        {this.props.data.account.librarySizeLimit <= 15 ? (
           this.state.products.map(p =>
             <div className='product' key={p.productId}>
               <span className='title'>{p.title}</span>
