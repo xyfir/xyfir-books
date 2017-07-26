@@ -94,13 +94,22 @@ module.exports = async function(req, res) {
         }
       }
 
-      // Set user's library id
+      // Generate a free one month subscription for xyAnnotations
+      const xyAnnotationsRes = await request
+        .post(config.addresses.xyAnnotations + 'api/affiliate/subscriptions')
+        .send({
+          affiliateId: config.ids.xyAnnotations,
+          affiliateKey: config.keys.xyAnnotations,
+          subscription: 1 // 30 days
+        });
+      
+      // Save data to user's row
       sql = `
-        UPDATE users SET library_id = ?, referral = ?
+        UPDATE users SET library_id = ?, referral = ?, xyannotations_key = ?
         WHERE user_id = ?
       `,
       vars = [
-        library, referral,
+        library, referral, xyAnnotationsRes.body.key || '',
         req.session.uid
       ],
       result = await db.query(sql, vars);
