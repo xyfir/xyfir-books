@@ -1,10 +1,12 @@
+import request from 'superagent';
 import React from 'react';
 
 // Constants
-import * as themes from 'constants/reader-themes';
 import initialState from 'constants/initial-state';
+import * as themes from 'constants/reader-themes';
 
 // Action creators
+import { setXyAnnotationsKey } from 'actions/creators/account';
 import { setReader } from 'actions/creators/settings';
 import { save } from 'actions/creators/index';
 
@@ -32,21 +34,35 @@ export default class ReaderSettings extends React.Component {
     }
   }
   
-  onSave() {
-    this.props.dispatch(setReader(Object.assign(
-      {}, (
+  onSaveStyles() {
+    this.props.dispatch(
+      setReader(
         Date.now() > this.props.data.account.subscription
           ? initialState.config.reader
           : this.state
-      ), { annotationsKey: this.refs.annotationsKey.getField().value }
-    )));
+      )
+    );
     this.props.dispatch(save('config'));
     
     swal('Saved', 'Settings saved successfully', 'success');
   }
   
-  onReset() {
+  onResetStyles() {
     this.setState(initialState.config.reader);
+  }
+
+  onSaveKey() {
+    const xyAnnotationsKey = this.refs.annotationsKey.getField().value;
+
+    request
+      .put('../api/account')
+      .send({ xyAnnotationsKey })
+      .end((err, res) => {
+        if (err || res.body.error)
+          return swal('Error', 'Could not save changes', 'error');
+        
+        this.props.dispatch(setXyAnnotationsKey(xyAnnotationsKey));
+      });
   }
 
   render() {
@@ -190,6 +206,18 @@ export default class ReaderSettings extends React.Component {
             className='md-cell'
             defaultValue='none'
           />
+
+          <Button
+            primary raised
+            onClick={() => this.onSaveStyles()}
+            label='Save'
+          >save</Button>
+
+          <Button
+            secondary raised
+            onClick={() => this.onResetStyles()}
+            label='Reset'
+          >clear</Button>
         </Paper>
 
         <Paper
@@ -197,31 +225,30 @@ export default class ReaderSettings extends React.Component {
           component='section'
           className='xyfir-annotations section flex'
         >
+          <h3>Xyfir Annotations</h3>
+          <p>
+            A xyAnnotations subscription allows you to find and download annotations for books that you're reading.
+            <br />
+            xyAnnotations subscriptions can be purchased directly through <a href='https://annotations.xyfir.com/' target='_blank'>xyAnnotations</a>, or through other reader applications that support xyAnnotations.
+            <br />
+            New xyBooks accounts are automatically given a free one-month subscription.
+          </p>
+
           <TextField
             id='text--xyannotations-key'
             ref='annotationsKey'
             type='text'
-            label='Xyfir Annotations Subscription Key'
-            helpText={
-              'A xyAnnotations subscription key is needed to download ' +
-              'annotations while reading a book.'
-            }
+            label='Subscription Key'
             className='md-cell'
-            defaultValue={this.state.annotationsKey}
+            defaultValue={account.xyAnnotationsKey}
           />
-        </Paper>
-      
-        <Button
-          primary raised
-          onClick={() => this.onSave()}
-          label='Save'
-        >save</Button>
 
-        <Button
-          secondary raised
-          onClick={() => this.onReset()}
-          label='Reset'
-        >clear</Button>
+          <Button
+            primary raised
+            onClick={() => this.onSaveKey()}
+            label='Save'
+          >save</Button>
+        </Paper>
       </div>
     );
   }

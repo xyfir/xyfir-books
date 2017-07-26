@@ -6,7 +6,8 @@ export default {
   drawer: false, toasts: [], view: RECENTLY_OPENED, save: '',
   books: [],
   account: {
-    subscription: 0, library: '', librarySizeLimit: 15
+    uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 15,
+    referral: {}, xyAnnotationsKey: ''
   },
   config: {
     general: {
@@ -24,8 +25,7 @@ export default {
       }
     },
     reader: Object.assign({}, readerThemes.LIGHT, {
-      fontSize: 1.2, padding: 1, lineHeight: 1.4, annotationsKey: '',
-      defaultHighlightMode: 'none'
+      fontSize: 1.2, padding: 1, lineHeight: 1.4, defaultHighlightMode: 'none'
     })
   },
   search: {

@@ -20,7 +20,7 @@ export default class ManageAnnotations extends React.Component {
 		super(props);
 
 		this.state = {
-			key: this.props.reader.props.data.config.reader.annotationsKey,
+			key: this.props.reader.props.data.account.xyAnnotationsKey,
 			sets: [], set: 0, tab: 0
 		};
 	}

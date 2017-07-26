@@ -85,7 +85,7 @@ export default class Reader extends React.Component {
       return;
     }
 
-    const r = this.props.data.config.reader, id = this.state.book.id;
+    const { id } = this.state.book;
     let book;
     
     // Get bookmarks, notes, last read time
@@ -96,7 +96,8 @@ export default class Reader extends React.Component {
 
         // Update / set book's annotations
         return updateAnnotations(
-          this.state.book.annotations, r.annotationsKey
+          this.state.book.annotations,
+          this.props.data.account.xyAnnotationsKey
         );
       })
       .then(ans => {
