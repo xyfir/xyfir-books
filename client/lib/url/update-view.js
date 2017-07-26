@@ -1,91 +1,97 @@
 // Action creators
-import { changeView } from "actions/creators/index";
+import { changeView } from 'actions/creators/index';
 
 // Constants
-import * as VIEWS from "constants/views";
+import * as VIEWS from 'constants/views';
 
 export default function(store) {
 
-    // Hash is empty or not set    
-    if (location.hash.length < 2) {
-        store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
-        return;
-    }
+  // Hash is empty or not set    
+  if (location.hash.length < 2) {
+    VIEWS.RECENTLY_OPENED;
+    return;
+  }
 
-    const state = store.getState();
-    const hash = location.hash.substr(1).split('?')[0].split('/');
+  const state = store.getState();
+  const hash = location.hash.substr(1).split('?')[0].split('/');
 
-    // Update state to reflect hash
-    if (hash[0] == "account") {
-        if (hash[1] == "purchase") {
-            switch (hash[2]) {
-                case "subscription":
-                    return store.dispatch(changeView(VIEWS.PURCHASE_SUBSCRIPTION));
-                case "extend-subscription":
-                    return store.dispatch(changeView(VIEWS.EXTEND_SUBSCRIPTION));
-                case "increase-size-limit":
-                    return store.dispatch(changeView(VIEWS.INCREASE_SIZE_LIMIT));
-            }
+  // Update state to reflect hash
+  const view = (() => {
+    if (hash[0] == 'account') {
+      if (hash[1] == 'purchase') {
+        switch (hash[2]) {
+          case 'subscription':
+            return VIEWS.PURCHASE_SUBSCRIPTION;
+          case 'xyannotations':
+            return VIEWS.XYANNOTATIONS_PURCHASE;
+          case 'extend-subscription':
+            return VIEWS.EXTEND_SUBSCRIPTION;
+          case 'increase-size-limit':
+            return VIEWS.INCREASE_SIZE_LIMIT;
         }
-        else {
-            store.dispatch(changeView(VIEWS.ACCOUNT));
-        }
+      }
+      else {
+        return VIEWS.ACCOUNT;
+      }
     }
-    else if (hash[0] == "library") {
+    else if (hash[0] == 'library') {
+      switch (hash[1]) {
+        case 'download':
+          return VIEWS.LIBRARY_DOWNLOAD;
+        case 'upload':
+          return VIEWS.LIBRARY_UPLOAD;
+        case 'info':
+          return VIEWS.LIBRARY_INFO;
+      }
+    }
+    else if (hash[0] == 'books') {
+      if (hash[1] == 'list') {
+        switch (hash[2]) {
+          case 'all':
+            return VIEWS.LIST_BOOKS;
+          case 'tags':
+            return VIEWS.LIST_TAGS;
+          case 'authors':
+            return VIEWS.LIST_AUTHORS;
+          case 'author-sort':
+            return VIEWS.LIST_AUTHOR_SORT;
+          case 'series':
+            return VIEWS.LIST_SERIES;
+          case 'ratings':
+            return VIEWS.LIST_RATINGS;
+          default:
+            return VIEWS.LIST;
+        }
+      }
+      else {
         switch (hash[1]) {
-            case "download":
-                return store.dispatch(changeView(VIEWS.LIBRARY_DOWNLOAD));
-            case "upload":
-                return store.dispatch(changeView(VIEWS.LIBRARY_UPLOAD));
-            case "info":
-                return store.dispatch(changeView(VIEWS.LIBRARY_INFO));
+          case 'recently-opened':
+            return VIEWS.RECENTLY_OPENED;
+          case 'add-format':
+            return VIEWS.ADD_FORMAT;
+          case 'bulk-edit':
+            return VIEWS.BULK_EDIT;
+          case 'manage':
+            return VIEWS.MANAGE_BOOK;
+          case 'read':
+            return VIEWS.READ_BOOK;
+          case 'upload':
+            return VIEWS.UPLOAD_BOOKS;
         }
+      }
     }
-    else if (hash[0] == "books") {
-        if (hash[1] == "list") {
-            switch (hash[2]) {
-                case "all":
-                    return store.dispatch(changeView(VIEWS.LIST_BOOKS));
-                case "tags":
-                    return store.dispatch(changeView(VIEWS.LIST_TAGS));
-                case "authors":
-                    return store.dispatch(changeView(VIEWS.LIST_AUTHORS));
-                case "author-sort":
-                    return store.dispatch(changeView(VIEWS.LIST_AUTHOR_SORT));
-                case "series":
-                    return store.dispatch(changeView(VIEWS.LIST_SERIES));
-                case "ratings":
-                    return store.dispatch(changeView(VIEWS.LIST_RATINGS));
-                default:
-                    return store.dispatch(changeView(VIEWS.LIST));
-            }
-        }
-        else {
-            switch (hash[1]) {
-                case "recently-opened":
-                    return store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
-                case "add-format":
-                    return store.dispatch(changeView(VIEWS.ADD_FORMAT));
-                case "bulk-edit":
-                    return store.dispatch(changeView(VIEWS.BULK_EDIT));
-                case "manage":
-                    return store.dispatch(changeView(VIEWS.MANAGE_BOOK));
-                case "read":
-                    return store.dispatch(changeView(VIEWS.READ_BOOK));
-                case "upload":
-                    return store.dispatch(changeView(VIEWS.UPLOAD_BOOKS));
-            }
-        }
+    else if (hash[0] == 'settings') {
+      switch (hash[1]) {
+        case 'book-list':
+          return VIEWS.BOOK_LIST_SETTINGS;
+        case 'general':
+          return VIEWS.GENERAL_SETTINGS;
+        case 'reader':
+          return VIEWS.READER_SETTINGS;
+      }
     }
-    else if (hash[0] == "settings") {
-        switch (hash[1]) {
-            case "book-list":
-                return store.dispatch(changeView(VIEWS.BOOK_LIST_SETTINGS));
-            case "general":
-                return store.dispatch(changeView(VIEWS.GENERAL_SETTINGS));
-            case "reader":
-                return store.dispatch(changeView(VIEWS.READER_SETTINGS));
-        }
-    }
-    
+  })();
+
+  store.dispatch(changeView(view));
+  
 }
