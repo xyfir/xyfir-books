@@ -280,7 +280,7 @@ class App extends React.Component {
             <Button
               icon
               key='home'
-              onClick={() => location.hash = '#'}
+              onClick={() => location.hash = '#books/recently-opened'}
             >home</Button>
           ]}
           title={'xyBooks' + (
