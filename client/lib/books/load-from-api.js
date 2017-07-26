@@ -57,7 +57,7 @@ export default function(library, dispatch, fn) {
     .then(res => {
       let books2 = res.body.books;
       
-      if (!books1.length) return fn([]);
+      if (!books1.length) return [];
 
       const books = books1
         .map(b1 => {
