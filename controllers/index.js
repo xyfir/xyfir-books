@@ -7,6 +7,10 @@ router.get(
   '/account',
   require('./account/info')
 );
+router.put(
+  '/account',
+  require('./account/update')
+);
 router.post(
   '/account/login',
   require('./account/login')
