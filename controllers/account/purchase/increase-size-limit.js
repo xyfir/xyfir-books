@@ -4,7 +4,7 @@ const db = require('lib/db');
 const config = require('config');
 
 /*
-  PUT api/account/size-limit
+  POST api/account/purchase/increase-size-limit
   REQUIRED
     stripeToken: string, limit: number
   RETURN

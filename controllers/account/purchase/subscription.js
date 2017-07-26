@@ -9,7 +9,7 @@ const db = require('lib/db');
 const config = require('config');
 
 /*
-  POST api/account/subscription
+  POST api/account/purchase/subscription
   REQUIRED
     stripeToken: string, subscription: number, addToSizeLimit: number
   RETURN

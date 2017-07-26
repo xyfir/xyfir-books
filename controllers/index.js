@@ -15,21 +15,23 @@ router.get(
   '/account/logout',
   require('./account/logout')
 );
-router.put(
-  '/account/size-limit',
-  require('./account/increase-size-limit')
-);
-router.put(
-  '/account/subscription',
-  require('./account/extend-subscription')
+
+/* Account - Purchase */
+router.post(
+  '/account/purchase/increase-size-limit',
+  require('./account/purchase/increase-size-limit')
 );
 router.post(
-  '/account/subscription',
-  require('./account/purchase-subscription')
+  '/account/purchase/extend-subscription',
+  require('./account/purchase/extend-subscription')
 );
 router.post(
-  '/account/native-purchase',
-  require('./account/native-purchase')
+  '/account/purchase/subscription',
+  require('./account/purchase/subscription')
+);
+router.post(
+  '/account/purchase/subscription-native',
+  require('./account/purchase/subscription-native')
 );
 
 /* Books */

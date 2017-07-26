@@ -7,7 +7,7 @@ const db = require("lib/db");
 const config = require("config");
 
 /*
-    PUT api/account/subscription
+    POST api/account/purchase/extend-subscription
     REQUIRED
         stripeToken: string, subscription: number
     RETURN

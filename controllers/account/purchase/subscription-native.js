@@ -83,7 +83,7 @@ function applySubscriptions(req, res, purchases) {
 }
 
 /*
-  POST api/account/native-purchase
+  POST api/account/purchase/subscription-native
   REQUIRED
     transactionId, receipt, signature, productType
   RETURN
