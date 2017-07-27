@@ -22,7 +22,7 @@ import List from 'react-md/lib/Lists/List';
 // Components
 import Advertisement from 'components/misc/Advertisement';
 import Settings from 'components/settings/Index';
-import Account from 'components/account/Index';
+import Account from 'components/account/Account';
 import Library from 'components/library/Index';
 import Books from 'components/books/Books';
 
