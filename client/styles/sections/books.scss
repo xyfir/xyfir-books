@@ -7,11 +7,14 @@ span.word-count, span.rating {
   margin: 0.2em;
 }
 
-.recently-opened {
-  .book {
+ul.recently-opened.books {
+  padding: 0;
+
+  >li.book {
+    list-style: none;
     height: 27em;
-    width: 12.5em;
     margin: auto;
+    width: 12.5em;
     
     img.cover {
       height: 20em;
@@ -126,15 +129,17 @@ span.word-count, span.rating {
   }
 }
 
-.list-compact {
+ul.list-compact {
   width: 50%;
   margin: auto;
   text-align: left;
+  padding: 0;
   
-  .book {
+  li.book {
     border-bottom: solid $llgray 0.1em;
-    padding: 1em 0.5em;
+    list-style: none;
     position: relative;
+    padding: 1em 0.5em;
     height: 9em;
   
     img.cover {
@@ -161,7 +166,7 @@ span.word-count, span.rating {
       } 
     }
 
-    .controls {
+    div.controls {
       position: absolute;
       bottom: 1em;
       left: 6.5em;
@@ -191,8 +196,11 @@ span.word-count, span.rating {
   }
 }
 
-.list-grid {
-  .book {
+ul.list-grid {
+  padding: 0;
+
+  li.book {
+    list-style: none;
     display: inline-block;
     padding: 1em;
     
