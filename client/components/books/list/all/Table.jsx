@@ -89,13 +89,13 @@ export default class TableList extends React.Component {
     );
   }
   
-  onSort(col) {
+  onSort(column) {
     // Flip state.sort.asc, retain column
-    if (this.state.sort.column == col)
-      this.setState({ sort: { column: col, asc: !this.state.sort.asc } });
+    if (this.state.sort.column == column)
+      this.setState({ sort: { column, asc: !this.state.sort.asc } });
     // Change state.sort.column, asc always true
     else
-      this.setState({ sort: { column: col, asc: true } });
+      this.setState({ sort: { column, asc: true } });
   }
 
   render() {
@@ -112,25 +112,22 @@ export default class TableList extends React.Component {
     }
     
     return (
-      <div className='list-table'>
+      <div className='list-table old'>
         <div className='table-container'>
         <table className='books'>
           <thead>
-            <tr>{
-              this.props.data.config.bookList.table.columns
-              .map(col =>
-                <th
-                  onContextMenu={() =>
-                    window.location.hash = 'settings/book-list'
-                  }
-                  className={this.state.sort.column == col ? 'sort-by' : ''}
-                  onClick={() => this.onSort(col)}
-                >{
-                  col.replace(/\b[a-z]/g, c => c.toUpperCase())
-                }</th>
-              )
-            }</tr>
+          <tr>{
+            this.props.data.config.bookList.table.columns.map(col =>
+              <th
+                className={this.state.sort.column == col ? 'sort-by' : ''}
+                onClick={() => this.onSort(col)}
+              >{
+                col.replace(/\b[a-z]/g, c => c.toUpperCase())
+              }</th>
+            )
+          }</tr>
           </thead>
+
           <tbody>{
             sortBooks(
               findMatches(
@@ -175,8 +172,9 @@ export default class TableList extends React.Component {
                     
                     case 'series': return (
                       <td className='series'>{
-                        book.series === undefined
-                        ? '' : `${book.series} [${book.series_index}]`
+                        !book.series
+                          ? ''
+                          : `${book.series} [${book.series_index}]`
                       }</td>
                     );
                     
@@ -196,7 +194,7 @@ export default class TableList extends React.Component {
         <div className='selected-book'>
           {this.state.selected.length > 0 ? (
             <div className='controls'>
-              {this.state.selected.length > 1 ? (<span />) : (
+              {this.state.selected.length > 1 ? null : (
                 <a href={`#books/read/${selectedBook.url}`}>
                   <span className='icon-eye' />Read
                 </a>
@@ -224,7 +222,7 @@ export default class TableList extends React.Component {
                 </a>
               )}
             </div>
-          ) : <div />}
+          ) : null}
           
           {this.state.selected.length ? (
             <div className='info'>
@@ -243,9 +241,7 @@ export default class TableList extends React.Component {
                 <span className='word-count'>{
                   Math.round(selectedBook.word_count / 1000) + 'K'
                 }</span>
-              ) : (
-                <span />
-              )}
+              ) : null}
               
               <span className='date-added'>{
                 (new Date(selectedBook.timestamp))
@@ -256,9 +252,7 @@ export default class TableList extends React.Component {
                   <span>{selectedBook.rating}</span>
                   <span className='icon-star' />
                 </span>
-              ) : (
-                <span />
-              )}
+              ) : null}
               
               <dl>
                 <dt>Title</dt><dd>{selectedBook.title}</dd>
@@ -269,7 +263,7 @@ export default class TableList extends React.Component {
                   }`
                 }>{selectedBook.authors}</a></dd>
                 
-                {selectedBook.series !== undefined ? (
+                {selectedBook.series ? (
                   <div>
                     <dt>Series</dt>
                     <dd>#{selectedBook.series_index} of <a href={
@@ -278,7 +272,7 @@ export default class TableList extends React.Component {
                       }`
                     }>{selectedBook.series}</a></dd>
                   </div>
-                ) : (<div />)}
+                ) : null}
                 
                 <dt>Published</dt>
                 <dd>{
