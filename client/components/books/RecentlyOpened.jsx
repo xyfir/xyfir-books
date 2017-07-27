@@ -20,26 +20,22 @@ export default class RecentlyOpened extends React.Component {
   }
 
   render() {
+    if (!this.props.data.books.length) return <p>You don't have any books!</p>;
+
     return (
-      <div className='recently-opened old'>
-        <div className='books'>{
-          sortBooks(this.props.data.books, 'last_read', true)
-          .slice(-4).reverse().map(book => {
-            const url = '/' + book.id + '/' + toUrl(book.authors)
-              + '/' + toUrl(book.title);
+      <ul className='recently-opened books'>{
+        sortBooks(this.props.data.books, 'last_read', true)
+          .slice(-4)
+          .reverse()
+          .map(b => {
+            const url = `/${b.id}/${toUrl(b.authors)}/${toUrl(b.title)}`;
             
             return (
-              <div
-                className='book'
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  window.location.hash = `#books/manage${url}`;
-                }}
-              >
+              <li className='book' key={b.id}>
                 <a href={`#books/read${url}`}>
                   <img
                     className='cover'
-                    id={`cover-${book.id}`}
+                    id={`cover-${b.id}`}
                   />
                 </a>
                 
@@ -47,49 +43,45 @@ export default class RecentlyOpened extends React.Component {
                   <a
                     className='title'
                     href={`#books/read${url}`}
-                  >{book.title}</a>
+                  >{b.title}</a>
                   
                   <a className='authors' href={
                     `#books/list/all?search=1&authors=${
-                      encodeURIComponent(book.authors)
+                      encodeURIComponent(b.authors)
                     }`
-                  }>{book.authors}</a>
+                  }>{b.authors}</a>
                   
-                  <span className='percent-complete'>{
-                    book.percent_complete + '%'
-                  }</span>
+                  <span className='percent-complete'>
+                    {b.percent_complete}%
+                  </span>
                   
-                  {book.word_count == 0 ? (
-                    <span />
-                  ) : (
+                  {b.word_count > 0 ? (
                     <span className='word-count'>{
-                      Math.round(book.word_count / 1000)
+                      Math.round(b.word_count / 1000)
                     }K</span>
-                  )}
-                  {!!(+book.rating) ? (
+                  ) : null}
+
+                  {!!(+b.rating) ? (
                     <span className='rating'>
-                      <span>{book.rating}</span>
+                      <span>{b.rating}</span>
                       <span className='icon-star' />
                     </span>
-                  ) : (
-                    <span />
-                  )}
+                  ) : null}
                   
                   <span className='last-read'>{
-                    book.last_read > 0 ? (
+                    b.last_read > 0 ? (
                       'Last read on '
-                      + (new Date(book.last_read))
+                      + (new Date(b.last_read))
                         .toLocaleDateString()
                     ) : (
                       'Book has not been read'
                     )
                   }</span>
                 </div>
-              </div>
+              </li>
             );
           })
-        }</div>
-      </div>
+      }</ul>
     );
   }
 
