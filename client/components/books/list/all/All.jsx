@@ -80,7 +80,7 @@ export default class ListAllBooks extends React.Component {
       <div className='list-all'>
         <Search ref='search' dispatch={this.props.dispatch} />
         
-        <div className='old'>{view}</div>
+        {view}
 
         <Button
           floating fixed secondary
