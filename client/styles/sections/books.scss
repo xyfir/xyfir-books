@@ -42,21 +42,13 @@ ul.recently-opened.books {
   }
 }
 
-.manage-book, .edit-books {
-  input[type=text] {
-    width: 25em;
-    max-width: 90%;
-  }
-  
-  input[type=date] {
-    font-size: 1em;
-    margin: 1em 0em;
-  }
-  
-  input {
-    font-size: 85%;
-  }
-  
+div.md-dialog > iframe.cover-search {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+}
+
+div.manage-book {
   section.cover {
     display: flex;
     align-items: center;
@@ -100,6 +92,28 @@ ul.recently-opened.books {
       }
     }
   }
+
+  section.formats {
+    table.formats {
+      margin-bottom: 1em;
+    }
+  }
+}
+
+.edit-books {
+  input[type=text] {
+    width: 25em;
+    max-width: 90%;
+  }
+  
+  input[type=date] {
+    font-size: 1em;
+    margin: 1em 0em;
+  }
+  
+  input {
+    font-size: 85%;
+  }
      
   .comments-edit {
     width: 60%;
@@ -114,12 +128,6 @@ ul.recently-opened.books {
     padding: 0.5em;
     border-radius: 0.3em;
     margin-bottom: 1em;
-  }
-  
-  section.formats {
-    table.formats {
-      margin-bottom: 1em;
-    }
   }
   
   span.checkbox {
