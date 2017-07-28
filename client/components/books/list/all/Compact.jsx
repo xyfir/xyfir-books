@@ -4,14 +4,17 @@ import React from 'react';
 import Pagination from 'components/misc/Pagination';
 
 // react-md
-import Button from 'react-md/lib/Buttons/Button';
+import MenuButton from 'react-md/lib/Menus/MenuButton';
+import ListItem from 'react-md/lib/Lists/ListItem';
+import FontIcon from 'react-md/lib/FontIcons';
 
 // Modules
 import findMatches from 'lib/books/find-matching';
 import loadCovers from 'lib/books/load-covers';
 import parseQuery from 'lib/url/parse-hash-query';
+import deleteBook from 'lib/books/delete';
 import sortBooks from 'lib/books/sort';
-import toUrl from 'lib/url/clean';
+import buildUrl from 'lib/url/build';
 
 export default class CompactList extends React.Component {
 
@@ -25,6 +28,11 @@ export default class CompactList extends React.Component {
   
   componentDidUpdate() {
     loadCovers(this.props.data.books, this.props.data.account.library);
+  }
+
+  onListItemClick(e, b, u) {
+    e.stopPropagation();
+    location.hash = buildUrl(b, u);
   }
 
   render() {
@@ -43,63 +51,75 @@ export default class CompactList extends React.Component {
     return (
       <div>
         <ul className='list-compact'>{
-          books.map(b => {
-            const url = `/${b.id}/${toUrl(b.authors)}/${toUrl(b.title)}`;
-            
-            return (
-              <li className='book' key={b.id}>
-                <a href={`#books/read${url}`}>
-                  <img
-                    className='cover'
-                    id={`cover-${b.id}`}
-                  />
-                </a>
+          books.map(b =>
+            <li
+              key={b.id}
+              onClick={() => location.hash = buildUrl(b, 'read')}
+              className='book'
+            >
+              <img
+                className='cover'
+                id={`cover-${b.id}`}
+              />
+              
+              <div className='info'>
+                <span className='title'>{b.title}</span>
+                <span className='authors'>{b.authors}</span>
                 
-                <div className='info'>
-                  <a
-                    className='title'
-                    href={`#books/read${url}`}
-                  >{b.title}</a>
-                  
-                  <a className='authors' href={
-                    `#books/list/all?search=1&authors=${
-                      encodeURIComponent(b.authors)
-                    }`
-                  }>{b.authors}</a>
-                  
-                  <span className='percent-complete'>{
-                    b.percent_complete + '%'
-                  }</span>
+                <span className='chip percent-complete'>
+                  {b.percent_complete}%
+                </span>
 
-                  {b.word_count > 0 ? (
-                    <span className='word-count'>{
-                      Math.round(b.word_count / 1000)
-                    }K</span>
-                  ) : null}
+                {b.word_count > 0 ? (
+                  <span className='chip word-count'>
+                    {Math.round(b.word_count / 1000)}K
+                  </span>
+                ) : null}
 
-                  <span className='date-added'>{
-                    (new Date(b.timestamp))
-                      .toLocaleDateString()
-                  }</span>
+                <span className='chip date-added'>{
+                  (new Date(b.timestamp)).toLocaleDateString()
+                }</span>
 
-                  {!!(+b.rating) ? (
-                    <span className='rating'>
-                      <span>{b.rating}</span>
-                      <span className='icon-star' />
-                    </span>
-                  ) : null}
-                </div>
+                {!!(+b.rating) ? (
+                  <span className='chip rating'>
+                    <span>{b.rating}</span>
+                    <span className='icon-star' />
+                  </span>
+                ) : null}
 
-                <div className='controls'>
-                  <Button
-                    flat
-                    label='Edit'
-                    onClick={() => location.hash = `#books/manage${url}`}
-                  >edit</Button>
-                </div>
-              </li>
-            );
-          })
+                <MenuButton
+                  icon
+                  buttonChildren='more_vert'
+                  tooltipLabel='Open menu'
+                  onClick={e => e.stopPropagation()}
+                >
+                  <ListItem
+                    primaryText='Read'
+                    leftIcon={<FontIcon>book</FontIcon>}
+                    onClick={e => this.onListItemClick(e, b, 'read')}
+                  />
+                  <ListItem
+                    primaryText='Metadata'
+                    leftIcon={<FontIcon>edit</FontIcon>}
+                    onClick={e => this.onListItemClick(e, b, 'manage')}
+                  />
+                  <ListItem
+                    primaryText='Search author(s)'
+                    leftIcon={<FontIcon>person</FontIcon>}
+                    onClick={e => this.onListItemClick(e, b, 'authors')}
+                  />
+                  <ListItem
+                    primaryText='Delete'
+                    leftIcon={<FontIcon>delete</FontIcon>}
+                    onClick={e =>
+                     !e.stopPropagation() &&
+                     deleteBook([b.id], this.props.dispatch)
+                    }
+                  />
+                </MenuButton>
+              </div>
+            </li>
+          )
         }</ul>
 
         <Pagination
