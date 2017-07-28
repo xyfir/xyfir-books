@@ -11,7 +11,6 @@ import FontIcon from 'react-md/lib/FontIcons';
 // Modules
 import findMatches from 'lib/books/find-matching';
 import loadCovers from 'lib/books/load-covers';
-import parseQuery from 'lib/url/parse-hash-query';
 import deleteBook from 'lib/books/delete';
 import sortBooks from 'lib/books/sort';
 import buildUrl from 'lib/url/build';
@@ -36,15 +35,13 @@ export default class CompactList extends React.Component {
   }
 
   render() {
-    const q = parseQuery();
+    if (!this.props.data.books.length) return <p>You don't have any books!</p>;
     
     let books = sortBooks(
       findMatches(this.props.data.books, this.props.data.search.query),
       'title', true
     );
     const booksCount = books.length;
-
-    if (!booksCount) return <p>You don't have any books!</p>;
     
     books = books.splice((this.props.data.search.page - 1) * 25, 25);
 
