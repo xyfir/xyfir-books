@@ -53,15 +53,16 @@ div.manage-book {
     display: flex;
     align-items: center;
     flex-direction: column;
-
-    img.cover {
-      height: 15em;
-    }
     
     .dropzone {
       width: initial;
       display: inline-block;
       margin-bottom: 0.5em;
+
+      >img.cover {
+        height: 19.2em;
+        width: 12em;
+      }
     }
     
     div {
