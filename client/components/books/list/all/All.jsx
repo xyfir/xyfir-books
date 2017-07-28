@@ -59,7 +59,7 @@ export default class ListAllBooks extends React.Component {
         .replace(new RegExp(' ', 'g'), '_');
       
       // Only set if value is different
-      if (this.refs.search.refs.search.value != value)
+      if (this.props.data.search.query != value)
         this.refs.search.setValue(value);
     }
   }
@@ -78,7 +78,7 @@ export default class ListAllBooks extends React.Component {
     
     return (
       <div className='list-all'>
-        <Search ref='search' dispatch={this.props.dispatch} />
+        <Search ref='search' {...this.props} />
         
         {view}
 

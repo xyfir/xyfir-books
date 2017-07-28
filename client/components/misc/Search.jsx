@@ -22,24 +22,13 @@ export default class Search extends React.Component {
     this.props.dispatch(setSearch(''));
   }
   
-  onSearch(sv) {
-    clearTimeout(this.timeout);
-
-    // Clear query string
-    if (!sv && parseQuery().search) {
-      location.hash = location.hash.split('?')[0];
-    }
-    
-    this.timeout = setTimeout(() =>
-      this.props.dispatch(
-        setSearch(this.refs.search.getField().value.toLowerCase())
-      ), 150
-    );
+  onSearch(query) {
+    location.hash = location.hash.split('?')[0];
+    this.props.dispatch(setSearch(query))
   }
   
   setValue(val) {
-    this.refs.search.value = val;
-    this.onSearch(true);
+    this.props.dispatch(setSearch(val))
   }
 
   render() {
@@ -50,7 +39,8 @@ export default class Search extends React.Component {
           id='search'
           ref='search'
           type='search'
-          onChange={e => this.onSearch()}
+          value={this.props.data.search.query}
+          onChange={q => this.onSearch(q)}
           placeholder='Search'
         />
       </Paper>
