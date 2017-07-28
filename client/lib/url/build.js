@@ -10,11 +10,11 @@ export default function(book, type) {
 
   switch (type) {
     case 'read':
-      return '#books/read/' +
-        `${book.id}/${clean(book.authors)}/${clean(book.title)}`;
     case 'manage':
-      return '#books/manage/' +
+    case 'add-format':
+      return `#books/${type}/` +
         `${book.id}/${clean(book.authors)}/${clean(book.title)}`;
+
     case 'authors':
       return '#books/list/all?search=1&authors=' +
         encodeURIComponent(book.authors);
