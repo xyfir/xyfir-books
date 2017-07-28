@@ -1,10 +1,8 @@
 import request from 'superagent';
 import React from 'react';
 
-// Action creators
-import { deleteBooks } from 'actions/creators/books';
-
 // Modules
+import deleteBooks from 'lib/books/delete';
 import findMatches from 'lib/books/find-matching';
 import loadCovers from 'lib/books/load-covers';
 import sortBooks from 'lib/books/sort';
@@ -53,40 +51,10 @@ export default class TableList extends React.Component {
   }
   
   onDelete() {
-    if (!navigator.onLine) {
-      swal(
-        'No Internet Connection',
-        'This action requires an internet connection',
-        'error'
-      ); return;
-    }
-    
-    // Delete ids in state.selected
-    swal({
-      title: 'Are you sure?',
-      text: `Are you sure you want to delete (${
-        this.state.selected.length
-      }) book(s) from your library?`,
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#DD6B55',
-      confirmButtonText: 'Delete'
-    }, () =>
-      request
-        .delete('../api/books')
-        .send({ ids: this.state.selected.join(',') })
-        .end((err, res) => {
-          if (err || res.body.error) {
-            swal('Error', 'Could not delete book(s)', 'error');
-          }
-          else {
-            const selected = this.state.selected;
+    const selected = this.state.selected.slice();
+    this.setState({ selected: [] });
 
-            this.setState({ selected: [] });
-            this.props.dispatch(deleteBooks(selected));
-          }
-        })
-    );
+    deleteBooks(selected, this.props.dispatch);
   }
   
   onSort(column) {
@@ -233,22 +201,23 @@ export default class TableList extends React.Component {
                 />
               </a>
               
-              <span className='percent-complete'>{
+              <span className='chip percent-complete'>{
                 selectedBook.percent_complete + '%'
               }</span>
               
               {selectedBook.word_count > 0 ? (
-                <span className='word-count'>{
+                <span className='chip word-count'>{
                   Math.round(selectedBook.word_count / 1000) + 'K'
                 }</span>
               ) : null}
               
-              <span className='date-added'>{
+              <span className='chip date-added'>{
                 (new Date(selectedBook.timestamp))
                   .toLocaleDateString()
               }</span>
-              {!!(+selectedBook.rating) ? (
-                <span className='rating'>
+              
+              {!!+selectedBook.rating ? (
+                <span className='chip rating'>
                   <span>{selectedBook.rating}</span>
                   <span className='icon-star' />
                 </span>

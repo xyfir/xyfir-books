@@ -51,18 +51,18 @@ export default class RecentlyOpened extends React.Component {
                     }`
                   }>{b.authors}</a>
                   
-                  <span className='percent-complete'>
+                  <span className='chip percent-complete'>
                     {b.percent_complete}%
                   </span>
                   
                   {b.word_count > 0 ? (
-                    <span className='word-count'>{
+                    <span className='chip word-count'>{
                       Math.round(b.word_count / 1000)
                     }K</span>
                   ) : null}
 
                   {!!(+b.rating) ? (
-                    <span className='rating'>
+                    <span className='chip rating'>
                       <span>{b.rating}</span>
                       <span className='icon-star' />
                     </span>
