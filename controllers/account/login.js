@@ -68,14 +68,15 @@ module.exports = async function(req, res) {
       
       if (xyLibRes.body.error) throw 'Could not create new library';
 
-      let referral = '{}';
+      let referral = '{}', subscription = 0;
 
       // Save referral data
       if (req.body.referral) {
         referral = JSON.stringify({
           referral: req.body.referral,
           hasMadePurchase: false
-        });
+        }),
+        subscription = +moment().add(7, 'days').format('x');
       }
       // Validate affiliate promo code
       else if (req.body.affiliate) {
@@ -90,7 +91,8 @@ module.exports = async function(req, res) {
           referral = JSON.stringify({
             affiliate: req.body.affiliate,
             hasMadePurchase: false
-          });
+          }),
+          subscription = +moment().add(7, 'days').format('x');
         }
       }
 
@@ -105,11 +107,12 @@ module.exports = async function(req, res) {
       
       // Save data to user's row
       sql = `
-        UPDATE users SET library_id = ?, referral = ?, xyannotations_key = ?
+        UPDATE users SET
+          library_id = ?, referral = ?, xyannotations_key = ?, subscription = ?
         WHERE user_id = ?
       `,
       vars = [
-        library, referral, xyAnnotationsRes.body.key || '',
+        library, referral, xyAnnotationsRes.body.key || '', subscription,
         req.session.uid
       ],
       result = await db.query(sql, vars);
