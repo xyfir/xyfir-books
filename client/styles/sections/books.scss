@@ -1,10 +1,9 @@
-span.percent-complete, span.date-added,
-span.word-count, span.rating {
+span.chip {
   background-color: $lllgray;
+  margin-right: 0.3em;
+  font-size: 80%;
   padding: 0em 0.2em;
-  border-radius: 0.3em;
   border: solid $llgray 1px;
-  margin: 0.2em;
 }
 
 ul.recently-opened.books {
@@ -135,83 +134,97 @@ ul.list-compact {
   text-align: left;
   padding: 0;
   
-  li.book {
+  >li.book {
     border-bottom: solid $llgray 0.1em;
+    align-items: center;
     list-style: none;
-    position: relative;
     padding: 1em 0.5em;
+    display: flex;
+    cursor: pointer;
     height: 9em;
+
+    &:hover {
+      background-color: $llgray;
+    }
   
-    img.cover {
+    >img.cover {
       height: 7em;
       width: 4.5em;
-      position: absolute;
-      left: 1em;
     }
     
-    .info {
-      position: absolute;
-      left: 6.5em;
-      
-      .authors {
-        display: block;
+    >div.info {
+      margin-left: 0.5em;
+      flex: 1;
+
+      /* needed to prevent text overflow in children elements */
+      min-width: 0;
+
+      >div.md-menu-container {
+        float: right;
       }
-      
-      img.cover {
-        height: 10em;
-        width: 6.3em;
+
+      >span.title {
+        font-weight: bold;
+      }
+
+      >span.title, >span.authors {
         display: block;
-        margin: auto;
-        margin-bottom: 1em;
-      } 
-    }
-
-    div.controls {
-      position: absolute;
-      bottom: 1em;
-      left: 6.5em;
-    }
-  }
-}
-
-.modal.view-selector {
-  background-color: $lllgray;
-  padding: 0.2em;
-  position: fixed;
-  left: 15%;
-  right: 15%;
-  top: 10%;
-  border: solid $llgray 0.1em;
-  z-index: 1;
-  
-  .icon-close {
-    position: absolute;
-    right: 2%;
-  }
-
-  dl {
-    dd {
-      margin: 0em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
   }
 }
 
 ul.list-grid {
+  justify-content: center;
+  flex-wrap: wrap;
+  display: flex;
   padding: 0;
 
-  li.book {
+  >li.book {
     list-style: none;
-    display: inline-block;
+    position: relative;
+    display: block;
     padding: 1em;
-    
-    img.cover {
-      height: 20em;
-      width: 12.5em;
+    cursor: pointer;
+    width: 14em;
+
+    &:hover {
+      background-color: $llgray;
     }
     
-    a.authors {
+    >img.cover {
+      /* height/width 1.6:1 ratio  */
+      height: 19.2em;
+      width: 12em;
+    }
+
+    >span.title {
+      font-weight: bold;
+    }
+    
+    >span.authors, >span.title {
       display: block;
-    } 
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    >div.overlay {
+      top: 1em;
+      left: 1em;
+      right: 1em;
+      height: 19.2em;
+      border: solid black 0.1em;
+      z-index: 1;
+      display: flex;
+      position: absolute;
+      flex-direction: column;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.85);
+    }
   }
 }
 
@@ -313,7 +326,7 @@ div.upload-books {
 /* PORTRAIT ORIENTATION */
 
 @media all and (orientation: portrait) {
-  .list-compact {
+  ul.list-compact {
     width: 100%;
   } 
 }
