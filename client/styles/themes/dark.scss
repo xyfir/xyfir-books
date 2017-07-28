@@ -1,7 +1,8 @@
 body.theme-dark {
+  color: #CCC;
+
   .old {
     background-color: #1E1E1E;
-    color: #CCC;
 
     section {
       background-color: #373737;
@@ -13,7 +14,15 @@ body.theme-dark {
     }
   }
 
-  span.date-added, span.percent-complete, span.rating, span.word-count {
+  ul > li.book:hover {
+    background-color: #3F3F46;
+  }
+
+  ul.list-grid > li.book > div.overlay {
+    background-color: rgba(0,0,0,0.85);
+  }
+
+  span.chip {
     background-color: #252526;
   }
 
