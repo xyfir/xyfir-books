@@ -1,17 +1,25 @@
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
+import moment from 'moment';
 import React from 'react';
 
 // Modules
 import loadCovers from 'lib/books/load-covers';
 import loadBooks from 'lib/books/load-from-api';
-import upload from 'lib/request/upload';
+import buildUrl from 'lib/url/build';
 
 // Constants
 import { LIBRARY } from 'constants/config';
 
 // Action creators
 import { deleteFormat, incrementVersion } from 'actions/creators/books';
+
+// react-md
+import DatePicker from 'react-md/lib/Pickers/DatePickerContainer';
+import TextField from 'react-md/lib/TextFields';
+import Button from 'react-md/lib/Buttons/Button';
+import Dialog from 'react-md/lib/Dialogs';
+import Paper from 'react-md/lib/Papers';
 
 export default class ManageBook extends React.Component {
 
@@ -25,8 +33,6 @@ export default class ManageBook extends React.Component {
       findCover: false,
       saving: false
     };
-
-    this.onUploadCover = this.onUploadCover.bind(this);
   }
   
   componentDidMount() {
@@ -41,64 +47,68 @@ export default class ManageBook extends React.Component {
     
     this.setState({ downloadingMetadata: true });
     
-    let search = '';
+    let search;
     
     // Get metadata using ISBN
-    this.refs.identifiers.value.split(', ').forEach(id => {
-      const t = id.split(':');
-      
-      if (t[0] == 'isbn') search = 'isbn=' + t[1];
-    });
+    this.refs.identifiers.getField().value
+      .split(', ')
+      .forEach(id => {
+        const t = id.split(':');
+        
+        if (t[0] == 'isbn') search = 'isbn=' + t[1];
+      });
     
     // Get metadata using author/title
-    if (search == '') {
-      search
-        = 'author=' + encodeURIComponent(this.refs.authors.value)
-        + '&title=' + encodeURIComponent(this.refs.title.value);
+    if (!search) {
+      search =
+        'author=' + encodeURIComponent(this.refs.authors.getField().value) +
+        '&title=' + encodeURIComponent(this.refs.title.getField().value);
     }
 
     request
       .get(
-        LIBRARY + 'libraries/' + this.props.data.account.library +
-        '/books/' + this.state.id + '/metadata?' + search
+        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `/books/${this.state.id}/metadata`
       )
+      .query(search)
       .end((err, res) => {
         if (res.text == '1') {
           this.setState({ downloadingMetadata: false });
-          swal('Error', 'Could not find metadata', 'error');
+          return swal('Error', 'Could not find metadata', 'error');
         }
-        else {
-          res.text = res.text.split('\n');
-          
-          res.text.forEach((kv, i) => {
-            kv = kv.split('   : ');
-            kv[1] = kv[1].trim();
-              
-            switch (kv[0].trim()) {
-              case 'Title':
-                return this.refs.title.value = kv[1];
-              case 'Author(s)':
-                return this.refs.authors.value = kv[1];
-              case 'Publisher':
-                return this.refs.publisher.value = kv[1];
-              case 'Tags':
-                return this.refs.tags.value = kv[1];
-              case 'Published':
-                return this.refs.pubdate.value = kv[1].split('T')[0];
-              case 'Identifiers':
-                return this.refs.identifiers.value = kv[1];
-              case 'Comments':
-                // Comments can have newlines and comments is always last field
-                const comments = [kv[1]].concat(res.text.splice(i + 1)).join(' ');
-                if (this.state.editComments)
-                  this.refs.comments.value = comments;
-                else
-                  this.refs.comments.innerHTML = comments;
-            }
-          });
-          
-          this.setState({ downloadingMetadata: false });
-        }
+        
+        res.text = res.text.split('\n');
+        
+        res.text.forEach((kv, i) => {
+          kv = kv.split('   : ');
+          kv[1] = kv[1].trim();
+            
+          switch (kv[0].trim()) {
+            case 'Title':
+              return this.refs.title.getField().value = kv[1];
+            case 'Author(s)':
+              return this.refs.authors.getField().value = kv[1];
+            case 'Publisher':
+              return this.refs.publisher.getField().value = kv[1];
+            case 'Tags':
+              return this.refs.tags.getField().value = kv[1];
+            case 'Published':
+              return this.refs.pubdate._setCalendarTempDate(new Date(kv[1]));
+            case 'Identifiers':
+              return this.refs.identifiers.getField().value = kv[1];
+            case 'Comments':
+              // Comments can have newlines and comments is always last field
+              const comments = [kv[1]]
+                .concat(res.text.splice(i + 1))
+                .join(' ');
+              if (this.state.editComments)
+                this.refs.comments.getField().value = comments;
+              else
+                this.refs.comments.innerHTML = comments;
+          }
+        });
+        
+        this.setState({ downloadingMetadata: false });
       });
   }
   
@@ -110,8 +120,8 @@ export default class ManageBook extends React.Component {
 
     request
       .delete(
-        LIBRARY + 'libraries/' + this.props.data.account.library +
-        '/books/' + this.state.id + '/format/' + f
+        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `/books/${this.state.id}/format/${f}`
       )
       .end((err, res) => {
         if (err || res.body.error)
@@ -125,22 +135,21 @@ export default class ManageBook extends React.Component {
     if (!navigator.onLine) {
       swal('Error', 'This action requires internet connectivity', 'error');
       return;
-    }
+    } 
 
-    const url = LIBRARY +
-      'libraries/' + this.props.data.account.library +
-      '/books/' + this.state.id + '/cover';
-    
-    upload(url, 'PUT', 'cover', [files[0]], res => {
-      if (res.error) {
-        swal('Error', 'Could not upload file', 'error');
-      }
-      else {
+    request
+      .put(
+        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `/books/${this.state.id}/cover`
+      )
+      .attach('cover', files[0])
+      .end((err, res) => {
+        if (res.error)
+          return swal('Error', 'Could not upload file', 'error');
+
         const lfKey =
-          'cover-' + this.state.id + '-' +
-          this.props.data.books.find(
-            b => this.state.id == b.id
-          ).versions.cover;
+          `cover-${this.state.id}-` +
+          this.props.data.books.find(b => this.state.id == b.id).versions.cover;
         
         localforage.setItem(lfKey, files[0])
           .then(img => {
@@ -150,9 +159,8 @@ export default class ManageBook extends React.Component {
             // Increment book.versions.cover
             this.props.dispatch(incrementVersion(this.state.id, 'cover'));
           })
-          .catch(err => window.location.reload());
-      }
-    });
+          .catch(err => location.reload());
+      });
   }
   
   onSaveChanges() {
@@ -162,38 +170,39 @@ export default class ManageBook extends React.Component {
     }
     
     this.setState({ saving: true });
+
+    const { refs } = this;
     
     const data = {
-      identifiers: this.refs.identifiers.value,
-      author_sort: this.refs.author_sort.value,
-      publisher: this.refs.publisher.value,
-      timestamp: (new Date(this.refs.timestamp.value)).toISOString(),
-      authors: this.refs.authors.value,
-      pubdate: (new Date(this.refs.pubdate.value)).toISOString(),
-      rating: this.refs.rating.value,
-      title: this.refs.title.value,
-      tags: this.refs.tags.value
+      identifiers: refs.identifiers.getField().value,
+      author_sort: refs.author_sort.getField().value,
+      publisher: refs.publisher.getField().value,
+      timestamp: moment(refs.timestamp.state.calendarTempDate).toISOString(),
+      authors: refs.authors.getField().value,
+      pubdate: moment(refs.pubdate.state.calendarTempDate).toISOString(),
+      rating: refs.rating.getField().value,
+      title: refs.title.getField().value,
+      tags: refs.tags.getField().value
     };
     
     // Calibre doubles rating for some reason...
-    if (data.rating > 0) {
-      data.rating = data.rating / 2;
-    }
+    data.rating = data.rating > 0 ? data.rating / 2 : data.rating;
     
-    if (this.refs.series.value != '') {
-      data.series = this.refs.series.value;
-      data.series_index = this.refs.series_index.value;
+    if (refs.series.getField().value != '') {
+      data.series = refs.series.getField().value;
+      data.series_index = refs.series_index.getField().value;
     }
 
-    if (this.refs.comments.value !== undefined) {
-      data.comments = this.refs.comments.value;
-    }
+    if (refs.comments.getField)
+      data.comments = refs.comments.getField().value;
+    else
+      data.comments = refs.comments.innerHTML;
 
-    // Send to library server
+    // Send to xyLibrary
     request
       .put(
-        LIBRARY + 'libraries/' + this.props.data.account.library +
-        '/books/' + this.state.id + '/metadata'
+        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `/books/${this.state.id}/metadata`
       )
       .send({
         data: JSON.stringify(data)
@@ -201,16 +210,14 @@ export default class ManageBook extends React.Component {
       .end((err, res) => {
         this.setState({ saving: false });
       
-        if (err || res.body.error) {
-          swal('Error', 'An unknown error occured', 'error');
-        }
-        else {
-          // Reload state.books and update local storage books
-          loadBooks(
-            this.props.data.account.library,
-            this.props.dispatch
-          );
-        }
+        if (err || res.body.error)
+          return swal('Error', 'An unknown error occured', 'error');
+
+        // Reload state.books and update local storage books
+        loadBooks(
+          this.props.data.account.library,
+          this.props.dispatch
+        );
       });
   }
 
@@ -218,187 +225,262 @@ export default class ManageBook extends React.Component {
     const book = this.props.data.books.find(b => this.state.id == b.id);
     
     return (
-      <div className='manage-book old'>
-        <section className='main'>
-          <label>Title</label>
-          <input type='text' ref='title' defaultValue={book.title} />
-          
-          <label>Authors</label>
-          <input type='text' ref='authors' defaultValue={book.authors} />
-          <label>Author Sort</label>
-          <input
+      <div className='manage-book'>
+        <Paper
+          zDepth={1}
+          component='section'
+          className='main section flex'
+        >
+          <TextField
+            id='text--title'
+            ref='title'
             type='text'
+            label='Title'
+            className='md-cell'
+            defaultValue={book.title}
+          />
+
+          <TextField
+            id='text--authors'
+            ref='authors'
+            type='text'
+            label='Author(s)'
+            className='md-cell'
+            defaultValue={book.authors}
+          />
+
+          <TextField
+            id='text--author-sort'
             ref='author_sort'
+            type='text'
+            label='Author Sort'
+            className='md-cell'
             defaultValue={book.author_sort}
           />
-          
-          <label>Series</label>
-          <input type='text' ref='series' defaultValue={book.series || ''} />
-          <label>Series Index</label>
-          <input
-            type='number'
+
+          <TextField
+            id='text--series'
+            ref='series'
+            type='text'
+            label='Series'
+            className='md-cell'
+            defaultValue={book.series || ''}
+          />
+                    
+          <TextField
+            id='number--series-index'
             ref='series_index'
+            type='number'
+            label='Series Index'
+            className='md-cell'
             defaultValue={book.series_index || 1}
           />
-        </section>
+        </Paper>
         
-        <section className='cover'>
-          <Dropzone ref='dz' className='dropzone' onDrop={this.onUploadCover}>
+        <Paper
+          zDepth={1}
+          component='section'
+          className='cover section flex'
+        >
+          <Dropzone
+            ref='dz'
+            onDrop={f => this.onUploadCover(f)}
+            className='dropzone'
+          >
             <img className='cover' id={`cover-${book.id}`} />
           </Dropzone>
-          
-          <div>
-            <button className='btn-primary' onClick={() => this.refs.dz.open()}>
-              <span className='icon-upload' /> Upload Cover
-            </button>
-            <button className='btn-secondary' onClick={
-              () => this.setState({ findCover: true })
-            }>
-              <span className='icon-search' /> Find Cover
-            </button>
+
+          <div className='buttons'>
+            <Button
+              flat primary
+              label='Upload Cover'
+              onClick={() => this.refs.dz.open()}
+            >cloud_upload</Button>
+
+            <Button
+              flat secondary
+              label='Find Cover'
+              onClick={() => this.setState({ findCover: true })}
+            >search</Button>
           </div>
 
-          {this.state.findCover ? (
-            <div className='find-cover'>
-              <span
-                title='Close Book Cover Finder'
-                onClick={() => this.setState({ findCover: false })}
-                className='icon-close'
-              />
-              <iframe src={
-                'https://www.bing.com/images/search?q='
-                + book.authors + ' ' + book.title
-              }/>
-            </div>
-          ) : (
-            <div />
-          )}
-        </section>
+          <Dialog
+            fullPage
+            id='dialog--find-cover'
+            onHide={() => this.setState({ findCover: false })}
+            visible={this.state.findCover}
+          >
+            <Button
+              floating fixed primary
+              tooltipPosition='left'
+              fixedPosition='br'
+              tooltipLabel='Close'
+              onClick={() => this.setState({ findCover: false })}
+            >close</Button>
+
+            <iframe
+              className='cover-search'
+              src={this.state.findCover ? (
+                'https://www.bing.com/images/search?q=' +
+                encodeURIComponent(book.authors + ' ' + book.title)
+              ) : ''}
+            />
+          </Dialog>
+        </Paper>
         
-        <section className='other'>
-          <label>Rating</label>
-          <input
-            type='number'
+        <Paper
+          zDepth={1}
+          component='section'
+          className='other section flex'
+        >
+          <TextField
+            floating
+            id='number--rating'
+            max={5}
             ref='rating'
+            type='number'
+            label='Rating'
+            className='md-cell'
             defaultValue={book.rating || 0}
-            max='5'
           />
           
-          <label>Tags</label>
-          <input type='text' ref='tags' defaultValue={book.tags.join(', ')} />
-          
-          <label
-            title='ISBN, Amazon, ... ids. Format: identifier_name:id,..'
-          >Identifiers</label>
-          <input
+          <TextField
+            id='textarea--tags'
+            ref='tags'
+            rows={2}
             type='text'
+            label='Tags'
+            helpText='Separate tags with a command and a space'
+            className='md-cell'
+            defaultValue={book.tags.join(', ')}
+          />
+          
+          <TextField
+            id='text--ids'
             ref='identifiers'
+            type='text'
+            label='Identifiers'
+            helpText='ISBN, Amazon, etc. Format: identifier_name:id,..'
+            className='md-cell'
             defaultValue={book.identifiers}
           />
           
-          <label>Added</label>
-          <input
-            type='date'
+          <DatePicker
+            id='date--added'
             ref='timestamp'
-            defaultValue={
-              (new Date(book.timestamp)).toISOString().split('T')[0]
-            }
+            label='Date Added'
+            defaultValue={new Date(book.timestamp)}
           />
-          
-          <label>Published</label>
-          <input
-            type='date'
+
+          <DatePicker
+            id='date--published'
             ref='pubdate'
-            defaultValue={book.pubdate ? book.pubdate.split('T')[0] : ''}
+            label='Published'
+            defaultValue={book.pubdate ? new Date(book.pubdate) : ''}
           />
           
-          <label>Publisher</label>
-          <input
-            type='text'
+          <TextField
+            id='text--publisher'
             ref='publisher'
+            type='text'
+            label='Publisher'
+            className='md-cell'
             defaultValue={book.publisher || ''}
           />
-        </section>
+        </Paper>
         
-        <section className='download-metadata'>
-          <button
-            className='btn-secondary'
-            onClick={() => this.onDownloadMetadata()}
-          >Download Metadata</button>
-          
-          <p>{this.state.downloadingMetadata ? (
-            'Attempting to find metadata... This can take up to 30 seconds.'
+        <Paper
+          zDepth={1}
+          component='section'
+          className='download-metadata section flex'
+        >
+          {this.state.downloadingMetadata ? (
+            <p>Attempting to find metadata... This can take a while.</p>
           ) : (
-            "We'll attempt to get this book's metadata from the internet using its authors and title, or ISBN."
-          )}</p>
-        </section>
-        
-        <section className='comments'>
-          {this.state.editComments ? (
-            <div>
-              <label>Comments</label>
-              <span className='input-description'>
-                Despite the name, the comments metadata field is typically used for the book's description.
-              </span>
-
-              <textarea
-                ref='comments'
-                className='comments-edit'
-                defaultValue={book.comments || ''}
-              />
-            </div>
-          ) : (
-            <div>
-              <div
-                ref='comments'
-                className='comments'
-                dangerouslySetInnerHTML={{
-                  __html: book.comments
-                    || 'This book has no comments'
-                }}
-              />
-              
-              <button
-                className='btn-primary btn-sm'
-                onClick={() =>
-                  this.setState({ editComments: true })
-                }
-              >Edit Comments</button>
-            </div>
+            <p>xyBooks will attempt to download metadata for this book from the internet using its authors and title, or its ISBN.</p>
           )}
-        </section>
+
+          <Button
+            primary flat
+            label='Download Metadata'
+            onClick={() => this.onDownloadMetadata()}
+            disabled={this.state.downloadingMetadata}
+          >cloud_upload</Button>
+        </Paper>
         
-        <section className='formats'>
+        <Paper
+          zDepth={1}
+          component='section'
+          className='comments section flex'
+        >{this.state.editComments ? (
+          <TextField
+            id='textarea--comments'
+            ref='comments'
+            rows={2}
+            type='text'
+            label='Comments'
+            helpText={
+              'Despite the name, the comments metadata field is typically ' +
+              'used for the book\'s description, but it can be used for ' +
+              'anything.'
+            }
+            className='md-cell'
+            defaultValue={book.comments || ''}
+          />
+        ) : (
+          <div>
+            <div
+              ref='comments'
+              className='comments'
+              dangerouslySetInnerHTML={{ __html:
+                book.comments || 'This book has no comments'
+              }}
+            />
+            
+            <Button
+              primary flat
+              label='Edit Comments'
+              onClick={() => this.setState({ editComments: true })}
+            >edit</Button>
+          </div>
+        )}</Paper>
+        
+        <Paper
+          zDepth={1}
+          component='section'
+          className='formats section flex'
+        >
           <table className='formats'>{
-            book.formats.map(format => {
-              format = format.split('.').slice(-1)[0].toUpperCase();
-              
-              return (
-                <tr>
+            book.formats
+              .map(format => format.split('.').slice(-1)[0].toUpperCase())
+              .map(format =>
+                <tr key={format}>
                   <td>{format}</td>
-                  <td><span
-                    className='icon-trash'
-                    onClick={() => this.onDeleteFormat(format)}
-                    title={`Delete Format (${format})`}
-                  /></td>
+                  <td>
+                    <Button
+                      icon
+                      onClick={() => this.onDeleteFormat(format)}
+                    >delete</Button>
+                  </td>
                 </tr>
-              );
-            })
+              )
           }</table>
           
-          <a href={location.hash.replace('manage', 'add-format')}>
-            Add Format
-          </a>
-        </section>
+          <Button
+            flat primary
+            label='Add Format'
+            onClick={() => location.hash = buildUrl(book, 'add-format')}
+          >add</Button>
+        </Paper>
         
-        <section>
-          <button
-            className='btn-primary'
-            onClick={() => this.onSaveChanges()}
-          >{
-            this.state.saving ? 'Saving...' : 'Save Changes'
-          }</button>
-        </section>
+        <Button
+          primary raised
+          label={
+            this.state.saving ? 'Saving...' : 'Save'
+          }
+          onClick={() => this.onSaveChanges()}
+          disabled={this.state.saving}
+        >save</Button>
       </div>
     );
   }
