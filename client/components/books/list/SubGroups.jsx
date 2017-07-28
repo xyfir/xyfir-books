@@ -50,7 +50,7 @@ export default class BookListSubGroups extends React.Component {
     
     return (
       <div className='book-list-subgroup'>
-        <Search dispatch={this.props.dispatch} />
+        <Search {...this.props} />
         
         <List className='md-paper md-paper--1 section'>{
           findListItems(
