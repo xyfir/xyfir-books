@@ -14,14 +14,12 @@ export default class Account extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      useNative: localStorage.isPhoneGap == 'true'
-    }
+    this.canPurchase = !localStorage.isPhoneGap;
   }
 
   render() {
     if (this.props.data.view.split('/')[1] == 'PURCHASE')
-      return <Purchase {...this.props} useNative={this.state.useNative} />
+      return <Purchase {...this.props} />
     
     const { account } = this.props.data;
     
@@ -65,23 +63,27 @@ export default class Account extends React.Component {
                 Your library size limit is {account.librarySizeLimit}GB
               </p>
               
-              <Button
-                raised primary
-                label='Extend'
-                onClick={() =>
-                  location.hash = '#account/purchase/extend-subscription'
-                }
-              />
+              {this.canPurchase ? (
+                <div>
+                  <Button
+                    raised primary
+                    label='Extend'
+                    onClick={() =>
+                      location.hash = '#account/purchase/extend-subscription'
+                    }
+                  />
 
-              {!this.state.useNative ? (
-                <Button
-                  raised secondary
-                  label='Limit'
-                  onClick={() =>
-                    location.hash = '#account/purchase/increase-size-limit'
-                  }
-                />
-              ) : null}
+                  <Button
+                    raised secondary
+                    label='Limit'
+                    onClick={() =>
+                      location.hash = '#account/purchase/increase-size-limit'
+                    }
+                  />
+                </div>
+              ) : (
+                <p>Subscriptions must be extended via xyBooks' website.</p>
+              )}
             </div>
           ) : (
             <div>
@@ -105,11 +107,17 @@ export default class Account extends React.Component {
                 ) : null}
               </p>
               
-              <Button
-                raised primary
-                label='Purchase'
-                onClick={() => location.hash = '#account/purchase/subscription'}
-              />
+              {this.canPurchase ? (
+                <Button
+                  raised primary
+                  label='Purchase'
+                  onClick={() =>
+                    location.hash = '#account/purchase/subscription'
+                  }
+                />
+              ) : (
+                <p>Subscriptions must be purchased via xyBooks' website.</p>
+              )}
             </div>
           )}
         </Paper>

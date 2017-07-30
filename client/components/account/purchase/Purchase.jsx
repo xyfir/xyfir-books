@@ -1,10 +1,9 @@
 import React from 'react';
 
 // Components
-import StripePurchaseSubscription from 'components/account/purchase/stripe/Subscription';
-import StripeExtendSubscription from 'components/account/purchase/stripe/ExtendSubscription';
-import StripeIncreaseSizeLimit from 'components/account/purchase/stripe/IncreaseSizeLimit';
-import NativePurchase from 'components/account/purchase/native/Purchase';
+import PurchaseSubscription from 'components/account/purchase/Subscription';
+import ExtendSubscription from 'components/account/purchase/ExtendSubscription';
+import IncreaseSizeLimit from 'components/account/purchase/IncreaseSizeLimit';
 
 // Constants
 import {
@@ -19,8 +18,6 @@ export default class Purchase extends React.Component {
   }
 
   render() {
-    if (this.props.useNative) return <NativePurchase {...this.props} />
-
     switch (this.props.data.view) {
       case PURCHASE_SUBSCRIPTION:
         return <StripePurchaseSubscription {...this.props} />

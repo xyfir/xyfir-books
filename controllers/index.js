@@ -33,10 +33,6 @@ router.post(
   '/account/purchase/subscription',
   require('./account/purchase/subscription')
 );
-router.post(
-  '/account/purchase/subscription-native',
-  require('./account/purchase/subscription-native')
-);
 
 /* Books */
 router.get(

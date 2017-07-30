@@ -11,7 +11,7 @@ import { URL, STRIPE_KEY_PUB } from 'constants/config';
 // Modules
 import request from 'lib/request/index';
 
-export default class StripePurchaseSubscription extends React.Component {
+export default class PurchaseSubscription extends React.Component {
 
 	constructor(props) {
 		super(props);

@@ -9,7 +9,7 @@ import { URL, STRIPE_KEY_PUB } from 'constants/config';
 // Modules
 import request from 'lib/request/index';
 
-export default class StripeIncreaseLibrarySizeLimit extends React.Component {
+export default class IncreaseLibrarySizeLimit extends React.Component {
 
   constructor(props) {
     super(props);
