@@ -18,17 +18,22 @@
   }
 
   nav.navbar {
-    font-size: 125%;
+    background-color: $md-primary-color;
     padding: 1em;
     display: flex;
 
     >a {
       flex: 1;
+      color: white;
+
+      &:hover {
+        color: $llgray;
+      }
     }
   }
 
   section:nth-child(even) {
-    background-color: $blue;
+    background-color: $md-primary-color;
     color: white;
     
     h1, h2, p {
@@ -48,7 +53,7 @@
     background-color: white;
     
     h1, h2 {
-      color: $blue;
+      color: $md-primary-color;
     }
   }
 
@@ -80,7 +85,7 @@
     }
 
     button {
-      background-color: $lblue;
+      background-color: $md-secondary-color;
 
       &:hover {
         filter: saturate(90%);
