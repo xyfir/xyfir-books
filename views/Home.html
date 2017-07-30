@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet" type="text/css">
 
   <link rel="stylesheet" href="static/fontello/css/fontello.css">
   <link rel="stylesheet" href="static/css/style.css">
@@ -67,17 +67,17 @@
         Try Free
       </button>
       <span class="note">
-        All that's needed is a free <a target="_blank" href="https://accounts.xyfir.com/">Xyfir Account</a>. No payment information required.
+        All that's needed is a free <a target="_blank" href="https://accounts.xyfir.com/">Xyfir Account</a>.
       </span>
     </section>
 
     <section class="install with-screenshot">
-      <img src="http://imgur.com/auS88ai.png" alt="Screenshot 1">
+      <img src="//i.imgur.com/xY3e128.png" alt="Screenshot 1">
 
       <div>
         <h2>Install</h2>
         <p>
-          You can access Xyfir Books in your browser just like any other site via our <a href="app/">web app</a> or with our mobile and desktop applications.
+          You can access Xyfir Books in your browser just like any other website via our <a href="app/">web app</a> or with our mobile and desktop applications:
         </p>
         
         <a class="icon-apple" href="https://itunes.apple.com/us/app/xyfir-books-ebook-reader-storage/id1195379180">iOS</a>
@@ -90,7 +90,7 @@
     </section>
     
     <section class="cloud with-screenshot">
-      <img src="http://imgur.com/n8AeU2e.png" alt="Screenshot 2">
+      <img src="//imgur.com/hpTBeCn.png" alt="Screenshot 2">
 
       <div>
         <h2>In the Cloud</h2>
@@ -101,40 +101,43 @@
     </section>
 
     <section class="management with-screenshot">
-      <img src="http://imgur.com/M8w2sCg.png" alt="Screenshot 3">
+      <img src="//imgur.com/yzGxooR.png" alt="Screenshot 3">
 
       <div>
         <h2>Library Management</h2>
         <p>
-          Xyfir Books is built with simple library management available from any device in mind. Updating a book's metadata like title, authors, rating, or even cover is a piece of cake. You can even edit multiple books at once. Most all popular ebook formats can be uploaded and edited.
+          Xyfir Books is built with simple library management available from any device in mind. Updating a book's metadata like its title, authors, rating, or even cover is a piece of cake. You can even edit multiple books at once. Most all popular ebook formats can be uploaded and edited.
         </p>
       </div>
     </section>
 
     <section class="reader with-screenshot">
-      <img src="http://imgur.com/BCPKO0G.png" alt="Screenshot 4">
+      <img src="//imgur.com/han131B.png" alt="Screenshot 4">
 
       <div>
         <h2>Ebook Reader</h2>
         <p>
-          Xyfir Books is more than just library management and storage, it's also an ebook reader. Xyfir Books comes with all the features you would expect from an ebook reader like bookmarks, notes and highlighting, and more. All with the benefits of instantly having all your data synced to the cloud so you can easily pick up where you left off on another device. Our reader is available on any device you can access Xyfir Books with and can read EPUB format ebooks.
+          Xyfir Books is more than just library management and storage, it's also an ebook reader. xyBooks comes with all the features you would expect from an ebook reader like bookmarks, notes and highlighting, and more. All with the benefits of instantly having all your data synced to the cloud so you can easily pick up where you left off on another device. Our reader is available on any device you can access Xyfir Books with and can read EPUB format ebooks.
         </p>
       </div>
     </section>
 
     <section class="xyfir-annotations with-screenshot">
-      <img src="http://imgur.com/ph5Jok6.png" alt="Screenshot 5">
+      <img src="//imgur.com/aQnTUbW.png" alt="Screenshot 5">
 
       <div>
         <h2>Xyfir Annotations</h2>
         <p>
           <a href="https://annotations.xyfir.com/" target="_blank">Xyfir Annotations</a> allows you to better explore and interact with your ebooks. When reading a book you can search for and download annotations for your book. Once downloaded, annotations will be available to use while reading. Enabling <em>annotations mode</em> while reading allows you to click on highlighted items in your book and view that item's annotations. An annotation can be a document, a wiki link, an image, and many other things.
         </p>
+        <p>
+          All new xyBooks users are given a free one-month subscription to xyAnnotations when they sign-up.
+        </p>
       </div>
     </section>
 
     <section class="calibre with-screenshot">
-      <img src="http://i.imgur.com/1VjpmOu.png" alt="Screenshot 6">
+      <img src="//imgur.com/MWFai9U.png" alt="Screenshot 6">
 
       <div>
         <h2>Calibre Compatible</h2>
@@ -144,10 +147,12 @@
       </div>
     </section>
 
-    <section class="premium">
+    <section class="premium with-screenshot">
+      <img src="//imgur.com/YgmPlua.png" alt="Screenshot 7">
+
       <h2>Xyfir Books Premium</h2>
       <p>
-        A premium subscription removes advertisements and increases your available library storage up to 15GB while also giving you access to other features like themes!
+        A premium subscription supports further development, removes advertisements, increases your available library storage to 15GB, and also gives you access to other features like built-in themes and custom styling.
       </p>
 
       <table>
@@ -180,13 +185,9 @@
   </footer>
 
   <script>
-    if (location.hash.indexOf("?")) {
-      localStorage.setItem(
-        "referral", location.hash.split("?r=")[1] || ""
-      )
-      localStorage.setItem(
-        "affiliate", location.hash.split("?promo=")[1] || ""
-      );
+    if (location.hash.indexOf('?')) {
+      localStorage.affiliate = location.hash.split('?promo=')[1] || '',
+      localStorage.referral = location.hash.split('?r=')[1] || '';
     }
   </script>
 </body>
