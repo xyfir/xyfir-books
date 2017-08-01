@@ -68,13 +68,13 @@ export default class Advertisement extends React.Component {
         component='section'
         className='section'
       >
-        <a onClick={() => location.href = ad.link}>{ad.title}</a>
-        <span> // {ad.description}</span>
+        <a onClick={() => location.href = ad.link}>{ad.normalText.title}</a>
+        <span> // {ad.normalText.description}</span>
 
         <br />
 
         <small>
-          xyBooks Premium removes ads.
+          Purchase xyBooks Premium to remove ads.
 
           {this.state.canClose ? (
             <a onClick={() => this.onClose()}> [close]</a>

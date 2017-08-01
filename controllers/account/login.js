@@ -36,7 +36,7 @@ module.exports = async function(req, res) {
 
     let result,
     sql = `
-      SELECT user_id, subscription, xad_id FROM users WHERE xyfir_id = ?
+      SELECT user_id, subscription FROM users WHERE xyfir_id = ?
     `,
     vars = [
       req.body.xid
@@ -47,8 +47,7 @@ module.exports = async function(req, res) {
     if (!rows.length) {
       const insert = {
         xyfir_id: req.body.xid, email: xyAccRes.body.email,
-        library_id: rstring.generate(64),
-        xad_id: xyAccRes.body.xadid
+        library_id: rstring.generate(64)
       };
       sql = `
         INSERT INTO users SET ?
@@ -128,7 +127,6 @@ module.exports = async function(req, res) {
         
       req.session.subscription = 0;
       req.session.library = library;
-      req.session.xadid = xyAccRes.body.xadid;
     }
     // Update user
     else {
@@ -143,7 +141,6 @@ module.exports = async function(req, res) {
       db.release();
 
       req.session.uid = rows[0].user_id;
-      req.session.xadid = rows[0].xad_id;
       req.session.subscription = rows[0].subscription;
 
       res.json({

@@ -1,36 +1,20 @@
-const request = require('superagent');
-const config = require('config');
+const xyfirAds = require('xyfir-ads');
 
 /*
   GET api/ad
-  REQUIRED
-    content: string
+  OPTIONAL
+    content: string // ignored for now
   RETURN
-    {
-      error: boolean, message:? string,
-      ad?: {
-        title: string, link: string, description: string
-      }
-    }
-  DESCRIPTION
-    Loads an ad from xyAds
+    https://github.com/Xyfir/Ads/blob/master/ads.json
+    XyfirAds[i]
 */
-module.exports = async function(req, res) { 
+module.exports = async function(req, res) {
 
-  try {
-    const result = await request
-      .get(config.addresses.xyAds)
-      .query({
-        pubid: 4, types: '1,2', count: 1,
-        content: req.body.content, ip: req.ip
-      });
+  const ads = await xyfirAds({ blacklist: ['xyBooks'] });
 
-    if (!result.body.ads.length) throw 'No ads found';
+  if (!ads.length)
+    res.json({});
+  else
+    res.json(ads[0]);
 
-    res.json({ error: false, ad: result.body.ads[0] });
-  }
-  catch (err) {
-    res.json({ error: true, message: err });
-  }
-
-};
+}

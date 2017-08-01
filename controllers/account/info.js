@@ -12,8 +12,8 @@ const config = require('config');
     {
       error: boolean, message?: string,
 
-      library: string, subscription:? number, uid?: number, xadid?: string,
-      librarySizeLimit?: number, email?: string, xyAnnotationsKey?: string,
+      library: string, subscription:? number, uid?: number, email?: string,
+      librarySizeLimit?: number, xyAnnotationsKey?: string,
       referral?: {
         referral?: number, affiliate?: string,
         hasMadePurchase?: boolean
@@ -78,7 +78,7 @@ module.exports = async function(req, res) {
       SELECT
         library_size_limit AS librarySizeLimit, subscription, email,
         user_id AS uid, xyannotations_key AS xyAnnotationsKey,
-        library_id AS library, xad_id AS xadid, referral
+        library_id AS library, referral
       FROM users WHERE user_id = ?
     `,
     vars = [
@@ -95,7 +95,6 @@ module.exports = async function(req, res) {
     // Set session, return account info
     rows[0].error = false,
     req.session.uid = uid,
-    req.session.xadid = rows[0].xadid,
     req.session.library = rows[0].library,
     req.session.subscription = rows[0].subscription;
     
