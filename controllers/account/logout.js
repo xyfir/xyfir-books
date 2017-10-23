@@ -7,6 +7,6 @@ const config = require('config');
 */
 module.exports = function(req, res) {
 
-  req.session.destroy(err => res.redirect(config.addresses.xyBooks));
+  req.session.destroy(err => res.redirect(config.addresses.xyBooks.root));
 
 }
