@@ -33,6 +33,10 @@ router.post(
   '/account/purchase/subscription',
   require('./account/purchase/subscription')
 );
+router.post(
+  '/account/purchase/swiftdemand',
+  require('./account/purchase/swiftdemand')
+);
 
 /* Books */
 router.get(
