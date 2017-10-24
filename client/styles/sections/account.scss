@@ -1,6 +1,5 @@
-div.purchase-subscription.stripe {
-	.expiration > input[type=number] {
-		display: inline-block;
-		width: 5em;
-	}
+section.purchase-subscription {
+	>button.StripeCheckout {
+    display: none !important;
+  }
 }
