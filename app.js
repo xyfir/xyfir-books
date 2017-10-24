@@ -7,7 +7,7 @@ const parser = require('body-parser');
 const moment = require('moment');
 const app = express();
 
-const config = require('./config');
+const config = require('config');
 
 app.use(
   session({
@@ -32,7 +32,7 @@ app.use(parser.json({ limit: '5mb' }));
 app.use(parser.urlencoded({ extended: true, limit: '5mb' }));
 
 app.use('/static', express.static(__dirname + '/static'));
-app.use('/api', require('./controllers/'));
+app.use('/api', require('controllers/'));
 
 app.get('/', (req, res) => {
   if (config.environment.type == 'dev') {
@@ -49,4 +49,4 @@ app.listen(config.environment.port, () =>
   console.log('~~Server running on port', config.environment.port)
 );
 
-if (config.environment.runCronJobs) require('./jobs/start')();
+if (config.environment.runCronJobs) require('jobs/cron/start')();
