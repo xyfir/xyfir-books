@@ -7,7 +7,7 @@ import Button from 'react-md/lib/Buttons/Button';
 import Paper from 'react-md/lib/Papers';
 
 // Components
-import Purchase from 'components/account/purchase/Purchase';
+import Purchase from 'components/account/Purchase';
 
 export default class Account extends React.Component {
 
@@ -34,7 +34,7 @@ export default class Account extends React.Component {
           <p>
             Refer new users to Xyfir Books and they'll receive 10% off of their first purchase.
             <br />
-            You'll receive one week of subscription time for every month that they purchase.
+            You'll receive one month of subscription time whenever they purchase a year subscription.
           </p>
 
           <Button
@@ -57,32 +57,21 @@ export default class Account extends React.Component {
                 Your subscription will expire on {
                   moment(account.subscription).format('YYYY-MM-DD')
                 }.
-                
+
                 <br />
 
                 Your library size limit is {account.librarySizeLimit}GB
               </p>
-              
-              {this.canPurchase ? (
-                <div>
-                  <Button
-                    raised primary
-                    label='Extend'
-                    onClick={() =>
-                      location.hash = '#account/purchase/extend-subscription'
-                    }
-                  />
 
-                  <Button
-                    raised secondary
-                    label='Limit'
-                    onClick={() =>
-                      location.hash = '#account/purchase/increase-size-limit'
-                    }
-                  />
-                </div>
+              {this.canPurchase ? (
+                <Button
+                  raised primary
+                  onClick={() =>
+                    location.hash = '#account/purchase/subscription'
+                  }
+                >Purchase</Button>
               ) : (
-                <p>Subscriptions must be extended via xyBooks' website.</p>
+                <p>Subscriptions must be purchased via xyBooks' website.</p>
               )}
             </div>
           ) : (
@@ -110,11 +99,10 @@ export default class Account extends React.Component {
               {this.canPurchase ? (
                 <Button
                   raised primary
-                  label='Purchase'
                   onClick={() =>
                     location.hash = '#account/purchase/subscription'
                   }
-                />
+                >Purchase</Button>
               ) : (
                 <p>Subscriptions must be purchased via xyBooks' website.</p>
               )}
