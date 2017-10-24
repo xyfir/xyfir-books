@@ -22,16 +22,8 @@ router.get(
 
 /* Account - Purchase */
 router.post(
-  '/account/purchase/increase-size-limit',
-  require('./account/purchase/increase-size-limit')
-);
-router.post(
-  '/account/purchase/extend-subscription',
-  require('./account/purchase/extend-subscription')
-);
-router.post(
-  '/account/purchase/subscription',
-  require('./account/purchase/subscription')
+  '/account/purchase/stripe',
+  require('./account/purchase/stripe')
 );
 router.post(
   '/account/purchase/swiftdemand',
