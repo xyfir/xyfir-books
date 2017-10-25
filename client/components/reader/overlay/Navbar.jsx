@@ -125,6 +125,7 @@ export default class ReaderNavbar extends React.Component {
 
         <Drawer
           onVisibilityChange={v => this.setState({ drawer: v })}
+          overlayClassName='reader-drawer-overlay'
           autoclose={true}
           navItems={[
             <ListItem
