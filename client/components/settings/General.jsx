@@ -54,9 +54,9 @@ export default class GeneralSettings extends React.Component {
         
           <Button
             primary raised
+            iconChildren='save'
             onClick={() => this.onSave()}
-            label='Save'
-          >save</Button>
+          >Save</Button>
         </Paper>
         
         <Paper
@@ -71,9 +71,9 @@ export default class GeneralSettings extends React.Component {
           
           <Button
             secondary raised
+            iconChildren='clear'
             onClick={() => this.onClear()}
-            label='Clear'
-          >clear</Button>
+          >Clear</Button>
         </Paper>
       </div>
     );

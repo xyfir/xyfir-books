@@ -22,8 +22,9 @@ export default ({ link }) => (
           tooltipPosition='right'
           fixedPosition='bl'
           tooltipLabel='Go to source'
+          iconChildren='link'
           onClick={() => window.open(link)}
-        >link</Button>
+        />
         
         <video src={link} controls />
       </div>

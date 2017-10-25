@@ -95,32 +95,36 @@ export default class ReaderNavbar extends React.Component {
             <Button
               icon
               onClick={() => this.onGoBack()}
-            >chevron_left</Button>,
+              iconChildren='chevron_left'
+            />,
 
             <Button
               icon
               key='bookmark'
               onClick={() => this.onBookmark()}
-            >{
-              this._isBookmarked() ? 'bookmark' : 'bookmark_border'
-            }</Button>,
+              iconChildren={
+                this._isBookmarked() ? 'bookmark' : 'bookmark_border'
+              }
+            />,
 
             <Button
               icon
               key='home'
               onClick={() => location.hash = '#books/recently-opened'}
-            >home</Button>
+              iconChildren='home'
+            />
           ]}
           nav={
             <Button
               icon
               onClick={() => this.setState({ drawer: true })}
-            >menu</Button>
+              iconChildren='menu'
+            />
           }
         />
 
         <Drawer
-          onVisibilityToggle={v => this.setState({ drawer: v })}
+          onVisibilityChange={v => this.setState({ drawer: v })}
           autoclose={true}
           navItems={[
             <ListItem
@@ -160,7 +164,8 @@ export default class ReaderNavbar extends React.Component {
                 <Button
                   icon
                   onClick={() => this.setState({ drawer: false })}
-                >arrow_back</Button>
+                  iconChildren='arrow_back'
+                />
               }
             />
           }

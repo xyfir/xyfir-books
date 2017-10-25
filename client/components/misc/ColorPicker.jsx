@@ -57,7 +57,8 @@ export default class ColorPicker extends React.Component {
         <Button
           icon
           onClick={() => this.setState({ visible: true })}
-        >colorize</Button>
+          iconChildren='colorize'
+        />
 
         <Dialog
           id='color-picker'

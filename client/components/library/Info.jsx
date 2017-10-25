@@ -70,16 +70,18 @@ export default class LibraryInfo extends React.Component {
           tooltipPosition='right'
           tooltipLabel='Upload new library'
           fixedPosition='bl'
+          iconChildren='cloud_upload'
           onClick={() => location.hash = '#library/upload'}
-        >cloud_upload</Button>
+        />
 
         <Button
           floating fixed primary
           tooltipPosition='left'
           tooltipLabel='Download library'
           fixedPosition='br'
+          iconChildren='cloud_download'
           onClick={() => this.onDownload()}
-        >cloud_download</Button>
+        />
       </Paper>
     );
   }

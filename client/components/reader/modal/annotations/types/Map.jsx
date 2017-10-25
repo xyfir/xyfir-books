@@ -11,8 +11,9 @@ export default ({ annotation }) =>
         tooltipPosition='right'
         fixedPosition='bl'
         tooltipLabel='Go to source'
+        iconChildren='link'
         onClick={() => window.open(annotation.value)}
-      >link</Button>
+      />
 
       <iframe src={annotation.value} />
     </div>

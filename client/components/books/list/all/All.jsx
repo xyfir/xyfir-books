@@ -87,8 +87,9 @@ export default class ListAllBooks extends React.Component {
           tooltipPosition='right'
           fixedPosition='bl'
           tooltipLabel='Set book list view'
+          iconChildren='list'
           onClick={() => this.setState({ dialog: true })}
-        >list</Button>
+        />
 
         <Dialog
           id='dialog--set-view'

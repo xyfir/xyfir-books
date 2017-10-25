@@ -52,7 +52,7 @@ export default class ReaderSettings extends React.Component {
   }
 
   onSaveKey() {
-    const xyAnnotationsKey = this.refs.annotationsKey.getField().value;
+    const xyAnnotationsKey = this.refs.annotationsKey.value;
 
     request
       .put('../api/account')
@@ -209,15 +209,15 @@ export default class ReaderSettings extends React.Component {
 
           <Button
             primary raised
+            iconChildren='save'
             onClick={() => this.onSaveStyles()}
-            label='Save'
-          >save</Button>
+          >Save</Button>
 
           <Button
             secondary raised
+            iconChildren='clear'
             onClick={() => this.onResetStyles()}
-            label='Reset'
-          >clear</Button>
+          >Reset</Button>
         </Paper>
 
         <Paper
@@ -245,9 +245,9 @@ export default class ReaderSettings extends React.Component {
 
           <Button
             primary raised
+            iconChildren='save'
             onClick={() => this.onSaveKey()}
-            label='Save'
-          >save</Button>
+          >Save</Button>
         </Paper>
       </div>
     );

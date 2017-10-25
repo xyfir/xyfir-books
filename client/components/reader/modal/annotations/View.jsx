@@ -73,12 +73,13 @@ export default class ViewAnnotations extends React.Component {
             <Button
               icon
               onClick={() => this.setState({ drawer: true })}
-            >menu</Button>
+              iconChildren='menu'
+            />
           }
         />
 
         <Drawer
-          onVisibilityToggle={v => this.setState({ drawer: v })}
+          onVisibilityChange={v => this.setState({ drawer: v })}
           autoclose={true}
           navItems={
             this.state.annotations.map((a, index) =>
@@ -101,7 +102,8 @@ export default class ViewAnnotations extends React.Component {
                 <Button
                   icon
                   onClick={() => this.setState({ drawer: false })}
-                >arrow_back</Button>
+                  iconChildren='arrow_back'
+                />
               }
             />
           }

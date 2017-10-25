@@ -17,9 +17,9 @@ export default class NotesList extends React.Component {
       <div className='notes'>
         <Button
           raised primary
-          label='Create'
           onClick={() => this.props.notes.setState({ view: 'create' })}
-        >create</Button>
+          iconChildren='create'
+        >Create</Button>
 
         <List className='notes'>{
           this.props.reader.state.book.notes.map((note, i) =>

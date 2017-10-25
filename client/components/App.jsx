@@ -275,13 +275,15 @@ class App extends React.Component {
               icon
               key='search'
               onClick={() => location.hash = '#books/list/all'}
-            >search</Button>,
+              iconChildren='search'
+            />,
 
             <Button
               icon
               key='home'
               onClick={() => location.hash = '#books/recently-opened'}
-            >home</Button>
+              iconChildren='home'
+            />
           ]}
           title={'xyBooks' + (
             Date.now() > this.state.account.subscription ? ' (free)' : ''
@@ -290,12 +292,13 @@ class App extends React.Component {
             <Button
               icon
               onClick={() => this.setState({ drawer: true })}
-            >menu</Button>
+              iconChildren='menu'
+            />
           }
         />
 
         <Drawer
-          onVisibilityToggle={v => this.setState({ drawer: v })}
+          onVisibilityChange={v => this.setState({ drawer: v })}
           autoclose={true}
           navItems={[
             <a href='#library/info'>
@@ -340,7 +343,8 @@ class App extends React.Component {
                 <Button
                   icon
                   onClick={() => this.setState({ drawer: false })}
-                >arrow_back</Button>
+                  iconChildren='arrow_back'
+                />
               }
             />
           }

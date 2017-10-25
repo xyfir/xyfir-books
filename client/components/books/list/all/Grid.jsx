@@ -53,24 +53,24 @@ export default class GridList extends React.Component {
                 <div className='overlay'>
                   <Button
                     flat
-                    label='Read'
                     onClick={() => location.hash = buildUrl(b, 'read')}
-                  >book</Button>
+                    iconChildren='book'
+                  >Read</Button>
                   <Button
                     flat
-                    label='Metadata'
                     onClick={() => location.hash = buildUrl(b, 'manage')}
-                  >edit</Button>
+                    iconChildren='edit'
+                  >Metadata</Button>
                   <Button
                     flat
-                    label='Search author(s)'
                     onClick={() => location.hash = buildUrl(b, 'authors')}
-                  >person</Button>
+                    iconChildren='person'
+                  >Search author(s)</Button>
                   <Button
                     flat
-                    label='Delete'
                     onClick={() => deleteBook([b.id], this.props.dispatch)}
-                  >delete</Button>
+                    iconChildren='delete'
+                  >Delete</Button>
                 </div>
               ) : null}
               

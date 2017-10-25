@@ -48,28 +48,32 @@ export default class Pagination extends React.Component {
           <Button
             icon
             onClick={() => this.onGoTo(1)}
-          >first_page</Button>
+            iconChildren='first_page'
+          />
         ) : null}
 
         {pagination.isPrevPage ? (
           <Button
             icon secondary
             onClick={() => this.onGoTo(pagination.page - 1)}
-          >navigate_before</Button>
+            iconChildren='navigate_before'
+          />
         ) : null}
         
         {pagination.isNextPage ? (
           <Button
             icon primary
             onClick={() => this.onGoTo(pagination.page + 1)}
-          >navigate_next</Button>
+            iconChildren='navigate_next'
+          />
         ) : null}
 
         {pagination.isNextPage && !pagination.isNextPageLast ? (
           <Button
             icon
             onClick={() => this.onGoTo(pagination.pages)}
-          >last_page</Button>
+            iconChildren='last_page'
+          />
         ) : null}
       </div>
     );

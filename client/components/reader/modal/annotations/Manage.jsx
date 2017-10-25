@@ -33,7 +33,7 @@ export default class ManageAnnotations extends React.Component {
         .get(XYFIR_ANNOTATIONS + 'sets')
         .query({
           sort: 'top', direction: 'desc',
-          search: this.refs.search.getField().value
+          search: this.refs.search.value
         })
         .end((err, res) => !err && this.setState(res.body)),
       200
@@ -93,22 +93,22 @@ export default class ManageAnnotations extends React.Component {
       <div className='manage-annotations view-set'>
         <Button
           raised
-          label='Back'
           onClick={() => this.setState({ set: 0 })}
-        >arrow_back</Button>
+          iconChildren='arrow_back'
+        >Back</Button>
 
         {isDownloaded ? (
           <Button
             raised secondary
-            label='Trash'
             onClick={() => this.onDelete()}
-          >delete</Button>
+            iconChildren='delete'
+          >Trash</Button>
         ) : (
           <Button
             raised primary
-            label='Save'
             onClick={() => this.onDownload()}
-          >cloud_download</Button>
+            iconChildren='cloud_download'
+          >Save</Button>
         )}
         
         <h3 className='title'>{set.set_title}</h3>

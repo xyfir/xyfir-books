@@ -50,7 +50,7 @@ export default class ManageBook extends React.Component {
     let search;
     
     // Get metadata using ISBN
-    this.refs.identifiers.getField().value
+    this.refs.identifiers.value
       .split(', ')
       .forEach(id => {
         const t = id.split(':');
@@ -61,8 +61,8 @@ export default class ManageBook extends React.Component {
     // Get metadata using author/title
     if (!search) {
       search =
-        'author=' + encodeURIComponent(this.refs.authors.getField().value) +
-        '&title=' + encodeURIComponent(this.refs.title.getField().value);
+        'author=' + encodeURIComponent(this.refs.authors.value) +
+        '&title=' + encodeURIComponent(this.refs.title.value);
     }
 
     request
@@ -85,24 +85,24 @@ export default class ManageBook extends React.Component {
             
           switch (kv[0].trim()) {
             case 'Title':
-              return this.refs.title.getField().value = kv[1];
+              return this.refs.title.value = kv[1];
             case 'Author(s)':
-              return this.refs.authors.getField().value = kv[1];
+              return this.refs.authors.value = kv[1];
             case 'Publisher':
-              return this.refs.publisher.getField().value = kv[1];
+              return this.refs.publisher.value = kv[1];
             case 'Tags':
-              return this.refs.tags.getField().value = kv[1];
+              return this.refs.tags.value = kv[1];
             case 'Published':
               return this.refs.pubdate._setCalendarTempDate(new Date(kv[1]));
             case 'Identifiers':
-              return this.refs.identifiers.getField().value = kv[1];
+              return this.refs.identifiers.value = kv[1];
             case 'Comments':
               // Comments can have newlines and comments is always last field
               const comments = [kv[1]]
                 .concat(res.text.splice(i + 1))
                 .join(' ');
               if (this.state.editComments)
-                this.refs.comments.getField().value = comments;
+                this.refs.comments.value = comments;
               else
                 this.refs.comments.innerHTML = comments;
           }
@@ -174,27 +174,27 @@ export default class ManageBook extends React.Component {
     const { refs } = this;
     
     const data = {
-      identifiers: refs.identifiers.getField().value,
-      author_sort: refs.author_sort.getField().value,
-      publisher: refs.publisher.getField().value,
+      identifiers: refs.identifiers.value,
+      author_sort: refs.author_sort.value,
+      publisher: refs.publisher.value,
       timestamp: moment(refs.timestamp.state.calendarTempDate).toISOString(),
-      authors: refs.authors.getField().value,
+      authors: refs.authors.value,
       pubdate: moment(refs.pubdate.state.calendarTempDate).toISOString(),
-      rating: refs.rating.getField().value,
-      title: refs.title.getField().value,
-      tags: refs.tags.getField().value
+      rating: refs.rating.value,
+      title: refs.title.value,
+      tags: refs.tags.value
     };
     
     // Calibre doubles rating for some reason...
     data.rating = data.rating > 0 ? data.rating / 2 : data.rating;
     
-    if (refs.series.getField().value != '') {
-      data.series = refs.series.getField().value;
-      data.series_index = refs.series_index.getField().value;
+    if (refs.series.value != '') {
+      data.series = refs.series.value;
+      data.series_index = refs.series_index.value;
     }
 
     if (refs.comments.getField)
-      data.comments = refs.comments.getField().value;
+      data.comments = refs.comments.value;
     else
       data.comments = refs.comments.innerHTML;
 
@@ -293,15 +293,15 @@ export default class ManageBook extends React.Component {
           <div className='buttons'>
             <Button
               flat primary
-              label='Upload Cover'
               onClick={() => this.refs.dz.open()}
-            >cloud_upload</Button>
+              iconChildren='cloud_upload'
+            >Upload Cover</Button>
 
             <Button
               flat secondary
-              label='Find Cover'
               onClick={() => this.setState({ findCover: true })}
-            >search</Button>
+              iconChildren='search'
+            >Find Cover</Button>
           </div>
 
           <Dialog
@@ -315,8 +315,9 @@ export default class ManageBook extends React.Component {
               tooltipPosition='left'
               fixedPosition='br'
               tooltipLabel='Close'
+              iconChildren='close'
               onClick={() => this.setState({ findCover: false })}
-            >close</Button>
+            />
 
             <iframe
               className='cover-search'
@@ -402,10 +403,10 @@ export default class ManageBook extends React.Component {
 
           <Button
             primary flat
-            label='Download Metadata'
             onClick={() => this.onDownloadMetadata()}
             disabled={this.state.downloadingMetadata}
-          >cloud_upload</Button>
+            iconChildren='cloud_download'
+          >Download Metadata</Button>
         </Paper>
         
         <Paper
@@ -439,9 +440,9 @@ export default class ManageBook extends React.Component {
             
             <Button
               primary flat
-              label='Edit Comments'
               onClick={() => this.setState({ editComments: true })}
-            >edit</Button>
+              iconChildren='edit'
+            >Edit Comments</Button>
           </div>
         )}</Paper>
         
@@ -460,7 +461,8 @@ export default class ManageBook extends React.Component {
                     <Button
                       icon
                       onClick={() => this.onDeleteFormat(format)}
-                    >delete</Button>
+                      iconChildren='delete'
+                    />
                   </td>
                 </tr>
               )
@@ -468,19 +470,19 @@ export default class ManageBook extends React.Component {
           
           <Button
             flat primary
-            label='Add Format'
             onClick={() => location.hash = buildUrl(book, 'add-format')}
-          >add</Button>
+            iconChildren='add'
+          >Add Format</Button>
         </Paper>
         
         <Button
           primary raised
-          label={
-            this.state.saving ? 'Saving...' : 'Save'
-          }
           onClick={() => this.onSaveChanges()}
           disabled={this.state.saving}
-        >save</Button>
+          iconChildren='save'
+        >{
+          this.state.saving ? 'Saving...' : 'Save'
+        }</Button>
       </div>
     );
   }

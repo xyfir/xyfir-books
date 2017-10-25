@@ -59,19 +59,19 @@ export default class ViewNote extends React.Component {
         
         <Button
           raised
-          label='Back'
           onClick={() => this.props.notes.setState({ view: 'list' })}
-        >arrow_back</Button>
+          iconChildren='arrow_back'
+        >Back</Button>
         <Button
           raised primary
-          label='Go To'
           onClick={() => this.onGoTo()}
-        >navigation</Button>
+          iconChildren='navigation'
+        >Go To</Button>
         <Button
           raised secondary
-          label='Delete'
           onClick={() => this.onDelete()}
-        >delete</Button>
+          iconChildren='delete'
+        >Delete</Button>
       </div>
     );
   }

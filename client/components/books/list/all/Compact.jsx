@@ -85,35 +85,37 @@ export default class CompactList extends React.Component {
                 ) : null}
 
                 <MenuButton
-                  icon
-                  buttonChildren='more_vert'
-                  tooltipLabel='Open menu'
+                  icon primary
+                  id='menu--set-tools'
                   onClick={e => e.stopPropagation()}
-                >
-                  <ListItem
-                    primaryText='Read'
-                    leftIcon={<FontIcon>book</FontIcon>}
-                    onClick={e => this.onListItemClick(e, b, 'read')}
-                  />
-                  <ListItem
-                    primaryText='Metadata'
-                    leftIcon={<FontIcon>edit</FontIcon>}
-                    onClick={e => this.onListItemClick(e, b, 'manage')}
-                  />
-                  <ListItem
-                    primaryText='Search author(s)'
-                    leftIcon={<FontIcon>person</FontIcon>}
-                    onClick={e => this.onListItemClick(e, b, 'authors')}
-                  />
-                  <ListItem
-                    primaryText='Delete'
-                    leftIcon={<FontIcon>delete</FontIcon>}
-                    onClick={e =>
-                     !e.stopPropagation() &&
-                     deleteBook([b.id], this.props.dispatch)
-                    }
-                  />
-                </MenuButton>
+                  menuItems={[
+                    <ListItem
+                      primaryText='Read'
+                      leftIcon={<FontIcon>book</FontIcon>}
+                      onClick={e => this.onListItemClick(e, b, 'read')}
+                    />,
+                    <ListItem
+                      primaryText='Metadata'
+                      leftIcon={<FontIcon>edit</FontIcon>}
+                      onClick={e => this.onListItemClick(e, b, 'manage')}
+                    />,
+                    <ListItem
+                      primaryText='Search author(s)'
+                      leftIcon={<FontIcon>person</FontIcon>}
+                      onClick={e => this.onListItemClick(e, b, 'authors')}
+                    />,
+                    <ListItem
+                      primaryText='Delete'
+                      leftIcon={<FontIcon>delete</FontIcon>}
+                      onClick={e =>
+                      !e.stopPropagation() &&
+                      deleteBook([b.id], this.props.dispatch)
+                      }
+                    />
+                  ]}
+                  tooltipLabel='Open menu'
+                  iconChildren='more_vert'
+                />
               </div>
             </li>
           )

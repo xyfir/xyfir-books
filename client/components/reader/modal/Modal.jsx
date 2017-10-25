@@ -102,10 +102,9 @@ export default class ReaderModal extends React.Component {
             tooltipPosition='right'
             fixedPosition='bl'
             tooltipLabel={fullscreen ? 'Shrink' : 'Full Screen'}
+            iconChildren={fullscreen ? 'fullscreen_exit' : 'fullscreen'}
             onClick={() => this.onResize()}
-          >{
-            fullscreen ? 'fullscreen_exit' : 'fullscreen'
-          }</Button>
+          />
         ) : null}
 
         {fullscreen ? (
@@ -114,8 +113,9 @@ export default class ReaderModal extends React.Component {
             tooltipPosition='left'
             fixedPosition='br'
             tooltipLabel='Close'
+            iconChildren='close'
             onClick={() => this.onFullscreenClose()}
-          >close</Button>
+          />
         ) : null}
 
         {view}

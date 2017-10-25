@@ -72,11 +72,13 @@ export default class BookStyling extends React.Component {
               <Button
                 flat primary
                 onClick={() => this.onUpdate('fontSize', '+')}
-              >add</Button>
+                iconChildren='add'
+              />
               <Button
                 flat secondary
                 onClick={() => this.onUpdate('fontSize', '-')}
-              >remove</Button>
+                iconChildren='remove'
+              />
             </td>
           </tr>
 
@@ -86,11 +88,13 @@ export default class BookStyling extends React.Component {
               <Button
                 flat primary
                 onClick={() => this.onUpdate('padding', '+')}
-              >add</Button>
+                iconChildren='add'
+              />
               <Button
                 flat secondary
                 onClick={() => this.onUpdate('padding', '-')}
-              >remove</Button>
+                iconChildren='remove'
+              />
             </td>
           </tr>
 
@@ -100,11 +104,13 @@ export default class BookStyling extends React.Component {
               <Button
                 flat primary
                 onClick={() => this.onUpdate('lineHeight', '+')}
-              >add</Button>
+                iconChildren='add'
+              />
               <Button
                 flat secondary
                 onClick={() => this.onUpdate('lineHeight', '-')}
-              >remove</Button>
+                iconChildren='remove'
+              />
             </td>
           </tr>
 
@@ -113,14 +119,14 @@ export default class BookStyling extends React.Component {
             <td>
               <Button
                 flat primary
-                label='Light'
                 onClick={() => this.onUpdateTheme('LIGHT')}
-              >brightness_7</Button>
+                iconChildren='brightness_7'
+              >Light</Button>
               <Button
                 flat secondary
-                label='Dark'
                 onClick={() => this.onUpdateTheme('DARK')}
-              >brightness_2</Button>
+                iconChildren='brightness_2'
+              >Dark</Button>
             </td>
           </tr>
         </tbody></table>

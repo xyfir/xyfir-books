@@ -21,9 +21,10 @@ export default class WebSearchAnnotation extends React.Component {
             floating fixed secondary
             tooltipPosition='right'
             fixedPosition='bl'
+            iconChildren='search'
             tooltipLabel={(this.state.context ? 'Remove' : 'Add') + ' context'}
             onClick={() => this.setState({ context: !this.state.context })}
-          >search</Button>
+          />
         ) : null}
 
         <iframe

@@ -21,7 +21,7 @@ export default class CreateNote extends React.Component {
       cfi: epub.getCurrentLocationCfi(),
       range: JSON.stringify(epub.renderer.getVisibleRangeCfi()),
       created: Date.now(),
-      content: this.refs.content.getField().value,
+      content: this.refs.content.value,
       highlights: JSON.stringify(this.refs.highlight._getHighlights())
     };
     
@@ -65,14 +65,14 @@ export default class CreateNote extends React.Component {
         <div>
           <Button
             raised
-            label='Back'
             onClick={() => this.props.notes.setState({ view: 'list' })}
-          >arrow_back</Button>
+            iconChildren='arrow_back'
+          >Back</Button>
           <Button
             raised primary
-            label='Create'
             onClick={() => this.onCreate()}
-          >create</Button>
+            iconChildren='create'
+          >Create</Button>
         </div>
       </div>
     );
