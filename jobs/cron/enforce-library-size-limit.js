@@ -1,142 +1,110 @@
 const sendEmail = require('lib/send-email')
 const request = require('superagent');
-const db = require('lib/db');
-
 const config = require('config');
+const mysql = require('lib/mysql');
 
 /*
   Get size of all libraries
   Notify owners of libraries over size limit
   Delete libraries that have been over size limit for a week
 */
-module.exports = function(fn) {
+module.exports = async function() {
 
-  let sql = `
-    SELECT
-      user_id, email, library_id, library_size_limit, library_delete
-    FROM users
-    WHERE library_id NOT ''
-  `;
+  const db = new mysql;
 
-  db(cn => cn.query(sql, (err, rows) => {
-    // Release temporarily while getting sizes
-    cn.release();
+  try {
+    await db.getConnection();
+    const rows = await db.query(`
+      SELECT
+        user_id, email, library_id, library_size_limit, library_delete
+      FROM users
+      WHERE library_id != ''
+    `);
 
-    if (err)
-      return fn(true);
-    else if (!rows.length)
-      return fn(false);
+    if (!rows.length) throw 'No libraries to handle';
 
-    const doUpdates = (cn, index) => {
-      if (rows[index] === undefined) {
-        fn(false);
+    for (let row of rows) {
+      let res = await request.get(
+        config.addresses.library + 'libraries/' + row.library_id
+      );
+
+      if (res.body.error) continue;
+
+      // Library is at or over limit
+      if (res.body.size / 1000000000 >= row.library_size_limit) {
+        // Library has been over limit for 7+ days
+        if (Date.now() >= (new Date(row.library_delete)).getTime())
+          row.deleteLibrary = true;
+        // Notify user that they're over limit
+        else
+          row.notify = true;
       }
-      else if (rows[index].ok) {
-        // users.library_delete must be cleared 
-        if (rows[index].library_delete.indexOf('0') != 0) {
-          sql = 'UPDATE users SET library_delete = 0 WHERE user_id = ?';
-          cn.query(sql, [rows[index].user_id], (e, r) => {
-            doUpdates(cn, index + 1);
-          });
-        }
-        else {
-          doUpdates(cn, index + 1);
+      // Library is under limit
+      else {
+        row.ok = true;
+      }
+
+      if (row.ok) {
+        // Remove library's deletion date
+        if (row.library_delete[0] != '0') {
+          await db.query(
+            'UPDATE users SET library_delete = 0 WHERE user_id = ?',
+            [row.user_id]
+          );
         }
       }
-      else if (rows[index].notify) {
+      else if (row.notify) {
         // Email user about reaching limit
         const message = `
-          Your library has reached the size limit of '${rows[index].library_size_limit}GB'.
-          
-          You have two options to resolve this issue:
-          - Increase your library's size limit for $0.15 per gigabyte at https://books.xyfir.com/app/#account/purchase/increase-size-limit
-          - Decrease your library's size by removing books, additional formats, etc
+          Your library has exceeded its size limit of ${row.library_size_limit}GB.
 
           If you do not act to increase your size limit or decrease your library size your entire library will be deleted seven days after first reaching the limit. This action cannot be undone and your files will not be retrievable.
         `;
         sendEmail(
-          rows[index].email,
+          row.email,
           'Xyfir Books - Library Size Limit Reached',
           message
         );
         
         // Library's first time going over limit: set library_delete
-        if (rows[index].library_delete.indexOf('0') == 0) {
-          // Set users.library_delete
-          sql = `
+        if (row.library_delete[0] == '0') {
+          await db.query(`
             UPDATE users SET library_delete = DATE_ADD(NOW(), INTERVAL 7 DAY)
             WHERE user_id = ?
-          `;
-          cn.query(sql, [rows[index].user_id], (e, r) => {
-            doUpdates(cn, index + 1);
-          });
-        }
-        else {
-          doUpdates(cn, index + 1);
+          `, [
+            row.user_id
+          ]);
         }
       }
-      else if (rows[index].deleteLibrary) {
-        // Delete library
-        request
-          .delete(
-            config.addresses.library + 'libraries/' + rows[index].library_id
-          )
-          .end((err, res) => {
-            if (!err && !res.body.error) {
-              doUpdates(cn, index + 1);
+      else if (row.deleteLibrary) {
+        res = await request.delete(
+          config.addresses.library + 'libraries/' + row.library_id
+        );
 
-              // Notify user that their library was deleted
-              const message = `
-                Your Xyfir Books library has been deleted.
+        if (res.body.error) return;
 
-                This occured because your library was at or over the size limit for over 7 days.
+        // Notify user that their library was deleted
+        const message = `
+          Your Xyfir Books library has been deleted.
 
-                This action cannot be undone.
-              `;
+          This occured because your library was at or over the size limit for over 7 days.
 
-              sendEmail(
-                rows[index].email,
-                'Xyfir Books - Library Deleted',
-                message
-              );
-            }
-            else {
-              doUpdates(cn, index + 1);
-            }
-          });
+          This action cannot be undone.
+        `;
+
+        sendEmail(
+          row.email,
+          'Xyfir Books - Library Deleted',
+          message
+        );
       }
-    };
+    }
 
-    const getLibrarySize = (index) => {
-      // All libraries checked
-      if (rows[index] === undefined) {
-        return db(cn => doUpdates(cn, 0));
-      }
-
-      request
-        .get(config.addresses.library + 'libraries/' + rows[index].library_id)
-        .end((err, res) => {
-          if (!err && !res.body.error) {
-            // Library is at or over limit
-            if (res.body.size / 1000000000 >= rows[index].library_size_limit) {
-              // Library has been over limit for 7+ days
-              if (Date.now() >= (new Date(rows[index].library_delete)).getTime())
-                rows[index].deleteLibrary = true;
-              // Notify user that they're over limit
-              else
-                rows[index].notify = true;
-            }
-            // Library is under limit
-            else {
-              rows[index].ok = true;
-            }
-          }
-
-          getLibrarySize(index + 1);
-        });
-    };
-
-    getLibrarySize(0);
-  }));
+    db.release();
+  }
+  catch (err) {
+    db.release();
+    console.error('jobs/cron/enforce-library-size-limit', err);
+  }
 
 };
