@@ -2,6 +2,7 @@ import Dropzone from 'react-dropzone';
 import request from 'superagent';
 import moment from 'moment';
 import React from 'react';
+import swal from 'sweetalert';
 
 // Modules
 import loadCovers from 'lib/books/load-covers';

@@ -1,4 +1,5 @@
 import request from 'superagent';
+import swal from 'sweetalert';
 
 // Action creators
 import { deleteBooks } from 'actions/creators/books';
@@ -26,25 +27,23 @@ export default function(books, dispatch) {
     swal({
       title: 'Are you sure?',
       text: `Are you sure you want to delete (${books.length}) book(s)?`,
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#DD6B55',
-      confirmButtonText: 'Delete'
-    }, () =>
-      request
-        .delete('../api/books')
-        .send({ ids: books.join(',') })
-        .end((err, res) => {
-          if (err || res.body.error) {
-            swal('Error', 'Could not delete book(s)', 'error');
-            resolve(false);
-          }
-          else {
-            dispatch(deleteBooks(books));
-            resolve(true);
-          }
-        })
-    );
+      icon: 'warning',
+      buttons: true
+    })
+    .then(() => request
+      .delete('/api/books')
+      .send({ ids: books.join(',') })
+    )
+    .then(res => {
+      if (res.body.error) {
+        swal('Error', 'Could not delete book(s)', 'error');
+        resolve(false);
+      }
+      else {
+        dispatch(deleteBooks(books));
+        resolve(true);
+      }
+    });
   });
 
 }

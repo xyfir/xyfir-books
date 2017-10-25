@@ -1,5 +1,4 @@
 import localForage from 'localforage';
-import SweetAlert from 'sweetalert';
 import { render } from 'react-dom';
 import request from 'superagent';
 import React from 'react';
@@ -44,8 +43,7 @@ const store = createStore(reducers);
 
 // Globals
 window.localforage = localForage,
-window.JSZip = JSZip,
-window.swal = SweetAlert;
+window.JSZip = JSZip;
 
 localforage.config({
   driver: [localforage.INDEXEDDB, localforage.WEBSQL],

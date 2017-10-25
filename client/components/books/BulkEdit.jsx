@@ -1,3 +1,4 @@
+import swal from 'sweetalert';
 import React from 'react';
 import titleCase from 'titlecase';
 

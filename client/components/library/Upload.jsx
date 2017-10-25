@@ -1,6 +1,7 @@
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
 import React from 'react';
+import swal from 'sweetalert';
 
 // Modules
 import loadBooksFromApi from 'lib/books/load-from-api';
