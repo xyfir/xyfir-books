@@ -12,11 +12,12 @@ export default class BookStyling extends React.Component {
     super(props);
 
     this.state = { loading: true };
+  }
 
-    this.props.reader._getStyles()
-      .then(s =>
-        this.setState(Object.assign({}, s, { loading: false }))
-      );
+  componentDidMount() {
+    this.props.reader._getStyles().then(s =>
+      this.setState(Object.assign({}, s, { loading: false }))
+    );
   }
 
   /**
@@ -61,7 +62,7 @@ export default class BookStyling extends React.Component {
   }
 
   render() {
-    if (this.state.loading) return <div />
+    if (this.state.loading) return null;
 
     return (
       <div className='book-styling'>
@@ -70,12 +71,12 @@ export default class BookStyling extends React.Component {
             <th>Text Size</th>
             <td>
               <Button
-                flat primary
+                icon primary
                 onClick={() => this.onUpdate('fontSize', '+')}
                 iconChildren='add'
               />
               <Button
-                flat secondary
+                icon secondary
                 onClick={() => this.onUpdate('fontSize', '-')}
                 iconChildren='remove'
               />
@@ -86,12 +87,12 @@ export default class BookStyling extends React.Component {
             <th>Page Padding</th>
             <td>
               <Button
-                flat primary
+                icon primary
                 onClick={() => this.onUpdate('padding', '+')}
                 iconChildren='add'
               />
               <Button
-                flat secondary
+                icon secondary
                 onClick={() => this.onUpdate('padding', '-')}
                 iconChildren='remove'
               />
@@ -102,12 +103,12 @@ export default class BookStyling extends React.Component {
             <th>Line Spacing</th>
             <td>
               <Button
-                flat primary
+                icon primary
                 onClick={() => this.onUpdate('lineHeight', '+')}
                 iconChildren='add'
               />
               <Button
-                flat secondary
+                icon secondary
                 onClick={() => this.onUpdate('lineHeight', '-')}
                 iconChildren='remove'
               />
