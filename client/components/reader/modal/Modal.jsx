@@ -94,6 +94,7 @@ export default class ReaderModal extends React.Component {
         className={
           'reader-dialog' + (noFullscreen ? ' transparent' : '')
         }
+        focusOnMount={false}
         contentClassName='md-dialog-content--padded'
       >
         {canResize ? (
