@@ -40,10 +40,6 @@ div.main.md-toolbar-relative {
   padding: 1em;
 }
 
-.md-select-field-menu, .md-text-field-container {
-  text-align: left;
-}
-
 .md-dialog--centered {
   min-width: 50%;
 
@@ -58,6 +54,19 @@ div.main.md-toolbar-relative {
   background: none;
 }
 
-nav.md-drawer ul {
+.md-menu-container,
+.md-menu--select-field,
+.md-text-field-container,
+nav.md-drawer > ul.md-list,
+section.md-dialog-content > ul.md-list {
   text-align: left;
+}
+
+ul.md-list {
+  padding: 0em;
+}
+
+h2.md-title--dialog {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
