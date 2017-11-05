@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "4.5.0",
+  "version": "4.5.1",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "app-module-path": "^2.2.0",
     "body-parser": "^1.18.2",
-    "copyr": "^1.0.3",
+    "copyr": "^1.0.5",
     "epubjs": "^0.2.21",
     "escape-string-regexp": "^1.0.5",
     "express": "^4.16.2",
@@ -19,7 +19,7 @@
     "express-session": "^1.15.6",
     "github-markdown-css": "^2.9.0",
     "jszip": "^2.6.1",
-    "localforage": "^1.5.2",
+    "localforage": "^1.5.3",
     "mailgun-js": "^0.13.1",
     "marked": "^0.3.6",
     "moment": "^2.19.1",
@@ -32,7 +32,7 @@
     "react-md": "^1.2.4",
     "react-stripe-checkout": "^2.6.3",
     "redux": "^3.7.2",
-    "stripe": "^5.1.1",
+    "stripe": "^5.3.0",
     "superagent": "^3.8.0",
     "sweetalert": "^2.0.8",
     "titlecase": "^1.1.2",
