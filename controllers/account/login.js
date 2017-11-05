@@ -45,21 +45,17 @@ module.exports = async function(req, res) {
 
     // Register user
     if (!rows.length) {
-      const insert = {
-        xyfir_id: req.body.xid, email: xyAccRes.body.email,
-        library_id: rstring.generate(64)
-      };
-      sql = `
-        INSERT INTO users SET ?
-      `,
-      result = await db.query(sql, insert);
+      result = await db.query(
+        'INSERT INTO users SET ?',
+        {xyfir_id: req.body.xid, email: xyAccRes.body.email, referral: '{}'}
+      );
 
       if (!result.insertId) throw 'Could not create account';
       
       req.session.uid = result.insertId;
         
       // Generate user's library id
-      const library = result.insertId + '-' + insert.library_id;
+      const library = result.insertId + '-' + rstring.generate(64);
       
       // Create library on xyLibrary
       const xyLibRes = await request
@@ -67,42 +63,49 @@ module.exports = async function(req, res) {
       
       if (xyLibRes.body.error) throw 'Could not create new library';
 
-      let referral = '{}', subscription = 0;
+      let referral = '{}', subscription = 0, xyAnnotationsKey = '';
 
-      // Save referral data
-      if (req.body.referral) {
-        referral = JSON.stringify({
-          referral: req.body.referral,
-          hasMadePurchase: false
-        }),
-        subscription = +moment().add(7, 'days').format('x');
-      }
-      // Validate affiliate promo code
-      else if (req.body.affiliate) {
-        const xyAccAffRes = await request
-          .post(config.address.xyAccounts + 'api/affiliate/signup')
-          .send({
-            service: 14, serviceKey: config.keys.xyAccounts,
-            promoCode: req.body.affiliate
-          });
-        
-        if (!xyAccAffRes.body.error && xyAccAffRes.body.promo == 5) {
+      // Errors here are acceptable and can be ignored
+      try {
+        // Save referral data
+        if (req.body.referral) {
           referral = JSON.stringify({
-            affiliate: req.body.affiliate,
+            referral: req.body.referral,
             hasMadePurchase: false
           }),
           subscription = +moment().add(7, 'days').format('x');
         }
-      }
+        // Validate affiliate promo code
+        else if (req.body.affiliate) {
+          const xyAccAffRes = await request
+            .post(config.address.xyAccounts + 'api/affiliate/signup')
+            .send({
+              service: 14, serviceKey: config.keys.xyAccounts,
+              promoCode: req.body.affiliate
+            });
+          
+          if (!xyAccAffRes.body.error && xyAccAffRes.body.promo == 5) {
+            referral = JSON.stringify({
+              affiliate: req.body.affiliate,
+              hasMadePurchase: false
+            }),
+            subscription = +moment().add(7, 'days').format('x');
+          }
+        }
 
-      // Generate a free one month subscription for xyAnnotations
-      const xyAnnotationsRes = await request
-        .post(config.addresses.xyAnnotations + 'api/affiliate/subscriptions')
-        .send({
-          affiliateId: config.ids.xyAnnotations,
-          affiliateKey: config.keys.xyAnnotations,
-          subscription: 1 // 30 days
-        });
+        // Generate a free one month subscription for xyAnnotations
+        const xyAnnotationsRes = await request
+          .post(config.addresses.xyAnnotations + 'api/affiliate/subscriptions')
+          .send({
+            affiliateId: config.ids.xyAnnotations,
+            affiliateKey: config.keys.xyAnnotations,
+            subscription: 1 // 30 days
+          });
+        xyAnnotationsKey = xyAnnotationsRes.body.key || '';
+      }
+      catch (err) {
+        console.warn('controllers/account/login', err);
+      }
       
       // Save data to user's row
       sql = `
@@ -111,7 +114,7 @@ module.exports = async function(req, res) {
         WHERE user_id = ?
       `,
       vars = [
-        library, referral, xyAnnotationsRes.body.key || '', subscription,
+        library, referral, xyAnnotationsKey, subscription,
         req.session.uid
       ],
       result = await db.query(sql, vars);
@@ -125,7 +128,7 @@ module.exports = async function(req, res) {
         )
       });
         
-      req.session.subscription = 0;
+      req.session.subscription = 0,
       req.session.library = library;
     }
     // Update user
@@ -140,7 +143,7 @@ module.exports = async function(req, res) {
 
       db.release();
 
-      req.session.uid = rows[0].user_id;
+      req.session.uid = rows[0].user_id,
       req.session.subscription = rows[0].subscription;
 
       res.json({
