@@ -1,8 +1,9 @@
+import 'babel-polyfill';
+
 import localForage from 'localforage';
 import { render } from 'react-dom';
 import request from 'superagent';
 import React from 'react';
-import JSZip from 'jszip';
 
 // Redux store / reducers
 import { createStore } from 'redux';
@@ -42,8 +43,7 @@ import { save } from 'actions/creators/index';
 const store = createStore(reducers);
 
 // Globals
-window.localforage = localForage,
-window.JSZip = JSZip;
+window.localforage = localForage;
 
 localforage.config({
   driver: [localforage.INDEXEDDB, localforage.WEBSQL],
@@ -349,7 +349,9 @@ class App extends React.Component {
           type={Drawer.DrawerTypes.TEMPORARY}
         />
 
-        <div className='main md-toolbar-relative'>
+        <div className={
+          `main ${this.state.view != READ_BOOK ? 'md-toolbar-relative' : ''}`
+        }>
           <Advertisement data={this.state} />
           {view}
         </div>
