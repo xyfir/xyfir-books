@@ -1,18 +1,20 @@
 import request from 'superagent';
+import EPUB from 'epubjs';
 import React from 'react';
+
+// !! window.ePub needed for EPUBJS to work
+window.ePub = window.EPUBJS = EPUB;
 
 // Components
 import Overlay from 'components/reader/overlay/Overlay';
 import Modal from 'components/reader/modal/Modal';
 
 // Modules
-import updateEpubJsPrototype from 'lib/reader/epubjs/update-prototype';
 import insertAnnotations from 'lib/reader/annotations/insert';
 import updateAnnotations from 'lib/reader/annotations/update';
 import highlightNotes from 'lib/reader/notes/highlight';
 import swipeListener from 'lib/reader/listeners/swipe';
 import clickListener from 'lib/reader/listeners/click';
-import emToPixels from 'lib/misc/em-to-pixels';
 import unwrap from 'lib/reader/matches/unwrap';
 
 // Constants
@@ -31,13 +33,10 @@ export default class Reader extends React.Component {
     
     this.state = {
       book: this.props.data.books.find(b => id == b.id),
-      pagesLeft: 0, percent: 0,
+      pagesLeft: 0, percent: 0, loading: true,
       history: {
         items: [], index: -1, ignore: false
       },
-      //
-      initialize: false, loading: true,
-      //
       modal: {
         target: '', show: ''
       },
@@ -58,9 +57,12 @@ export default class Reader extends React.Component {
     this.onCloseModal = this.onCloseModal.bind(this);
     this._applyStyles = this._applyStyles.bind(this);
     this._updateBook = this._updateBook.bind(this);
-    this._initialize = this._initialize.bind(this);
     this._getFilters = this._getFilters.bind(this);
     this._getStyles = this._getStyles.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.onSwipe = this.onSwipe.bind(this);
+
+    document.querySelector('body>main').id = '';
   }
 
   /**
@@ -69,7 +71,7 @@ export default class Reader extends React.Component {
    */
   componentWillMount() {
     // Build url to .epub file to read
-    let url = LIBRARY + 'files/' + this.props.data.account.library + '/';
+    let url = `${LIBRARY}files/${this.props.data.account.library}/`;
     let hasEpub = false;
     
     this.state.book.formats.forEach(format => {
@@ -80,19 +82,15 @@ export default class Reader extends React.Component {
     });
 
     // We can only read epub files
-    if (!hasEpub) {
-      history.back();
-      return;
-    }
+    if (!hasEpub) return history.back();
 
     const { id } = this.state.book;
-    let book;
-    
+    let bookInfo;
+
     // Get bookmarks, notes, last read time
-    request
-      .get(`../api/books/${id}`)
+    request.get(`/api/books/${id}`)
       .then(res => {
-        book = res.body;
+        bookInfo = res.body;
 
         // Update / set book's annotations
         return updateAnnotations(
@@ -101,42 +99,57 @@ export default class Reader extends React.Component {
         );
       })
       .then(ans => {
-        book.annotations = ans;
+        bookInfo.annotations = ans;
 
-        this.setState({ book: Object.assign({}, this.state.book, book) });
+        this.setState({ book: Object.assign({}, this.state.book, bookInfo) });
 
         // Update book in app/component/storage
-        this.props.dispatch(updateBook(id, book));
+        this.props.dispatch(updateBook(id, bookInfo));
         this.props.dispatch(save('books'));
 
-        // Overwrite parts of EPUBJS prototype
-        updateEpubJsPrototype();
+        // Create EPUBJS book
+        window._book = this.book = new EPUB(url, {});
 
-        return this._getStyles();
-      })
-      .then(s => {
-        // Create EPUBJS reader object
-        window.epub = ePub(url, {
-          bookKey: id, spreads: true, width: window.innerWidth,
-          height: (window.innerHeight - (emToPixels() * 2)),
-          styles: {
-            fontSize: s.fontSize + 'em',
-            padding: `0em ${s.padding}em`,
-            lineHeight: s.lineHeight + 'em',
-            backgroundColor: s.backgroundColor
-          }
+        this.book.renderTo(window.bookView, {
+          height: window.innerHeight + 'px',
+          width: window.innerWidth + 'px'
         });
 
-        this.setState({ initialize: true });
+        return this.book.ready;
       })
-      .catch(err => history.back());
-  }
-  
-  /**
-   * Run _initialize if needed.
-   */
-  componentDidUpdate() {
-    if (this.state.initialize) this._initialize();
+      .then(() => {
+        return this.book.rendition.display();
+      })
+      .then(() => {
+        // ** Save / load
+        return this.book.locations.generate(1000);
+      })
+      .then(pages => {
+        // Set initial location to bookmark
+        if (this.state.book.bookmarks.length > 0) {
+          this.book.rendition.display(this.state.book.bookmarks[0].cfi);
+        }
+        // Set initial location to percentage
+        else {
+          this.book.rendition.display(
+            this.book.locations.cfiFromPercentage(
+              this.state.book.percent_complete / 100
+            )
+          );
+        }
+
+        return this._getFilters();
+      })
+      .then(f => {
+        this._applyFilters(f);
+        this._addEventListeners();
+        this._applyStyles();
+        this._applyHighlights(this.state.highlight, true);
+        this._getWordCount();
+
+        this.setState({ loading: false });
+      })
+      .catch(err => !console.error(err) && history.back());
   }
   
   /**
@@ -144,7 +157,7 @@ export default class Reader extends React.Component {
    */
   componentWillUnmount() {
     request
-      .post(`../api/books/${this.state.book.id}/close`)
+      .post(`/api/books/${this.state.book.id}/close`)
       .send({ percentComplete: this.state.percent })
       .end((err, res) => {
         res.body.percent_complete = this.state.percent;
@@ -155,7 +168,10 @@ export default class Reader extends React.Component {
         this.props.dispatch(save('books'));
       });
     
-    epub.destroy(); window.epub = undefined;
+    this.book.destroy();
+    window._book = this.book = undefined;
+
+    document.querySelector('body>main').id = 'content';
   }
 
   /**
@@ -200,8 +216,9 @@ export default class Reader extends React.Component {
 
   /**
    * Add epub CFI to history.
+   * @param {object} location
    */
-  onAddToHistory() {
+  onAddToHistory(location) {
     if (this.state.history.ignore) {
       const history = Object.assign({}, this.state.history);
       
@@ -211,9 +228,9 @@ export default class Reader extends React.Component {
     else {
       const items = this.state.history.items.slice(0);
 
-      if (items.length == 5) items.shift();
+      if (items.length == 20) items.shift();
 
-      items.push(epub.getCurrentLocationCfi());
+      items.push(location.start.cfi);
 
       this.setState({ history: { items, index: -1, ignore: false } });
     }
@@ -247,9 +264,9 @@ export default class Reader extends React.Component {
   onSwipe(dir) {
     switch (dir) {
       case 'left':
-        return epub.nextPage();
+        return this.book.rendition.next();
       case 'right':
-        return epub.prevPage();
+        return this.book.rendition.prev();
     }
   }
 
@@ -267,143 +284,81 @@ export default class Reader extends React.Component {
 
     switch (action) {
       case 'previous page':
-        epub.prevPage(); break;
+        return this.book.rendition.prev();
       case 'next page':
-        epub.nextPage(); break;
+        return this.book.rendition.next();
       case 'cycle highlights':
-        this.refs.overlay.refs.status._setStatus(
+        return this._overlay._status._setStatus(
           this.onCycleHighlightMode()
-        ); break;
+        );
       case 'show book info':
-        this.onToggleShow('bookInfo');
-        break;
+        return this.onToggleShow('bookInfo');
       case 'toggle navbar':
-        this.refs.overlay._toggleShow();
+        return this._overlay._toggleShow();
     }
   }
 
   /**
    * Triggered when highlighted text within the book's content is clicked.
-   * @param {MouseEvent} event
-   * @param {string} type - The type of highlight. 'annotation', 'note'
-   * @param {number|string} key - Which highlight was clicked.
+   * @param {MessageEvent} event
+   * @param {object} event.data
+   * @param {boolean} event.data.epubjs
+   * @param {string} event.data.type
+   * @param {string} event.data.key
    */
-  onHighlightClicked(event, type, key) {
-    const elements = [];
-    let element = event.target;
+  onHighlightClicked(event) {
+    if (!event.data.epubjs) return;
 
-    // Get all of the clicked element's parents
-    while (element) {
-      elements.unshift(element);
-      element = element.parentNode;
-    }
-    elements.splice(-1, 1);
-
-    // Pass click to parent element of same type and exit
-    for (let el of elements) {
-      if (el.classList && el.classList.contains(type)) {
-        el.click();
-        return;
-      }
-    }
-
-    // Show item
     this.setState({
       modal: {
-        target: key, closeWait: Date.now() + 100,
-        show: (type == 'note' ? 'notes' : 'viewAnnotations')
+        closeWait: Date.now() + 100,
+        target: event.data.key,
+        show: event.data.type == 'note' ? 'notes' : 'viewAnnotations'
       }
     });
   }
   
   /**
-   * Load styles, render book, generate pagination, set initial location, 
-   * initialize variables / objects, apply filters and styling, add event 
-   * listeners, apply highlights, and get word count.
-   */
-  _initialize() {
-    this.setState({ initialize: false });
-
-    // View annotation or note
-    epub.onClick = this.onHighlightClicked;
-
-    epub.renderTo('book')
-      .then(() => {
-        return this._getStyles();
-      })
-      .then(s => {
-        epub.element.style.backgroundColor = s.backgroundColor;
-
-        // Generate pagination so we can get pages/percent
-        return epub.generatePagination();
-      })
-      .then(pages => {
-        // Set initial location
-        if (this.state.book.bookmarks.length > 0)
-          epub.gotoCfi(this.state.book.bookmarks[0].cfi);
-        else
-          epub.gotoPercentage(this.state.book.percent_complete / 100);
-
-        // Initialize epub.renderer.selectedRange
-        epub.renderer.onSelectionChange();
-        
-        this.setState({ loading: false });
-
-        return this._getFilters();
-      })
-      .then(f => {
-        this._applyFilters(f);
-        this._addEventListeners();
-        this._applyStyles();
-        this._applyHighlights(this.state.highlight, true);
-        this._getWordCount();
-
-        epub.renderer.triggerEvent({ type: 'locationChanged' });
-      });
-  }
-  
-  /**
    * Load the reader styles.
-   * @returns {Promise} Resolves to styles object.
+   * @async
+   * @return {object}
    */
-  _getStyles() {
-    const styles = this.props.data.config.reader;
+  async _getStyles() {
+    const s1 = this.props.data.config.reader;
 
-    return new Promise(resolve =>
-      localforage.getItem('styling-' + this.state.book.id)
-        .then(s =>
-          resolve(s ? Object.assign({}, styles, s) : styles)
-        )
-        .catch(e => resolve(styles))
-    );
+    try {
+      const s2 = await localforage.getItem(`styling-${this.state.book.id}`);
+      return s2 ? Object.assign({}, s1, s2) : s1;
+    }
+    catch (err) {
+      return s1;
+    }
   }
 
   /**
    * Load styles and apply them.
+   * @async
    */
-  _applyStyles() {
-    this._getStyles()
-      .then(s => {
-        let el = epub.renderer.doc.getElementById('reader-styles');
-        let create = false;
+  async _applyStyles() {
+    const styles = await this._getStyles();
 
-        if (!el) {
-          el = epub.renderer.doc.createElement('style');
-          create = true;
-        }
-        
-        el.innerHTML = `
-          * { color: ${s.color} !important; }
-          .annotation { background-color: ${s.annotationColor}; }
-          .note { background-color: ${s.highlightColor}; }
-        `;
-        epub.element.style.backgroundColor = s.backgroundColor;
-
-        if (create) {
-          el.setAttribute('id', 'reader-styles');
-          epub.renderer.doc.head.appendChild(el);
-        }
-      });
+    this.book.rendition.themes.default({
+      'html': {
+        'color': `${styles.color} !important`,
+        'font-size': `${styles.fontSize}em`,
+        'line-height': `${styles.lineHeight}em`,
+        'background-color': styles.backgroundColor
+      },
+      'span.annotation': {
+        'background-color': styles.annotationColor,
+        'pointer': 'cursor'
+      },
+      'span.note': {
+        'background-color': styles.highlightColor,
+        'pointer': 'cursor'
+      }
+    });
+    this.book.rendition.themes.update('default');
   }
 
   /**
@@ -419,20 +374,21 @@ export default class Reader extends React.Component {
 
   /**
    * Load the filters applied to the book.
-   * @returns {Promise} Resolves to the filters object.
+   * @async
+   * @return {object}
    */
-  _getFilters() {
-    const filters = {
+  async _getFilters() {
+    const f1 = {
       brightness: 100, warmth: 0, contrast: 100
     };
 
-    return new Promise(resolve =>
-      localforage.getItem('filters-' + this.state.book.id)
-        .then(f =>
-          resolve(f ? Object.assign({}, filters, f) : filters)
-        )
-        .catch(e => resolve(filters))
-    );
+    try {
+      const f2 = await localforage.getItem(`filters-${this.state.book.id}`);
+      return f2 ? Object.assign({}, f1, f2) : f1;
+    }
+    catch (err) {
+      return f1;
+    }
   }
   
   /**
@@ -441,63 +397,42 @@ export default class Reader extends React.Component {
   _addEventListeners() {
     // Update pages left in chapter
     // Update percent complete
-    epub.on('renderer:locationChanged', cfi => {
-      const hasColumns =
-        epub.renderer.doc.documentElement.style.width != 'auto';
-      
+    // Add location to history
+    this.book.rendition.on('relocated', location => {
+      this.onAddToHistory(location);
+
+      let pagesLeft =
+        this.book.rendition.manager.location[0].totalPages -
+        this.book.rendition.manager.location[0].pages[0];
+      pagesLeft =
+        this.book.rendition.manager.location[0].pages[1]
+          ? Math.floor(pagesLeft / 2) : pagesLeft;
+
       this.setState({
-        pagesLeft: (hasColumns
-          ? Math.round(epub.renderer.getRenderedPagesLeft() / 2)
-          : epub.renderer.getRenderedPagesLeft()
-        ),
-        percent: this._getPercentComplete()
+        pagesLeft,
+        percent: +location.end.percentage.toFixed(2) * 100
       });
     });
-    
+
     // Apply styles
     // Insert annotations / highlight notes
     // Add swipe and click listeners
-    epub.on('renderer:chapterDisplayed', () => {
+    this.book.rendition.on('rendered', (section, view) => {
       this._applyStyles();
       this._applyHighlights(this.state.highlight, true);
 
-      const el = epub.renderer.doc.documentElement;
+      const [{document}] = this.book.rendition.getContents();
 
-      swipeListener(el, (dir) => this.onSwipe(dir));
-      clickListener(el, (action) => this.onClick(action));
+      swipeListener(document, this.book, this.onSwipe);
+      clickListener(document, this.book, this.onClick);
     });
 
-    // Add location to history
-    epub.on('renderer:chapterUnloaded', () =>
-      this.onAddToHistory()
-    );
-    
-    // Regenerate pagination and update percent
-    epub.on('renderer:resized', () => {
-      clearTimeout(this.timers.resized);
-      
-      this.timers.resized = setTimeout(() => {
-        epub.generatePagination()
-          .then(pages =>
-            this.setState({ percent: this._getPercentComplete() })
-          );
-      }, 500);
-    });
+    window.addEventListener('message', this.onHighlightClicked);
 
-    const el = epub.renderer.doc.documentElement;
+    const [{document}] = this.book.rendition.getContents();
 
-    swipeListener(el, (dir) => this.onSwipe(dir));
-    clickListener(el, (action) => this.onClick(action));
-  }
-  
-  /**
-   * Calculate the percentage of the book that has been read.
-   * @returns {number}
-   */
-  _getPercentComplete() {
-    return Math.round(
-      epub.pagination.percentageFromCfi(epub.getCurrentLocationCfi()) * 100
-    );
+    swipeListener(document, this.book, this.onSwipe);
+    clickListener(document, this.book, this.onClick);
   }
 
   /**
@@ -506,30 +441,29 @@ export default class Reader extends React.Component {
    * @param {boolean} [skipUnwrap=false]
    */
   _applyHighlights(highlight, skipUnwrap = false) {
+    const {notes, annotations} = this.state.book;
+    const [{document}] = this.book.rendition.getContents();
+
     // Either annotations or notes can go to none
     if (highlight.mode == 'none' && !skipUnwrap) {
-      unwrap('annotation');
-      unwrap('note');
+      unwrap(document, 'annotation');
+      unwrap(document, 'note');
     }
     // Notes can only come after none
     else if (highlight.mode == 'notes') {
-      highlightNotes(this.state.book.notes);
+      highlightNotes(this.book, notes);
     }
     // Annotations can come after notes or another annotation set
     else if (highlight.mode == 'annotations') {
       // Can be skipped if 'annotations' default and first load
       if (!skipUnwrap) {
-        unwrap('note');
-        unwrap('annotation');
+        unwrap(document, 'note');
+        unwrap(document, 'annotation');
       }
 
       // Ensure book has annotation set
-      if (
-        this.state.book.annotations &&
-        this.state.book.annotations[highlight.index]
-      ) {
-        insertAnnotations(this.state.book.annotations[highlight.index]);
-      }
+      if (annotations && annotations[highlight.index])
+        insertAnnotations(this.book, annotations[highlight.index]);
     }
   }
   
@@ -551,44 +485,43 @@ export default class Reader extends React.Component {
   /**
    * Calculates and saves the book's word count if not already calculated.
    */
-  _getWordCount() {
-    // Count and update book's word count
-    if (this.state.book.word_count == 0) {
-      const files = epub.zip.zip.files;
-      const zip = new JSZip();
-      let count = 0;
+  async _getWordCount() {
+    if (this.state.book.word_count > 0) return;
 
-      Object.keys(files).forEach(file => {
-        if (file.split('.')[1] != 'html') return;
-        
-        count += zip
-          .utf8decode(files[file]._data.getContent())
-          .replace(/(<([^>]+)>)/ig, ' ')
-          .split(/\s+/).length;
-      });
-      
-      request
-        .put(`../api/books/${this.state.book.id}/word-count`)
-        .send({ count })
-        .end((err, res) =>
-          this._updateBook({ word_count: count })
-        );
+    let count = 0;
+
+    // Used to render each chapter
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    // Loop through all files in book
+    for (let item of this.book.spine.items) {
+      // Ignore non-html files
+      if (!/html$/.test(item.href.split('.').slice(-1)[0])) continue;
+
+      // Set HTML to frame
+      iframe.contentDocument.documentElement.innerHTML =
+        await this.book.archive.zip.files[item.href].async('string');
+
+      // Count text, not HTML
+      count += iframe.contentDocument.body.innerText.split(/\s+/).length;
     }
+
+    iframe.remove();
   }
 
   render() {
-    if (window.epub === undefined) return <div />;
-    
     return (
       <div className='reader'>
-        <div id='book' />
+        <div id='bookView' />
         
         <Overlay
-          ref='overlay'
-          parent={this}
+          ref={i => this._overlay = i}
+          Reader={this}
         />
         
-        <Modal reader={this} />
+        <Modal Reader={this} />
       </div>
     );
   }
