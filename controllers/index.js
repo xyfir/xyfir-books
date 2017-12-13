@@ -67,7 +67,7 @@ router.post(
   '/books/:book/note',
   require('./books/note/add')
 );
-router.post(
+router.delete(
   '/books/:book/note',
   require('./books/note/remove')
 );
