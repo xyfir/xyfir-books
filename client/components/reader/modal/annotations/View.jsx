@@ -1,16 +1,11 @@
+import {
+  ListItem, FontIcon, Toolbar, Divider, Button, Drawer
+} from 'react-md';
 import marked from 'marked';
 import React from 'react';
 
 // Constants
 import annotationTypes from 'constants/annotation-types';
-
-// react-md
-import ListItem from 'react-md/lib/Lists/ListItem';
-import FontIcon from 'react-md/lib/FontIcons';
-import Toolbar from 'react-md/lib/Toolbars';
-import Divider from 'react-md/lib/Dividers';
-import Button from 'react-md/lib/Buttons/Button';
-import Drawer from 'react-md/lib/Drawers';
 
 // Components
 import Document from 'components/reader/modal/annotations/types/Document';
@@ -26,9 +21,9 @@ export default class ViewAnnotations extends React.Component {
   constructor(props) {
     super(props);
 
-    const [setId, itemId] = this.props.reader.state.modal.target.split('-');
-    
-    const annotations = this.props.reader.state.book.annotations
+    const [setId, itemId] = props.Reader.state.modal.target.split('-');
+
+    const annotations = props.Reader.state.book.annotations
       .find(set => set.id == setId).items
       .find(item => item.id == itemId).annotations;
 

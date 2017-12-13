@@ -1,10 +1,5 @@
+import { TextField, ListItem, List, Button } from 'react-md';
 import React from 'react';
-
-// react-md
-import TextField from 'react-md/lib/TextFields';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import Button from 'react-md/lib/Buttons/Button';
-import List from 'react-md/lib/Lists/List';
 
 export default class NotesList extends React.Component {
 
@@ -17,17 +12,17 @@ export default class NotesList extends React.Component {
       <div className='notes'>
         <Button
           raised primary
-          onClick={() => this.props.notes.setState({ view: 'create' })}
+          onClick={() => this.props.Notes.setState({ view: 'create' })}
           iconChildren='create'
         >Create</Button>
 
         <List className='notes'>{
-          this.props.reader.state.book.notes.map((note, i) =>
+          this.props.Reader.state.book.notes.map((note, i) =>
             <ListItem
               threeLines
               key={note.cfi + '-' + i}
-              onClick={
-                () => this.props.notes.setState({ view: 'view', note: i })
+              onClick={() =>
+                this.props.Notes.setState({ view: 'view', note: i })
               }
               primaryText={
                 `Created ${new Date(note.created).toLocaleString()}`

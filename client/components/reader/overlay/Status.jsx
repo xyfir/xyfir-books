@@ -21,7 +21,7 @@ export default class ReaderStatus extends React.Component {
 
         case 'annotations':
           return 'Now highlighting annotations from set ' +
-            this.props.book.annotations[hl.index].set_title;
+            this.props.Reader.state.book.annotations[hl.index].set_title;
       }
     })();
 
@@ -31,17 +31,18 @@ export default class ReaderStatus extends React.Component {
   }
 
   render() {
+    const {loading, percent, pagesLeft} = this.props.Reader.state;
     let status = '';
 
     if (this.state.status)
       status = this.state.status;
-    else if (this.props.loading)
+    else if (loading)
       status = 'Loading...';
     else {
-      status = this.props.percent + '% | ' + (
-        !this.props.pagesLeft ?
-        'Last page in chapter' :
-        this.props.pagesLeft + ' pages left in chapter'
+      status = percent + '% | ' + (
+        !pagesLeft
+          ? 'Last page in chapter'
+          : pagesLeft + ' pages left in chapter'
       )
     }
     

@@ -1,15 +1,9 @@
+import {
+  TabsContainer, TextField, ListItem, Button, List, Tabs, Tab
+} from 'react-md';
 import request from 'superagent';
 import marked from 'marked';
 import React from 'react';
-
-// react-md
-import TabsContainer from 'react-md/lib/Tabs/TabsContainer';
-import TextField from 'react-md/lib/TextFields';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import Button from 'react-md/lib/Buttons/Button';
-import List from 'react-md/lib/Lists/List';
-import Tabs from 'react-md/lib/Tabs/Tabs';
-import Tab from 'react-md/lib/Tabs/Tab';
 
 // Constants
 import { XYFIR_ANNOTATIONS } from 'constants/config';
@@ -20,7 +14,7 @@ export default class ManageAnnotations extends React.Component {
 		super(props);
 
 		this.state = {
-			key: this.props.reader.props.data.account.xyAnnotationsKey,
+			key: this.props.Reader.props.data.account.xyAnnotationsKey,
 			sets: [], set: 0, tab: 0
 		};
 	}
@@ -41,7 +35,8 @@ export default class ManageAnnotations extends React.Component {
 	}
 
 	onDownload() {
-		const { annotations } = this.props.reader.state.book;
+    const {Reader} = this.props;
+		const {annotations} = Reader.state.book;
 		const set = this.state.sets.find(set => set.id == this.state.set);
 
 		// Download set's items
@@ -55,32 +50,33 @@ export default class ManageAnnotations extends React.Component {
         if (
           err || res.body.error || !res.body[set.id] || !res.body[set.id].items
         ) {
-          this.props.reader.props.alert('Could not download set');
+          Reader.props.alert('Could not download set');
         }
         else {
           set.items = res.body[set.id].items;
 
           annotations.push(set);
 
-          this.props.reader._updateBook({ annotations });
+          Reader._updateBook({ annotations });
           this.setState({ set: 0 });
 
           // Ensure current book's highlighted content is updated
-          this.props.reader.onCycleHighlightMode();
+          Reader.onCycleHighlightMode();
         }
       });
 	}
 
 	onDelete() {
-		const annotations = this.props.reader.state.book.annotations
+    const {Reader} = this.props;
+		const annotations = Reader.state.book.annotations
       .filter(a => a.id != this.state.set);
 
 		// Remove set from book.annotations
-		this.props.reader._updateBook({ annotations });
+		Reader._updateBook({ annotations });
 		this.setState({ set: 0 });
 
 		// Ensure current book's highlighted content is updated
-		this.props.reader.onCycleHighlightMode();
+		Reader.onCycleHighlightMode();
 	}
 
   _renderView(annotations) {
@@ -187,7 +183,7 @@ export default class ManageAnnotations extends React.Component {
   }
 
 	render() {
-    const { annotations } = this.props.reader.state.book;
+    const {annotations} = this.props.Reader.state.book;
 
 		if (this.state.set) return this._renderView(annotations);
 		

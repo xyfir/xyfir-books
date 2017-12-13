@@ -1,7 +1,5 @@
+import { Slider } from 'react-md';
 import React from 'react';
-
-// react-md
-import Slider from 'react-md/lib/Sliders';
 
 export default class Filters extends React.Component {
 
@@ -10,10 +8,9 @@ export default class Filters extends React.Component {
 
     this.state = { loading: true };
 
-    this.props.reader._getFilters()
-      .then(f =>
-        this.setState(Object.assign({}, f, { loading: false }))
-      );
+    this.props.Reader._getFilters().then(f =>
+      this.setState(Object.assign({}, f, { loading: false }))
+    );
   }
 
   onUpdate(prop, val) {
@@ -21,23 +18,23 @@ export default class Filters extends React.Component {
 
     this.timeout = setTimeout(() => {
       const filters = Object.assign({}, this.state);
-      
+
       filters[prop] = val;
 
-      this.props.reader._applyFilters(filters);
+      this.props.Reader._applyFilters(filters);
       this.setState(filters);
     }, 100);
   }
 
   componentWillUnmount() {
     localforage.setItem(
-      'filters-' + this.props.reader.state.book.id,
+      'filters-' + this.props.Reader.state.book.id,
       this.state
     );
   }
 
   render() {
-    if (this.state.loading) return <div />
+    if (this.state.loading) return null;
     
     return (
       <div className='filters'>

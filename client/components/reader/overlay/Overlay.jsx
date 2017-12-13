@@ -22,28 +22,24 @@ export default class ReaderOverlay extends React.Component {
   }
 
   render() {
-    const p = this.props.parent;
+    const {Reader} = this.props;
+
+    if (!Reader.book) return null;
 
     return (
       <div className='overlay'>
         <Navbar
-          book={p.state.book}
           show={this.state.show}
-          reader={p}
-          updateBook={p._updateBook}
-          onToggleShow={p.onToggleShow}
+          Reader={Reader}
         />
 
         <Status
-          ref='status'
-          book={p.state.book}
-          loading={p.state.loading}
-          percent={p.state.percent}
-          pagesLeft={p.state.pagesLeft}
+          ref={i => this._status = i}
+          Reader={Reader}
         />
 
         <Progress
-          reader={p}
+          Reader={Reader}
           show={this.state.show}
         />
       </div>

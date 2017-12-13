@@ -1,8 +1,5 @@
+import { Button, DialogContainer } from 'react-md';
 import React from 'react';
-
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
-import Dialog from 'react-md/lib/Dialogs';
 
 // Components
 import ManageAnnotations from 'components/reader/modal/annotations/Manage';
@@ -33,11 +30,11 @@ export default class ReaderModal extends React.Component {
       // For some reason if the user closes while in fullscreen and then
       // reopens and clicks the 'shrink' button the Dialog breaks
       this.setState(
-        { fullscreen: false }, () => this.props.reader.onCloseModal()
+        { fullscreen: false }, () => this.props.Reader.onCloseModal()
       );
     }
     else {
-      this.props.reader.onCloseModal();
+      this.props.Reader.onCloseModal();
     }
   }
 
@@ -49,7 +46,7 @@ export default class ReaderModal extends React.Component {
   }
 
   render() {
-    const show = this.props.reader.state.modal.show;
+    const {show} = this.props.Reader.state.modal;
     
     const view = (() => {
       switch (show) {
@@ -70,9 +67,11 @@ export default class ReaderModal extends React.Component {
         case 'toc':
           return <TableOfContents {...this.props} />
         default:
-          return <div />;
+          return null;
       }
     })();
+
+    if (!view) return null;
 
     const { forceFullscreen, noFullscreen } = view.type;
     
@@ -86,14 +85,15 @@ export default class ReaderModal extends React.Component {
       forceFullscreen || this.state.fullscreen;
 
     return (
-      <Dialog
+      <DialogContainer
         id='reader-dialog'
-        onHide={() => this.props.reader.onCloseModal()}
-        visible={!!show}
+        onHide={() => this.props.Reader.onCloseModal()}
+        visible={true}
         fullPage={fullscreen}
         className={
           'reader-dialog' + (noFullscreen ? ' transparent' : '')
         }
+        aria-label='reader-modal'
         focusOnMount={false}
         contentClassName='md-dialog-content--padded'
       >
@@ -120,7 +120,7 @@ export default class ReaderModal extends React.Component {
         ) : null}
 
         {view}
-      </Dialog>
+      </DialogContainer>
     );
   }
 

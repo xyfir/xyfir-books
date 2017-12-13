@@ -7,7 +7,7 @@ export default class BookInfo extends React.Component {
   }
 
   render() {
-    const { book } = this.props.reader.state;
+    const { book } = this.props.Reader.state;
 
     return (
       <div className='book-info'>
