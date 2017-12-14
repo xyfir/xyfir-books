@@ -1,3 +1,4 @@
+import { SelectField, TextField, Button, Paper } from 'react-md';
 import request from 'superagent';
 import React from 'react';
 import swal from 'sweetalert';
@@ -10,12 +11,6 @@ import * as themes from 'constants/reader-themes';
 import { setXyAnnotationsKey } from 'actions/creators/account';
 import { setReader } from 'actions/creators/settings';
 import { save } from 'actions/creators/index';
-
-// react-md
-import SelectField from 'react-md/lib/SelectFields';
-import TextField from 'react-md/lib/TextFields';
-import Button from 'react-md/lib/Buttons/Button';
-import Paper from 'react-md/lib/Papers';
 
 // Components
 import ColorPicker from 'components/misc/ColorPicker';
@@ -56,7 +51,7 @@ export default class ReaderSettings extends React.Component {
     const xyAnnotationsKey = this.refs.annotationsKey.value;
 
     request
-      .put('../api/account')
+      .put('/api/account')
       .send({ xyAnnotationsKey })
       .end((err, res) => {
         if (err || res.body.error)
@@ -107,24 +102,6 @@ export default class ReaderSettings extends React.Component {
           <span
             className='example font-size'
             style={{fontSize: this.state.fontSize + 'em'}}
-          >Example Text</span>
-
-          <br />
-          
-          <TextField
-            id='number--page-padding'
-            min={0}
-            step={0.1}
-            type='number'
-            label='Page Padding'
-            value={this.state.padding}
-            onChange={v => this.setState({ padding: +v })}
-            className='md-cell'
-          />
-          
-          <span
-            className='example page-padding'
-            style={{padding: `0em ${1 + this.state.padding}em` }}
           >Example Text</span>
 
           <br />

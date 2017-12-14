@@ -25,7 +25,7 @@ export default {
       }
     },
     reader: Object.assign({}, readerThemes.LIGHT, {
-      fontSize: 1.2, padding: 1, lineHeight: 1.4, defaultHighlightMode: 'none'
+      fontSize: 1.2, lineHeight: 1.4, defaultHighlightMode: 'none'
     })
   },
   search: {
