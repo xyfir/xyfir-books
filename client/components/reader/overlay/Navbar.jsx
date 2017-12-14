@@ -1,14 +1,8 @@
+import {
+  Subheader, ListItem, Toolbar, Divider, Button, Drawer, List
+} from 'react-md';
 import request from 'superagent';
 import React from 'react';
-
-// react-md
-import Subheader from 'react-md/lib/Subheaders';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import Toolbar from 'react-md/lib/Toolbars';
-import Divider from 'react-md/lib/Dividers';
-import Button from 'react-md/lib/Buttons/Button';
-import Drawer from 'react-md/lib/Drawers';
-import List from 'react-md/lib/Lists/List';
 
 export default class ReaderNavbar extends React.Component {
 
@@ -22,9 +16,11 @@ export default class ReaderNavbar extends React.Component {
 
   /**
    * Go to the previous CFI in the history.
+   * @todo For some reason this needs to be called twice to work.
    */
   onGoBack() {
-    const history = Object.assign({}, this.props.reader.state.history);
+    const {Reader} = this.props;
+    const history = Object.assign({}, Reader.state.history);
 
     if (history.items.length && history.index) {
       if (history.index == -1)
@@ -34,9 +30,9 @@ export default class ReaderNavbar extends React.Component {
 
       history.ignore = true;
       
-      this.props.reader.setState({ history });
+      Reader.setState({ history });
 
-      epub.gotoCfi(history.items[history.index]);
+      Reader.book.rendition.display(history.items[history.index]);
     }
   }
   
@@ -44,30 +40,31 @@ export default class ReaderNavbar extends React.Component {
    * Create or remove a bookmark.
    */
   onBookmark() {
-    const cfi = epub.getCurrentLocationCfi();
+    const {Reader} = this.props;
+    const cfi = Reader.book.rendition.location.start.cfi;
     
     // Update app/component state
-    const update = bookmarks => this.props.updateBook({ bookmarks });
+    const update = bookmarks => Reader._updateBook({ bookmarks });
     
     // Remove bookmark
     if (this._isBookmarked()) {
       request
-        .delete(`../api/books/${this.props.book.id}/bookmark`)
+        .delete(`/api/books/${Reader.state.book.id}/bookmark`)
         .send({ cfi })
         .end((err, res) => {
           if (!err && !res.body.error)
-            update(this.props.book.bookmarks.filter(bm => cfi != bm.cfi));
+            update(Reader.state.book.bookmarks.filter(bm => cfi != bm.cfi));
         });
     }
     // Add bookmark
     else {
       request
-        .post(`../api/books/${this.props.book.id}/bookmark`)
+        .post(`/api/books/${Reader.state.book.id}/bookmark`)
         .send({ cfi })
         .end((err, res) => {
           if (!res.body.error) {
             update(
-              this.props.book.bookmarks.concat([{
+              Reader.state.book.bookmarks.concat([{
                 cfi, created: Date.now()
               }])
             );
@@ -77,15 +74,19 @@ export default class ReaderNavbar extends React.Component {
   }
   
   /**
-   * Check if the epub's current CFI is bookmarked
-   * @returns {boolean}
+   * Check if the books's current CFI is bookmarked
+   * @return {boolean}
    */
   _isBookmarked() {
-    const cfi = epub.getCurrentLocationCfi();
-    return !!this.props.book.bookmarks.find(b => cfi == b.cfi);
+    const {Reader} = this.props;
+    const cfi = Reader.book.rendition.location.start.cfi;
+
+    return Reader.state.book.bookmarks.findIndex(b => cfi == b.cfi) > -1;
   }
 
   render() {
+    const {Reader} = this.props;
+
     return (
       <div className='toolbar'>
         <Toolbar
@@ -134,27 +135,27 @@ export default class ReaderNavbar extends React.Component {
             />,
             <ListItem
               primaryText='Table of Contents'
-              onClick={() => this.props.onToggleShow('toc')}
+              onClick={() => Reader.onToggleShow('toc')}
             />,
             <ListItem
               primaryText='Notes'
-              onClick={() => this.props.onToggleShow('notes')}
+              onClick={() => Reader.onToggleShow('notes')}
             />,
             <ListItem
               primaryText='Book Styling'
-              onClick={() => this.props.onToggleShow('bookStyling')}
+              onClick={() => Reader.onToggleShow('bookStyling')}
             />,
             <ListItem
               primaryText='Filters'
-              onClick={() => this.props.onToggleShow('filters')}
+              onClick={() => Reader.onToggleShow('filters')}
             />,
             <ListItem
               primaryText='View Bookmarks'
-              onClick={() => this.props.onToggleShow('bookmarks')}
+              onClick={() => Reader.onToggleShow('bookmarks')}
             />,
             <ListItem
               primaryText='Manage Annotations'
-              onClick={() => this.props.onToggleShow('manageAnnotations')}
+              onClick={() => Reader.onToggleShow('manageAnnotations')}
             />
           ]}
           visible={this.state.drawer}
