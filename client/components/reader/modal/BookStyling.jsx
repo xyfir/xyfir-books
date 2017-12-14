@@ -15,7 +15,7 @@ export default class BookStyling extends React.Component {
   }
 
   componentDidMount() {
-    this.props.reader._getStyles().then(s =>
+    this.props.Reader._getStyles().then(s =>
       this.setState(Object.assign({}, s, { loading: false }))
     );
   }
@@ -31,10 +31,10 @@ export default class BookStyling extends React.Component {
 
     // Set and save styling
     this.setState({ [prop]: value }, () => this._saveStyling());
-    
-    epub.setStyle(
-      prop, prop == 'padding' ? (`0em ${value}em`) : (value + 'em')
-    );
+
+    prop = prop == 'fontSize' ? 'font-size' : 'line-height';
+
+    this.props.Reader.book.rendition.themes.override(prop, value + 'em');
   }
 
   /**
@@ -44,10 +44,11 @@ export default class BookStyling extends React.Component {
   onUpdateTheme(val) {
     const style = themes[val];
 
-    this.setState(style, () => this._saveStyling(() => {
-      this.props.reader._applyStyles();
-      epub.setStyle('backgroundColor', style.backgroundColor);
-    }));
+    this.setState(style, () =>
+      this._saveStyling(() =>
+        this.props.Reader._applyStyles()
+      )
+    );
   }
 
   /**
@@ -56,7 +57,7 @@ export default class BookStyling extends React.Component {
    */
   _saveStyling(fn) {
     localforage.setItem(
-      'styling-' + this.props.reader.state.book.id,
+      'styling-' + this.props.Reader.state.book.id,
       this.state
     ).then(() => fn ? fn() : 1);
   }
@@ -66,71 +67,57 @@ export default class BookStyling extends React.Component {
 
     return (
       <div className='book-styling'>
-        <table><tbody>
-          <tr>
-            <th>Text Size</th>
-            <td>
-              <Button
-                icon primary
-                onClick={() => this.onUpdate('fontSize', '+')}
-                iconChildren='add'
-              />
-              <Button
-                icon secondary
-                onClick={() => this.onUpdate('fontSize', '-')}
-                iconChildren='remove'
-              />
-            </td>
-          </tr>
+      <table>
+      <tbody>
+        <tr>
+          <th>Text Size</th>
+          <td>
+            <Button
+              icon primary
+              onClick={() => this.onUpdate('fontSize', '+')}
+              iconChildren='add'
+            />
+            <Button
+              icon secondary
+              onClick={() => this.onUpdate('fontSize', '-')}
+              iconChildren='remove'
+            />
+          </td>
+        </tr>
 
-          <tr>
-            <th>Page Padding</th>
-            <td>
-              <Button
-                icon primary
-                onClick={() => this.onUpdate('padding', '+')}
-                iconChildren='add'
-              />
-              <Button
-                icon secondary
-                onClick={() => this.onUpdate('padding', '-')}
-                iconChildren='remove'
-              />
-            </td>
-          </tr>
+        <tr>
+          <th>Line Spacing</th>
+          <td>
+            <Button
+              icon primary
+              onClick={() => this.onUpdate('lineHeight', '+')}
+              iconChildren='add'
+            />
+            <Button
+              icon secondary
+              onClick={() => this.onUpdate('lineHeight', '-')}
+              iconChildren='remove'
+            />
+          </td>
+        </tr>
 
-          <tr>
-            <th>Line Spacing</th>
-            <td>
-              <Button
-                icon primary
-                onClick={() => this.onUpdate('lineHeight', '+')}
-                iconChildren='add'
-              />
-              <Button
-                icon secondary
-                onClick={() => this.onUpdate('lineHeight', '-')}
-                iconChildren='remove'
-              />
-            </td>
-          </tr>
-
-          <tr>
-            <th>Theme</th>
-            <td>
-              <Button
-                flat primary
-                onClick={() => this.onUpdateTheme('LIGHT')}
-                iconChildren='brightness_7'
-              >Light</Button>
-              <Button
-                flat secondary
-                onClick={() => this.onUpdateTheme('DARK')}
-                iconChildren='brightness_2'
-              >Dark</Button>
-            </td>
-          </tr>
-        </tbody></table>
+        <tr>
+          <th>Theme</th>
+          <td>
+            <Button
+              flat primary
+              onClick={() => this.onUpdateTheme('LIGHT')}
+              iconChildren='brightness_7'
+            >Light</Button>
+            <Button
+              flat secondary
+              onClick={() => this.onUpdateTheme('DARK')}
+              iconChildren='brightness_2'
+            >Dark</Button>
+          </td>
+        </tr>
+      </tbody>
+      </table>
       </div>
     )
   }
