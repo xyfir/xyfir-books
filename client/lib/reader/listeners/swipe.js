@@ -1,9 +1,10 @@
 /**
  * Listen for swipes convert them to actions.
  * @param {HTMLElement} el - The element to add event listeners to.
+ * @param {object} book - EPUBJS book
  * @param {function} fn - The listener function.
  */
-export default function(el, fn) {
+export default function(el, book, fn) {
   
   // Required min distance traveled to be considered swipe
   const threshold   = 100;
@@ -39,15 +40,17 @@ export default function(el, fn) {
         fn((distY < 0) ? 'up' : 'down');
       // Tap
       else {
-        epub.renderer.doc.defaultView.getSelection().removeAllRanges();
+        const [{document, documentElement}] = book.rendition.getContents();
+
+        document.defaultView.getSelection().removeAllRanges();
 
         // Convert tap to click
-        epub.renderer.doc.documentElement.dispatchEvent(
+        documentElement.dispatchEvent(
           new MouseEvent('click', {
             clientX: startX, clientY: startY
           })
         );
-        
+
         // !! Needed when emulating touch events to prevent double 'clicks'
         //e.preventDefault();
       }
