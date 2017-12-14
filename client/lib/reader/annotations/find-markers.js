@@ -2,32 +2,28 @@ import escapeRegex from 'escape-string-regexp';
 
 /**
  * @typedef {object} AnnotationMarker
- * @property {number} chapter - Index of the chapter that the marker exists in.
- * @property {number} index - Index of the character in the chapter HTML string
+ * @prop {number} chapter - Index of the chapter that the marker exists in.
+ * @prop {number} index - Index of the character in the chapter HTML string
  * that the marker exists at.
  */
-
 /**
  * @typedef {object} AnnotationMarkers
- * @property {AnnotationMarker} [${itemId}-${searchIndex}-${type}] - `itemId`
+ * @prop {AnnotationMarker} [${itemId}-${searchIndex}-${type}] - `itemId`
  * is the id of the item in the annotation set. `searchIndex` is the index of
  * the search within the item in the set. `type` is 1 for a 'before' marker and
  * 2 for an 'after' marker.
  */
-
 /**
  * Finds instances of 'before' and 'after' searches within an annotation set's
  * item's searches. 
- * @param {object[]} items 
- * @returns {AnnotationMarkers}
+ * @async
+ * @param {object} book - EPUBJS book
+ * @param {object[]} items - Annotation set items
+ * @return {AnnotationMarkers}
  */
-export default function (items) {
-  
-  const markers = {};
+export default async function(book, items) {
 
-  // Grab book files
-  const files = epub.zip.zip.files;
-  const zip = new JSZip();
+  const markers = {};
 
   // Used to render each chapter
   const iframe = document.createElement('iframe');
@@ -35,12 +31,15 @@ export default function (items) {
   document.body.appendChild(iframe);
 
   // Loop through all files in book
-  Object.keys(files).forEach((file, chapter) => {
-    if (file.split('.').slice(-1)[0] != 'html') return;
-    
+  for (let spineItem of book.spine.items) {
+    // Ignore non-html files
+    if (!/html$/.test(spineItem.href.split('.').slice(-1)[0])) continue;
+
+    /** @type {string} - The file's HTML */
+    let file = await book.archive.zip.files[spineItem.href].async('string');
+
     // Convert file content into html string
-    iframe.contentDocument.documentElement.innerHTML =
-      zip.utf8decode(files[file]._data.getContent()),
+    iframe.contentDocument.documentElement.innerHTML = file,
     file = iframe.contentDocument.body.innerHTML;
 
     // Loop through all items in annotation set
@@ -60,7 +59,7 @@ export default function (items) {
 
           if (match) {
             markers[`${item.id}-${searchIndex}-1`] = {
-              chapter, index: match.index
+              chapter: spineItem.index, index: match.index
             };
           };
         }
@@ -75,13 +74,13 @@ export default function (items) {
 
           if (match) {
             markers[`${item.id}-${searchIndex}-2`] = {
-              chapter, index: match.index
+              chapter: spineItem.index, index: match.index
             };
           };
         }
       })
     );
-  });
+  }
 
   iframe.remove();
 

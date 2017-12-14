@@ -6,15 +6,13 @@
  * @prop {number} wrapLength - The combined length of the strings that wrap 
  * each match.
  */
-
 /**
  * Wraps strings within a book's HTML content with a `span` element with 
  * `class` and `onclick` attributes.
  * @param {Array.<number[]>} matches - Returned from 
  * lib/reader/matches/find-indexes.
  * @param {string} html - The HTML book content to manipulate.
- * @param {string} type - The type of item. Also used for class name. Possible 
- * values: 'note', 'anotation'
+ * @param {string} type - The type of item. Also used for class name.
  * @param {string} key - Used in onclick to determine which item is clicked.
  * @return {WrapInfo}
  */
@@ -23,7 +21,9 @@ export default function(matches, html, type, key) {
   const wrap = [
     `<span ` +
       `class="${type}" ` +
-      `onclick="parent.epub.onClick(event, '${type}','${key}')"` +
+      `onclick="parent.postMessage(` +
+        `{ type: '${type}', key: '${key}', epubjs: true }, '*'` +
+      `)"` +
     `>`,
     `</span>`
   ],

@@ -1,27 +1,33 @@
-import buildAnnotationSearchOrder from 'lib/reader/annotations/build-search-order';
-import findAnnotationMarkers from 'lib/reader/annotations/find-markers';
 import escapeRegex from 'escape-string-regexp';
 
 // Modules
+import buildSearchOrder from 'lib/reader/annotations/build-search-order';
 import getMatchIndexes from 'lib/reader/matches/find-indexes';
+import findMarkers from 'lib/reader/annotations/find-markers';
 import wrapMatches from 'lib/reader/matches/wrap';
 
 /**
+ * @typedef {object} AnnotationSet
+ * @prop {number} id
+ * @prop {object[]} items
+ */
+/**
  * Finds and highlights an annotation set's items within the ebook's rendered
  * HTML.
- * @param {object} set - An annotation set.
+ * @async
+ * @param {object} book - An EPUBJS book
+ * @param {AnnotationSet} set - An annotation set
  */
-export default function(set) {
+export default async function(book, set) {
 
+  const [{document}] = book.rendition.getContents();
   const wordChar = /[A-Za-z0-9]/;
-  const markers = findAnnotationMarkers(set.items);
-  const order = buildAnnotationSearchOrder(set.items);
-  let html = epub.renderer.doc.body.innerHTML;
+  const markers = await findMarkers(book, set.items);
+  const order = buildSearchOrder(set.items);
+  let html = document.body.innerHTML;
 
   // Get current chapter index to compare with chapter in markers
-  const chapter = Object
-    .keys(epub.zip.zip.files)
-    .findIndex(file => file == epub.currentChapter.href);
+  const chapter = book.rendition.location.start.index;
 
   order.forEach(o => {
     const item = set.items[o.item];
@@ -100,6 +106,6 @@ export default function(set) {
       });
   });
 
-  epub.renderer.doc.body.innerHTML = html;
+  document.body.innerHTML = html;
 
 }

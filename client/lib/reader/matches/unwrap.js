@@ -1,10 +1,11 @@
 /**
  * Unwrap elements with the provided class name.
+ * @param {Document} doc
  * @param {string} className
  */
-export default function(className) {
+export default function(doc, className) {
 
-  epub.renderer.doc.querySelectorAll('.' + className).forEach(el => {
+  doc.querySelectorAll('.' + className).forEach(el => {
     const parent = el.parentElement;
 
     parent.insertBefore(el.firstChild, el);

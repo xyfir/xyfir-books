@@ -3,7 +3,7 @@
  * haystack.
  * @param {string} needle
  * @param {string} haystack
- * @returns {Array.<number[]>} A 2D array where the first element in the 
+ * @return {Array.<number[]>} A 2D array where the first element in the 
  * second level of arrays is the starting index of needle within haystack and 
  * the second element is the ending index.
  */
