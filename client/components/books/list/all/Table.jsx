@@ -163,7 +163,7 @@ export default class TableList extends React.Component {
           {this.state.selected.length > 0 ? (
             <div className='controls'>
               {this.state.selected.length > 1 ? null : (
-                <a href={`#books/read/${selectedBook.url}`}>
+                <a href={`#/books/read/${selectedBook.url}`}>
                   <span className='icon-eye' />Read
                 </a>
               )}
@@ -173,19 +173,19 @@ export default class TableList extends React.Component {
               </a>
               
               {this.state.selected.length > 1 ? (
-                <a href={`#books/bulk-edit/${
+                <a href={`#/books/bulk-edit/${
                   this.state.selected.join(',')
                 }`}>
                   <span className='icon-edit' />Bulk Edit
                 </a>
               ) : (
-                <a href={`#books/manage/${selectedBook.url}`}>
+                <a href={`#/books/manage/${selectedBook.url}`}>
                   <span className='icon-edit' />Manage
                 </a>
               )}
               
               {this.state.selected.length > 1 ? (<span />) : (
-                <a href={`#books/add-format/${selectedBook.url}`}>
+                <a href={`#/books/add-format/${selectedBook.url}`}>
                   <span className='icon-files' /> Add Format
                 </a>
               )}
@@ -194,7 +194,7 @@ export default class TableList extends React.Component {
           
           {this.state.selected.length ? (
             <div className='info'>
-              <a href={`#books/read/${selectedBook.url}`}>
+              <a href={`#/books/read/${selectedBook.url}`}>
                 <img
                   className='cover'
                   id={`cover-${selectedBook.id}`}
@@ -227,7 +227,7 @@ export default class TableList extends React.Component {
                 <dt>Title</dt><dd>{selectedBook.title}</dd>
                 
                 <dt>Authors</dt><dd><a href={
-                  `#books/list/all?search=1&authors=${
+                  `#/books/list/all?search=1&authors=${
                     encodeURIComponent(selectedBook.authors)
                   }`
                 }>{selectedBook.authors}</a></dd>
@@ -236,7 +236,7 @@ export default class TableList extends React.Component {
                   <div>
                     <dt>Series</dt>
                     <dd>#{selectedBook.series_index} of <a href={
-                      `#books/list/all?search=1&series=${
+                      `#/books/list/all?search=1&series=${
                         encodeURIComponent(selectedBook.series)
                       }`
                     }>{selectedBook.series}</a></dd>
@@ -248,7 +248,7 @@ export default class TableList extends React.Component {
                   (new Date(selectedBook.pubdate))
                     .toLocaleDateString()
                 } by <a href={
-                  '#books/list/all?search=1&publisher='
+                  '#/books/list/all?search=1&publisher='
                   + encodeURIComponent(selectedBook.publisher)
                 }>{
                   selectedBook.publisher
@@ -323,7 +323,7 @@ export default class TableList extends React.Component {
                 <dt>Tags</dt>
                 <dd className='tags'>{
                   selectedBook.tags.map(tag =>
-                    <a href={`#books/list/all?search=1&tag=${
+                    <a href={`#/books/list/all?search=1&tag=${
                       encodeURIComponent(tag)}`
                     }>{tag}</a>
                   )

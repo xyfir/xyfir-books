@@ -18,7 +18,7 @@ export default class AddFormat extends React.Component {
     super(props);
     
     this.state = {
-      id: window.location.hash.split('/')[2],
+      id: window.location.hash.split('/')[3],
       converting: false, uploading: false
     };
     

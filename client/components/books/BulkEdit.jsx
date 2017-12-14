@@ -15,7 +15,7 @@ export default class EditBooks extends React.Component {
     super(props);
     
     this.state = {
-      ids: window.location.hash.split('/')[2].split(','),
+      ids: window.location.hash.split('/')[3].split(','),
       status: ''
     };
     

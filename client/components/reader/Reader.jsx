@@ -29,7 +29,7 @@ export default class Reader extends React.Component {
   constructor(props) {
     super(props);
 
-    const id = window.location.hash.split('/')[2];
+    const id = window.location.hash.split('/')[3];
     
     this.state = {
       book: this.props.data.books.find(b => id == b.id),

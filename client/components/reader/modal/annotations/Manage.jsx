@@ -127,7 +127,7 @@ export default class ManageAnnotations extends React.Component {
     if (!this.state.key) {
       return (
         <p>
-          <strong>Note:</strong> You have not set a <a href='https://annotations.xyfir.com/' target='_blank'>Xyfir Annotations</a> subscription key. If you have a key, you can set it in your <a href='#settings/reader'>reader settings</a>.
+          <strong>Note:</strong> You have not set a <a href='https://annotations.xyfir.com/' target='_blank'>Xyfir Annotations</a> subscription key. If you have a key, you can set it in your <a href='#/settings/reader'>reader settings</a>.
         </p>
       );
     }

@@ -239,7 +239,14 @@ class App extends React.Component {
     };
 
     // Update state.view when url hash changes
-    window.onhashchange = () => updateView(store);
+    // Update state according to url hash
+    window.onhashchange = () => {
+      // Force old hash route format to new one
+      // `#${route}` -> `#/${route}`
+      if (location.hash.indexOf('#/') != 0)
+        return location.hash = '#/' + location.hash.substr(1);
+      updateView(store);
+    };
   }
 
   render() {
@@ -299,10 +306,10 @@ class App extends React.Component {
           onVisibilityChange={v => this.setState({ drawer: v })}
           autoclose={true}
           navItems={[
-            <a href='#library/info'>
+            <a href='#/library/info'>
               <ListItem primaryText='Manage Library' />
             </a>,
-            <a href='#account'>
+            <a href='#/account'>
               <ListItem primaryText='Account' />
             </a>,
             <a onClick={() => this.onLogout()}>
@@ -312,10 +319,10 @@ class App extends React.Component {
             <Divider />,
 
             <Subheader primary primaryText='Books' />,
-            <a href='#books/list'>
+            <a href='#/books/list'>
               <ListItem primaryText='List' />
             </a>,
-            <a href='#books/upload'>
+            <a href='#/books/upload'>
               <ListItem primaryText='Upload' />
             </a>,
 
@@ -323,13 +330,13 @@ class App extends React.Component {
 
             <Subheader primary primaryText='Settings' />,
 
-            <a href='#settings/general'>
+            <a href='#/settings/general'>
               <ListItem primaryText='General' />
             </a>,
-            <a href='#settings/reader'>
+            <a href='#/settings/reader'>
               <ListItem primaryText='Reader' />
             </a>,
-            <a href='#settings/book-list'>
+            <a href='#/settings/book-list'>
               <ListItem primaryText='Book List' />
             </a>
           ]}

@@ -32,7 +32,7 @@ export default class RecentlyOpened extends React.Component {
             
             return (
               <li className='book' key={b.id}>
-                <a href={`#books/read${url}`}>
+                <a href={`#/books/read${url}`}>
                   <img
                     className='cover'
                     id={`cover-${b.id}`}
@@ -42,11 +42,11 @@ export default class RecentlyOpened extends React.Component {
                 <div className='info'>
                   <a
                     className='title'
-                    href={`#books/read${url}`}
+                    href={`#/books/read${url}`}
                   >{b.title}</a>
                   
                   <a className='authors' href={
-                    `#books/list/all?search=1&authors=${
+                    `#/books/list/all?search=1&authors=${
                       encodeURIComponent(b.authors)
                     }`
                   }>{b.authors}</a>

@@ -28,7 +28,7 @@ export default class ManageBook extends React.Component {
     super(props);
     
     this.state = {
-      id: window.location.hash.split('/')[2],
+      id: window.location.hash.split('/')[3],
       downloadingMetadata: false,
       editComments: false,
       findCover: false,
