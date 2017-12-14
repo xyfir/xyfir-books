@@ -2,22 +2,26 @@
  * Listen for clicks and convert them to actions based on the location of the 
  * click on the page.
  * @param {HTMLElement} el - The element to add event listeners to.
+ * @param {object} book - EPUBJS book
  * @param {function} fn - The listener function.
  */
-export default function(el, fn) {
+export default function(el, book, fn) {
 
   el.addEventListener('click', event => {
+
+    const [{document}] = book.rendition.getContents();
+
     // User selected text
-    if (!!epub.renderer.selectedRange.toString()) return;
-    
+    if (!!document.getSelection().toString()) return;
+
     // Get book iframe window's size
-    const wX = epub.renderer.doc.defaultView.innerWidth;
-    const wY = epub.renderer.doc.defaultView.innerHeight;
-    
+    const wX = window.bookView.clientWidth;
+    const wY = window.bookView.clientHeight;
+
     // Get click location
-    const cX = event.clientX;
+    const cX = event.clientX - (book.rendition.manager.scrollLeft || 0);
     const cY = event.clientY;
-    
+
     // Click was in left 10% of page
     if (cX < wX * 0.10)
       fn('previous page');
@@ -33,6 +37,7 @@ export default function(el, fn) {
     // Click was somewhere in middle
     else
       fn('toggle navbar');
+
   }, false);
 
 }
