@@ -1,48 +1,50 @@
+import { Button } from 'react-md';
 import request from 'superagent';
 import marked from 'marked';
 import React from 'react';
-
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
 
 export default class ViewNote extends React.Component {
 
   constructor(props) {
     super(props);
   }
-  
+
   onGoTo() {
-    epub.gotoCfi(
-      this.props.reader.state.book.notes[this.props.notes.state.note].cfi
+    const {Reader, Notes} = this.props;
+
+    Reader.book.rendition.display(
+      Reader.state.book.notes[Notes.state.note].cfi
     );
   }
-  
+
   onDelete() {
-    const { book } = this.props.reader.state;
-    const { created } = book.notes[this.props.notes.state.note];
-    
+    const {Reader, Notes} = this.props;
+    const {created} = Reader.state.book.notes[Notes.state.note];
+
     request
-      .delete(`../api/books/${book.id}/note`)
+      .delete(`/api/books/${Reader.state.book.id}/note`)
       .send({ created })
       .end((err, res) => {
         if (err || res.body.error) {
-          this.props.reader.props.alert('Could not delete note.');
+          Reader.props.alert('Could not delete note.');
         }
         else {
-          const notes = book.notes.filter(n => created != n.created);
+          const notes = Reader.state.book.notes.filter(
+            n => created != n.created
+          );
 
-          this.props.notes.setState({ view: 'list' });
-          this.props.reader._updateBook({ notes });
+          Notes.setState({ view: 'list' });
+          Reader._updateBook({ notes });
 
           // Ensure highlighted content in book is updated
-          this.props.reader.onCycleHighlightMode();
+          Reader.onCycleHighlightMode();
         }
       });
   }
 
   render() {
-    const note = this.props.reader.state.book
-      .notes[this.props.notes.state.note];
+    const {Reader, Notes} = this.props;
+    const note = Reader.state.book.notes[Notes.state.note];
     
     return (
       <div className='note'>
@@ -59,7 +61,7 @@ export default class ViewNote extends React.Component {
         
         <Button
           raised
-          onClick={() => this.props.notes.setState({ view: 'list' })}
+          onClick={() => Notes.setState({ view: 'list' })}
           iconChildren='arrow_back'
         >Back</Button>
         <Button
