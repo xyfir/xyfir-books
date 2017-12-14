@@ -1,11 +1,6 @@
+import { TextField, List, ListItem, Button } from 'react-md';
 import request from 'superagent';
 import React from 'react';
-
-// react-md
-import TextField from 'react-md/lib/TextFields';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import Button from 'react-md/lib/Buttons/Button';
-import List from 'react-md/lib/Lists/List';
 
 // Components
 import Highlight from 'components/reader/modal/notes/Highlight';
@@ -17,33 +12,37 @@ export default class CreateNote extends React.Component {
   }
 
   onCreate() {
+    const {Reader} = this.props;
     const data = {
-      cfi: epub.getCurrentLocationCfi(),
-      range: JSON.stringify(epub.renderer.getVisibleRangeCfi()),
+      cfi: Reader.book.rendition.location.start.cfi,
+      range: JSON.stringify({
+        start: Reader.book.rendition.location.start.cfi,
+        end: Reader.book.rendition.location.end.cfi
+      }),
       created: Date.now(),
-      content: this.refs.content.value,
-      highlights: JSON.stringify(this.refs.highlight._getHighlights())
+      content: this._content.value,
+      highlights: JSON.stringify(this._highlight._getHighlights())
     };
     
     request
-      .post(`../api/books/${this.props.reader.state.book.id}/note`)
+      .post(`/api/books/${Reader.state.book.id}/note`)
       .send(data)
       .end((err, res) => {
         if (err || res.body.error) {
-          this.props.reader.props.alert('Could not create note.');
+          Reader.props.alert('Could not create note.');
         }
         else {
           data.range = JSON.parse(data.range),
           data.highlights = JSON.parse(data.highlights);
 
-          const notes = this.props.reader.state.book.notes.concat([data]);
+          const notes = Reader.state.book.notes.concat([data]);
           
-          this.props.reader._updateBook({ notes });
+          Reader._updateBook({ notes });
           
           // Ensure highlighted content in book is updated
-          this.props.reader.onCycleHighlightMode();
+          Reader.onCycleHighlightMode();
 
-          this.props.reader.onCloseModal();
+          Reader.onCloseModal();
         }
       });
   }
@@ -51,11 +50,11 @@ export default class CreateNote extends React.Component {
   render() {
     return (
       <div className='create-note flex'>
-        <Highlight ref='highlight' />
+        <Highlight ref={i => this._highlight = i} {...this.props} />
 
         <TextField
           id='textarea--note'
-          ref='content'
+          ref={i => this._content = i}
           rows={2}
           type='text'
           label='Note'
@@ -65,7 +64,7 @@ export default class CreateNote extends React.Component {
         <div>
           <Button
             raised
-            onClick={() => this.props.notes.setState({ view: 'list' })}
+            onClick={() => this.props.Notes.setState({ view: 'list' })}
             iconChildren='arrow_back'
           >Back</Button>
           <Button
