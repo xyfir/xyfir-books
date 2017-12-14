@@ -1,7 +1,5 @@
+import { Slider } from 'react-md';
 import React from 'react';
-
-// react-md
-import Slider from 'react-md/lib/Sliders';
 
 export default class HighlightText extends React.Component {
 
@@ -44,9 +42,7 @@ export default class HighlightText extends React.Component {
     });
   }
 
-  /**
-   * @returns {string[]}
-   */
+  /** @return {string[]} */
   _getHighlights() {
     if (this.state.start == this.state.end) {
       return [];
@@ -62,17 +58,14 @@ export default class HighlightText extends React.Component {
   /**
    * Returns all of the text content that is visible within the current page. 
    * Each would-be HTML element is separated by `\n\n`.
-   * @returns {string}
+   * @return {string}
    */
   _getVisibleText() {
-    // Generate CFIs for beginning and end of visible page
-    const cfiRange = epub.renderer.getVisibleRangeCfi();
-    const doc = epub.renderer.render.document;
+    const {rendition} = this.props.Reader.book;
 
-    // Create ranges for start and end of cfiRange
-    const cfi = new EPUBJS.EpubCFI();
-    const endRange = cfi.generateRangeFromCfi(cfiRange.end, doc);
-    const startRange = cfi.generateRangeFromCfi(cfiRange.start, doc);
+    // Create ranges for start and end of visible page
+    const startRange = rendition.getRange(rendition.location.start.cfi);
+    const endRange = rendition.getRange(rendition.location.end.cfi);
 
     // Create a new range to bring start and end ranges together
     const fullRange = document.createRange();
@@ -88,9 +81,9 @@ export default class HighlightText extends React.Component {
   render() {
     const visibleText = (
       this.state.visibleText.substring(0, this.state.start) +
-      `<span style='background-color: yellow;'>${
-        this.state.visibleText.substring(this.state.start, this.state.end)
-      }</span>` +
+        `<span style='background-color: yellow;'>${
+          this.state.visibleText.substring(this.state.start, this.state.end)
+        }</span>` +
       this.state.visibleText.substring(this.state.end)
     )
     .replace(/\n\n/g, '<br /><br />')

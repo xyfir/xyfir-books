@@ -1,8 +1,5 @@
+import { List, ListItem } from 'react-md';
 import React from 'react';
-
-// react-md
-import ListItem from 'react-md/lib/Lists/ListItem';
-import List from 'react-md/lib/Lists/List';
 
 export default class Bookmarks extends React.Component {
 
@@ -15,12 +12,12 @@ export default class Bookmarks extends React.Component {
    * @param {string} cfi 
    */
   onGoToBookmark(cfi) {
-    epub.gotoCfi(cfi);
-    this.props.reader.onCloseModal();
+    this.props.Reader.book.rendition.display(cfi);
+    this.props.Reader.onCloseModal();
   }
 
   render() {
-    const { bookmarks } = this.props.reader.state.book;
+    const { bookmarks } = this.props.Reader.state.book;
 
     return (
       <List className='bookmarks'>{

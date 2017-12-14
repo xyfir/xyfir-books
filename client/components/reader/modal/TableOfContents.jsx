@@ -1,8 +1,5 @@
+import { ListItem, List } from 'react-md';
 import React from 'react';
-
-// react-md
-import ListItem from 'react-md/lib/Lists/ListItem';
-import List from 'react-md/lib/Lists/List';
 
 export default class TableOfContents extends React.Component {
 
@@ -12,21 +9,21 @@ export default class TableOfContents extends React.Component {
   
   /**
    * Load the selected chapter.
-   * @param {string} cfi
+   * @param {string} href
    */
-  onGoToChapter(cfi) {
-    window.epub.gotoCfi(cfi);
-    this.props.reader.onCloseModal();
+  onGoToChapter(href) {
+    this.props.Reader.book.rendition.display(href);
+    this.props.Reader.onCloseModal();
   }
 
   render() {
     return (
       <List className='table-of-contents'>{
-        window.epub.toc.map(chapter =>
+        this.props.Reader.book.navigation.toc.map(chapter =>
           <ListItem
-            key={chapter.cfi}
+            key={chapter.id}
+            onClick={() => this.onGoToChapter(chapter.href)}
             primaryText={chapter.label.trim()}
-            onClick={() => this.onGoToChapter(chapter.cfi)}
           />
         )
       }</List>
