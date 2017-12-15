@@ -1,3 +1,6 @@
+import {
+  Paper, Button, Checkbox, SelectField
+} from 'react-md';
 import React from 'react';
 
 // Action creators
@@ -8,94 +11,111 @@ export default class BookListSettings extends React.Component {
 
   constructor(props) {
     super(props);
-    
-    this.onSaveTable = this.onSaveTable.bind(this);
+
+    this.columns = [
+      'Title', 'Authors', 'Series', 'Added', 'Published', 'Publisher', 'Rating'
+    ];
   }
   
   onSaveTable() {
-    let columns = [];
+    const columns = [];
     
     // Populate columns[] with columns to display
-    Object.keys(this.refs).forEach(k => {
-      k = k.split('-');
-      
-      if (k[0] == 'show' && this.refs[`show-${k[1]}`].checked) {
-        columns.push(k[1].toLowerCase());
-      }
+    this.columns.forEach(col => {
+      if (window[`checkbox--${col}`].checked)
+        columns.push(col.toLowerCase());
     });
-    
-    let defaultSort = {
-      column: this.refs['sort-col'].value,
-      asc: !!(+this.refs['sort-direction'].value)
+
+    const defaultSort = {
+      column: this._defaultSortColumn.value,
+      asc: !!this._defaultSortDirection.value
     };
-    
+
     // Update config object
-    let config = Object.assign({}, this.props.data.config);
+    const config = Object.assign({}, this.props.data.config);
     config.bookList.table = { columns, defaultSort };
-    
+
     // Update state
     this.props.dispatch(setBookList(config.bookList));
-    
     this.props.dispatch(save('config'));
   }
 
   render() {
-    const columns = [
-      'Title', 'Authors', 'Series', 'Added', 'Published', 'Publisher', 'Rating'
-    ], conf = this.props.data.config.bookList;
-    
+    const config = this.props.data.config.bookList;
+
     return (
-      <div className='settings-book-list old'>
-        <section className='table'>
+      <div className='book-list-settings'>
+        <Paper
+          zDepth={1}
+          component='section'
+          className='table section'
+        >
           <h2>Table</h2>
-          
-          <h3>Columns</h3>
-          <table className='columns'>
-            <thead>
-              <tr>
-                <th>Show</th>
-                <th>Column</th>
-              </tr>
-            </thead>
-            
-            <tbody>{
-              columns.map(col => {
-                return (
-                  <tr>
-                    <td><input type='checkbox' defaultChecked={
-                      conf.table.columns.indexOf(col.toLowerCase()) > -1
-                    } ref={`show-${col}`} /></td>
-                    <td>{col}</td>
-                  </tr>
-                );
-              })
-            }</tbody>
-          </table>
-          
-          <h3>Default Sort</h3>
-          <div>
-            <label>Column</label>
-            <select
-              ref='sort-col'
-              defaultValue={conf.table.defaultSort.column}
-            >{
-              columns.map(col => <option value={col.toLowerCase()}>{col}</option>)
-            }</select>
-            
-            <label>Direction</label>
-            <select
-              ref='sort-direction'
-              defaultValue={+conf.table.defaultSort.asc}
-            >
-              <option value='1'>Ascending (A to Z)</option>
-              <option value='0'>Descending (Z to A)</option>
-            </select>
-          </div>
-          
-          <button className='btn-primary' onClick={this.onSaveTable}>
-            Save Table Settings
-          </button>
-        </section>
+          <p>Settings for the 'Table' view of your books list.</p>
+
+          <Paper
+            zDepth={2}
+            component='section'
+            className='columns section flex'
+          >
+            <h3>Columns</h3>
+            <p>Choose which columns will be shown in the table.</p>
+
+            <ul className='columns'>{
+              this.columns.map(col =>
+                <li key={col}>
+                  <Checkbox
+                    id={`checkbox--${col}`}
+                    label={col}
+                    defaultChecked={
+                      config.table.columns.indexOf(col.toLowerCase()) > -1
+                    }
+                  />
+                </li>
+              )
+            }</ul>
+          </Paper>
+
+          <Paper
+            zDepth={2}
+            component='section'
+            className='default-sort section flex'
+          >
+            <h3>Default Sort</h3>
+            <p>Set how the books will initially be sorted in the table.</p>
+
+            <SelectField
+              id='select--column'
+              ref={i => this._defaultSortColumn = i}
+              label='Column'
+              menuItems={
+                this.columns.map(col =>
+                  Object({ label: col, value: col.toLocaleUpperCase() })
+                )
+              }
+              className='md-cell'
+              defaultValue={config.table.defaultSort.column}
+            />
+
+            <SelectField
+              id='select--direction'
+              ref={i => this._defaultSortDirection = i}
+              label='Direction'
+              menuItems={[
+                { label: 'Ascending (A to Z)', value: 1 },
+                { label: 'Descending (Z to A)', value: 0 }
+              ]}
+              className='md-cell'
+              defaultValue={+config.table.defaultSort.asc}
+            />
+          </Paper>
+
+          <Button
+            primary raised
+            iconChildren='save'
+            onClick={() => this.onSaveTable()}
+          >Save</Button>
+        </Paper>
       </div>
     );
   }
