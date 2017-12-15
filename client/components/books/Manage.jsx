@@ -1,3 +1,6 @@
+import {
+  DatePicker, TextField, Button, DialogContainer, Paper
+} from 'react-md';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
 import moment from 'moment';
@@ -14,13 +17,6 @@ import { LIBRARY } from 'constants/config';
 
 // Action creators
 import { deleteFormat, incrementVersion } from 'actions/creators/books';
-
-// react-md
-import DatePicker from 'react-md/lib/Pickers/DatePickerContainer';
-import TextField from 'react-md/lib/TextFields';
-import Button from 'react-md/lib/Buttons/Button';
-import Dialog from 'react-md/lib/Dialogs';
-import Paper from 'react-md/lib/Papers';
 
 export default class ManageBook extends React.Component {
 
@@ -45,25 +41,26 @@ export default class ManageBook extends React.Component {
       swal('Error', 'This action requires internet connectivity', 'error');
       return;
     }
-    
+
     this.setState({ downloadingMetadata: true });
-    
-    let search;
-    
+
+    let query = {};
+
     // Get metadata using ISBN
-    this.refs.identifiers.value
+    this._identifiers.value
       .split(', ')
       .forEach(id => {
         const t = id.split(':');
-        
-        if (t[0] == 'isbn') search = 'isbn=' + t[1];
+
+        if (t[0] == 'isbn') query = { isbn: t[1] };
       });
-    
+
     // Get metadata using author/title
-    if (!search) {
-      search =
-        'author=' + encodeURIComponent(this.refs.authors.value) +
-        '&title=' + encodeURIComponent(this.refs.title.value);
+    if (!query.isbn) {
+      query = {
+        author: this._authors.value,
+        title: this._title.value
+      };
     }
 
     request
@@ -71,44 +68,45 @@ export default class ManageBook extends React.Component {
         `${LIBRARY}libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/metadata`
       )
-      .query(search)
+      .query(query)
       .end((err, res) => {
-        if (res.text == '1') {
+        if (err || res.body.error) {
           this.setState({ downloadingMetadata: false });
           return swal('Error', 'Could not find metadata', 'error');
         }
-        
-        res.text = res.text.split('\n');
-        
-        res.text.forEach((kv, i) => {
-          kv = kv.split('   : ');
-          kv[1] = kv[1].trim();
-            
-          switch (kv[0].trim()) {
-            case 'Title':
-              return this.refs.title.value = kv[1];
-            case 'Author(s)':
-              return this.refs.authors.value = kv[1];
-            case 'Publisher':
-              return this.refs.publisher.value = kv[1];
-            case 'Tags':
-              return this.refs.tags.value = kv[1];
-            case 'Published':
-              return this.refs.pubdate._setCalendarTempDate(new Date(kv[1]));
-            case 'Identifiers':
-              return this.refs.identifiers.value = kv[1];
-            case 'Comments':
-              // Comments can have newlines and comments is always last field
-              const comments = [kv[1]]
-                .concat(res.text.splice(i + 1))
-                .join(' ');
-              if (this.state.editComments)
-                this.refs.comments.value = comments;
-              else
-                this.refs.comments.innerHTML = comments;
-          }
-        });
-        
+
+        res.body.metadata
+          .split('\n')
+          .forEach((kv, i) => {
+            let [key, value] = kv.split('   : ');
+            key = key.trim(),
+            value = (value || '').trim();
+
+            switch (key) {
+              case 'Title':
+                return this._title.getField().value = value;
+              case 'Author(s)':
+                return this._authors.getField().value = value;
+              case 'Publisher':
+                return this._publisher.getField().value = value;
+              case 'Tags':
+                return this._tags.getField().value = value;
+              case 'Published':
+                return this._pubdate._setCalendarTempDate(new Date(value));
+              case 'Identifiers':
+                return this._identifiers.getField().value = value;
+              case 'Comments':
+                // Comments can have newlines and comments is always last field
+                const comments = [value]
+                  .concat(res.body.metadata.split('\n').splice(i + 1))
+                  .join(' ');
+                if (this.state.editComments)
+                  this._comments.getField().value = comments;
+                else
+                  this._comments.innerHTML = comments;
+            }
+          });
+
         this.setState({ downloadingMetadata: false });
       });
   }
@@ -171,33 +169,31 @@ export default class ManageBook extends React.Component {
     }
     
     this.setState({ saving: true });
-
-    const { refs } = this;
     
     const data = {
-      identifiers: refs.identifiers.value,
-      author_sort: refs.author_sort.value,
-      publisher: refs.publisher.value,
-      timestamp: moment(refs.timestamp.state.calendarTempDate).toISOString(),
-      authors: refs.authors.value,
-      pubdate: moment(refs.pubdate.state.calendarTempDate).toISOString(),
-      rating: refs.rating.value,
-      title: refs.title.value,
-      tags: refs.tags.value
+      identifiers: this._identifiers.value,
+      author_sort: this._authorSort.value,
+      publisher: this._publisher.value,
+      timestamp: moment(this._timestamp.state.calendarTempDate).toISOString(),
+      authors: this._authors.value,
+      pubdate: moment(this._pubdate.state.calendarTempDate).toISOString(),
+      rating: this._rating.value,
+      title: this._title.value,
+      tags: this._tags.value
     };
     
     // Calibre doubles rating for some reason...
     data.rating = data.rating > 0 ? data.rating / 2 : data.rating;
     
-    if (refs.series.value != '') {
-      data.series = refs.series.value;
-      data.series_index = refs.series_index.value;
+    if (this._series.value != '') {
+      data.series = this._series.value;
+      data.series_index = this._seriesIndex.value;
     }
 
-    if (refs.comments.getField)
-      data.comments = refs.comments.value;
+    if (this._comments.getField)
+      data.comments = this._comments.value;
     else
-      data.comments = refs.comments.innerHTML;
+      data.comments = this._comments.innerHTML;
 
     // Send to xyLibrary
     request
@@ -210,7 +206,7 @@ export default class ManageBook extends React.Component {
       })
       .end((err, res) => {
         this.setState({ saving: false });
-      
+
         if (err || res.body.error)
           return swal('Error', 'An unknown error occured', 'error');
 
@@ -234,7 +230,7 @@ export default class ManageBook extends React.Component {
         >
           <TextField
             id='text--title'
-            ref='title'
+            ref={i => this._title = i}
             type='text'
             label='Title'
             className='md-cell'
@@ -243,7 +239,7 @@ export default class ManageBook extends React.Component {
 
           <TextField
             id='text--authors'
-            ref='authors'
+            ref={i => this._authors = i}
             type='text'
             label='Author(s)'
             className='md-cell'
@@ -252,7 +248,7 @@ export default class ManageBook extends React.Component {
 
           <TextField
             id='text--author-sort'
-            ref='author_sort'
+            ref={i => this._authorSort = i}
             type='text'
             label='Author Sort'
             className='md-cell'
@@ -261,7 +257,7 @@ export default class ManageBook extends React.Component {
 
           <TextField
             id='text--series'
-            ref='series'
+            ref={i => this._series = i}
             type='text'
             label='Series'
             className='md-cell'
@@ -270,7 +266,7 @@ export default class ManageBook extends React.Component {
                     
           <TextField
             id='number--series-index'
-            ref='series_index'
+            ref={i => this._seriesIndex = i}
             type='number'
             label='Series Index'
             className='md-cell'
@@ -284,7 +280,7 @@ export default class ManageBook extends React.Component {
           className='cover section flex'
         >
           <Dropzone
-            ref='dz'
+            ref={i => this._dz = i}
             onDrop={f => this.onUploadCover(f)}
             className='dropzone'
           >
@@ -294,7 +290,7 @@ export default class ManageBook extends React.Component {
           <div className='buttons'>
             <Button
               flat primary
-              onClick={() => this.refs.dz.open()}
+              onClick={() => this._dz.open()}
               iconChildren='cloud_upload'
             >Upload Cover</Button>
 
@@ -305,11 +301,12 @@ export default class ManageBook extends React.Component {
             >Find Cover</Button>
           </div>
 
-          <Dialog
+          <DialogContainer
             fullPage
             id='dialog--find-cover'
             onHide={() => this.setState({ findCover: false })}
             visible={this.state.findCover}
+            aria-label='find-book-cover'
           >
             <Button
               floating fixed primary
@@ -327,7 +324,7 @@ export default class ManageBook extends React.Component {
                 encodeURIComponent(book.authors + ' ' + book.title)
               ) : ''}
             />
-          </Dialog>
+          </DialogContainer>
         </Paper>
         
         <Paper
@@ -339,7 +336,7 @@ export default class ManageBook extends React.Component {
             floating
             id='number--rating'
             max={5}
-            ref='rating'
+            ref={i => this._rating = i}
             type='number'
             label='Rating'
             className='md-cell'
@@ -348,7 +345,7 @@ export default class ManageBook extends React.Component {
           
           <TextField
             id='textarea--tags'
-            ref='tags'
+            ref={i => this._tags = i}
             rows={2}
             type='text'
             label='Tags'
@@ -359,31 +356,36 @@ export default class ManageBook extends React.Component {
           
           <TextField
             id='text--ids'
-            ref='identifiers'
+            ref={i => this._identifiers = i}
             type='text'
             label='Identifiers'
             helpText='ISBN, Amazon, etc. Format: identifier_name:id,..'
             className='md-cell'
-            defaultValue={book.identifiers}
+            defaultValue={
+              Object
+                .entries(book.identifiers)
+                .map(id => `${id[0]}:${id[1]}`)
+                .join(', ')
+            }
           />
           
           <DatePicker
             id='date--added'
-            ref='timestamp'
+            ref={i => this._timestamp = i}
             label='Date Added'
             defaultValue={new Date(book.timestamp)}
           />
 
           <DatePicker
             id='date--published'
-            ref='pubdate'
+            ref={i => this._pubdate = i}
             label='Published'
             defaultValue={book.pubdate ? new Date(book.pubdate) : ''}
           />
           
           <TextField
             id='text--publisher'
-            ref='publisher'
+            ref={i => this._publisher = i}
             type='text'
             label='Publisher'
             className='md-cell'
@@ -417,7 +419,7 @@ export default class ManageBook extends React.Component {
         >{this.state.editComments ? (
           <TextField
             id='textarea--comments'
-            ref='comments'
+            ref={i => this._comments = i}
             rows={2}
             type='text'
             label='Comments'
@@ -432,7 +434,7 @@ export default class ManageBook extends React.Component {
         ) : (
           <div>
             <div
-              ref='comments'
+              ref={i => this._comments = i}
               className='comments'
               dangerouslySetInnerHTML={{ __html:
                 book.comments || 'This book has no comments'
@@ -481,9 +483,7 @@ export default class ManageBook extends React.Component {
           onClick={() => this.onSaveChanges()}
           disabled={this.state.saving}
           iconChildren='save'
-        >{
-          this.state.saving ? 'Saving...' : 'Save'
-        }</Button>
+        >{this.state.saving ? 'Saving...' : 'Save'}</Button>
       </div>
     );
   }
