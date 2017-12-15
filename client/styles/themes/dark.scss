@@ -1,19 +1,6 @@
 body.theme-dark {
   color: #CCC;
 
-  .old {
-    background-color: #1E1E1E;
-
-    section {
-      background-color: #373737;
-    }
-
-    input, select, textarea {
-      background-color: #3C3C3C;
-      color: #CCC;
-    }
-  }
-
   ul > li.book:hover {
     background-color: #3F3F46;
   }
