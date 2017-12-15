@@ -76,11 +76,11 @@ export default class TableList extends React.Component {
         + '/' + toUrl(selectedBook.title);
       
       if (selectedBook.identifiers === undefined)
-        selectedBook.identifiers = '';
+        selectedBook.identifiers = {};
     }
     
     return (
-      <div className='list-table old'>
+      <div className='list-table'>
         <div className='table-container'>
         <table className='books'>
           <thead>
@@ -271,53 +271,55 @@ export default class TableList extends React.Component {
                 
                 <dt>Links</dt>
                 <dd className='links'>{
-                  selectedBook.identifiers.split(',').map(id => {
-                    id = id.split(':');
-                    
-                    switch (id[0]) {
-                      case 'isbn': return (
-                        <a
-                          target='_blank'
-                          href={
-                            `http://www.abebooks.com/book-search/isbn/${id[1]}`
-                          }
-                        >ISBN ({id[1]})</a>
-                      );
+                  Object
+                    .keys(selectedBook.identifiers)
+                    .map(type => {
+                      const id = [type, selectedBook.identifiers[type]];
                       
-                      case 'goodreads': return (
-                        <a
-                          target='_blank'
-                          href={`http://www.goodreads.com/book/show/${id[1]}`}
-                        >GoodReads</a>
-                      );
-                      
-                      case 'mobi-asin':
-                      case 'amazon': return (
-                        <a
-                          target='_blank'
-                          href={`http://www.amazon.com/dp/${id[1]}`}
-                        >Amazon</a>
-                      );
-                      
-                      case 'google': return (
-                        <a
-                          target='_blank'
-                          href={
-                            `https://books.google.com/books/about/?id=${id[1]}`
-                          }
-                        >Google Books</a>
-                      );
-                      
-                      case 'barnesnoble': return (
-                        <a
-                          target='_blank'
-                          href={`http://www.barnesandnoble.com/${id[1]}`
-                        }>Barnes & Noble</a>
-                      );
-                      
-                      default: return <span />;
-                    }
-                  })
+                      switch (id[0]) {
+                        case 'isbn': return (
+                          <a
+                            target='_blank'
+                            href={
+                              `http://www.abebooks.com/book-search/isbn/${id[1]}`
+                            }
+                          >ISBN ({id[1]})</a>
+                        );
+                        
+                        case 'goodreads': return (
+                          <a
+                            target='_blank'
+                            href={`http://www.goodreads.com/book/show/${id[1]}`}
+                          >GoodReads</a>
+                        );
+                        
+                        case 'mobi-asin':
+                        case 'amazon': return (
+                          <a
+                            target='_blank'
+                            href={`http://www.amazon.com/dp/${id[1]}`}
+                          >Amazon</a>
+                        );
+                        
+                        case 'google': return (
+                          <a
+                            target='_blank'
+                            href={
+                              `https://books.google.com/books/about/?id=${id[1]}`
+                            }
+                          >Google Books</a>
+                        );
+                        
+                        case 'barnesnoble': return (
+                          <a
+                            target='_blank'
+                            href={`http://www.barnesandnoble.com/${id[1]}`
+                          }>Barnes & Noble</a>
+                        );
+                        
+                        default: return <span />;
+                      }
+                    })
                 }</dd>
                 
                 <dt>Tags</dt>
