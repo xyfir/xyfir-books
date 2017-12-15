@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Modules
-import parseHashQuery from 'lib/url/parse-hash-query';
+import parseHashQuery from 'lib/url/parse-query-string';
 
 // Components
 import SubGroups from 'components/books/list/SubGroups';

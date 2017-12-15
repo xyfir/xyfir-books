@@ -7,7 +7,7 @@ import Table from 'components/books/list/all/Table';
 import Grid from 'components/books/list/all/Grid';
 
 // Modules
-import parseHashQuery from 'lib/url/parse-hash-query';
+import parseHashQuery from 'lib/url/parse-query-string';
 
 // react-md
 import FontIcon from 'react-md/lib/FontIcons';

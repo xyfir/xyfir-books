@@ -8,7 +8,7 @@ import Paper from 'react-md/lib/Papers';
 import { setSearch } from 'actions/creators/index';
 
 // Modules
-import parseQuery from 'lib/url/parse-hash-query';
+import parseQuery from 'lib/url/parse-query-string';
 
 export default class Search extends React.Component {
 

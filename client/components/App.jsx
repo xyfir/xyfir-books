@@ -28,7 +28,7 @@ import Books from 'components/books/Books';
 
 // Modules
 import loadBooksFromApi from 'lib/books/load-from-api';
-import parseQuery from 'lib/url/parse-hash-query';
+import parseQuery from 'lib/url/parse-query-string';
 import updateView from 'lib/url/update-view';
 
 // Constants

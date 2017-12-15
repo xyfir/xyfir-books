@@ -4,7 +4,7 @@ import React from 'react';
 import { setPage } from 'actions/creators/index';
 
 // Modules
-import parseQuery from 'lib/url/parse-hash-query';
+import parseQuery from 'lib/url/parse-query-string';
 
 // react-md
 import Button from 'react-md/lib/Buttons/Button';
