@@ -1,7 +1,7 @@
 const request = require('superagent');
 const crypto = require('lib/crypto');
 const moment = require('moment');
-const mysql = require('lib/mysql');
+const MySQL = require('lib/mysql');
 
 const config = require('config');
 
@@ -30,7 +30,7 @@ const config = require('config');
 */
 module.exports = async function(req, res) {
 
-  const db = new mysql, {body, query} = req;
+  const db = new MySQL, {body, query} = req;
 
   try {
     if (body.swiftId) {
@@ -38,7 +38,7 @@ module.exports = async function(req, res) {
         .post(config.addresses.swiftDemand + 'api/v0/payments')
         .send({
           product_id: config.ids.swiftDemandProduct,
-          redirect_url: config.addresses.xyBooks.root + 'app/#account',
+          redirect_url: config.addresses.xyBooks.root + 'app/#/account',
           callback_url:
             config.addresses.xyBooks.callback +
             'api/account/purchase/swiftdemand?data=' + 
@@ -55,8 +55,7 @@ module.exports = async function(req, res) {
       if (body.status != 'paid') throw 'Invalid status';
 
       const referral = JSON.stringify({
-        referral: 'SWIFTDEMAND',
-        hasMadePurchase: false
+        type: 'source', source: 'swiftdemand', data: {}, hasMadePurchase: true
       }),
       info = JSON.parse(
         crypto.decrypt(query.data, config.keys.swiftDemand)
@@ -66,10 +65,10 @@ module.exports = async function(req, res) {
       await db.query(`
         UPDATE users
         SET subscription = ?, referral = ?
-        WHERE user_id = ? AND referral = ?
+        WHERE user_id = ?
       `, [
-        +moment().add(90, 'days').format('x'), '{}',
-        info.user_id, referral
+        +moment().add(90, 'days').format('x'), referral,
+        info.user_id
       ]);
       db.release();
 
