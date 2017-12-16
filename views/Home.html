@@ -169,10 +169,7 @@
   </footer>
 
   <script>
-    if (location.hash.indexOf('?')) {
-      localStorage.affiliate = location.hash.split('?promo=')[1] || '',
-      localStorage.referral = location.hash.split('?r=')[1] || '';
-    }
+    if (location.href.indexOf('?') > -1) localStorage.url = location.href;
   </script>
 </body>
 </html>
