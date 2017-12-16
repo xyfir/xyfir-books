@@ -47,10 +47,10 @@ export default class Purchase extends React.Component {
   render() {
     const { referral } = this.props.data.account;
     const discount =
-      (referral.referral || referral.affiliate) &&
+      (referral.user || referral.promo) &&
       !referral.hasMadePurchase;
 
-    if (referral.referral == 'SWIFTDEMAND') return (
+    if (referral.source == 'swiftdemand' && !referral.hasMadePurchase) return (
       <Paper
         zDepth={1}
         component='section'

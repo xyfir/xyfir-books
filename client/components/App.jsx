@@ -75,11 +75,21 @@ class App extends React.Component {
     }
     // Attempt to login using XID/AUTH or skip to initialize()
     else if (q.xid && q.auth) {
-      q.affiliate = localStorage.affiliate || '';
-      q.referral = localStorage.referral || '';
-      
+      if (localStorage.url) {
+        const _q = parseQuery(localStorage.url);
+
+        const [type, value] = _q.r.split('~');
+        const referral = {
+          type, [type]: value, data: _q
+        };
+
+        delete referral.data.r, delete localStorage.url;
+
+        q.referral = referral;
+      }
+
       request
-        .post('../api/account/login')
+        .post('/api/account/login')
         .send(q)
         .end((err, res) => {
           if (err || res.body.error) {
@@ -87,7 +97,7 @@ class App extends React.Component {
           }
           else {
             localStorage.accessToken = res.body.accessToken,
-            location.hash = '';
+            location.hash = location.hash.split('?')[0];
 
             location.reload();
           }
@@ -111,7 +121,7 @@ class App extends React.Component {
    */
   onLogout() {
     delete localStorage.accessToken;
-    location.href = '../api/account/logout';
+    location.href = '/api/account/logout';
   }
 
   /**
@@ -141,7 +151,7 @@ class App extends React.Component {
         location.replace(XACC + 'login/service/14');
 
       request
-        .get('../api/account')
+        .get('/api/account')
         .query({ token })
         .end((err, res) => {
           // User not logged in

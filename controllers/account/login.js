@@ -2,7 +2,7 @@ const rstring = require('randomstring');
 const request = require('superagent');
 const moment = require('moment');
 const crypto = require('lib/crypto');
-const mysql = require('lib/mysql');
+const MySQL = require('lib/mysql');
 
 const config = require('config');
 
@@ -11,7 +11,7 @@ const config = require('config');
   REQUIRED
     xid: string, auth: string
   OPTIONAL
-    affiliate: string, referral: number
+    referral: object
   RETURN
     { error: boolean, message?: string, accessToken?: string }
   DESCRIPTION
@@ -20,7 +20,7 @@ const config = require('config');
 */
 module.exports = async function(req, res) {
 
-  const db = new mysql;
+  const db = new MySQL;
 
   try {
     const xyAccRes = await request
@@ -63,32 +63,25 @@ module.exports = async function(req, res) {
       
       if (xyLibRes.body.error) throw 'Could not create new library';
 
-      let referral = '{}', subscription = 0, xyAnnotationsKey = '';
+      let subscription = 0, xyAnnotationsKey = '';
+      const referral = req.body.referral || {};
 
       // Errors here are acceptable and can be ignored
       try {
         // Save referral data
-        if (req.body.referral) {
-          referral = JSON.stringify({
-            referral: req.body.referral,
-            hasMadePurchase: false
-          }),
+        if (referral.user) {
           subscription = +moment().add(7, 'days').format('x');
         }
         // Validate affiliate promo code
-        else if (req.body.affiliate) {
+        else if (referral.promo) {
           const xyAccAffRes = await request
             .post(config.address.xyAccounts + 'api/affiliate/signup')
             .send({
               service: 14, serviceKey: config.keys.xyAccounts,
-              promoCode: req.body.affiliate
+              promoCode: referral.promo
             });
           
           if (!xyAccAffRes.body.error && xyAccAffRes.body.promo == 5) {
-            referral = JSON.stringify({
-              affiliate: req.body.affiliate,
-              hasMadePurchase: false
-            }),
             subscription = +moment().add(7, 'days').format('x');
           }
         }
@@ -106,7 +99,7 @@ module.exports = async function(req, res) {
       catch (err) {
         console.warn('controllers/account/login', err);
       }
-      
+
       // Save data to user's row
       sql = `
         UPDATE users SET
@@ -114,13 +107,13 @@ module.exports = async function(req, res) {
         WHERE user_id = ?
       `,
       vars = [
-        library, referral, xyAnnotationsKey, subscription,
+        library, JSON.stringify(referral), xyAnnotationsKey, subscription,
         req.session.uid
       ],
       result = await db.query(sql, vars);
 
       db.release();
-      
+
       res.json({
         error: false, accessToken: crypto.encrypt(
           req.session.uid + '-' + xyAccRes.body.accessToken,
