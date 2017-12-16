@@ -279,14 +279,14 @@ class App extends React.Component {
             <Button
               icon
               key='search'
-              onClick={() => location.hash = '#books/list/all'}
+              onClick={() => location.hash = '#/books/list/all'}
               iconChildren='search'
             />,
 
             <Button
               icon
               key='home'
-              onClick={() => location.hash = '#books/recently-opened'}
+              onClick={() => location.hash = '#/books/recently-opened'}
               iconChildren='home'
             />
           ]}

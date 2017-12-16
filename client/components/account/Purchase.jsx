@@ -22,7 +22,7 @@ export default class Purchase extends React.Component {
             swal('Error', res.body.message, 'error');
           }
           else {
-            location.hash = '#account';
+            location.hash = '#/account';
             location.reload();
           }
       });

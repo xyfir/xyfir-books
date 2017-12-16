@@ -12,11 +12,11 @@ export default function(book, type) {
     case 'read':
     case 'manage':
     case 'add-format':
-      return `#books/${type}/` +
+      return `#/books/${type}/` +
         `${book.id}/${clean(book.authors)}/${clean(book.title)}`;
 
     case 'authors':
-      return '#books/list/all?search=1&authors=' +
+      return '#/books/list/all?search=1&authors=' +
         encodeURIComponent(book.authors);
   }
 

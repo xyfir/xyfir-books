@@ -72,7 +72,7 @@ export default class LibraryInfo extends React.Component {
           tooltipLabel='Upload new library'
           fixedPosition='bl'
           iconChildren='cloud_upload'
-          onClick={() => location.hash = '#library/upload'}
+          onClick={() => location.hash = '#/library/upload'}
         />
 
         <Button

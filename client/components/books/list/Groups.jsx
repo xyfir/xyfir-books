@@ -70,7 +70,7 @@ export default class ListGroups extends React.Component {
         groups.map(group =>
           <ListItem
             key={group.name}
-            onClick={() => location.hash = '#books/list/' + group.property}
+            onClick={() => location.hash = '#/books/list/' + group.property}
             primaryText={`${group.name} (${group.arr.length})`}
           />
         )

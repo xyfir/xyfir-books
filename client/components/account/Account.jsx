@@ -67,7 +67,7 @@ export default class Account extends React.Component {
                 <Button
                   raised primary
                   onClick={() =>
-                    location.hash = '#account/purchase/subscription'
+                    location.hash = '#/account/purchase/subscription'
                   }
                 >Purchase</Button>
               ) : (
@@ -100,7 +100,7 @@ export default class Account extends React.Component {
                 <Button
                   raised primary
                   onClick={() =>
-                    location.hash = '#account/purchase/subscription'
+                    location.hash = '#/account/purchase/subscription'
                   }
                 >Purchase</Button>
               ) : (

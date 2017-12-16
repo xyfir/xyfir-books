@@ -111,7 +111,7 @@ export default class ReaderNavbar extends React.Component {
             <Button
               icon
               key='home'
-              onClick={() => location.hash = '#books/recently-opened'}
+              onClick={() => location.hash = '#/books/recently-opened'}
               iconChildren='home'
             />
           ]}
@@ -131,7 +131,7 @@ export default class ReaderNavbar extends React.Component {
           navItems={[
             <ListItem
               primaryText='Settings'
-              onClick={() => location.hash = '#settings/reader'}
+              onClick={() => location.hash = '#/settings/reader'}
             />,
             <ListItem
               primaryText='Table of Contents'

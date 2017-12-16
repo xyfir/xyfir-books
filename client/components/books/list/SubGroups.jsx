@@ -59,7 +59,7 @@ export default class BookListSubGroups extends React.Component {
             <ListItem
               key={subgroup}
               onClick={() => location.hash =
-                '#books/list/all?search=1&' +
+                '#/books/list/all?search=1&' +
                 (this.props.queryKey || this.props.group) +
                 '=' + encodeURIComponent(subgroup)
               }
