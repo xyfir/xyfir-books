@@ -7,9 +7,8 @@ import * as VIEWS from 'constants/views';
 export default function(store) {
 
   // Hash is empty or not set    
-  if (location.hash.length < 2) {
-    VIEWS.RECENTLY_OPENED;
-    return;
+  if (location.hash.length < 3) {
+    return store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
   }
 
   const state = store.getState();
@@ -93,5 +92,5 @@ export default function(store) {
   })();
 
   store.dispatch(changeView(view));
-  
+
 }
