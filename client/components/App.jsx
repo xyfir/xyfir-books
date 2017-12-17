@@ -1,5 +1,8 @@
 import 'babel-polyfill';
 
+import {
+  ListItem, Snackbar, Toolbar, Divider, Drawer, Button, List, FontIcon
+} from 'react-md';
 import localForage from 'localforage';
 import { render } from 'react-dom';
 import request from 'superagent';
@@ -8,16 +11,6 @@ import React from 'react';
 // Redux store / reducers
 import { createStore } from 'redux';
 import reducers from 'reducers/index';
-
-// react-md
-import Subheader from 'react-md/lib/Subheaders';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import Snackbar from 'react-md/lib/Snackbars';
-import Toolbar from 'react-md/lib/Toolbars';
-import Divider from 'react-md/lib/Dividers';
-import Drawer from 'react-md/lib/Drawers';
-import Button from 'react-md/lib/Buttons/Button';
-import List from 'react-md/lib/Lists/List';
 
 // Components
 import Advertisement from 'components/misc/Advertisement';
@@ -54,12 +47,12 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this._addListeners = this._addListeners.bind(this);
     this._initialize2 = this._initialize2.bind(this);
     this._initialize = this._initialize.bind(this);
     this._alert = this._alert.bind(this);
-    
+
     this._addListeners();
   }
 
@@ -70,7 +63,7 @@ class App extends React.Component {
     if (q.phonegap && !localStorage.isPhoneGap) {
       localStorage.isPhoneGap = 'true',
       location.hash = '';
-      
+
       location.reload();
     }
     // Attempt to login using XID/AUTH or skip to initialize()
@@ -265,6 +258,7 @@ class App extends React.Component {
     
     const view = (() => {
       const props = {
+        App: this, // eventually replace other props with this
         data: this.state, dispatch: store.dispatch, alert: this._alert
       };
 
@@ -292,7 +286,6 @@ class App extends React.Component {
               onClick={() => location.hash = '#/books/list/all'}
               iconChildren='search'
             />,
-
             <Button
               icon
               key='home'
@@ -316,39 +309,82 @@ class App extends React.Component {
           onVisibilityChange={v => this.setState({ drawer: v })}
           autoclose={true}
           navItems={[
-            <a href='#/library/info'>
-              <ListItem primaryText='Manage Library' />
-            </a>,
-            <a href='#/account'>
-              <ListItem primaryText='Account' />
-            </a>,
-            <a onClick={() => this.onLogout()}>
-              <ListItem primaryText='Logout' />
-            </a>,
-
-            <Divider />,
-
-            <Subheader primary primaryText='Books' />,
             <a href='#/books/list'>
-              <ListItem primaryText='List' />
+              <ListItem
+                leftIcon={<FontIcon>book</FontIcon>}
+                primaryText='Book List'
+              />
             </a>,
             <a href='#/books/upload'>
-              <ListItem primaryText='Upload' />
+              <ListItem
+                leftIcon={<FontIcon>file_upload</FontIcon>}
+                primaryText='Upload Books'
+              />
+            </a>,
+            <a href='#/books/recently-opened'>
+              <ListItem
+                leftIcon={<FontIcon>access_time</FontIcon>}
+                primaryText='Recently Opened'
+              />
             </a>,
 
             <Divider />,
 
-            <Subheader primary primaryText='Settings' />,
+            <ListItem
+              leftIcon={<FontIcon>settings</FontIcon>}
+              primaryText='Settings'
+              nestedItems={[
+                <a href='#/settings/general'>
+                  <ListItem
+                    leftIcon={<FontIcon>settings_applications</FontIcon>}
+                    primaryText='General'
+                  />
+                </a>,
+                <a href='#/settings/reader'>
+                  <ListItem
+                    leftIcon={<FontIcon>book</FontIcon>}
+                    primaryText='Reader'
+                  />
+                </a>,
+                <a href='#/settings/book-list'>
+                  <ListItem
+                    leftIcon={<FontIcon>list</FontIcon>}
+                    primaryText='Book List'
+                  />
+                </a>
+              ]}
+            />,
 
-            <a href='#/settings/general'>
-              <ListItem primaryText='General' />
-            </a>,
-            <a href='#/settings/reader'>
-              <ListItem primaryText='Reader' />
-            </a>,
-            <a href='#/settings/book-list'>
-              <ListItem primaryText='Book List' />
-            </a>
+            <ListItem
+              leftIcon={<FontIcon>account_circle</FontIcon>}
+              primaryText='Account'
+              nestedItems={[
+                <a href='#/library/info'>
+                  <ListItem
+                    leftIcon={<FontIcon>library_books</FontIcon>}
+                    primaryText='Manage Library'
+                  />
+                </a>,
+                <a href='#/account/purchase/subscription'>
+                  <ListItem
+                    leftIcon={<FontIcon>access_time</FontIcon>}
+                    primaryText='Subscription'
+                  />
+                </a>,
+                <a href='#/account'>
+                  <ListItem
+                    leftIcon={<FontIcon>account_box</FontIcon>}
+                    primaryText='My Account'
+                  />
+                </a>,
+                <a onClick={() => this.onLogout()}>
+                  <ListItem
+                    leftIcon={<FontIcon>close</FontIcon>}
+                    primaryText='Logout'
+                  />
+                </a>
+              ]}
+            />
           ]}
           visible={this.state.drawer}
           header={
