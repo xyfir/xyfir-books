@@ -6,7 +6,7 @@ import * as VIEWS from 'constants/views';
 
 export default function(store) {
 
-  // Hash is empty or not set    
+  // Hash is empty or not set
   if (location.hash.length < 3) {
     return store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
   }
@@ -46,8 +46,6 @@ export default function(store) {
     else if (hash[0] == 'books') {
       if (hash[1] == 'list') {
         switch (hash[2]) {
-          case 'all':
-            return VIEWS.LIST_BOOKS;
           case 'tags':
             return VIEWS.LIST_TAGS;
           case 'authors':
@@ -59,7 +57,7 @@ export default function(store) {
           case 'ratings':
             return VIEWS.LIST_RATINGS;
           default:
-            return VIEWS.LIST;
+            return VIEWS.LIST_BOOKS;
         }
       }
       else {

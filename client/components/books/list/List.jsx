@@ -5,7 +5,6 @@ import parseHashQuery from 'lib/url/parse-query-string';
 
 // Components
 import SubGroups from 'components/books/list/SubGroups';
-import Groups from 'components/books/list/Groups';
 import All from 'components/books/list/all/All';
 
 export default class BookList extends React.Component {
@@ -15,10 +14,9 @@ export default class BookList extends React.Component {
   }
 
   render() {
+    const _view = this.props.data.view.split('/')[2];
     const view = (() => {
-      switch (this.props.data.view.split('/')[2]) {
-        case 'ALL':
-          return <All {...this.props} />;
+      switch (_view) {
         case 'TAGS':
           return (
             <SubGroups
@@ -36,16 +34,14 @@ export default class BookList extends React.Component {
             />
           );
         case 'SERIES':
-          return <SubGroups {...this.props} group='series' />;
         case 'AUTHORS':
-          return <SubGroups {...this.props} group='authors' />;
         case 'AUTHOR_SORT':
-          return <SubGroups {...this.props} group='author_sort' />;
+          return <SubGroups {...this.props} group={_view.toLowerCase()} />;
         default:
-          return <Groups {...this.props} />;
+          return <All {...this.props} />;
       }
     })();
-    
+
     return <div className='book-list'>{view}</div>;
   }
 
