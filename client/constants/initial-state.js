@@ -1,9 +1,9 @@
 // Constants
 import * as readerThemes from 'constants/reader-themes';
-import { RECENTLY_OPENED } from './views';
+import { RECENTLY_OPENED } from 'constants/views';
 
 export default {
-  drawer: false, toasts: [], view: RECENTLY_OPENED, save: '',
+  toasts: [], view: RECENTLY_OPENED, save: '',
   books: [],
   account: {
     uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 15,
