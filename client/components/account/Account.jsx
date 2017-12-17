@@ -62,7 +62,7 @@ export default class Account extends React.Component {
 
                 <br />
 
-                Your library size limit is {account.librarySizeLimit}GB
+                Your library size limit is {account.librarySizeLimit}GB.
               </p>
 
               {this.canPurchase ? (
@@ -80,10 +80,10 @@ export default class Account extends React.Component {
             <div>
               <p>
                 You do not have a Xyfir Books subscription.
-                
+
                 <br />
 
-                {account.library != '' ? (
+                {account.subscription ? (
                   <span>
                     Your library will be deleted after {
                       moment(account.subscription)
