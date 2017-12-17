@@ -6,8 +6,8 @@ $md-secondary-color: $md-blue-grey-500;
 @include react-md-everything;
 
 @include react-md-theme-everything(
-  $md-primary-color,
-  $md-secondary-color,
+  $md-light-blue-800,
+  $md-blue-grey-800,
   false, // Dark theme
   'theme-dark'
 );
@@ -37,7 +37,16 @@ div.main.md-toolbar-relative {
 }
 
 .md-paper.section {
+  background-color: #fff;
   padding: 0.4em;
+
+  >*:first-child {
+    margin-top: 0;
+  }
+
+  >*:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .md-tabs-content {

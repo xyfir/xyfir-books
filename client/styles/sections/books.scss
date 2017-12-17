@@ -15,26 +15,31 @@ ul.recently-opened.books {
     margin: auto;
     width: 12.5em;
     
-    img.cover {
+    >a > img.cover {
+      box-shadow: $md-grey-800 0.1em 0.1em 0.3em;
       height: 20em;
       width: 12.5em;
     }
     
-    .info {
+    >div.info {
       text-align: left;
-      
-      .title, .authors {
+
+      >a.title, >a.authors {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
         display: block;
       }
-      
-      .percent-complete, .word-count, .rating {
+
+      >a.title {
+        font-weight: bold;
+      }
+
+      >span.chip {
         margin: 0em 0.25em 0em 0em;
       }
-      
-      .last-read {
+
+      >span.last-read {
         display: block;
         font-size: 80%;
       } 

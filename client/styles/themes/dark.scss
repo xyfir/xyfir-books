@@ -1,6 +1,10 @@
 body.theme-dark {
   color: #CCC;
 
+  .md-paper.section {
+    background-color: $md-grey-800;
+  }
+
   ul > li.book:hover {
     background-color: #3F3F46;
   }
