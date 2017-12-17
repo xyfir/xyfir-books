@@ -50,9 +50,9 @@ a {
   background-color: $llgray;
 }
 
-.loading {
+div.loading {
+  justify-content: center;
   align-items: center;
-  text-align: center;
   font-size: 2em;
   position: fixed;
   display: flex;
@@ -61,9 +61,20 @@ a {
   left: 0%;
   top: 0%;
 
-  >span {
-    flex: 1;
-  } 
+  >div.spinner {
+    border: 0.3em solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 0.3em solid $md-primary-color;
+    width: 2em;
+    height: 2em;
+    animation: spin 1.25s linear infinite;
+    margin-left: 0.5em;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 }
 
 .hidden {

@@ -16,6 +16,7 @@ import Navigation from 'components/app/Navigation';
 import Settings from 'components/settings/Index';
 import Account from 'components/account/Account';
 import Library from 'components/library/Index';
+import Loading from 'components/app/Loading';
 import Books from 'components/books/Books';
 
 // Modules
@@ -117,13 +118,13 @@ class App extends React.Component {
       toasts: this.state.toasts.concat([{ text: message }])
     });
   }
-  
+
   /**
    * Begin initialization. Load data from local storage and API.
    */
   _initialize() {
     const state = Object.assign({}, initialState);
-    
+
     // Load initial data from API
     if (navigator.onLine) {
       // Access token is generated upon a successful login
@@ -144,7 +145,7 @@ class App extends React.Component {
           }
           else {
             state.account = res.body;
-            
+
             loadBooksFromApi(state.account.library, null, books => {
               state.books = books;
               this._initialize2(state);
@@ -177,14 +178,14 @@ class App extends React.Component {
 
   /**
    * Finish initialization.
-   * @param {object} state 
+   * @param {object} state
    */
   _initialize2(state) {
     // Grab config from local storage if available
     localforage.getItem('config')
       .then(config => {
         if (config != null) state.config = config;
-          
+
         this.state = state;
 
         // Set theme
@@ -197,7 +198,7 @@ class App extends React.Component {
 
         // Set state.view based on current url hash
         updateView(store);
-        
+
         // Save state.account, state.books to local storage
         if (navigator.onLine) {
           store.dispatch(save('account'));
@@ -208,18 +209,18 @@ class App extends React.Component {
         this._alert('Could not load user settings')
       );
   }
-  
+
   /**
    * Add global event listeners.
    */
   _addListeners() {
     store.subscribe(() => {
       const state = store.getState();
-      
+
       this.setState(state);
-      
+
       if (LOG_STATE) console.log(state);
-      
+
       if (state.save) {
         localforage.setItem(state.save, state[state.save]);
         store.dispatch(save(''));
@@ -244,9 +245,8 @@ class App extends React.Component {
   }
 
   render() {
-    if (!this.state)
-      return <div className='loading'><span>Loading xyBooks</span></div>;
-    
+    if (!this.state) return <Loading />;
+
     const view = (() => {
       const props = {
         App: this, // eventually replace other props with this
@@ -264,7 +264,7 @@ class App extends React.Component {
           return <Books {...props} />;
       }
     })();
-    
+
     return (
       <div className='xyfir-books'>
         <Navigation App={this} />
