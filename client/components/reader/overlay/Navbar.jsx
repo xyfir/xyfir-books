@@ -1,5 +1,5 @@
 import {
-  Subheader, ListItem, Toolbar, Divider, Button, Drawer, List
+  Subheader, ListItem, Toolbar, Divider, Button, Drawer, List, FontIcon
 } from 'react-md';
 import request from 'superagent';
 import React from 'react';
@@ -10,7 +10,7 @@ export default class ReaderNavbar extends React.Component {
     super(props);
 
     this.state = { drawer: false };
-    
+
     this._isBookmarked = this._isBookmarked.bind(this);
   }
 
@@ -29,23 +29,23 @@ export default class ReaderNavbar extends React.Component {
         history.index--;
 
       history.ignore = true;
-      
+
       Reader.setState({ history });
 
       Reader.book.rendition.display(history.items[history.index]);
     }
   }
-  
+
   /**
    * Create or remove a bookmark.
    */
   onBookmark() {
     const {Reader} = this.props;
     const cfi = Reader.book.rendition.location.start.cfi;
-    
+
     // Update app/component state
     const update = bookmarks => Reader._updateBook({ bookmarks });
-    
+
     // Remove bookmark
     if (this._isBookmarked()) {
       request
@@ -72,7 +72,7 @@ export default class ReaderNavbar extends React.Component {
         });
     }
   }
-  
+
   /**
    * Check if the books's current CFI is bookmarked
    * @return {boolean}
@@ -131,30 +131,37 @@ export default class ReaderNavbar extends React.Component {
           navItems={[
             <ListItem
               primaryText='Settings'
+              leftIcon={<FontIcon>settings</FontIcon>}
               onClick={() => location.hash = '#/settings/reader'}
             />,
             <ListItem
               primaryText='Table of Contents'
+              leftIcon={<FontIcon>book</FontIcon>}
               onClick={() => Reader.onToggleShow('toc')}
             />,
             <ListItem
               primaryText='Notes'
+              leftIcon={<FontIcon>note</FontIcon>}
               onClick={() => Reader.onToggleShow('notes')}
             />,
             <ListItem
               primaryText='Book Styling'
+              leftIcon={<FontIcon>style</FontIcon>}
               onClick={() => Reader.onToggleShow('bookStyling')}
             />,
             <ListItem
               primaryText='Filters'
+              leftIcon={<FontIcon>filter</FontIcon>}
               onClick={() => Reader.onToggleShow('filters')}
             />,
             <ListItem
               primaryText='View Bookmarks'
+              leftIcon={<FontIcon>bookmark</FontIcon>}
               onClick={() => Reader.onToggleShow('bookmarks')}
             />,
             <ListItem
               primaryText='Manage Annotations'
+              leftIcon={<FontIcon>speaker_notes</FontIcon>}
               onClick={() => Reader.onToggleShow('manageAnnotations')}
             />
           ]}
