@@ -27,21 +27,30 @@ export default class LibraryInfo extends React.Component {
   }
 
   onDownload() {
-    request
+    swal({
+      title: 'Download Library',
+      text:
+        'An email containing a download link to your entire library will ' +
+        'be sent once its ready.',
+      icon: 'warning',
+      buttons: true
+    })
+    .then(() => request
       .post(`${LIBRARY}libraries/${this.props.data.account.library}/zip`)
       .send({
         email: this.props.data.account.email
       })
-      .end((err, res) => {
-        if (err || res.body.error)
-          return swal('Error', 'Something went wrong...', 'error');
+    )
+    .then(res => {
+      if (res.body.error)
+        return swal('Error', 'Something went wrong...', 'error');
 
-        swal(
-          'Processing...',
-          'A download link will be sent to your email once it\'s ready. \
-          The download link will be available for 24 hours after being sent.'
-        );
-      });
+      swal(
+        'Processing...',
+        'A download link will be sent to your email once it\'s ready. \
+        The download link will be available for 24 hours after being sent.'
+      );
+    });
   }
 
   render() {
