@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "4.6.0",
+  "version": "4.7.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -9,6 +9,7 @@
   "author": "Xyfir",
   "license": "ISC",
   "dependencies": {
+    "admyn": "^1.2.0",
     "app-module-path": "^2.2.0",
     "body-parser": "^1.18.2",
     "copyr": "^1.0.5",
@@ -22,7 +23,7 @@
     "localforage": "^1.5.5",
     "mailgun-js": "^0.13.1",
     "marked": "^0.3.7",
-    "moment": "^2.19.4",
+    "moment": "^2.20.0",
     "mysql": "^2.15.0",
     "prop-types": "^15.6.0",
     "randomstring": "^1.1.5",
