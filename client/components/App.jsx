@@ -33,8 +33,6 @@ import initialState from 'constants/initial-state';
 // Actions
 import { save } from 'actions/creators/index';
 
-const store = createStore(reducers);
-
 // Globals
 window.localforage = localForage;
 
@@ -48,26 +46,29 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    this.store = createStore(reducers);
+
     this._addListeners = this._addListeners.bind(this);
-    this._initialize2 = this._initialize2.bind(this);
-    this._initialize = this._initialize.bind(this);
     this._alert = this._alert.bind(this);
 
     this._addListeners();
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    const token = localStorage.accessToken || '';
     const q = parseQuery();
+
+    // Save referral
+    if (q.r) localStorage.url = location.href;
 
     // PhoneGap app opens to #?phonegap=1
     if (q.phonegap && !localStorage.isPhoneGap) {
       localStorage.isPhoneGap = 'true',
-      location.hash = '';
-
-      location.reload();
+      location.hash = '#/';
     }
+
     // Attempt to login using XID/AUTH or skip to initialize()
-    else if (q.xid && q.auth) {
+    if (q.xid && q.auth) {
       if (localStorage.url) {
         const _q = parseQuery(localStorage.url);
 
@@ -95,9 +96,49 @@ class App extends React.Component {
             location.reload();
           }
         });
+      return;
     }
-    else {
-      this._initialize();
+    // Access token is required
+    else if (navigator.onLine && !token && ENVIRONMENT != 'dev') {
+      return location.replace(XACC + 'login/service/14');
+    }
+
+    const state = Object.assign({}, initialState);
+
+    // Pull data from local storage
+    state.account = await localforage.getItem('account') || state.account,
+    state.config = await localforage.getItem('config') || state.config,
+    state.books = await localforage.getItem('books') || state.books;
+
+    // Set theme
+    document.body.className = 'theme-' + state.config.general.theme;
+
+    // Push initial state to store
+    this.store.dispatch({ type: INITIALIZE_STATE, state });
+
+    // Set state.view based on current url hash
+    updateView(this.store);
+
+    // Load new data from API
+    if (navigator.onLine) {
+      request
+        .get('/api/account')
+        .query({ token })
+        .end((err, res) => {
+          // User not logged in
+          if (err || !res.body.library)
+            return location.replace(XACC + 'login/service/14');
+
+          const account = res.body;
+
+          loadBooksFromApi(account.library, null, books => {
+            this.store.dispatch({
+              type: INITIALIZE_STATE,
+              state: Object.assign(state, { account, books })
+            });
+            this.store.dispatch(save(['account', 'books']));
+          });
+        });
     }
   }
 
@@ -120,110 +161,19 @@ class App extends React.Component {
   }
 
   /**
-   * Begin initialization. Load data from local storage and API.
-   */
-  _initialize() {
-    const state = Object.assign({}, initialState);
-
-    // Load initial data from API
-    if (navigator.onLine) {
-      // Access token is generated upon a successful login
-      // Used to create new session without forcing login each time
-      const token = localStorage.accessToken || '';
-
-      // Access token is required
-      if (!token && ENVIRONMENT != 'dev')
-        location.replace(XACC + 'login/service/14');
-
-      request
-        .get('/api/account')
-        .query({ token })
-        .end((err, res) => {
-          // User not logged in
-          if (err || !res.body.library) {
-            location.replace(XACC + 'login/service/14');
-          }
-          else {
-            state.account = res.body;
-
-            loadBooksFromApi(state.account.library, null, books => {
-              state.books = books;
-              this._initialize2(state);
-            });
-          }
-        });
-    }
-    // Attempt to pull data from local storage
-    else {
-      let account;
-
-      localforage.getItem('account')
-        .then(a => {
-          account = a;
-
-          if (account === null)
-            this._alert('Could not load data from cloud or local storage');
-          else
-            return localforage.getItem('books');
-        })
-        .then(books => {
-          state.account = account, state.books = books || [];
-          this._initialize2(state);
-        })
-        .catch(err =>
-          this._alert('Could not load data from cloud or local storage')
-        );
-    }
-  }
-
-  /**
-   * Finish initialization.
-   * @param {object} state
-   */
-  _initialize2(state) {
-    // Grab config from local storage if available
-    localforage.getItem('config')
-      .then(config => {
-        if (config != null) state.config = config;
-
-        this.state = state;
-
-        // Set theme
-        document.body.className = 'theme-' + state.config.general.theme;
-
-        // Push initial state to store
-        store.dispatch({
-          type: INITIALIZE_STATE, state
-        });
-
-        // Set state.view based on current url hash
-        updateView(store);
-
-        // Save state.account, state.books to local storage
-        if (navigator.onLine) {
-          store.dispatch(save('account'));
-          store.dispatch(save('books'));
-        }
-      })
-      .catch(err =>
-        this._alert('Could not load user settings')
-      );
-  }
-
-  /**
    * Add global event listeners.
    */
   _addListeners() {
-    store.subscribe(() => {
-      const state = store.getState();
+    this.store.subscribe(() => {
+      const state = this.store.getState();
 
       this.setState(state);
 
       if (LOG_STATE) console.log(state);
 
-      if (state.save) {
-        localforage.setItem(state.save, state[state.save]);
-        store.dispatch(save(''));
+      if (state.save.length) {
+        state.save.forEach(s => localforage.setItem(s, state[s]));
+        this.store.dispatch(save([]));
       }
     });
 
@@ -240,7 +190,7 @@ class App extends React.Component {
       // `#${route}` -> `#/${route}`
       if (location.hash.indexOf('#/') != 0)
         return location.hash = '#/' + location.hash.substr(1);
-      updateView(store);
+      updateView(this.store);
     };
   }
 
@@ -250,7 +200,7 @@ class App extends React.Component {
     const view = (() => {
       const props = {
         App: this, // eventually replace other props with this
-        data: this.state, dispatch: store.dispatch, alert: this._alert
+        data: this.state, dispatch: this.store.dispatch, alert: this._alert
       };
 
       switch (this.state.view.split('/')[0]) {
