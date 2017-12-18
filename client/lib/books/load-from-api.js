@@ -49,11 +49,14 @@ async function mergeAnnotations(books) {
 export default async function(library, dispatch) {
 
   try {
-    let res = await request.get('/api/books');
-    let books1 = res.body.books;
+    let res = await Promise.all([
+      request.get('/api/books'), // xyBooks DB
+      request.get(`${LIBRARY}libraries/${library}/books`) // xyLibrary
+    ]);
 
-    res = await request.get(`${LIBRARY}libraries/${library}/books`);
-    let books2 = res.body.books;
+    let books1 = res[0].body.books;
+    let books2 = res[1].body.books;
+    res = null;
 
     if (!books1.length) return [];
 
@@ -74,7 +77,7 @@ export default async function(library, dispatch) {
       })
       .filter(b => b.title !== undefined);
 
-    res = books1 = books2 = null;
+    books1 = books2 = null;
 
     // Merge annotations from books saved to local storage
     books = await mergeAnnotations(books);
