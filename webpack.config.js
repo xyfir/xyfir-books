@@ -24,11 +24,14 @@ if (isProd) {
 }
 
 module.exports = {
-  
-  entry: './client/components/App.jsx',
-  
+
+  entry: {
+    Admin: './client/components/Admin.jsx',
+    App: './client/components/App.jsx'
+  },
+
   output: {
-    filename: 'App.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'static/js')
   },
 
