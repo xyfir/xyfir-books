@@ -8,88 +8,88 @@ import { loadBooks } from 'actions/creators/books';
 import { save } from 'actions/creators/index';
 
 /**
- * Pull annotations from stored books and merge with books downloaded from api.
+ * Pull annotations from stored books and merge with books downloaded from API.
+ * @async
  * @param {object[]} books
- * @returns {Promise} Resolves to books array.
+ * @return {object[]}
  */
-function mergeAnnotations(books) {
-  
-  return new Promise(resolve =>
-    localforage.getItem('books')
-      .then(storedBooks => {
-        if (!storedBooks) throw '';
+async function mergeAnnotations(books) {
 
-        storedBooks.forEach(sb => {
-          if (sb.annotations && sb.annotations.length) {
-            books.forEach((book, i) => {
-              if (sb.id == book.id) {
-                books[i].annotations = sb.annotations;
-              }
-            });
+  try {
+    const storedBooks = await localforage.getItem('books');
+
+    if (!storedBooks) return books;
+
+    storedBooks.forEach(sb => {
+      if (sb.annotations && sb.annotations.length) {
+        books.forEach((book, i) => {
+          if (sb.id == book.id) {
+            books[i].annotations = sb.annotations;
           }
         });
+      }
+    });
 
-        resolve(books);
-      })
-      .catch(err => resolve(books))
-  );
+    return books;
+  }
+  catch (err) {
+    console.error('lib/books/load-from-api mergeAnnotations', err);
+    return books;
+  }
 
 }
 
 /**
  * Load an array of all books in the library.
- * @param {string} library 
- * @param {function} dispatch 
- * @param {function} [fn] 
+ * @async
+ * @param {string} library
+ * @param {function} [dispatch]
+ * @return {object[]}
  */
-export default function(library, dispatch, fn) {
-  
-  let books1;
+export default async function(library, dispatch) {
 
-  // Get from Xyfir Books DB
-  request
-    .get('../api/books')
-    .then(res => {
-      books1 = res.body.books;
-      
-      return request.get(`${LIBRARY}libraries/${library}/books`);
-    })
-    .then(res => {
-      let books2 = res.body.books;
-      
-      if (!books1.length) return [];
+  try {
+    let res = await request.get('/api/books');
+    let books1 = res.body.books;
 
-      const books = books1
-        .map(b1 => {
-          const b2 = books2.find(b2 => b1.id == b2.id) || {};
-          
-          Object.assign(b2, b1);
-          
-          b2.versions = {
-            metadata: b2.version_metadata,
-            cover: b2.version_cover
-          };
-          delete b2.version_metadata; delete b2.version_cover;
-          
-          return b2;
-        })
-        .filter(b => b.title !== undefined);
-      
-      books1 = null, books2 = null;
-      
-      // Merge annotations from books saved to local storage
-      return mergeAnnotations(books);
-    })
-    .then(books => {
-      if (fn === undefined) {
-        // Load books into state and save books[] to local storage
-        dispatch(loadBooks(books));
-        dispatch(save('books'));
-      }
-      else {
-        fn(books);
-      }
-    })
-    .catch(err => 1);
-  
+    res = await request.get(`${LIBRARY}libraries/${library}/books`);
+    let books2 = res.body.books;
+
+    if (!books1.length) return [];
+
+    // Merge books1 and books2
+    let books = books1
+      .map(b1 => {
+        const b2 = books2.find(b2 => b1.id == b2.id) || {};
+
+        Object.assign(b2, b1);
+
+        b2.versions = {
+          metadata: b2.version_metadata,
+          cover: b2.version_cover
+        };
+        delete b2.version_metadata, delete b2.version_cover;
+
+        return b2;
+      })
+      .filter(b => b.title !== undefined);
+
+    res = books1 = books2 = null;
+
+    // Merge annotations from books saved to local storage
+    books = await mergeAnnotations(books);
+
+    if (dispatch) {
+      // Load books into state and save books[] to local storage
+      dispatch(loadBooks(books));
+      dispatch(save('books'));
+    }
+
+    return books;
+  }
+  catch (err) {
+    console.error('lib/books/load-from-api', err);
+    return [];
+  }
+
 }
