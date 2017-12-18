@@ -48,10 +48,30 @@ class App extends React.Component {
 
     this.store = createStore(reducers);
 
-    this._addListeners = this._addListeners.bind(this);
     this._alert = this._alert.bind(this);
 
-    this._addListeners();
+    this.store.subscribe(() => {
+      const state = this.store.getState();
+
+      this.setState(state);
+
+      if (LOG_STATE) console.log(state);
+
+      if (state.save.length) {
+        state.save.forEach(s => localforage.setItem(s, state[s]));
+        this.store.dispatch(save([]));
+      }
+    });
+
+    // Update state.view when url hash changes
+    // Update state according to url hash
+    window.onhashchange = () => {
+      // Force old hash route format to new one
+      // `#${route}` -> `#/${route}`
+      if (location.hash.indexOf('#/') != 0)
+        return location.hash = '#/' + location.hash.substr(1);
+      updateView(this.store);
+    };
   }
 
   async componentWillMount() {
@@ -120,26 +140,31 @@ class App extends React.Component {
     updateView(this.store);
 
     // Load new data from API
-    if (navigator.onLine) {
-      request
-        .get('/api/account')
-        .query({ token })
-        .end((err, res) => {
-          // User not logged in
-          if (err || !res.body.library)
-            return location.replace(XACC + 'login/service/14');
+    if (!navigator.onLine) return;
 
-          const account = res.body;
+    let account;
 
-          loadBooksFromApi(account.library, null, books => {
-            this.store.dispatch({
-              type: INITIALIZE_STATE,
-              state: Object.assign(state, { account, books })
-            });
-            this.store.dispatch(save(['account', 'books']));
-          });
+    request
+      .get('/api/account')
+      .query({ token })
+      .then(res => {
+        // User not logged in
+        if (!res.body.library)
+          return location.replace(XACC + 'login/service/14');
+
+        account = res.body;
+
+        return loadBooksFromApi(account.library);
+      })
+      .then(books => {
+        this.store.dispatch({
+          type: INITIALIZE_STATE,
+          state: Object.assign(state, { account, books })
         });
-    }
+        this.store.dispatch(save(['account', 'books']));
+      })
+      // Only the HTTP request will throw an error
+      .catch(err => location.replace(XACC + 'login/service/14'));
   }
 
   /**
@@ -160,40 +185,6 @@ class App extends React.Component {
     });
   }
 
-  /**
-   * Add global event listeners.
-   */
-  _addListeners() {
-    this.store.subscribe(() => {
-      const state = this.store.getState();
-
-      this.setState(state);
-
-      if (LOG_STATE) console.log(state);
-
-      if (state.save.length) {
-        state.save.forEach(s => localforage.setItem(s, state[s]));
-        this.store.dispatch(save([]));
-      }
-    });
-
-    window.onresize = () => {
-      clearInterval(this.resizeTimer);
-
-      this.resizeTimer = setTimeout(() => this.forceUpdate(), 250);
-    };
-
-    // Update state.view when url hash changes
-    // Update state according to url hash
-    window.onhashchange = () => {
-      // Force old hash route format to new one
-      // `#${route}` -> `#/${route}`
-      if (location.hash.indexOf('#/') != 0)
-        return location.hash = '#/' + location.hash.substr(1);
-      updateView(this.store);
-    };
-  }
-
   render() {
     if (!this.state) return <Loading />;
 
@@ -204,14 +195,10 @@ class App extends React.Component {
       };
 
       switch (this.state.view.split('/')[0]) {
-        case 'SETTINGS':
-          return <Settings {...props} />;
-        case 'ACCOUNT':
-          return <Account {...props} />;
-        case 'LIBRARY':
-          return <Library {...props} />;
-        case 'BOOKS':
-          return <Books {...props} />;
+        case 'SETTINGS': return <Settings {...props} />
+        case 'ACCOUNT': return <Account {...props} />
+        case 'LIBRARY': return <Library {...props} />
+        case 'BOOKS': return <Books {...props} />
       }
     })();
 
