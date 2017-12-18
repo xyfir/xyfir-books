@@ -1,4 +1,4 @@
-import EPUB from 'epubjs';
+import EPUB from 'epubjs/dist/epub';
 
 // Modules
 import getMatchIndexes from 'lib/reader/matches/find-indexes';
@@ -14,7 +14,7 @@ export default function(book, notes) {
   const currentCfi = new EPUB.CFI(book.rendition.location.start.cfi);
   const [{document}] = book.rendition.getContents();
   let html = document.body.innerHTML;
-  
+
   notes
     // Remove notes not in current chapter
     .filter(note =>

@@ -1,5 +1,5 @@
 import request from 'superagent';
-import EPUB from 'epubjs';
+import EPUB from 'epubjs/dist/epub';
 import React from 'react';
 
 // !! window.ePub needed for EPUBJS to work
@@ -30,7 +30,7 @@ export default class Reader extends React.Component {
     super(props);
 
     const id = window.location.hash.split('/')[3];
-    
+
     this.state = {
       book: this.props.data.books.find(b => id == b.id),
       pagesLeft: 0, percent: 0, loading: true,
@@ -46,7 +46,7 @@ export default class Reader extends React.Component {
       }
     },
     this.timers = {};
-    
+
     this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
     this.onHighlightClicked = this.onHighlightClicked.bind(this);
     this._addEventListeners = this._addEventListeners.bind(this);
@@ -66,14 +66,14 @@ export default class Reader extends React.Component {
   }
 
   /**
-   * Download book, update annotations, create epub, and start initialization 
+   * Download book, update annotations, create epub, and start initialization
    * process.
    */
   componentWillMount() {
     // Build url to .epub file to read
     let url = `${LIBRARY}files/${this.props.data.account.library}/`;
     let hasEpub = false;
-    
+
     this.state.book.formats.forEach(format => {
       if (format.split('.').slice(-1)[0] == 'epub') {
         hasEpub = true;
@@ -151,7 +151,7 @@ export default class Reader extends React.Component {
       })
       .catch(err => !console.error(err) && history.back());
   }
-  
+
   /**
    * Update book's percent complete and last read time. Clean up.
    */
@@ -161,13 +161,13 @@ export default class Reader extends React.Component {
       .send({ percentComplete: this.state.percent })
       .end((err, res) => {
         res.body.percent_complete = this.state.percent;
-        
+
         this.props.dispatch(
           updateBook(this.state.book.id, res.body)
         );
         this.props.dispatch(save('books'));
       });
-    
+
     this.book.destroy();
     window._book = this.book = undefined;
 
@@ -183,7 +183,7 @@ export default class Reader extends React.Component {
         // none -> notes
         case 'none':
           return { mode: 'notes' };
-        
+
         // notes -> first annotation set OR none
         case 'notes':
           if (
@@ -210,7 +210,7 @@ export default class Reader extends React.Component {
 
     this._applyHighlights(highlight);
     this.setState({ highlight });
-    
+
     return highlight;
   }
 
@@ -221,7 +221,7 @@ export default class Reader extends React.Component {
   onAddToHistory(location) {
     if (this.state.history.ignore) {
       const history = Object.assign({}, this.state.history);
-      
+
       history.ignore = false;
       this.setState({ history });
     }
@@ -235,7 +235,7 @@ export default class Reader extends React.Component {
       this.setState({ history: { items, index: -1, ignore: false } });
     }
   }
-  
+
   /**
    * Open or close a modal.
    * @param {string} show
@@ -243,13 +243,13 @@ export default class Reader extends React.Component {
    */
   onToggleShow(show, closeModal = false) {
     if (closeModal) this.onCloseModal();
-    
+
     if (!!this.state.show)
       this.setState({ modal: { show: '', target: '' } });
     else
       this.setState({ modal: { show, target: '' } });
   }
-  
+
   /**
    * Close the open modal.
    */
@@ -271,7 +271,7 @@ export default class Reader extends React.Component {
   }
 
   /**
-   * Called when a user clicks or taps a section of the screen that corresponds 
+   * Called when a user clicks or taps a section of the screen that corresponds
    * to an action.
    * @param {string} action
    */
@@ -317,7 +317,7 @@ export default class Reader extends React.Component {
       }
     });
   }
-  
+
   /**
    * Load the reader styles.
    * @async
@@ -351,11 +351,11 @@ export default class Reader extends React.Component {
       },
       'span.annotation': {
         'background-color': styles.annotationColor,
-        'pointer': 'cursor'
+        'cursor': 'pointer'
       },
       'span.note': {
         'background-color': styles.highlightColor,
-        'pointer': 'cursor'
+        'cursor': 'pointer'
       }
     });
     this.book.rendition.themes.update('default');
@@ -363,7 +363,7 @@ export default class Reader extends React.Component {
 
   /**
    * Apply CSS filters to the `div.reader` element.
-   * @param {object} filters 
+   * @param {object} filters
    */
   _applyFilters(filters) {
     document.querySelector('div.reader').style.filter =
@@ -390,7 +390,7 @@ export default class Reader extends React.Component {
       return f1;
     }
   }
-  
+
   /**
    * Add EPUBJS and other event listeners.
    */
@@ -437,7 +437,7 @@ export default class Reader extends React.Component {
 
   /**
    * Apply highlights to the book's rendered HTML.
-   * @param {object} highlight 
+   * @param {object} highlight
    * @param {boolean} [skipUnwrap=false]
    */
   _applyHighlights(highlight, skipUnwrap = false) {
@@ -466,11 +466,11 @@ export default class Reader extends React.Component {
         insertAnnotations(this.book, annotations[highlight.index]);
     }
   }
-  
+
   /**
-   * Updates the book object in component state, application state, and local 
+   * Updates the book object in component state, application state, and local
    * storage.
-   * @param {object} obj 
+   * @param {object} obj
    */
   _updateBook(obj) {
     this.props.dispatch(updateBook(
@@ -515,12 +515,12 @@ export default class Reader extends React.Component {
     return (
       <div className='reader'>
         <div id='bookView' />
-        
+
         <Overlay
           ref={i => this._overlay = i}
           Reader={this}
         />
-        
+
         <Modal Reader={this} />
       </div>
     );
