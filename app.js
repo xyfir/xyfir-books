@@ -47,7 +47,7 @@ app.use(
     db.release();
 
     if (!rows.length || !rows[0].admin) return res.status(403).send();
-    req.admyn = { database: config.db };
+    req.admyn = { database: config.database.mysql };
     next();
   },
   admyn()
