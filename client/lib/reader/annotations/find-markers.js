@@ -15,7 +15,7 @@ import escapeRegex from 'escape-string-regexp';
  */
 /**
  * Finds instances of 'before' and 'after' searches within an annotation set's
- * item's searches. 
+ * item's searches.
  * @async
  * @param {object} book - EPUBJS book
  * @param {object[]} items - Annotation set items
@@ -46,14 +46,14 @@ export default async function(book, items) {
     items.forEach(item =>
       // Loop through all search queries in item
       item.searches.forEach((search, searchIndex) => {
-        // If search query is global, it doesn't have a before or after range
-        if (search.range.global) return;
+        // If search query is global, it doesn't have a before or after
+        if (!search.before && !search.after) return;
 
-        if (search.range.before) {
+        if (search.before) {
           const regex = new RegExp(
             search.regex
-              ? search.range.before
-              : escapeRegex(search.range.before)
+              ? search.before
+              : escapeRegex(search.before)
           );
           const match = regex.exec(file);
 
@@ -63,12 +63,12 @@ export default async function(book, items) {
             };
           };
         }
-        
-        if (search.range.after) {
+
+        if (search.after) {
           const regex = new RegExp(
             search.regex
-              ? search.range.after
-              : escapeRegex(search.range.after)
+              ? search.after
+              : escapeRegex(search.after)
           );
           const match = regex.exec(file);
 

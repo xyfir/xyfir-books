@@ -6,13 +6,10 @@
  * set's item's `searches` array.
  */
 /**
- * @typedef {AnnotationSearchOrderItem[]} AnnotationSearchOrder
- */
-/**
  * Builds the order in which an annotation set's item searches are ran against
  * the book's HTML and ensures that the longest searches are ran first.
  * @param {object[]} items - An object array of an annotation set's items.
- * @return {AnnotationSearchOrder}
+ * @return {AnnotationSearchOrderItem[]}
  */
 export default function(items) {
 
@@ -21,7 +18,7 @@ export default function(items) {
   items.forEach((item, itemIndex) =>
     item.searches.forEach((search, searchIndex) =>
       order.push({
-        item: itemIndex, search: searchIndex, text: search.text
+        item: itemIndex, search: searchIndex, text: search.main
       })
     )
   );

@@ -36,22 +36,22 @@ export default async function(book, set) {
     // If not regex, escape regex characters and wrap in \b
     let needle;
     if (search.regex) {
-      needle = search.text;
+      needle = search.main;
     }
     else {
       // Add \b start/end of regex if start/end is a non-word character
       // Prevents words from being highlighted within longer words
       needle =
-        (wordChar.test(search.text[0]) ? '\\b' : '') +
-        escapeRegex(search.text) +
-        (wordChar.test(search.text[search.text.length - 1]) ? '\\b' : '');
+        (wordChar.test(search.main[0]) ? '\\b' : '') +
+        escapeRegex(search.main) +
+        (wordChar.test(search.main[search.main.length - 1]) ? '\\b' : '');
     }
 
     // Get start/end string indexes for each match
     let matches = getMatchIndexes(needle, html);
 
-    if (!search.range.global) {
-      // Filter out invalid matches based on range.before|after
+    if (search.before || search.after) {
+      // Filter out invalid matches based on before|after
       matches = matches.filter(match => {
         // Get before/after marker objects
         // Each object contains chapter index and string index
@@ -59,26 +59,30 @@ export default async function(book, set) {
         const before = markers[`${item.id}-${o.search}-1`];
         const after  = markers[`${item.id}-${o.search}-2`];
 
-        if (search.range.before) {
+        // In book's content, where a search has before/after
+        // :before: ... :main: ... :after:
+
+        if (search.before) {
           // Marker could not be found
           if (before === undefined)
             return false;
-          // User has passed chapter where marker occurs
-          else if (before.chapter < chapter)
+          // User has yet to reach chapter where marker occurs
+          else if (before.chapter > chapter)
             return false;
-          // User has passed index within chapter where marker occurs
-          else if (before.chapter == chapter && before.index < match[0])
+          // User has yet to reach index in chapter where marker occurs
+          else if (before.chapter == chapter && before.index > match[0])
             return false;
         }
 
-        if (search.range.after) {
+        if (search.after) {
+          // Marker could not be found
           if (after === undefined)
             return false;
-          // User has yet to reach chapter where marker occurs
-          else if (after.chapter > chapter)
+          // User has passed chapter where marker occurs
+          else if (after.chapter < chapter)
             return false;
-          // User has yet to reach index in chapter where marker occurs
-          else if (after.chapter == chapter && after.index > match[0])
+          // User has passed index within chapter where marker occurs
+          else if (after.chapter == chapter && after.index < match[0])
             return false;
         }
 
