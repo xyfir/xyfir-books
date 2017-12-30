@@ -137,7 +137,7 @@ class App extends React.Component {
     this.store.dispatch({ type: INITIALIZE_STATE, state });
 
     // Set state.view based on current url hash
-    updateView(this.store);
+    state.view = updateView(this.store);
 
     // Load new data from API
     if (!navigator.onLine) return;
