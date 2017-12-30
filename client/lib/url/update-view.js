@@ -4,15 +4,24 @@ import { changeView } from 'actions/creators/index';
 // Constants
 import * as VIEWS from 'constants/views';
 
+/**
+ * Updates `App.state.view` based on the current url hash route.
+ * @param {object} store
+ * @return {string} The new value for `App.state.view`
+ */
 export default function(store) {
 
   // Hash is empty or not set
   if (location.hash.length < 3) {
-    return store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
+    store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
+    return VIEWS.RECENTLY_OPENED;
   }
 
   const state = store.getState();
-  const hash = location.hash.substr(2).split('?')[0].split('/');
+  const hash = location.hash
+    .substr(2)
+    .split('?')[0]
+    .split('/');
 
   // Update state to reflect hash
   const view = (() => {
@@ -90,5 +99,6 @@ export default function(store) {
   })();
 
   store.dispatch(changeView(view));
+  return view;
 
 }
