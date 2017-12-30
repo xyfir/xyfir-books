@@ -89,9 +89,9 @@ class App extends React.Component {
 
     // Attempt to login using XID/AUTH or skip to initialize()
     if (q.xid && q.auth) {
-      if (localStorage.url) {
-        const _q = parseQuery(localStorage.url);
+      const _q = parseQuery(localStorage.url || '');
 
+      if (_q.r) {
         const [type, value] = _q.r.split('~');
         const referral = {
           type, [type]: value, data: _q
