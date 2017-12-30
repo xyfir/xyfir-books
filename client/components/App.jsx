@@ -1,6 +1,5 @@
 import 'babel-polyfill';
 
-import { Snackbar } from 'react-md';
 import localForage from 'localforage';
 import { render } from 'react-dom';
 import request from 'superagent';
@@ -18,6 +17,7 @@ import Account from 'components/account/Account';
 import Library from 'components/library/Index';
 import Loading from 'components/app/Loading';
 import Books from 'components/books/Books';
+import Alert from 'components/app/Alert';
 
 // Modules
 import loadBooksFromApi from 'lib/books/load-from-api';
@@ -167,22 +167,9 @@ class App extends React.Component {
       .catch(err => location.replace(XACC + 'login/service/14'));
   }
 
-  /**
-   * Remove first element from toasts array.
-   */
-  onDismissAlert() {
-    const [, ...toasts] = this.state.toasts;
-    this.setState({ toasts });
-  }
-
-  /**
-   * Creates a 'toast' for react-md Snackbar component.
-   * @param {string} message - The text content of the toast.
-   */
+  /** @param {string} message - The text content of the toast. */
   _alert(message) {
-    this.setState({
-      toasts: this.state.toasts.concat([{ text: message }])
-    });
+    this._Alert._alert(message);
   }
 
   render() {
@@ -213,10 +200,7 @@ class App extends React.Component {
           {view}
         </div>
 
-        <Snackbar
-          toasts={this.state.toasts}
-          onDismiss={() => this.onDismissAlert()}
-        />
+        <Alert ref={i => this._Alert = i} />
       </div>
     );
   }

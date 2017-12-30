@@ -3,12 +3,9 @@ import * as readerThemes from 'constants/reader-themes';
 import { RECENTLY_OPENED } from 'constants/views';
 
 export default {
-  toasts: [], view: RECENTLY_OPENED, save: [],
+  save: [],
+  view: RECENTLY_OPENED,
   books: [],
-  account: {
-    uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 15,
-    referral: {}, xyAnnotationsKey: ''
-  },
   config: {
     general: {
       theme: 'light'
@@ -30,5 +27,9 @@ export default {
   },
   search: {
     query: '', page: 1
+  },
+  account: {
+    uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 15,
+    referral: {}, xyAnnotationsKey: ''
   }
 };
