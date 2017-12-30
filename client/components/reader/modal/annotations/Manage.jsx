@@ -6,7 +6,7 @@ import marked from 'marked';
 import React from 'react';
 
 // Constants
-import { XYFIR_ANNOTATIONS } from 'constants/config';
+import { XYFIR_ANNOTATIONS_API } from 'constants/config';
 
 export default class ManageAnnotations extends React.Component {
 
@@ -24,7 +24,7 @@ export default class ManageAnnotations extends React.Component {
 
 		this.searchTimeout = setTimeout(
       () => request
-        .get(XYFIR_ANNOTATIONS + 'sets')
+        .get(XYFIR_ANNOTATIONS_API + 'sets')
         .query({
           sort: 'top', direction: 'desc',
           search: this.refs.search.value
@@ -41,7 +41,7 @@ export default class ManageAnnotations extends React.Component {
 
 		// Download set's items
     request
-      .get(XYFIR_ANNOTATIONS + 'annotations')
+      .get(XYFIR_ANNOTATIONS_API + 'annotations')
       .query({
         subscriptionKey: this.state.key,
         sets: JSON.stringify([{ id: set.id }])
@@ -106,7 +106,7 @@ export default class ManageAnnotations extends React.Component {
             iconChildren='cloud_download'
           >Save</Button>
         )}
-        
+
         <h3 className='title'>{set.set_title}</h3>
 
         <span className='book'>
@@ -186,7 +186,7 @@ export default class ManageAnnotations extends React.Component {
     const {annotations} = this.props.Reader.state.book;
 
 		if (this.state.set) return this._renderView(annotations);
-		
+
     return (
       <TabsContainer
         colored

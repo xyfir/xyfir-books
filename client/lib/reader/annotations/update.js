@@ -1,7 +1,7 @@
 import request from 'superagent';
 
 // Constants
-import { XYFIR_ANNOTATIONS } from 'constants/config';
+import { XYFIR_ANNOTATIONS_API } from 'constants/config';
 
 /**
  * Updates the locally saved annotation sets.
@@ -19,7 +19,7 @@ export default function(sets, key) {
     }
 
     request
-      .get(XYFIR_ANNOTATIONS + 'annotations')
+      .get(XYFIR_ANNOTATIONS_API + 'annotations')
       .query({
         subscriptionKey: key, sets: JSON.stringify(
           sets.map(set => Object({ id: set.id, version: set.version }))
