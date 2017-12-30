@@ -1,25 +1,14 @@
-import React from "react";
+import React from 'react';
 
 // Components
-import BookList from "./BookList";
-import General from "./General";
-import Reader from "./Reader";
+import BookList from 'components/settings/BookList';
+import General from 'components/settings/General';
+import Reader from 'components/settings/Reader';
 
-export default class Settings extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        switch (this.props.data.view.split('/')[1]) {
-            case "BOOK_LIST":
-                return <BookList data={this.props.data} dispatch={this.props.dispatch} />;
-            case "GENERAL":
-                return <General data={this.props.data} dispatch={this.props.dispatch} />;
-            case "READER":
-                return <Reader data={this.props.data} dispatch={this.props.dispatch} />;
-        }
-    }
-
+export default props => {
+  switch (props.data.view.split('/')[1]) {
+    case 'BOOK_LIST': return <BookList {...props} />
+    case 'GENERAL': return <General {...props} />
+    case 'READER': return <Reader {...props} />
+  }
 }
