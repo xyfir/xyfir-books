@@ -29,7 +29,7 @@ export default class ReaderSettings extends React.Component {
   componentDidMount() {
     const q = parseQuery();
 
-    if (q.subscriptionKey && +q.subscription != 0) {
+    if (q.subscriptionKey && +q.subscriptionKey != 0) {
       this._annotationsKey.getField().value = q.subscriptionKey;
       this.onSaveKey();
     }
