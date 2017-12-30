@@ -1,9 +1,9 @@
 import { SelectField, TextField, Button, Paper } from 'react-md';
 import request from 'superagent';
 import React from 'react';
-import swal from 'sweetalert';
 
 // Constants
+import { XYFIR_ANNOTATIONS_APP, URL } from 'constants/config';
 import initialState from 'constants/initial-state';
 import * as themes from 'constants/reader-themes';
 
@@ -15,12 +15,35 @@ import { save } from 'actions/creators/index';
 // Components
 import ColorPicker from 'components/misc/ColorPicker';
 
+// Modules
+import parseQuery from 'lib/url/parse-query-string';
+
 export default class ReaderSettings extends React.Component {
 
   constructor(props) {
     super(props);
-    
-    this.state = this.props.data.config.reader;
+
+    this.state = this.props.App.state.config.reader;
+  }
+
+  componentDidMount() {
+    const q = parseQuery();
+
+    if (q.subscriptionKey && +q.subscription != 0) {
+      this._annotationsKey.getField().value = q.subscriptionKey;
+      this.onSaveKey();
+    }
+  }
+
+  onRequestSubscription() {
+    if (!navigator.onLine)
+      return this.props.App._alert('Internet connectivity required');
+
+    location.href =
+      `${XYFIR_ANNOTATIONS_APP}account/subscription/request?redirect=` +
+      encodeURIComponent(
+        `${URL}app/#/settings/reader?subscriptionKey=SUBSCRIPTION_KEY`
+      );
   }
 
   onSetTheme(theme) {
@@ -29,40 +52,44 @@ export default class ReaderSettings extends React.Component {
       case 'dark': return this.setState(themes.DARK);
     }
   }
-  
+
   onSaveStyles() {
-    this.props.dispatch(
+    const {App} = this.props;
+
+    App.store.dispatch(
       setReader(
-        Date.now() > this.props.data.account.subscription
+        Date.now() > App.state.account.subscription
           ? initialState.config.reader
           : this.state
       )
     );
-    this.props.dispatch(save('config'));
-    
-    swal('Saved', 'Settings saved successfully', 'success');
+    App.store.dispatch(save(['config']));
+    App._alert('Settings saved successfully');
   }
-  
+
   onResetStyles() {
     this.setState(initialState.config.reader);
   }
 
   onSaveKey() {
-    const xyAnnotationsKey = this.refs.annotationsKey.value;
+    const xyAnnotationsKey = this._annotationsKey.value;
+    const {App} = this.props;
 
     request
       .put('/api/account')
       .send({ xyAnnotationsKey })
       .end((err, res) => {
         if (err || res.body.error)
-          return swal('Error', 'Could not save changes', 'error');
-        
-        this.props.dispatch(setXyAnnotationsKey(xyAnnotationsKey));
+          return App._alert('Could not save changes');
+
+        App.store.dispatch(setXyAnnotationsKey(xyAnnotationsKey));
+        App._alert('xyAnnotations subscription key set');
+        App.store.dispatch(save(['config']));
       });
   }
 
   render() {
-    const { account } = this.props.data;
+    const { account } = this.props.App.state;
 
     return (
       <div className='reader-settings'>
@@ -105,40 +132,40 @@ export default class ReaderSettings extends React.Component {
           >Example Text</span>
 
           <br />
-          
+
           <ColorPicker
             id='font-color'
             label='Font Color'
             value={this.state.color}
             onChange={v => this.setState({ color: v })}
           />
-          
+
           <ColorPicker
             id='background-color'
             label='Background Color'
             value={this.state.backgroundColor}
             onChange={v => this.setState({ backgroundColor: v })}
           />
-          
+
           <span style={{
             color: this.state.color,
             backgroundColor: this.state.backgroundColor
           }}>Example Text</span>
 
           <br />
-          
+
           <ColorPicker
             id='highlight-color'
             label='Highlight / Notes Color'
             value={this.state.highlightColor}
             onChange={v => this.setState({ highlightColor: v })}
           />
-          
+
           <span style={{
             color: this.state.color,
             backgroundColor: this.state.highlightColor
           }}>Example Text</span>
-          
+
           <br />
 
           <TextField
@@ -151,7 +178,7 @@ export default class ReaderSettings extends React.Component {
             onChange={v => this.setState({ lineHeight: +v })}
             className='md-cell'
           />
-          
+
           <div style={{lineHeight: this.state.lineHeight}}>
             Line 1<br />Line 2<br />Line 3
           </div>
@@ -207,14 +234,14 @@ export default class ReaderSettings extends React.Component {
           <p>
             A xyAnnotations subscription allows you to find and download annotations for books that you're reading.
             <br />
-            xyAnnotations subscriptions can be purchased directly through <a href='https://annotations.xyfir.com/' target='_blank'>xyAnnotations</a>, or through other reader applications that support xyAnnotations.
+            xyAnnotations subscriptions can be purchased directly through <a href='https://annotations.xyfir.com/' target='_blank'>xyAnnotations</a>, or through certain other reader applications that support xyAnnotations.
             <br />
             New xyBooks accounts are automatically given a free one-month subscription.
           </p>
 
           <TextField
             id='text--xyannotations-key'
-            ref='annotationsKey'
+            ref={i => this._annotationsKey = i}
             type='text'
             label='Subscription Key'
             className='md-cell'
@@ -226,6 +253,18 @@ export default class ReaderSettings extends React.Component {
             iconChildren='save'
             onClick={() => this.onSaveKey()}
           >Save</Button>
+
+          <p>
+            If you have already purchased a subscription through xyAnnotations, you can easily have xyBooks request access to your subscription key using the button below.
+            <br />
+            You will be redirected to xyAnnotations where you'll login, allow the request, and then you'll be brought back here.
+          </p>
+
+          <Button
+            secondary raised
+            iconChildren='navigate_next'
+            onClick={() => this.onRequestSubscription()}
+          >Request Access</Button>
         </Paper>
       </div>
     );
