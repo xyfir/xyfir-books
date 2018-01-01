@@ -11,12 +11,6 @@ import * as VIEWS from 'constants/views';
  */
 export default function(store) {
 
-  // Hash is empty or not set
-  if (location.hash.length < 3) {
-    store.dispatch(changeView(VIEWS.RECENTLY_OPENED));
-    return VIEWS.RECENTLY_OPENED;
-  }
-
   const state = store.getState();
   const hash = location.hash
     .substr(2)
@@ -24,7 +18,7 @@ export default function(store) {
     .split('/');
 
   // Update state to reflect hash
-  const view = (() => {
+  let view = (() => {
     if (hash[0] == 'account') {
       if (hash[1] == 'purchase') {
         switch (hash[2]) {
@@ -97,6 +91,8 @@ export default function(store) {
       }
     }
   })();
+
+  if (!view) view = VIEWS.RECENTLY_OPENED;
 
   store.dispatch(changeView(view));
   return view;
