@@ -82,10 +82,7 @@ class App extends React.Component {
     if (q.r) localStorage.url = location.href;
 
     // PhoneGap app opens to #?phonegap=1
-    if (q.phonegap && !localStorage.isPhoneGap) {
-      localStorage.isPhoneGap = 'true',
-      location.hash = '#/';
-    }
+    if (q.phonegap) localStorage.isPhoneGap = 'true';
 
     // Attempt to login using XID/AUTH or skip to initialize()
     if (q.xid && q.auth) {
