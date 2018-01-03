@@ -1,7 +1,5 @@
 const router = require('express').Router();
 
-router.get('/ad', require('./get-ad'));
-
 /* Account */
 router.get(
   '/account',
@@ -19,6 +17,9 @@ router.get(
   '/account/logout',
   require('./account/logout')
 );
+
+/* Advertisements */
+router.get('/ad', require('./get-ad'));
 
 /* Account - Purchase */
 router.post(
@@ -85,5 +86,8 @@ router.put(
   '/library-manager/:lib/books/:book',
   require('./library-manager/increment-version')
 );
+
+/* Version */
+router.get('/version', require('./version'));
 
 module.exports = router;
