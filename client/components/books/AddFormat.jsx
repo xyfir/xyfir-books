@@ -8,13 +8,13 @@ import swal from 'sweetalert';
 import { addFormat } from 'actions/creators/books';
 
 // Constants
-import { LIBRARY } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 export default class AddFormat extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       id: window.location.hash.split('/')[3],
       converting: false, uploading: false
@@ -29,7 +29,7 @@ export default class AddFormat extends React.Component {
 
     request
       .post(
-        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/format/convert`
       )
       .query({
@@ -38,7 +38,7 @@ export default class AddFormat extends React.Component {
       })
       .end((err, res) => {
         this.setState({ converting: false });
-        
+
         if (err || res.body.error)
           return swal('Error', 'Could not convert format', 'error');
 
@@ -48,7 +48,7 @@ export default class AddFormat extends React.Component {
         swal('Success', 'Format added', 'success');
       });
   }
-  
+
   onUpload(files) {
     if (!navigator.onLine)
       return swal('Error', 'Internet connectivity required', 'error');
@@ -57,13 +57,13 @@ export default class AddFormat extends React.Component {
 
     request
       .post(
-        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/format`
       )
       .attach('book', files[0])
       .end((err, res) => {
         this.setState({ upload: false });
-        
+
         if (err || res.body.error) {
           console.log('err', err, 'res', res.body);
           return swal('Error', 'Could not upload file', 'error');
@@ -81,13 +81,13 @@ export default class AddFormat extends React.Component {
     const formats = book.formats.map(format =>
       format.split('.').slice(-1)[0].toUpperCase()
     );
-    
+
     return (
       <div className='add-format'>
         <p>
           <strong>Note:</strong> Only <a href='https://en.wikipedia.org/wiki/EPUB' target='_blank'>EPUB</a> format ebooks can be read directly in the xyBooks ebook reader.
         </p>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -105,7 +105,7 @@ export default class AddFormat extends React.Component {
               : 'Drag and drop ebook or click box to choose a file to upload.'
           }</Dropzone>
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -136,7 +136,7 @@ export default class AddFormat extends React.Component {
             label='Convert to Format'
             className='md-cell'
           />
-          
+
           <Button
             raised primary
             onClick={() => this.onConvert()}

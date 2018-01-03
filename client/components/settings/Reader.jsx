@@ -3,7 +3,7 @@ import request from 'superagent';
 import React from 'react';
 
 // Constants
-import { XYFIR_ANNOTATIONS_APP, URL } from 'constants/config';
+import { XYANNOTATIONS_URL, XYBOOKS_URL } from 'constants/config';
 import initialState from 'constants/initial-state';
 import * as themes from 'constants/reader-themes';
 
@@ -40,9 +40,9 @@ export default class ReaderSettings extends React.Component {
       return this.props.App._alert('Internet connectivity required');
 
     location.href =
-      `${XYFIR_ANNOTATIONS_APP}account/subscription/request?redirect=` +
+      `${XYANNOTATIONS_URL}/#/account/subscription/request?redirect=` +
       encodeURIComponent(
-        `${URL}app/#/settings/reader?subscriptionKey=SUBSCRIPTION_KEY`
+        `${XYBOOKS_URL}/app/#/settings/reader?subscriptionKey=SUBSCRIPTION_KEY`
       );
   }
 
@@ -76,7 +76,7 @@ export default class ReaderSettings extends React.Component {
     const {App} = this.props;
 
     request
-      .put('/api/account')
+      .put(`${XYBOOKS_URL}/api/account`)
       .send({ xyAnnotationsKey })
       .end((err, res) => {
         if (err || res.body.error)

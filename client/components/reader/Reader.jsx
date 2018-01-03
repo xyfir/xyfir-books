@@ -18,7 +18,7 @@ import clickListener from 'lib/reader/listeners/click';
 import unwrap from 'lib/reader/matches/unwrap';
 
 // Constants
-import { LIBRARY } from 'constants/config';
+import { XYLIBRARY_URL, XYBOOKS_URL } from 'constants/config';
 
 // Action creators
 import { updateBook } from 'actions/creators/books';
@@ -71,7 +71,7 @@ export default class Reader extends React.Component {
    */
   componentWillMount() {
     // Build url to .epub file to read
-    let url = `${LIBRARY}files/${this.props.data.account.library}/`;
+    let url = `${XYLIBRARY_URL}/files/${this.props.data.account.library}/`;
     let hasEpub = false;
 
     this.state.book.formats.forEach(format => {
@@ -88,7 +88,7 @@ export default class Reader extends React.Component {
     let bookInfo;
 
     // Get bookmarks, notes, last read time
-    request.get(`/api/books/${id}`)
+    request.get(`${XYBOOKS_URL}/api/books/${id}`)
       .then(res => {
         bookInfo = res.body;
 
@@ -157,7 +157,7 @@ export default class Reader extends React.Component {
    */
   componentWillUnmount() {
     request
-      .post(`/api/books/${this.state.book.id}/close`)
+      .post(`${XYBOOKS_URL}/api/books/${this.state.book.id}/close`)
       .send({ percentComplete: this.state.percent })
       .end((err, res) => {
         res.body.percent_complete = this.state.percent;

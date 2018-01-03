@@ -4,6 +4,9 @@ import {
 import request from 'superagent';
 import React from 'react';
 
+// Constants
+import { XYBOOKS_URL } from 'constants/config';
+
 export default class ReaderNavbar extends React.Component {
 
   constructor(props) {
@@ -49,7 +52,7 @@ export default class ReaderNavbar extends React.Component {
     // Remove bookmark
     if (this._isBookmarked()) {
       request
-        .delete(`/api/books/${Reader.state.book.id}/bookmark`)
+        .delete(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/bookmark`)
         .send({ cfi })
         .end((err, res) => {
           if (!err && !res.body.error)
@@ -59,7 +62,7 @@ export default class ReaderNavbar extends React.Component {
     // Add bookmark
     else {
       request
-        .post(`/api/books/${Reader.state.book.id}/bookmark`)
+        .post(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/bookmark`)
         .send({ cfi })
         .end((err, res) => {
           if (!res.body.error) {

@@ -1,19 +1,17 @@
+import { Paper, Button } from 'react-md';
 import PropTypes from 'prop-types';
 import request from 'superagent';
 import React from 'react';
 
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
-import Paper from 'react-md/lib/Papers';
-
 // Constants
 import { READ_BOOK } from 'constants/views';
+import { XYBOOKS_URL } from 'constants/config';
 
 export default class Advertisement extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {};
 
     setTimeout(() => this._loadAd(), 120000);
@@ -43,14 +41,14 @@ export default class Advertisement extends React.Component {
         book.title + ' ' +
         book.comments;
     }
-    
+
     request
-      .get(`../api/ad`)
+      .get(`${XYBOOKS_URL}/api/ad`)
       .query({ content })
       .end((err, res) => {
         if (err || res.body.error)
           return setTimeout(() => this._loadAd(), 300000);
-        
+
         // Allow user to close ad after 7 seconds
         this.setState({ ad: res.body.ad, canClose: false });
         setTimeout(() => this.setState({ canClose: true }), 7000);

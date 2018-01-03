@@ -5,6 +5,7 @@ import React from 'react';
 
 // Constants
 import { READ_BOOK } from 'constants/views';
+import { XYBOOKS_URL } from 'constants/config';
 
 export default class AppNavigation extends React.Component {
   constructor(props) {
@@ -40,7 +41,7 @@ export default class AppNavigation extends React.Component {
    */
   onLogout() {
     delete localStorage.accessToken;
-    location.href = '/api/account/logout';
+    location.href = `${XYBOOKS_URL}/api/account/logout`;
   }
 
   /**

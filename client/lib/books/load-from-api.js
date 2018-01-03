@@ -1,11 +1,14 @@
 import request from 'superagent';
 
 // Constants
-import { LIBRARY } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 // Action creators
 import { loadBooks } from 'actions/creators/books';
 import { save } from 'actions/creators/index';
+
+// Constants
+import { XYBOOKS_URL } from 'constants/config';
 
 /**
  * Pull annotations from stored books and merge with books downloaded from API.
@@ -50,8 +53,8 @@ export default async function(library, dispatch) {
 
   try {
     let res = await Promise.all([
-      request.get('/api/books'), // xyBooks DB
-      request.get(`${LIBRARY}libraries/${library}/books`) // xyLibrary
+      request.get(`${XYBOOKS_URL}/api/books`), // xyBooks DB
+      request.get(`${XYLIBRARY_URL}/libraries/${library}/books`) // xyLibrary
     ]);
 
     let books1 = res[0].body.books;

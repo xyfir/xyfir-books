@@ -5,7 +5,7 @@ import React from 'react';
 import swal from 'sweetalert';
 
 // Constants
-import { STRIPE_KEY_PUB } from 'constants/config';
+import { STRIPE_KEY_PUB, XYBOOKS_URL } from 'constants/config';
 
 export default class Purchase extends React.Component {
 
@@ -15,7 +15,7 @@ export default class Purchase extends React.Component {
 
   onStripePurchase(token) {
     request
-      .post('/api/account/purchase/stripe')
+      .post(`${XYBOOKS_URL}/api/account/purchase/stripe`)
       .send({ token: token.id })
       .end((err, res) => {
           if (err || res.body.error) {
@@ -34,7 +34,7 @@ export default class Purchase extends React.Component {
     if (!swiftId) return;
 
     request
-      .post('/api/account/purchase/swiftdemand')
+      .post(`${XYBOOKS_URL}/api/account/purchase/swiftdemand`)
       .send({ swiftId })
       .end((err, res) => {
         if (err || !res.body.redirect)

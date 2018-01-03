@@ -10,7 +10,7 @@ import toUrl from 'lib/url/clean';
 import rand from 'lib/random/number';
 
 // Constants
-import { LIBRARY } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 export default class TableList extends React.Component {
 
@@ -20,20 +20,20 @@ export default class TableList extends React.Component {
     const selected = this.props.data.books.length
       ? [rand(0, this.props.data.books.length - 1)]
       : [];
-    
+
     this.state = {
       selected, sort: this.props.data.config.bookList.table.defaultSort
     };
   }
-  
+
   componentDidMount() {
     loadCovers(this.props.data.books, this.props.data.account.library);
   }
-  
+
   componentDidUpdate() {
     loadCovers(this.props.data.books, this.props.data.account.library);
   }
-  
+
   onSelect(e, id) {
     // Select multiple items
     if (e.ctrlKey) {
@@ -49,14 +49,14 @@ export default class TableList extends React.Component {
       this.setState({ selected: [id] });
     }
   }
-  
+
   onDelete() {
     const selected = this.state.selected.slice();
     this.setState({ selected: [] });
 
     deleteBooks(selected, this.props.dispatch);
   }
-  
+
   onSort(column) {
     // Flip state.sort.asc, retain column
     if (this.state.sort.column == column)
@@ -74,11 +74,11 @@ export default class TableList extends React.Component {
       selectedBook.url = selectedBook.id
         + '/' + toUrl(selectedBook.authors)
         + '/' + toUrl(selectedBook.title);
-      
+
       if (selectedBook.identifiers === undefined)
         selectedBook.identifiers = {};
     }
-    
+
     return (
       <div className='list-table'>
         <div className='table-container'>
@@ -118,7 +118,7 @@ export default class TableList extends React.Component {
                           .toLocaleDateString()
                       }</td>
                     );
-                    
+
                     case 'rating': return (
                       <td className='rating'>{
                         book.rating === undefined
@@ -130,14 +130,14 @@ export default class TableList extends React.Component {
                         )
                       }</td>
                     );
-                    
+
                     case 'published': return (
                       <td className='published'>{
                         (new Date(book.pubdate))
                           .toLocaleDateString()
                       }</td>
                     );
-                    
+
                     case 'series': return (
                       <td className='series'>{
                         !book.series
@@ -145,7 +145,7 @@ export default class TableList extends React.Component {
                           : `${book.series} [${book.series_index}]`
                       }</td>
                     );
-                    
+
                     default: return (
                       <td className={col}>{
                         book[col]
@@ -158,7 +158,7 @@ export default class TableList extends React.Component {
           }</tbody>
         </table>
         </div>
-        
+
         <div className='selected-book'>
           {this.state.selected.length > 0 ? (
             <div className='controls'>
@@ -167,11 +167,11 @@ export default class TableList extends React.Component {
                   <span className='icon-eye' />Read
                 </a>
               )}
-              
+
               <a onClick={() => this.onDelete()}>
                 <span className='icon-trash' />Delete
               </a>
-              
+
               {this.state.selected.length > 1 ? (
                 <a href={`#/books/bulk-edit/${
                   this.state.selected.join(',')
@@ -183,7 +183,7 @@ export default class TableList extends React.Component {
                   <span className='icon-edit' />Manage
                 </a>
               )}
-              
+
               {this.state.selected.length > 1 ? (<span />) : (
                 <a href={`#/books/add-format/${selectedBook.url}`}>
                   <span className='icon-files' /> Add Format
@@ -191,7 +191,7 @@ export default class TableList extends React.Component {
               )}
             </div>
           ) : null}
-          
+
           {this.state.selected.length ? (
             <div className='info'>
               <a href={`#/books/read/${selectedBook.url}`}>
@@ -200,38 +200,38 @@ export default class TableList extends React.Component {
                   id={`cover-${selectedBook.id}`}
                 />
               </a>
-              
+
               <span className='chip percent-complete'>{
                 selectedBook.percent_complete + '%'
               }</span>
-              
+
               {selectedBook.word_count > 0 ? (
                 <span className='chip word-count'>{
                   Math.round(selectedBook.word_count / 1000) + 'K'
                 }</span>
               ) : null}
-              
+
               <span className='chip date-added'>{
                 (new Date(selectedBook.timestamp))
                   .toLocaleDateString()
               }</span>
-              
+
               {!!+selectedBook.rating ? (
                 <span className='chip rating'>
                   <span>{selectedBook.rating}</span>
                   <span className='icon-star' />
                 </span>
               ) : null}
-              
+
               <dl>
                 <dt>Title</dt><dd>{selectedBook.title}</dd>
-                
+
                 <dt>Authors</dt><dd><a href={
                   `#/books/list/all?search=1&authors=${
                     encodeURIComponent(selectedBook.authors)
                   }`
                 }>{selectedBook.authors}</a></dd>
-                
+
                 {selectedBook.series ? (
                   <div>
                     <dt>Series</dt>
@@ -242,7 +242,7 @@ export default class TableList extends React.Component {
                     }>{selectedBook.series}</a></dd>
                   </div>
                 ) : null}
-                
+
                 <dt>Published</dt>
                 <dd>{
                   (new Date(selectedBook.pubdate))
@@ -253,29 +253,29 @@ export default class TableList extends React.Component {
                 }>{
                   selectedBook.publisher
                 }</a></dd>
-                
+
                 <dt>Formats</dt>
                 <dd className='formats'>{
                   selectedBook.formats.map(format =>
                     <a
                       target='_blank'
                       href={
-                        LIBRARY + 'files/' + this.props.data.account.library +
-                        '/' + format
+                        `${XYLIBRARY_URL}/files/` +
+                        `${this.props.data.account.library}/${format}`
                       }
                     >{
                       format.split('.').slice(-1)[0].toUpperCase()
                     }</a>
                   )
                 }</dd>
-                
+
                 <dt>Links</dt>
                 <dd className='links'>{
                   Object
                     .keys(selectedBook.identifiers)
                     .map(type => {
                       const id = [type, selectedBook.identifiers[type]];
-                      
+
                       switch (id[0]) {
                         case 'isbn': return (
                           <a
@@ -285,14 +285,14 @@ export default class TableList extends React.Component {
                             }
                           >ISBN ({id[1]})</a>
                         );
-                        
+
                         case 'goodreads': return (
                           <a
                             target='_blank'
                             href={`http://www.goodreads.com/book/show/${id[1]}`}
                           >GoodReads</a>
                         );
-                        
+
                         case 'mobi-asin':
                         case 'amazon': return (
                           <a
@@ -300,7 +300,7 @@ export default class TableList extends React.Component {
                             href={`http://www.amazon.com/dp/${id[1]}`}
                           >Amazon</a>
                         );
-                        
+
                         case 'google': return (
                           <a
                             target='_blank'
@@ -309,19 +309,19 @@ export default class TableList extends React.Component {
                             }
                           >Google Books</a>
                         );
-                        
+
                         case 'barnesnoble': return (
                           <a
                             target='_blank'
                             href={`http://www.barnesandnoble.com/${id[1]}`
                           }>Barnes & Noble</a>
                         );
-                        
+
                         default: return <span />;
                       }
                     })
                 }</dd>
-                
+
                 <dt>Tags</dt>
                 <dd className='tags'>{
                   selectedBook.tags.map(tag =>
@@ -331,7 +331,7 @@ export default class TableList extends React.Component {
                   )
                 }</dd>
               </dl>
-              
+
               <div
                 className='comments'
                 dangerouslySetInnerHTML={{

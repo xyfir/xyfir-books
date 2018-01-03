@@ -5,6 +5,9 @@ import React from 'react';
 // Components
 import Highlight from 'components/reader/modal/notes/Highlight';
 
+// Constants
+import { XYBOOKS_URL } from 'constants/config';
+
 export default class CreateNote extends React.Component {
 
   constructor(props) {
@@ -23,9 +26,9 @@ export default class CreateNote extends React.Component {
       content: this._content.value,
       highlights: JSON.stringify(this._highlight._getHighlights())
     };
-    
+
     request
-      .post(`/api/books/${Reader.state.book.id}/note`)
+      .post(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/note`)
       .send(data)
       .end((err, res) => {
         if (err || res.body.error) {
@@ -36,9 +39,9 @@ export default class CreateNote extends React.Component {
           data.highlights = JSON.parse(data.highlights);
 
           const notes = Reader.state.book.notes.concat([data]);
-          
+
           Reader._updateBook({ notes });
-          
+
           // Ensure highlighted content in book is updated
           Reader.onCycleHighlightMode();
 
@@ -60,7 +63,7 @@ export default class CreateNote extends React.Component {
           label='Note'
           className='md-cell'
         />
-        
+
         <div>
           <Button
             raised

@@ -13,7 +13,7 @@ import loadBooks from 'lib/books/load-from-api';
 import buildUrl from 'lib/url/build';
 
 // Constants
-import { LIBRARY } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 // Action creators
 import { deleteFormat, incrementVersion } from 'actions/creators/books';
@@ -22,7 +22,7 @@ export default class ManageBook extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       id: window.location.hash.split('/')[3],
       downloadingMetadata: false,
@@ -31,11 +31,11 @@ export default class ManageBook extends React.Component {
       saving: false
     };
   }
-  
+
   componentDidMount() {
     loadCovers(this.props.data.books, this.props.data.account.library);
   }
-  
+
   onDownloadMetadata() {
     if (!navigator.onLine) {
       swal('Error', 'This action requires internet connectivity', 'error');
@@ -65,7 +65,7 @@ export default class ManageBook extends React.Component {
 
     request
       .get(
-        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/metadata`
       )
       .query(query)
@@ -110,7 +110,7 @@ export default class ManageBook extends React.Component {
         this.setState({ downloadingMetadata: false });
       });
   }
-  
+
   onDeleteFormat(f) {
     if (!navigator.onLine) {
       swal('Error', 'This action requires internet connectivity', 'error');
@@ -119,7 +119,7 @@ export default class ManageBook extends React.Component {
 
     request
       .delete(
-        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/format/${f}`
       )
       .end((err, res) => {
@@ -129,16 +129,16 @@ export default class ManageBook extends React.Component {
           this.props.dispatch(deleteFormat(this.state.id, f));
       });
   }
-  
+
   onUploadCover(files) {
     if (!navigator.onLine) {
       swal('Error', 'This action requires internet connectivity', 'error');
       return;
-    } 
+    }
 
     request
       .put(
-        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/cover`
       )
       .attach('cover', files[0])
@@ -149,27 +149,27 @@ export default class ManageBook extends React.Component {
         const lfKey =
           `cover-${this.state.id}-` +
           this.props.data.books.find(b => this.state.id == b.id).versions.cover;
-        
+
         localforage.setItem(lfKey, files[0])
           .then(img => {
             // Load new cover
             document.querySelector('img.cover').src = files[0].preview;
-            
+
             // Increment book.versions.cover
             this.props.dispatch(incrementVersion(this.state.id, 'cover'));
           })
           .catch(err => location.reload());
       });
   }
-  
+
   onSaveChanges() {
     if (!navigator.onLine) {
       swal('Error', 'This action requires internet connectivity', 'error');
       return;
     }
-    
+
     this.setState({ saving: true });
-    
+
     const data = {
       identifiers: this._identifiers.value,
       author_sort: this._authorSort.value,
@@ -181,10 +181,10 @@ export default class ManageBook extends React.Component {
       title: this._title.value,
       tags: this._tags.value
     };
-    
+
     // Calibre doubles rating for some reason...
     data.rating = data.rating > 0 ? data.rating / 2 : data.rating;
-    
+
     if (this._series.value != '') {
       data.series = this._series.value;
       data.series_index = this._seriesIndex.value;
@@ -198,7 +198,7 @@ export default class ManageBook extends React.Component {
     // Send to xyLibrary
     request
       .put(
-        `${LIBRARY}libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/metadata`
       )
       .send({
@@ -220,7 +220,7 @@ export default class ManageBook extends React.Component {
 
   render() {
     const book = this.props.data.books.find(b => this.state.id == b.id);
-    
+
     return (
       <div className='manage-book'>
         <Paper
@@ -263,7 +263,7 @@ export default class ManageBook extends React.Component {
             className='md-cell'
             defaultValue={book.series || ''}
           />
-                    
+
           <TextField
             id='number--series-index'
             ref={i => this._seriesIndex = i}
@@ -273,7 +273,7 @@ export default class ManageBook extends React.Component {
             defaultValue={book.series_index || 1}
           />
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -326,7 +326,7 @@ export default class ManageBook extends React.Component {
             />
           </DialogContainer>
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -342,7 +342,7 @@ export default class ManageBook extends React.Component {
             className='md-cell'
             defaultValue={book.rating || 0}
           />
-          
+
           <TextField
             id='textarea--tags'
             ref={i => this._tags = i}
@@ -353,7 +353,7 @@ export default class ManageBook extends React.Component {
             className='md-cell'
             defaultValue={book.tags.join(', ')}
           />
-          
+
           <TextField
             id='text--ids'
             ref={i => this._identifiers = i}
@@ -368,7 +368,7 @@ export default class ManageBook extends React.Component {
                 .join(', ')
             }
           />
-          
+
           <DatePicker
             id='date--added'
             ref={i => this._timestamp = i}
@@ -382,7 +382,7 @@ export default class ManageBook extends React.Component {
             label='Published'
             defaultValue={book.pubdate ? new Date(book.pubdate) : ''}
           />
-          
+
           <TextField
             id='text--publisher'
             ref={i => this._publisher = i}
@@ -392,7 +392,7 @@ export default class ManageBook extends React.Component {
             defaultValue={book.publisher || ''}
           />
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -411,7 +411,7 @@ export default class ManageBook extends React.Component {
             iconChildren='cloud_download'
           >Download Metadata</Button>
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -440,7 +440,7 @@ export default class ManageBook extends React.Component {
                 book.comments || 'This book has no comments'
               }}
             />
-            
+
             <Button
               primary flat
               onClick={() => this.setState({ editComments: true })}
@@ -448,7 +448,7 @@ export default class ManageBook extends React.Component {
             >Edit Comments</Button>
           </div>
         )}</Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -470,14 +470,14 @@ export default class ManageBook extends React.Component {
                 </tr>
               )
           }</table>
-          
+
           <Button
             flat primary
             onClick={() => location.hash = buildUrl(book, 'add-format')}
             iconChildren='add'
           >Add Format</Button>
         </Paper>
-        
+
         <Button
           primary raised
           onClick={() => this.onSaveChanges()}

@@ -3,6 +3,9 @@ import request from 'superagent';
 import marked from 'marked';
 import React from 'react';
 
+// Constants
+import { XYBOOKS_URL } from 'constants/config';
+
 export default class ViewNote extends React.Component {
 
   constructor(props) {
@@ -22,7 +25,7 @@ export default class ViewNote extends React.Component {
     const {created} = Reader.state.book.notes[Notes.state.note];
 
     request
-      .delete(`/api/books/${Reader.state.book.id}/note`)
+      .delete(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/note`)
       .send({ created })
       .end((err, res) => {
         if (err || res.body.error) {
@@ -45,20 +48,20 @@ export default class ViewNote extends React.Component {
   render() {
     const {Reader, Notes} = this.props;
     const note = Reader.state.book.notes[Notes.state.note];
-    
+
     return (
       <div className='note'>
         <div className='highlights'>{
           note.highlights.map((hl, i) => <span key={i}>{hl}</span>)
         }</div>
-        
+
         <div
           className='content markdown-body'
           dangerouslySetInnerHTML={{
             __html: marked(note.content, { sanitize: true })
           }}
         />
-        
+
         <Button
           raised
           onClick={() => Notes.setState({ view: 'list' })}

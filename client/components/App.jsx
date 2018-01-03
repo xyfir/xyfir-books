@@ -25,7 +25,9 @@ import parseQuery from 'lib/url/parse-query-string';
 import updateView from 'lib/url/update-view';
 
 // Constants
-import { XACC, LOG_STATE, ENVIRONMENT } from 'constants/config';
+import {
+  XYACCOUNTS_URL, LOG_STATE, ENVIRONMENT, XYBOOKS_URL
+} from 'constants/config';
 import { INITIALIZE_STATE } from 'actions/types/index';
 import { READ_BOOK } from 'constants/views';
 import initialState from 'constants/initial-state';
@@ -100,11 +102,11 @@ class App extends React.Component {
       }
 
       request
-        .post('/api/account/login')
+        .post(`${XYBOOKS_URL}/api/account/login`)
         .send(q)
         .end((err, res) => {
           if (err || res.body.error) {
-            location.replace(XACC + 'login/service/14');
+            location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
           }
           else {
             localStorage.accessToken = res.body.accessToken,
@@ -117,7 +119,7 @@ class App extends React.Component {
     }
     // Access token is required
     else if (navigator.onLine && !token && ENVIRONMENT != 'dev') {
-      return location.replace(XACC + 'login/service/14');
+      return location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
     }
 
     const state = Object.assign({}, initialState);
@@ -142,12 +144,12 @@ class App extends React.Component {
     let account;
 
     request
-      .get('/api/account')
+      .get(`${XYBOOKS_URL}/api/account`)
       .query({ token })
       .then(res => {
         // User not logged in
         if (!res.body.library)
-          return location.replace(XACC + 'login/service/14');
+          return location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
 
         account = res.body;
 
@@ -161,7 +163,7 @@ class App extends React.Component {
         this.store.dispatch(save(['account', 'books']));
       })
       // Only the HTTP request will throw an error
-      .catch(err => location.replace(XACC + 'login/service/14'));
+      .catch(err => location.replace(`${XYACCOUNTS_URL}/#/login/service/14`));
   }
 
   /** @param {string} message - The text content of the toast. */

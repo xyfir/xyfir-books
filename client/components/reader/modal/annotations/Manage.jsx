@@ -6,7 +6,7 @@ import marked from 'marked';
 import React from 'react';
 
 // Constants
-import { XYFIR_ANNOTATIONS_API } from 'constants/config';
+import { XYANNOTATIONS_URL } from 'constants/config';
 
 export default class ManageAnnotations extends React.Component {
 
@@ -24,7 +24,7 @@ export default class ManageAnnotations extends React.Component {
 
 		this.searchTimeout = setTimeout(
       () => request
-        .get(XYFIR_ANNOTATIONS_API + 'sets')
+        .get(`${XYANNOTATIONS_URL}/api/sets`)
         .query({
           sort: 'top', direction: 'desc',
           search: this.refs.search.value
@@ -41,7 +41,7 @@ export default class ManageAnnotations extends React.Component {
 
 		// Download set's items
     request
-      .get(XYFIR_ANNOTATIONS_API + 'annotations')
+      .get(`${XYANNOTATIONS_URL}/api/annotations`)
       .query({
         subscriptionKey: this.state.key,
         sets: JSON.stringify([{ id: set.id }])

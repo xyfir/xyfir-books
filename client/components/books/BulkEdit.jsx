@@ -8,19 +8,19 @@ import swal from 'sweetalert';
 import loadBooks from 'lib/books/load-from-api';
 
 // Constants
-import { LIBRARY } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 export default class EditBooks extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       ids: location.hash.split('/')[3].split(',').map(Number),
       status: ''
     };
   }
-  
+
   async onSaveChanges() {
     if (!navigator.onLine)
       return swal('Error', 'Internet connectivity needed', 'error');
@@ -29,7 +29,7 @@ export default class EditBooks extends React.Component {
 
     for (let id of this.state.ids) {
       const book = this.props.data.books.find(b => id == b.id);
-      
+
       // Skip book or abort editing
       if (!book) {
         this.setState({ status: `Could not find book with id '${id}'.` });
@@ -42,7 +42,7 @@ export default class EditBooks extends React.Component {
 
       // Build data object to send to server
       const data = {};
-      
+
       // Swap authors / title
       if (window['checkbox--author-title-swap'].checked) {
         data.authors = book.title;
@@ -59,7 +59,7 @@ export default class EditBooks extends React.Component {
       // Rating
       if (this._rating.value != '') {
         data.rating = +this._rating.value;
-        
+
         if (data.rating > 0) data.rating = data.rating / 2;
       }
       // Publisher
@@ -81,7 +81,7 @@ export default class EditBooks extends React.Component {
         // Remove tags
         if (this._remTags.value != '') {
           const remove = this._remTags.value.toLowerCase().split(', ');
-          
+
           data.tags = data.tags.filter(t1 =>
             remove.indexOf(t1.toLowerCase()) == -1
           );
@@ -116,8 +116,8 @@ export default class EditBooks extends React.Component {
       try {
         const res = await request
           .put(
-            `${LIBRARY}libraries/${this.props.data.account.library}/books/` +
-            `${id}/metadata`
+            `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
+            `/books/${id}/metadata`
           )
           .send({
             data: JSON.stringify(data)
@@ -179,7 +179,7 @@ export default class EditBooks extends React.Component {
             label='Swap Title / Authors'
           />
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -202,7 +202,7 @@ export default class EditBooks extends React.Component {
             placeholder='YYYY-MM-DD'
           />
         </Paper>
-          
+
         <Paper
           zDepth={1}
           component='section'
@@ -229,7 +229,7 @@ export default class EditBooks extends React.Component {
             label='Clear Tags'
           />
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'

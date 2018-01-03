@@ -3,7 +3,7 @@ import React from 'react';
 import swal from 'sweetalert';
 
 // Constants
-import { LIBRARY } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 // react-md
 import Button from 'react-md/lib/Buttons/Button';
@@ -13,11 +13,11 @@ export default class LibraryInfo extends React.Component {
 
   constructor(props) {
     super(props);
-      
+
     this.state = { size: 0 };
-    
+
     request
-      .get(`${LIBRARY}libraries/${this.props.data.account.library}`)
+      .get(`${XYLIBRARY_URL}/libraries/${this.props.data.account.library}`)
       .end((err, res) => {
         if (err || res.body.error)
           this.setState({ size: -1 });
@@ -36,7 +36,9 @@ export default class LibraryInfo extends React.Component {
       buttons: true
     })
     .then(() => request
-      .post(`${LIBRARY}libraries/${this.props.data.account.library}/zip`)
+      .post(
+        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}/zip`
+      )
       .send({
         email: this.props.data.account.email
       })
@@ -59,7 +61,7 @@ export default class LibraryInfo extends React.Component {
         zDepth={1}
         component='section'
         className='library-info section flex'
-      > 
+      >
         <table>
           <tr>
             <th>Id</th>
