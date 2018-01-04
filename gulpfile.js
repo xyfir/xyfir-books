@@ -10,7 +10,7 @@ function buildCSS(file) {
     .pipe(gulp.dest('./static/css'))
 }
 
-gulp.task('css:app', () => buildCSS('style'));
+gulp.task('css:app', () => buildCSS('app'));
 gulp.task('css:admin', () => buildCSS('admin'));
 
 gulp.task('fontello', () =>
