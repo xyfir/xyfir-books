@@ -161,7 +161,7 @@ class App extends React.Component {
         });
         this.store.dispatch(save(['account', 'books']));
 
-        location.replace(location.hash.split('?')[0]);
+        location.hash = location.hash.split('?')[0];
       })
       // Only the HTTP request will throw an error
       .catch(err => location.replace(`${XYACCOUNTS_URL}/#/login/service/14`));
@@ -221,7 +221,7 @@ if (!window.cordova) {
         `${window.cordova.file.applicationDirectory}www/index.html` +
         `#/?accessToken=${localStorage.accessToken}`
       );
-    }, 25)
+    }, 25);
   }, false);
 }
 
