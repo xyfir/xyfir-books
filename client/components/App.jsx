@@ -77,14 +77,14 @@ class App extends React.Component {
   }
 
   async componentWillMount() {
-    const token = localStorage.accessToken || '';
     const q = parseQuery();
+
+    if (q.accessToken) localStorage.accessToken = q.accessToken;
+
+    let token = localStorage.accessToken || '';
 
     // Save referral
     if (q.r) localStorage.url = location.href;
-
-    // PhoneGap app opens to #?phonegap=1
-    if (q.phonegap) localStorage.isPhoneGap = 'true';
 
     // Attempt to login using XID/AUTH or skip to initialize()
     if (q.xid && q.auth) {
@@ -101,21 +101,19 @@ class App extends React.Component {
         q.referral = referral;
       }
 
-      request
-        .post(`${XYBOOKS_URL}/api/account/login`)
-        .send(q)
-        .end((err, res) => {
-          if (err || res.body.error) {
-            location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
-          }
-          else {
-            localStorage.accessToken = res.body.accessToken,
-            location.hash = location.hash.split('?')[0];
+      try {
+        const res = await request
+          .post(`${XYBOOKS_URL}/api/account/login`)
+          .send(q);
 
-            location.reload();
-          }
-        });
-      return;
+        if (res.body.error) throw res.body;
+
+        token = localStorage.accessToken = res.body.accessToken,
+        window.LOGGED_IN = true;
+      }
+      catch (err) {
+        return location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
+      }
     }
     // Access token is required
     else if (navigator.onLine && !token && ENVIRONMENT != 'dev') {
@@ -125,6 +123,7 @@ class App extends React.Component {
     const state = Object.assign({}, initialState);
 
     // Pull data from local storage
+    state.loading = false,
     state.account = await localforage.getItem('account') || state.account,
     state.config = await localforage.getItem('config') || state.config,
     state.books = await localforage.getItem('books') || state.books;
@@ -161,6 +160,8 @@ class App extends React.Component {
           state: Object.assign(state, { account, books })
         });
         this.store.dispatch(save(['account', 'books']));
+
+        location.replace(location.hash.split('?')[0]);
       })
       // Only the HTTP request will throw an error
       .catch(err => location.replace(`${XYACCOUNTS_URL}/#/login/service/14`));
@@ -172,7 +173,7 @@ class App extends React.Component {
   }
 
   render() {
-    if (!this.state) return <Loading />;
+    if (!this.state || this.state.loading) return <Loading />
 
     const view = (() => {
       const props = {
@@ -204,6 +205,24 @@ class App extends React.Component {
     );
   }
 
+}
+
+// Redirect Cordova users going through login process back to local file with
+// access token
+if (!window.cordova) {
+  document.addEventListener('deviceready', () => {
+    const interval = setInterval(() => {
+      if (!window.LOGGED_IN) return;
+
+      clearInterval(interval);
+
+      // !! Must be window.open, location.* doesn't work
+      window.open(
+        `${window.cordova.file.applicationDirectory}www/index.html` +
+        `#/?accessToken=${localStorage.accessToken}`
+      );
+    }, 25)
+  }, false);
 }
 
 render(<App />, window.content);
