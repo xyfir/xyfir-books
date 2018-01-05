@@ -31,5 +31,6 @@ export default {
   account: {
     uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 15,
     referral: {}, xyAnnotationsKey: ''
-  }
+  },
+  loading: true
 };
