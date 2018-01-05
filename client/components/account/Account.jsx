@@ -14,15 +14,15 @@ export default class Account extends React.Component {
   constructor(props) {
     super(props);
 
-    this.canPurchase = !localStorage.isPhoneGap;
+    this.canPurchase = !window.cordova;
   }
 
   render() {
     if (this.props.data.view.split('/')[1] == 'PURCHASE')
       return <Purchase {...this.props} />
-    
+
     const { account } = this.props.data;
-    
+
     return (
       <div className='account'>
         <Paper
@@ -45,7 +45,7 @@ export default class Account extends React.Component {
             }
           >Copy Link</Button>
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -97,7 +97,7 @@ export default class Account extends React.Component {
                   </span>
                 ) : null}
               </p>
-              
+
               {this.canPurchase ? (
                 <Button
                   raised primary
@@ -113,6 +113,6 @@ export default class Account extends React.Component {
         </Paper>
       </div>
     );
-  }    
+  }
 
 }
