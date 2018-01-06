@@ -1,12 +1,8 @@
+import { MenuButton, FontIcon, ListItem } from 'react-md';
 import React from 'react';
 
 // Components
 import Pagination from 'components/misc/Pagination';
-
-// react-md
-import MenuButton from 'react-md/lib/Menus/MenuButton';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import FontIcon from 'react-md/lib/FontIcons';
 
 // Modules
 import findMatches from 'lib/books/find-matching';
@@ -20,11 +16,11 @@ export default class CompactList extends React.Component {
   constructor(props) {
     super(props);
   }
-  
+
   componentDidMount() {
     loadCovers(this.props.data.books, this.props.data.account.library);
   }
-  
+
   componentDidUpdate() {
     loadCovers(this.props.data.books, this.props.data.account.library);
   }
@@ -36,13 +32,13 @@ export default class CompactList extends React.Component {
 
   render() {
     if (!this.props.data.books.length) return <p>You don't have any books!</p>;
-    
+
     let books = sortBooks(
       findMatches(this.props.data.books, this.props.data.search.query),
       'title', true
     );
     const booksCount = books.length;
-    
+
     books = books.splice((this.props.data.search.page - 1) * 25, 25);
 
     return (
@@ -58,31 +54,33 @@ export default class CompactList extends React.Component {
                 className='cover'
                 id={`cover-${b.id}`}
               />
-              
+
               <div className='info'>
                 <span className='title'>{b.title}</span>
                 <span className='authors'>{b.authors}</span>
-                
-                <span className='chip percent-complete'>
-                  {b.percent_complete}%
-                </span>
 
-                {b.word_count > 0 ? (
-                  <span className='chip word-count'>
-                    {Math.round(b.word_count / 1000)}K
+                <div className='chips'>
+                  <span className='chip percent-complete'>
+                    {b.percent_complete}%
                   </span>
-                ) : null}
 
-                <span className='chip date-added'>{
-                  (new Date(b.timestamp)).toLocaleDateString()
-                }</span>
+                  {b.word_count > 0 ? (
+                    <span className='chip word-count'>
+                      {Math.round(b.word_count / 1000)}K
+                    </span>
+                  ) : null}
 
-                {!!(+b.rating) ? (
-                  <span className='chip rating'>
-                    <span>{b.rating}</span>
-                    <span className='icon-star' />
-                  </span>
-                ) : null}
+                  <span className='chip date-added'>{
+                    (new Date(b.timestamp)).toLocaleDateString()
+                  }</span>
+
+                  {!!(+b.rating) ? (
+                    <span className='chip rating'>
+                      <span>{b.rating}</span>
+                      <FontIcon>stars</FontIcon>
+                    </span>
+                  ) : null}
+                </div>
 
                 <MenuButton
                   icon primary
@@ -124,7 +122,7 @@ export default class CompactList extends React.Component {
         <Pagination
           itemsPerPage={25}
           dispatch={this.props.dispatch}
-          items={booksCount} 
+          items={booksCount}
           data={this.props.data}
         />
       </div>
