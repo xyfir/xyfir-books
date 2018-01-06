@@ -1,4 +1,6 @@
 const CompressionPlugin = require('compression-webpack-plugin');
+// ** Remove after Webpack v4 is released
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 const config = require('./config');
 const path = require('path');
@@ -13,10 +15,7 @@ if (isProd) {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      mangle: false,
-      compress: { unused: false }
-    }),
+    new UglifyJsPlugin({}),
     new CompressionPlugin({
       asset: '[path].gz'
     })
