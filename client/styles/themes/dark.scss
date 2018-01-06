@@ -46,25 +46,21 @@ body.theme-dark {
   .edit-books div.comments, .manage-book div.comments {
     background-color: #3F3F46;
   }
-  
+
   .markdown-body {
     color: #DDD;
-    
+
     code {
       background-color: rgba(255,255,255,0.1);
       color: #D7BA7D;
     }
-    
+
     pre, pre > code {
       background-color: #252526;
     }
-    
+
     td, th {
       background-color: #252526;
     }
-  }
-
-  .find-cover {
-    background-color: #252526 !important;
   }
 }
