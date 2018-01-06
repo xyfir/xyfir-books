@@ -1,4 +1,4 @@
-import { Slider } from 'react-md';
+import { Slider, FontIcon } from 'react-md';
 import React from 'react';
 
 export default class Filters extends React.Component {
@@ -35,7 +35,7 @@ export default class Filters extends React.Component {
 
   render() {
     if (this.state.loading) return null;
-    
+
     return (
       <div className='filters'>
         <Slider
@@ -43,7 +43,7 @@ export default class Filters extends React.Component {
           min={50}
           max={100}
           label='Brightness'
-          leftIcon={<i className='icon-light-up' />}
+          leftIcon={<FontIcon>brightness_medium</FontIcon>}
           onChange={v => this.onUpdate('brightness', v)}
           defaultValue={this.state.brightness}
         />
@@ -53,7 +53,7 @@ export default class Filters extends React.Component {
           min={0}
           max={100}
           label='Warmth'
-          leftIcon={<i className='icon-fire' />}
+          leftIcon={<FontIcon>wb_sunny</FontIcon>}
           onChange={v => this.onUpdate('warmth', v)}
           defaultValue={this.state.warmth}
         />
@@ -63,7 +63,7 @@ export default class Filters extends React.Component {
           min={50}
           max={150}
           label='Contrast'
-          leftIcon={<icon className='icon-contrast' />}
+          leftIcon={<FontIcon>tonality</FontIcon>}
           onChange={v => this.onUpdate('contrast', v)}
           defaultValue={this.state.contrast}
         />

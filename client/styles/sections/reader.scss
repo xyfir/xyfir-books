@@ -7,7 +7,7 @@
     bottom: 0%;
     padding: 1.1em 0em;
   }
-  
+
   div.overlay {
     span.status {
       position: fixed;
@@ -192,11 +192,11 @@ span.reader-dialog {
         flex: 10;
       }
 
-      span[class^="icon-"] {
+      i.md-icon {
         flex: 1;
       }
     }
-  } 
+  }
 }
 
 div.reader-drawer-overlay {
