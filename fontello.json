@@ -7,60 +7,6 @@
   "ascent": 850,
   "glyphs": [
     {
-      "uid": "5d595124cecf472869d1cdc020da0ccc",
-      "css": "upload",
-      "code": 59393,
-      "src": "entypo"
-    },
-    {
-      "uid": "474656633f79ea2f1dad59ff63f6bf07",
-      "css": "star",
-      "code": 59398,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "f48ae54adfb27d8ada53d0fd9e34ee10",
-      "css": "trash",
-      "code": 59399,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "jqzwo6i8oicjbn049sh2856d8anrqoli",
-      "css": "edit",
-      "code": 59400,
-      "src": "typicons"
-    },
-    {
-      "uid": "25fc99a30fecc4021fdcae5fff5ba9ac",
-      "css": "eye",
-      "code": 59401,
-      "src": "entypo"
-    },
-    {
-      "uid": "c8585e1e5b0467f28b70bce765d5840c",
-      "css": "files",
-      "code": 59403,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "9dd9e835aebe1060ba7190ad2b2ed951",
-      "css": "search",
-      "code": 59408,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "f5999a012fc3752386635ec02a858447",
-      "css": "download",
-      "code": 59409,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "5211af474d3a9848f67f945e2ccaf143",
-      "css": "close",
-      "code": 59410,
-      "src": "fontawesome"
-    },
-    {
       "uid": "8aff323697468c4a63993cde00386ec6",
       "css": "windows",
       "code": 61818,
@@ -82,30 +28,6 @@
       "uid": "47a35af762c8e06f3d152750134c8750",
       "css": "linux",
       "code": 61820,
-      "src": "fontawesome"
-    },
-    {
-      "uid": "7e4164950ffa4990961958b2d6318658",
-      "css": "info",
-      "code": 59418,
-      "src": "entypo"
-    },
-    {
-      "uid": "f8e120c48c070f8afd2d072651b4fb9f",
-      "css": "light-up",
-      "code": 59423,
-      "src": "entypo"
-    },
-    {
-      "uid": "dc73bee1d58539abe8c96b958bf4c931",
-      "css": "fire",
-      "code": 59424,
-      "src": "elusive"
-    },
-    {
-      "uid": "ca90da02d2c6a3183f2458e4dc416285",
-      "css": "contrast",
-      "code": 59426,
       "src": "fontawesome"
     }
   ]
