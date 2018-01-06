@@ -1,4 +1,4 @@
-import EPUB from 'epubjs/dist/epub';
+import EPUB from 'epubjs';
 
 // Modules
 import getMatchIndexes from 'lib/reader/matches/find-indexes';

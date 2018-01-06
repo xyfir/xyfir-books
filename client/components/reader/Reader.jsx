@@ -1,5 +1,5 @@
 import request from 'superagent';
-import EPUB from 'epubjs/dist/epub';
+import EPUB from 'epubjs';
 import React from 'react';
 
 // !! window.ePub needed for EPUBJS to work
