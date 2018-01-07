@@ -1,4 +1,6 @@
+import { FontIcon, Button, Divider } from 'react-md';
 import request from 'superagent';
+import moment from 'moment';
 import React from 'react';
 
 // Modules
@@ -17,32 +19,38 @@ export default class TableList extends React.Component {
   constructor(props) {
     super(props);
 
-    const selected = this.props.data.books.length
-      ? [rand(0, this.props.data.books.length - 1)]
+    const {state: AppState} = this.props.App;
+
+    const selected = AppState.books.length
+      ? [rand(0, AppState.books.length - 1)]
       : [];
 
     this.state = {
-      selected, sort: this.props.data.config.bookList.table.defaultSort
+      selected, sort: AppState.config.bookList.table.defaultSort
     };
   }
 
   componentDidMount() {
-    loadCovers(this.props.data.books, this.props.data.account.library);
+    const {books, account} = this.props.App.state;
+    loadCovers(books, account.library);
   }
 
   componentDidUpdate() {
-    loadCovers(this.props.data.books, this.props.data.account.library);
+    const {books, account} = this.props.App.state;
+    loadCovers(books, account.library);
   }
 
   onSelect(e, id) {
+    const {selected} = this.state;
+
     // Select multiple items
     if (e.ctrlKey) {
       // Add item
-      if (this.state.selected.indexOf(id) == -1)
-        this.setState({ selected: this.state.selected.concat([id]) });
+      if (selected.indexOf(id) == -1)
+        this.setState({ selected: selected.concat([id]) });
       // Remove item
       else if (this.state.selected.length > 1)
-        this.setState({ selected: this.state.selected.filter(s => s != id) });
+        this.setState({ selected: selected.filter(s => s != id) });
     }
     // Select single item
     else {
@@ -54,35 +62,234 @@ export default class TableList extends React.Component {
     const selected = this.state.selected.slice();
     this.setState({ selected: [] });
 
-    deleteBooks(selected, this.props.dispatch);
+    deleteBooks(selected, this.props.App.store.dispatch);
   }
 
+  /** @param {string} column */
   onSort(column) {
+    const {sort} = this.state;
+
     // Flip state.sort.asc, retain column
-    if (this.state.sort.column == column)
-      this.setState({ sort: { column, asc: !this.state.sort.asc } });
+    if (sort.column == column)
+      this.setState({ sort: { column, asc: !sort.asc } });
     // Change state.sort.column, asc always true
     else
       this.setState({ sort: { column, asc: true } });
   }
 
-  render() {
-    const selectedBook = this.props.data.books.find(b =>
-      b.id == this.state.selected[this.state.selected.length - 1]
-    );
-    if (selectedBook) {
-      selectedBook.url = selectedBook.id
-        + '/' + toUrl(selectedBook.authors)
-        + '/' + toUrl(selectedBook.title);
+  /** @return {JSX.Element} */
+  _renderSelectedBook() {
+    const {selected} = this.state;
+    const {books} = this.props.App.state;
+    const book = books.find(b => b.id == selected[selected.length - 1]);
 
-      if (selectedBook.identifiers === undefined)
-        selectedBook.identifiers = {};
-    }
+    if (!book) return null;
+
+    book.url = `${book.id}/${toUrl(book.authors)}/${toUrl(book.title)}`,
+    book.identifiers = book.identifiers || {};
 
     return (
-      <div className='list-table'>
-        <div className='table-container'>
-        <table className='books'>
+      <section className='selected-book'>
+        <img className='cover' id={`cover-${book.id}`} />
+
+        <div className='controls'>
+          {selected.length == 1 ? (
+            <Button
+              icon secondary
+              tooltipPosition='bottom'
+              tooltipLabel='Read book'
+              iconChildren='remove_red_eye'
+              onClick={() => location.hash = `#/books/read/${book.url}`}
+            />
+          ) : null}
+
+          <Button
+            icon secondary
+            tooltipPosition='bottom'
+            tooltipLabel='Delete book'
+            iconChildren='delete'
+            onClick={() => this.onDelete()}
+          />
+
+          {selected.length > 1 ? (
+            <Button
+              icon secondary
+              tooltipPosition='bottom'
+              tooltipLabel={`Edit (${selected.length}) books`}
+              iconChildren='edit'
+              onClick={() =>
+                location.hash = `#/books/bulk-edit/${selected.join(',')}`
+              }
+            />
+          ) : (
+            <Button
+              icon secondary
+              tooltipPosition='bottom'
+              tooltipLabel='Edit book'
+              iconChildren='edit'
+              onClick={() => location.hash = `#/books/manage/${book.url}`}
+            />
+          )}
+
+          {selected.length == 1 ? (
+            <Button
+              icon secondary
+              tooltipPosition='bottom'
+              tooltipLabel='Add new formats to book'
+              iconChildren='add_box'
+              onClick={() => location.hash = `#/books/add-format/${book.url}`}
+            />
+          ) : null}
+        </div>
+
+        <div className='info'>
+          <div className='chips'>
+            <span className='chip percent-complete'>
+              {book.percent_complete}%
+            </span>
+
+            {book.word_count > 0 ? (
+              <span className='chip word-count'>
+                {Math.round(book.word_count / 1000)}K
+              </span>
+            ) : null}
+
+            <span className='chip date-added'>{
+              moment(book.timestamp).format('YYYY-MM-DD')
+            }</span>
+
+            {!!+book.rating ? (
+              <span className='chip rating'>
+                <span>{book.rating}</span>
+                <FontIcon>stars</FontIcon>
+              </span>
+            ) : null}
+          </div>
+
+          <Divider />
+
+          <span className='field title'>{book.title}</span>
+
+          <a
+            className='field authors'
+            href={
+              `#/books/list/all?search=1&authors=` +
+              encodeURIComponent(book.authors)
+            }
+          >{book.authors}</a>
+
+          {book.series ? (
+            <span className='field series'>
+              <span>#{book.series_index} of </span>
+              <a href={
+                `#/books/list/all?search=1&series=` +
+                encodeURIComponent(book.series)
+              }>{book.series}</a>
+            </span>
+          ) : null}
+
+          <span className='field published'>
+            Published on <span className='date'>{
+              book.pubdate
+                ? moment(book.pubdate).format('YYYY-MM-DD')
+                : 'N/A'
+            }</span> by <span className='publisher'>{
+              book.publisher ? (
+                <a href={
+                  '#/books/list/all?search=1&publisher=' +
+                  encodeURIComponent(book.publisher)
+                }>{book.publisher}</a>
+              ) : 'N/A'
+            }</span>
+          </span>
+
+          <Divider />
+
+          <span className='field identifiers'>
+            <span className='name'>Identifiers</span>
+            <span className='links'>{Object
+              .keys(book.identifiers)
+              .map(type => {
+                const id = [type, book.identifiers[type]];
+
+                switch (id[0]) {
+                  case 'isbn': return {
+                    link: `http://www.abebooks.com/book-search/isbn/${id[1]}`,
+                    title: 'ISBN'
+                  };
+                  case 'goodreads': return {
+                    link: `http://www.goodreads.com/book/show/${id[1]}`,
+                    title: 'GoodReads'
+                  };
+                  case 'mobi-asin':
+                  case 'amazon': return {
+                    link: `http://www.amazon.com/dp/${id[1]}`,
+                    title: 'Amazon'
+                  };
+                  case 'google': return {
+                    link: `https://books.google.com/books/about/?id=${id[1]}`,
+                    title: 'Google Books'
+                  };
+                  case 'barnesnoble': return {
+                    link: `http://www.barnesandnoble.com/${id[1]}`,
+                    title: 'Barnes & Noble'
+                  };
+                  default: return null;
+                }
+              })
+              .filter(id => id != null)
+              .map(id =>
+                <a target='_blank' href={id.link} key={id.title}>{id.title}</a>
+              )
+            }</span>
+          </span>
+
+          <span className='field formats'>
+            <span className='name'>Formats</span>
+            <span className='links'>{
+              book.formats.map((format, i) =>
+                <a
+                  target='_blank'
+                  href={
+                    `${XYLIBRARY_URL}/files/` +
+                    `${this.props.App.state.account.library}/${format}`
+                  }
+                  key={i}
+                >{format.split('.').slice(-1)[0].toUpperCase()}</a>
+              )
+            }</span>
+          </span>
+
+          <span className='field formats'>
+            <span className='name'>Tags</span>
+            <span className='links'>{
+              book.tags.map(tag =>
+                <a
+                  href={
+                    `#/books/list/all?search=1&tag=${encodeURIComponent(tag)}`
+                  }
+                  key={tag}
+                >{tag}</a>
+              )
+            }</span>
+          </span>
+
+          <Divider />
+
+          <div
+            className='markdown-body comments'
+            dangerouslySetInnerHTML={{__html: book.comments}}
+          />
+        </div>
+      </section>
+    );
+  }
+
+  render() {
+    return (
+      <div className='book-list table'>
+        <section className='table-container'>
+        <table>
           <thead>
           <tr>{
             this.props.data.config.bookList.table.columns.map(col =>
@@ -100,7 +307,8 @@ export default class TableList extends React.Component {
             sortBooks(
               findMatches(
                 this.props.data.books, this.props.data.search.query
-              ), this.state.sort.column, this.state.sort.asc
+              ),
+              this.state.sort.column, this.state.sort.asc
             ).map(book =>
               <tr
                 className={`book ${
@@ -123,10 +331,10 @@ export default class TableList extends React.Component {
                       <td className='rating'>{
                         book.rating === undefined
                         ? 'None' : (
-                          <span>
+                          <React.Fragment>
                             {book.rating}
-                            <span className='icon-star' />
-                          </span>
+                            <FontIcon>stars</FontIcon>
+                          </React.Fragment>
                         )
                       }</td>
                     );
@@ -157,190 +365,9 @@ export default class TableList extends React.Component {
             )
           }</tbody>
         </table>
-        </div>
+        </section>
 
-        <div className='selected-book'>
-          {this.state.selected.length > 0 ? (
-            <div className='controls'>
-              {this.state.selected.length > 1 ? null : (
-                <a href={`#/books/read/${selectedBook.url}`}>
-                  <span className='icon-eye' />Read
-                </a>
-              )}
-
-              <a onClick={() => this.onDelete()}>
-                <span className='icon-trash' />Delete
-              </a>
-
-              {this.state.selected.length > 1 ? (
-                <a href={`#/books/bulk-edit/${
-                  this.state.selected.join(',')
-                }`}>
-                  <span className='icon-edit' />Bulk Edit
-                </a>
-              ) : (
-                <a href={`#/books/manage/${selectedBook.url}`}>
-                  <span className='icon-edit' />Manage
-                </a>
-              )}
-
-              {this.state.selected.length > 1 ? (<span />) : (
-                <a href={`#/books/add-format/${selectedBook.url}`}>
-                  <span className='icon-files' /> Add Format
-                </a>
-              )}
-            </div>
-          ) : null}
-
-          {this.state.selected.length ? (
-            <div className='info'>
-              <a href={`#/books/read/${selectedBook.url}`}>
-                <img
-                  className='cover'
-                  id={`cover-${selectedBook.id}`}
-                />
-              </a>
-
-              <span className='chip percent-complete'>{
-                selectedBook.percent_complete + '%'
-              }</span>
-
-              {selectedBook.word_count > 0 ? (
-                <span className='chip word-count'>{
-                  Math.round(selectedBook.word_count / 1000) + 'K'
-                }</span>
-              ) : null}
-
-              <span className='chip date-added'>{
-                (new Date(selectedBook.timestamp))
-                  .toLocaleDateString()
-              }</span>
-
-              {!!+selectedBook.rating ? (
-                <span className='chip rating'>
-                  <span>{selectedBook.rating}</span>
-                  <span className='icon-star' />
-                </span>
-              ) : null}
-
-              <dl>
-                <dt>Title</dt><dd>{selectedBook.title}</dd>
-
-                <dt>Authors</dt><dd><a href={
-                  `#/books/list/all?search=1&authors=${
-                    encodeURIComponent(selectedBook.authors)
-                  }`
-                }>{selectedBook.authors}</a></dd>
-
-                {selectedBook.series ? (
-                  <div>
-                    <dt>Series</dt>
-                    <dd>#{selectedBook.series_index} of <a href={
-                      `#/books/list/all?search=1&series=${
-                        encodeURIComponent(selectedBook.series)
-                      }`
-                    }>{selectedBook.series}</a></dd>
-                  </div>
-                ) : null}
-
-                <dt>Published</dt>
-                <dd>{
-                  (new Date(selectedBook.pubdate))
-                    .toLocaleDateString()
-                } by <a href={
-                  '#/books/list/all?search=1&publisher='
-                  + encodeURIComponent(selectedBook.publisher)
-                }>{
-                  selectedBook.publisher
-                }</a></dd>
-
-                <dt>Formats</dt>
-                <dd className='formats'>{
-                  selectedBook.formats.map(format =>
-                    <a
-                      target='_blank'
-                      href={
-                        `${XYLIBRARY_URL}/files/` +
-                        `${this.props.data.account.library}/${format}`
-                      }
-                    >{
-                      format.split('.').slice(-1)[0].toUpperCase()
-                    }</a>
-                  )
-                }</dd>
-
-                <dt>Links</dt>
-                <dd className='links'>{
-                  Object
-                    .keys(selectedBook.identifiers)
-                    .map(type => {
-                      const id = [type, selectedBook.identifiers[type]];
-
-                      switch (id[0]) {
-                        case 'isbn': return (
-                          <a
-                            target='_blank'
-                            href={
-                              `http://www.abebooks.com/book-search/isbn/${id[1]}`
-                            }
-                          >ISBN ({id[1]})</a>
-                        );
-
-                        case 'goodreads': return (
-                          <a
-                            target='_blank'
-                            href={`http://www.goodreads.com/book/show/${id[1]}`}
-                          >GoodReads</a>
-                        );
-
-                        case 'mobi-asin':
-                        case 'amazon': return (
-                          <a
-                            target='_blank'
-                            href={`http://www.amazon.com/dp/${id[1]}`}
-                          >Amazon</a>
-                        );
-
-                        case 'google': return (
-                          <a
-                            target='_blank'
-                            href={
-                              `https://books.google.com/books/about/?id=${id[1]}`
-                            }
-                          >Google Books</a>
-                        );
-
-                        case 'barnesnoble': return (
-                          <a
-                            target='_blank'
-                            href={`http://www.barnesandnoble.com/${id[1]}`
-                          }>Barnes & Noble</a>
-                        );
-
-                        default: return <span />;
-                      }
-                    })
-                }</dd>
-
-                <dt>Tags</dt>
-                <dd className='tags'>{
-                  selectedBook.tags.map(tag =>
-                    <a href={`#/books/list/all?search=1&tag=${
-                      encodeURIComponent(tag)}`
-                    }>{tag}</a>
-                  )
-                }</dd>
-              </dl>
-
-              <div
-                className='comments'
-                dangerouslySetInnerHTML={{
-                  __html: selectedBook.comments
-                }}
-              />
-            </div>
-          ) : null}
-        </div>
+        {this._renderSelectedBook()}
       </div>
     );
   }
