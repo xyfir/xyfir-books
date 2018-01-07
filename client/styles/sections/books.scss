@@ -229,101 +229,116 @@ ul.list-grid {
   }
 }
 
-.list-table {
-  .table-container {
-    width: 70%;
+div.book-list.table {
+  text-align: left;
+
+  >section.table-container {
+    margin-left: 1em;
+    width: calc(80% - 1em);
     float: left;
-  }
 
-  .selected-book {
-    display: inline-block;
-    width: 30%;
+    >table {
+      width: 100%;
 
-    .controls {
-      background-color: $lllgray;
-      padding: 0.3em 0.1em;
-      margin-bottom: 1em;
-
-      a {
-        margin: 0.1em;
-      }
-    }
-
-    .info {
-      img.cover {
-        height: 10em;
-        width: 6.3em;
-        display: block;
-        margin: auto;
-        margin-bottom: 1em;
-      }
-
-      dt {
-        font-weight: bold;
-      }
-
-      dd {
-        margin: 0em;
-        margin-bottom: 0.1em;
-      }
-
-      .tags > a, .links > a, .formats > a {
-        margin: 0.2em;
-      }
-
-      .comments {
-        max-height: 25em;
-        overflow-y: auto;
-      }
-    }
-  }
-
-  table.books {
-    width: 100%;
-
-    thead > tr {
-      background-color: $llgray;
-      border: solid 0.1em $lllgray;
-      height: 1.9em;
-
-      th {
-        cursor: pointer;
-      }
-
-      th:hover {
-        background-color: $lllgray;
-      }
-
-      th.sort-by {
-        font-style: italic;
-      }
-    }
-
-    tbody {
-      tr {
-        cursor: pointer;
-      }
-
-      tr:nth-child(even) {
-        background-color: $lllgray;
-      }
-
-      tr:hover {
+      thead >tr {
         background-color: $llgray;
+        border: solid 0.1em $lllgray;
+        height: 1.9em;
+
+        th {
+          cursor: pointer;
+        }
+
+        th:hover {
+          background-color: $lllgray;
+        }
+
+        th.sort-by {
+          font-style: italic;
+        }
       }
 
-      tr.selected {
-        background-color: $lblue;
-        color: white;
+      >tbody {
+        tr {
+          cursor: pointer;
+        }
+
+        tr:nth-child(even) {
+          background-color: $lllgray;
+        }
+
+        tr:hover {
+          background-color: $llgray;
+        }
+
+        tr.selected {
+          background-color: $lblue;
+          color: white;
+        }
+
+        td.rating {
+          display: flex;
+          align-items:  center;
+          justify-content:  center;
+
+          >i.md-icon {
+            margin-left: 0.1em;
+          }
+        }
+      }
+    }
+  }
+
+  >section.selected-book {
+    margin-right: 1em;
+    margin-left: 0.1em;
+    display: inline-block;
+    width: calc(20% - 1.1em);
+
+    >img.cover {
+      width: 100%;
+      display: block;
+      margin: auto;
+    }
+
+    >div.controls {
+      justify-content:  center;
+      padding: 0.3em;
+      display: flex;
+    }
+
+    >div.info {
+      >div.chips {
+        justify-content: center;
       }
 
-      td.rating {
-        display: flex;
-        align-items:  center;
-        justify-content:  center;
+      >hr.md-divider {
+        margin: 0.5em 0;
+      }
 
-        >i.md-icon {
-          margin-left: 0.1em;
+      >span.field {
+        display: block;
+
+        &.title {
+          font-weight: bold;
+        }
+
+        >span.name {
+          margin-right: 0.3em;
+          font-weight: bold;
+          color: $md-grey-500;
+
+          &:after {
+            content: ':';
+          }
+        }
+
+        >span.links >a:after {
+          content: ', ';
+          color: initial;
+        }
+        >span.links >a:last-child:after {
+          content: '';
         }
       }
     }
