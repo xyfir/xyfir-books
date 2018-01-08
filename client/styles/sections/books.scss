@@ -237,54 +237,13 @@ div.book-list.table {
     width: calc(80% - 1em);
     float: left;
 
-    >table {
-      width: 100%;
+    td.rating {
+      display: flex;
+      align-items:  center;
+      justify-content:  center;
 
-      thead >tr {
-        background-color: $llgray;
-        border: solid 0.1em $lllgray;
-        height: 1.9em;
-
-        th {
-          cursor: pointer;
-        }
-
-        th:hover {
-          background-color: $lllgray;
-        }
-
-        th.sort-by {
-          font-style: italic;
-        }
-      }
-
-      >tbody {
-        tr {
-          cursor: pointer;
-        }
-
-        tr:nth-child(even) {
-          background-color: $lllgray;
-        }
-
-        tr:hover {
-          background-color: $llgray;
-        }
-
-        tr.selected {
-          background-color: $lblue;
-          color: white;
-        }
-
-        td.rating {
-          display: flex;
-          align-items:  center;
-          justify-content:  center;
-
-          >i.md-icon {
-            margin-left: 0.1em;
-          }
-        }
+      >i.md-icon {
+        margin-left: 0.1em;
       }
     }
   }
@@ -347,6 +306,13 @@ div.book-list.table {
 
 div.upload-books {
   padding: 1em;
+}
+
+div.book-list.container {
+  >section.search {
+    margin-top: 0;
+    padding: 0;
+  }
 }
 
 /* PORTRAIT ORIENTATION */
