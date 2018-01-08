@@ -33,7 +33,7 @@ import { READ_BOOK } from 'constants/views';
 import initialState from 'constants/initial-state';
 
 // Actions
-import { save } from 'actions/creators/index';
+import { save, setState } from 'actions/creators/index';
 
 // Globals
 window.localforage = localForage;
@@ -135,7 +135,7 @@ class App extends React.Component {
     this.store.dispatch({ type: INITIALIZE_STATE, state });
 
     // Set state.view based on current url hash
-    state.view = updateView(this.store);
+    updateView(this.store);
 
     // Load new data from API
     if (!navigator.onLine) return;
@@ -155,10 +155,7 @@ class App extends React.Component {
         return loadBooksFromApi(account.library);
       })
       .then(books => {
-        this.store.dispatch({
-          type: INITIALIZE_STATE,
-          state: Object.assign(state, { account, books })
-        });
+        this.store.dispatch(setState({ account, books }));
         this.store.dispatch(save(['account', 'books']));
 
         location.hash = location.hash.split('?')[0];
