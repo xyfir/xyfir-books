@@ -94,7 +94,7 @@ export default class ReaderNavbar extends React.Component {
       <div className='toolbar'>
         <Toolbar
           colored fixed
-          className={!this.props.show ? 'hidden' : ''}
+          className={!this.props.show ? 'hide' : ''}
           actions={[
             <Button
               icon
