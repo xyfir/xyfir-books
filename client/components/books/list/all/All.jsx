@@ -92,8 +92,6 @@ export default class ListAllBooks extends React.Component {
                 primaryText='Compact'
               />
             ]}
-            tooltipPosition='left'
-            tooltipLabel='Set book list view'
             iconChildren='list'
           />
         </section>
