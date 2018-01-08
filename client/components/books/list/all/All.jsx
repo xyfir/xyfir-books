@@ -29,7 +29,7 @@ export default class ListAllBooks extends React.Component {
 
     this._updateSearch = this._updateSearch.bind(this);
   }
-  
+
   componentDidMount() {
     this._updateSearch();
   }
@@ -50,14 +50,14 @@ export default class ListAllBooks extends React.Component {
 
   _updateSearch() {
     const qo = parseHashQuery();
-    
+
     if (qo.search) {
       delete qo.search;
       const qa = Object.keys(qo);
 
       const value = qa[0] + ':' + qo[qa[0]]
         .replace(new RegExp(' ', 'g'), '_');
-      
+
       // Only set if value is different
       if (this.props.data.search.query != value)
         this.refs.search.setValue(value);
@@ -72,14 +72,14 @@ export default class ListAllBooks extends React.Component {
         case 'table':
           return <Table {...this.props} />
         case 'grid':
-          return <Grid {...this.props} />;
+          return <Grid {...this.props} />
       }
     })();
-    
+
     return (
-      <div className='list-all'>
+      <div className='book-list container'>
         <Search ref='search' {...this.props} />
-        
+
         {view}
 
         <Button
