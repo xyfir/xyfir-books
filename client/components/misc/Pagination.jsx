@@ -1,29 +1,27 @@
+import { Button } from 'react-md';
 import React from 'react';
 
 // Actions
 import { setPage } from 'actions/creators/index';
-
-// Modules
-import parseQuery from 'lib/url/parse-query-string';
-
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
 
 export default class Pagination extends React.Component {
 
   constructor(props) {
     super(props);
   }
-  
+
   onGoTo(page) {
     this.props.dispatch(setPage(page));
   }
 
   _buildPagination() {
-    let pagination = {
-      page: this.props.data.search.page, isNextPage: false,
-      isPrevPage: false, isPrevPageFirst: false, isNextPageLast: false,
-      pages: Math.ceil(this.props.items / this.props.itemsPerPage) || 1
+    const pagination = {
+      page: this.props.data.search.page,
+      pages: Math.ceil(this.props.items / this.props.itemsPerPage) || 1,
+      isNextPage: false,
+      isPrevPage: false,
+      isPrevPageFirst: false,
+      isNextPageLast: false
     };
 
     // Set boolean values
@@ -40,10 +38,10 @@ export default class Pagination extends React.Component {
   }
 
   render() {
-    const pagination = this._buildPagination(); 
+    const pagination = this._buildPagination();
 
     return (
-      <div className='pagination'>
+      <section className='pagination'>
         {pagination.isPrevPage && !pagination.isPrevPageFirst ? (
           <Button
             icon
@@ -59,7 +57,7 @@ export default class Pagination extends React.Component {
             iconChildren='navigate_before'
           />
         ) : null}
-        
+
         {pagination.isNextPage ? (
           <Button
             icon primary
@@ -75,7 +73,7 @@ export default class Pagination extends React.Component {
             iconChildren='last_page'
           />
         ) : null}
-      </div>
+      </section>
     );
   }
 
