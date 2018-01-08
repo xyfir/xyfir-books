@@ -309,9 +309,20 @@ div.upload-books {
 }
 
 div.book-list.container {
-  >section.search {
-    margin-top: 0;
-    padding: 0;
+  >section.controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+
+    >section.search {
+      padding: 0;
+      margin: 0 1em;
+      flex: 1;
+    }
+
+    >div.md-menu-container {
+      margin-right: 1em;
+    }
   }
 }
 

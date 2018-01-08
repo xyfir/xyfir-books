@@ -1,3 +1,4 @@
+import { MenuButton, ListItem, FontIcon } from 'react-md';
 import React from 'react';
 
 // Components
@@ -7,14 +8,7 @@ import Table from 'components/books/list/all/Table';
 import Grid from 'components/books/list/all/Grid';
 
 // Modules
-import parseHashQuery from 'lib/url/parse-query-string';
-
-// react-md
-import FontIcon from 'react-md/lib/FontIcons';
-import ListItem from 'react-md/lib/Lists/ListItem';
-import Button from 'react-md/lib/Buttons/Button';
-import Dialog from 'react-md/lib/Dialogs';
-import List from 'react-md/lib/Lists/List';
+import query from 'lib/url/parse-query-string';
 
 // Actions
 import { setListView } from 'actions/creators/settings';
@@ -24,8 +18,6 @@ export default class ListAllBooks extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = { dialog: false };
 
     this._updateSearch = this._updateSearch.bind(this);
   }
@@ -45,81 +37,68 @@ export default class ListAllBooks extends React.Component {
   onSetListView(view) {
     this.props.dispatch(setListView(view));
     this.props.dispatch(save('config'));
-    this.setState({ dialog: false });
   }
 
   _updateSearch() {
-    const qo = parseHashQuery();
+    const qo = query();
 
     if (qo.search) {
       delete qo.search;
       const qa = Object.keys(qo);
 
-      const value = qa[0] + ':' + qo[qa[0]]
-        .replace(new RegExp(' ', 'g'), '_');
+      const value = `${qa[0]}:${qo[qa[0]].replace(/\s/g, '_')}`;
 
       // Only set if value is different
       if (this.props.data.search.query != value)
-        this.refs.search.setValue(value);
+        this._search.setValue(value);
     }
   }
 
   render() {
     const view = (() => {
-      switch (this.props.data.config.bookList.view) {
-        case 'compact':
-          return <Compact {...this.props} />
-        case 'table':
-          return <Table {...this.props} />
-        case 'grid':
-          return <Grid {...this.props} />
+      switch (this.props.App.state.config.bookList.view) {
+        case 'compact': return <Compact {...this.props} />
+        case 'table': return <Table {...this.props} />
+        case 'grid': return <Grid {...this.props} />
       }
     })();
 
     return (
       <div className='book-list container'>
-        <Search ref='search' {...this.props} />
+        <section className='controls'>
+          <Search ref={i => this._search = i} {...this.props} />
+
+          <MenuButton
+            icon secondary
+            id='menu--set-list-view'
+            menuItems={[
+              window.innerWidth > 950 ? (
+                <ListItem
+                  onClick={() => this.onSetListView('table')}
+                  leftIcon={<FontIcon>view_headline</FontIcon>}
+                  primaryText='Table'
+                />
+              ) : (
+                <span />
+              ),
+              <ListItem
+                onClick={() => this.onSetListView('grid')}
+                leftIcon={<FontIcon>view_module</FontIcon>}
+                primaryText='Grid'
+              />,
+              <ListItem
+                onClick={() => this.onSetListView('compact')}
+                leftIcon={<FontIcon>view_list</FontIcon>}
+                primaryText='Compact'
+              />
+            ]}
+            tooltipPosition='left'
+            tooltipLabel='Set book list view'
+            iconChildren='list'
+          />
+        </section>
 
         {view}
-
-        <Button
-          floating fixed secondary
-          tooltipPosition='right'
-          fixedPosition='bl'
-          tooltipLabel='Set book list view'
-          iconChildren='list'
-          onClick={() => this.setState({ dialog: true })}
-        />
-
-        <Dialog
-          id='dialog--set-view'
-          title='Set List View'
-          onHide={() => this.setState({ dialog: false })}
-          visible={this.state.dialog}
-        >
-          <List>
-            <ListItem
-              onClick={() => this.onSetListView('table')}
-              leftIcon={<FontIcon>view_headline</FontIcon>}
-              primaryText='Table'
-              secondaryText='Lots of data. Not for mobile or small screens.'
-            />
-            <ListItem
-              onClick={() => this.onSetListView('grid')}
-              leftIcon={<FontIcon>view_module</FontIcon>}
-              primaryText='Grid'
-              secondaryText={
-                'Minimal data, large covers.'
-              }
-            />
-            <ListItem
-              onClick={() => this.onSetListView('compact')}
-              leftIcon={<FontIcon>view_list</FontIcon>}
-              primaryText='Compact'
-              secondaryText='Fits well on any device.'
-            />
-          </List>
-        </Dialog>
       </div>
     );
   }
