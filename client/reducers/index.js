@@ -3,34 +3,35 @@ import settings from 'reducers/settings';
 import account from 'reducers/account';
 import books from 'reducers/books';
 
-import {
-  INITIALIZE_STATE, CHANGE_VIEW, SET_SEARCH, SET_SAVE, SET_PAGE
-} from 'actions/types/index';
+import * as views from 'actions/types/index';
 
 export default function (state, action) {
 
   switch (action.type) {
-    case INITIALIZE_STATE:
+    case views.INITIALIZE_STATE:
       return action.state;
 
-    case CHANGE_VIEW:
+    case views.SET_STATE:
+      return Object.assign({}, state, action.state);
+
+    case views.SET_VIEW:
       return Object.assign({}, state, { view: action.view });
 
-    case SET_SEARCH:
+    case views.SET_SEARCH:
       return Object.assign({}, state, {
         search: Object.assign({}, state.search, {
           query: action.query
         })
       });
 
-    case SET_PAGE:
+    case views.SET_PAGE:
       return Object.assign({}, state, {
         search: Object.assign({}, state.search, {
           page: action.page
         })
       });
 
-    case SET_SAVE:
+    case views.SET_SAVE:
       return Object.assign({}, state, { save: action.prop });
 
     default:
