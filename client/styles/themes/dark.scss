@@ -5,11 +5,11 @@ body.theme-dark {
     background-color: $md-grey-800;
   }
 
-  ul > li.book:hover {
+  ul >li.book:hover {
     background-color: #3F3F46;
   }
 
-  ul.list-grid > li.book > div.overlay {
+  ul.list-grid >li.book >div.overlay {
     background-color: rgba(0,0,0,0.85);
   }
 
@@ -21,29 +21,8 @@ body.theme-dark {
     background-color: #3F3F46;
   }
 
-  div.list-table {
-    .selected-book {
-      .controls {
-        background-color: #252526;
-      }
-    }
-
-    table.books {
-      thead > tr {
-        background-color: #252526;
-      }
-
-      thead > tr > th:hover {
-        background-color: #3F3F46;
-      }
-
-      .book:hover, .book:nth-child(even) {
-        background-color: #3F3F46;
-      }
-    }
-  }
-
-  .edit-books div.comments, .manage-book div.comments {
+  .edit-books div.comments,
+  .manage-book div.comments {
     background-color: #3F3F46;
   }
 
