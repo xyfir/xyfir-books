@@ -16,16 +16,16 @@ export default class Search extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.App.state.store.dispatch(setSearch(''));
+    this.props.App.store.dispatch(setSearch(''));
   }
 
   onSearch(query) {
     location.hash = location.hash.split('?')[0];
-    this.props.App.state.store.dispatch(setSearch(query));
+    this.props.App.store.dispatch(setSearch(query));
   }
 
   setValue(val) {
-    this.props.App.state.store.dispatch(setSearch(val));
+    this.props.App.store.dispatch(setSearch(val));
   }
 
   render() {
