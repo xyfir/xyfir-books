@@ -6,6 +6,9 @@ import request from 'superagent';
 import moment from 'moment';
 import React from 'react';
 
+// Components
+import Pagination from 'components/misc/Pagination';
+
 // Modules
 import deleteBooks from 'lib/books/delete';
 import findMatches from 'lib/books/find-matching';
@@ -399,14 +402,15 @@ export default class TableList extends React.Component {
   }
 
   render() {
-    const {books, search} = this.props.App.state;
+    const {App} = this.props;
+    const {books, search} = App.state;
     const {sort} = this.state;
 
     this.books = sortBooks(
       findMatches(books, search.query),
       sort.column, sort.asc
     )
-    .slice(0, 50);
+    .splice((search.page - 1) * 50, 50);
 
     return (
       <div className='book-list table'>
@@ -424,6 +428,13 @@ export default class TableList extends React.Component {
         </section>
 
         {this._renderSelectedBook()}
+
+        <Pagination
+          itemsPerPage={25}
+          dispatch={App.store.dispatch}
+          items={books.length}
+          data={App.state}
+        />
       </div>
     );
   }
