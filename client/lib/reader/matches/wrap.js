@@ -1,15 +1,15 @@
 /**
  * @typedef {object} WrapInfo
  * @prop {string} html - The modified HTML string.
- * @prop {number[]} inserts - The indexes within the modified `html` where 
+ * @prop {number[]} inserts - The indexes within the modified `html` where
  * matches were wrapped.
- * @prop {number} wrapLength - The combined length of the strings that wrap 
+ * @prop {number} wrapLength - The combined length of the strings that wrap
  * each match.
  */
 /**
- * Wraps strings within a book's HTML content with a `span` element with 
+ * Wraps strings within a book's HTML content with a `span` element with
  * `class` and `onclick` attributes.
- * @param {Array.<number[]>} matches - Returned from 
+ * @param {Array.<number[]>} matches - Returned from
  * lib/reader/matches/find-indexes.
  * @param {string} html - The HTML book content to manipulate.
  * @param {string} type - The type of item. Also used for class name.
@@ -21,8 +21,8 @@ export default function(matches, html, type, key) {
   const wrap = [
     `<span ` +
       `class="${type}" ` +
-      `onclick="parent.postMessage(` +
-        `{ type: '${type}', key: '${key}', epubjs: true }, '*'` +
+      `onclick="!event.stopPropagation() && parent.postMessage(` +
+        `{type: '${type}', key: '${key}', epubjs: true}, '*'` +
       `)"` +
     `>`,
     `</span>`
@@ -33,7 +33,7 @@ export default function(matches, html, type, key) {
   // Offset required since we're manipulating the HTML and therefore
   // changing the length / indexes
   let offset = 0;
-  
+
   matches.forEach(index => {
     const start = index[0] + offset;
     const end = index[1] + offset;
