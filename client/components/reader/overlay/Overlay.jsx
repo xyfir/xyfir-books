@@ -10,13 +10,9 @@ export default class ReaderOverlay extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { show: true };
+    this.state = { show: false };
   }
 
-  componentDidMount() {
-    setTimeout(() => this.setState({ show: false }), 3500);
-  }
-  
   _toggleShow() {
     this.setState({ show: !this.state.show });
   }
