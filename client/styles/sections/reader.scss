@@ -1,15 +1,18 @@
-.reader {
-  #book {
-    position: fixed;
-    top: 0%;
-    left: 0%;
-    right: 0%;
-    bottom: 0%;
-    padding: 1.1em 0em;
-  }
+div.reader {
+  >div.overlay {
+    >div.toolbar {
+      opacity: 0.97;
 
-  div.overlay {
-    span.status {
+      >header {
+        transition: 0.3s;
+
+        &.hide {
+          transform: translate(0, -125%);
+        }
+      }
+    }
+
+    >span.status {
       position: fixed;
       font-size: 70%;
       bottom: 0%;
@@ -18,13 +21,19 @@
       color: $gray;
     }
 
-    div.progress-slider {
-      position: fixed;
+    >div.progress-slider {
       left: 0;
-      bottom: 0;
       right: 0;
-      background-color: $md-primary-color;
+      bottom: 0;
+      opacity: 0.97;
       padding: 0em 1em;
+      position: fixed;
+      transition: 0.3s;
+      background-color: $md-primary-color;
+
+      &.hide {
+        transform: translate(0, 100%)
+      }
 
       .md-slider-track-fill {
         background: white;
