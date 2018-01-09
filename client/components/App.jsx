@@ -14,7 +14,7 @@ import Advertisement from 'components/app/Advertisement';
 import Navigation from 'components/app/Navigation';
 import Settings from 'components/settings/Index';
 import Account from 'components/account/Account';
-import Library from 'components/library/Index';
+import Library from 'components/library/Library';
 import Loading from 'components/app/Loading';
 import Books from 'components/books/Books';
 import Alert from 'components/app/Alert';
