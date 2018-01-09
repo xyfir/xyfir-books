@@ -5,9 +5,13 @@ import React from 'react';
 
 // Constants
 import { READ_BOOK } from 'constants/views';
-import { XYBOOKS_URL } from 'constants/config';
+import { XYBOOKS_URL, XYDOCUMENTATION_URL } from 'constants/config';
+
+// Components
+import OpenWindow from 'components/misc/OpenWindow';
 
 export default class AppNavigation extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -189,6 +193,31 @@ export default class AppNavigation extends React.Component {
             />
           </a>
         ]}
+      />,
+
+      <ListItem
+        leftIcon={<FontIcon>info</FontIcon>}
+        primaryText='Documentation'
+        nestedItems={[
+          <OpenWindow href={`${XYDOCUMENTATION_URL}/xyfir-books/help`}>
+            <ListItem
+              leftIcon={<FontIcon>help</FontIcon>}
+              primaryText='Help Docs'
+            />
+          </OpenWindow>,
+          <OpenWindow href={`${XYDOCUMENTATION_URL}/xyfir-books/privacy`}>
+            <ListItem
+              leftIcon={<FontIcon>security</FontIcon>}
+              primaryText='Privacy Policy'
+            />
+          </OpenWindow>,
+          <OpenWindow href={`${XYDOCUMENTATION_URL}/xyfir-books/tos`}>
+            <ListItem
+              leftIcon={<FontIcon>gavel</FontIcon>}
+              primaryText='Terms of Service'
+            />
+          </OpenWindow>
+        ]}
       />
     ];
   }
@@ -253,4 +282,5 @@ export default class AppNavigation extends React.Component {
       </React.Fragment>
     )
   }
+
 }
