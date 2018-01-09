@@ -2,9 +2,6 @@ import Dropzone from 'react-dropzone';
 import request from 'superagent';
 import React from 'react';
 
-// react-md
-import Paper from 'react-md/lib/Papers';
-
 // Modules
 import loadBooksFromApi from 'lib/books/load-from-api';
 
@@ -24,6 +21,8 @@ export default class UploadBooks extends React.Component {
    * @param {File[]} files
    */
   onUpload(files) {
+    const {App} = this.props;
+
     try {
       if (!navigator.onLine)
         throw 'This action requires internet connectivity';
@@ -41,7 +40,7 @@ export default class UploadBooks extends React.Component {
 
       // Upload files
       const req = request.post(
-        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}/books`
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}/books`
       );
 
       files.forEach(file => req.attach('book', file));
@@ -50,43 +49,45 @@ export default class UploadBooks extends React.Component {
         this.setState({ uploading: false });
 
         if (err || res.body.error) {
-          this.props.alert('Could not upload file(s)');
+          console.error('<UploadBooks>', err, '-', res);
+          return App._alert('Could not upload file(s)');
         }
-        else {
-          this.props.alert('Book(s) uploaded successfully');
 
-          // Reload state.books from API
-          loadBooksFromApi(
-            this.props.data.account.library, this.props.dispatch
-          );
-        }
+        App._alert('Book(s) uploaded successfully');
+
+        // Reload state.books from API
+        loadBooksFromApi(App.state.account.library, App.store.dispatch);
       });
     }
     catch (err) {
-      this.props.alert(err.toString());
+      App._alert(err.toString());
       this.setState({ uploading: false });
     }
   }
 
   render() {
     return (
-      <Paper zDepth={1} className='upload-books section'>
+      <Dropzone
+        onDrop={f => this.onUpload(f)}
+        disabled={this.state.uploading}
+        className='dropzone upload-books'
+      >
+        <p className='status'>{
+          this.state.uploading
+            ? 'Uploading file(s), please wait...'
+            : 'Drag and drop ebooks or click box to choose files to upload'
+        }</p>
+
         <p>
-          Upload ebooks to your library. Our system will automatically attempt to extract metadata (title, authors, etc) from the ebook files. Each book's metadata can be viewed and modified after upload.
+          Upload ebooks to your library. Metadata (title, authors, etc) will automatically be extracted from the ebook files. Each book's metadata can be viewed and modified after upload.
         </p>
         <p>
-          While only EPUB format ebooks can be read by xyBooks' ebook reader, any format can be uploaded and managed.
+          Any format can be uploaded and managed. Only EPUB can be read.
         </p>
         <p>
           You can also upload books by sending emails to <a href='mailto:upload-books@xyfir.com'>upload-books@xyfir.com</a> with ebook files attached. Books will only be uploaded to your account if the email is sent from the email address that is linked to your xyBooks account. You may upload up to 25MB worth of ebooks per email.
         </p>
-
-        <Dropzone onDrop={f => this.onUpload(f)} className='dropzone'>{
-          this.state.uploading
-            ? 'Uploading file(s), please wait...'
-            : 'Drag and drop ebooks or click box to choose files to upload'
-        }</Dropzone>
-      </Paper>
+      </Dropzone>
     );
   }
 
