@@ -44,8 +44,7 @@ export default class Reader extends React.Component {
         mode: this.props.data.config.reader.defaultHighlightMode,
         index: 0
       }
-    },
-    this.timers = {};
+    };
 
     this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
     this.onHighlightClicked = this.onHighlightClicked.bind(this);
@@ -66,17 +65,18 @@ export default class Reader extends React.Component {
   }
 
   /**
-   * Download book, update annotations, create epub, and start initialization
-   * process.
+   * Load / initialize book.
    */
-  componentWillMount() {
+  async componentWillMount() {
+    const {App} = this.props;
+
     // Build url to .epub file to read
     let url = `${XYLIBRARY_URL}/files/${this.props.data.account.library}/`;
     let hasEpub = false;
 
     this.state.book.formats.forEach(format => {
       if (format.split('.').slice(-1)[0] == 'epub') {
-        hasEpub = true;
+        hasEpub = true,
         url += format;
       }
     });
@@ -85,38 +85,69 @@ export default class Reader extends React.Component {
     if (!hasEpub) return history.back();
 
     const { id } = this.state.book;
-    let bookInfo;
+    let bookInfo = {}, epubBlob;
 
-    // Get bookmarks, notes, last read time
-    request.get(`${XYBOOKS_URL}/api/books/${id}`)
-      .then(res => {
-        bookInfo = res.body;
+    // Attempt to load epub file, either locally or remotely
+    try {
+      epubBlob = await localforage.getItem(`book-epub-${id}`);
+      if (!epubBlob) throw 'Missing file';
+    }
+    catch (err) {
+      if (!navigator.onLine) {
+        App._alert('You do not have that book downloaded for offline use');
+        return history.back();
+      }
 
-        // Update / set book's annotations
-        return updateAnnotations(
-          this.state.book.annotations,
-          this.props.data.account.xyAnnotationsKey
-        );
-      })
-      .then(ans => {
-        bookInfo.annotations = ans;
+      try {
+        const {body} = await request.get(url).responseType('blob');
+        epubBlob = body;
 
-        this.setState({ book: Object.assign({}, this.state.book, bookInfo) });
+        // Save file, no matter if successful
+        localforage.setItem(`book-epub-${id}`, epubBlob)
+          .then(() => 1)
+          .catch(() => 1);
+      }
+      catch (err) {
+        App._alert('Could not download ebook file');
+        return history.back();
+      }
+    }
 
-        // Update book in app/component/storage
-        this.props.dispatch(updateBook(id, bookInfo));
-        this.props.dispatch(save('books'));
+    // Load extra data (notes, annotations, etc)
+    try {
+      if (!navigator.onLine) throw 'Offline';
 
-        // Create EPUBJS book
-        window._book = this.book = new EPUB(url, {});
+      const res = await request.get(`${XYBOOKS_URL}/api/books/${id}`);
+      bookInfo = res.body;
 
-        this.book.renderTo(window.bookView, {
-          height: window.innerHeight + 'px',
-          width: window.innerWidth + 'px'
-        });
+      bookInfo.annotations = await updateAnnotations(
+        this.state.book.annotations,
+        App.state.account.xyAnnotationsKey
+      );
+    }
+    // Set default values if not available locally
+    catch (err) {
+      if (!this.state.book.last_read) {
+        bookInfo.notes = [],
+        bookInfo.last_read = 0,
+        bookInfo.bookmarks = [];
+      }
+      if (!this.state.book.annotations)
+        bookInfo.annotations = [];
+    }
 
-        return this.book.ready;
-      })
+    // Merge bookInfo with book in states and storage
+    this._updateBook(bookInfo);
+
+    // Create EPUBJS book
+    window._book = this.book = new EPUB(epubBlob, {});
+
+    this.book.renderTo(window.bookView, {
+      height: window.innerHeight + 'px',
+      width: window.innerWidth + 'px'
+    });
+
+    this.book.ready
       .then(() => {
         return this.book.rendition.display();
       })
@@ -156,7 +187,11 @@ export default class Reader extends React.Component {
    * Update book's percent complete and last read time. Clean up.
    */
   componentWillUnmount() {
-    request
+    document.querySelector('body>main').id = 'content';
+
+    if (!this.book) return;
+
+    navigator.onLine && request
       .post(`${XYBOOKS_URL}/api/books/${this.state.book.id}/close`)
       .send({ percentComplete: this.state.percent })
       .end((err, res) => {
@@ -170,8 +205,6 @@ export default class Reader extends React.Component {
 
     this.book.destroy();
     window._book = this.book = undefined;
-
-    document.querySelector('body>main').id = 'content';
   }
 
   /**
