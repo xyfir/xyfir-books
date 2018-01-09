@@ -1,5 +1,4 @@
 import Dropzone from 'react-dropzone';
-import { Paper } from 'react-md';
 import request from 'superagent';
 import React from 'react';
 import swal from 'sweetalert';
@@ -18,80 +17,70 @@ export default class UploadLibrary extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { uploading: false };
+    this.state = { uploading: false },
+    this.acceptedTypes = [
+      'application/x-zip-compressed',
+      'application/zip'
+    ];
   }
 
+  /** @param {File[]} files */
   onUpload(files) {
-    if (!navigator.onLine) {
-      swal('Error', 'This action requires internet connectivity', 'error');
+    const {App} = this.props;
+
+    if (this.state.uploading)
       return;
-    }
-
-    const acceptedTypes = [
-      'application/x-zip-compressed', 'application/zip'
-    ];
-
-    if (acceptedTypes.indexOf(files[0].type) == -1) {
-      return swal(
-        'Invalid File',
-        'You can only upload libraries in a zip file',
-        'error'
-      );
-    }
-
-    if (this.state.uploading) return;
+    if (!navigator.onLine)
+      return App._alert('This action requires internet connectivity');
+    if (this.acceptedTypes.indexOf(files[0].type) == -1)
+      return App._alert('You can only upload libraries in a zip file');
 
     this.setState({ uploading: true })
 
     request
-      .put(`${XYLIBRARY_URL}/libraries/${this.props.data.account.library}`)
+      .put(`${XYLIBRARY_URL}/libraries/${App.state.account.library}`)
       .attach('lib', files[0])
       .end((err, res) => {
         this.setState({ uploading: false })
 
-        if (err || res.body.error) {
-          swal('Error', 'Could not upload library', 'error');
-        }
-        else {
-          swal(
-            'Success',
-            'Library uploaded successfully. Reloading library...',
-            'success'
-          );
+        if (err || res.body.error)
+          return App._alert('Could not upload library');
 
-          loadBooksFromApi(
-            this.props.data.account.library,
-            this.props.dispatch
-          );
-        }
+        App._alert('Library uploaded successfully. Reloading library...');
+
+        loadBooksFromApi(App.state.account.library, App.store.dispatch);
       });
   }
 
   render() {
     return (
-      <Paper
-        zDepth={1}
-        component='section'
-        className='upload-library section'
+      <Dropzone
+        onDrop={f => this.onUpload(f)}
+        disabled={this.state.uploading}
+        className='dropzone upload-library'
       >
-        <p>
-          Here you can upload an entire ebook library instead of individual ebook files.
-          <br />
-          Only <OpenWindow href='https://calibre-ebook.com/'>Calibre</OpenWindow>-compatible libraries are accepted.
-          <br />
-          The library must be zipped at the library's root folder. This means when you look inside the zip file you should see folders for all of the authors in your library and then your library's <em>metadata.db</em> database file.
-          <br />
-          Library zip file size is limited to 500 MB.
-          <br />
-          If you already have books in your library stored in the cloud they <strong>will</strong> be deleted. Uploading a library completely erases your old one.
-        </p>
-
-        <Dropzone onDrop={f => this.onUpload(f)} className='dropzone'>{
+        <p className='status'>{
           this.state.uploading
             ? 'Uploading library, this may take a while...'
             : 'Drag and drop zip file or click to choose a file to upload.'
-        }</Dropzone>
-      </Paper>
+        }</p>
+
+        <p>
+          Here you can upload an entire ebook library instead of individual ebook files.
+        </p>
+        <p>
+          Only <OpenWindow href='https://calibre-ebook.com/'>Calibre</OpenWindow>-compatible libraries are accepted.
+        </p>
+        <p>
+          The library must be zipped at the library's root folder. This means when you look inside the zip file you should see folders for all of the authors in your library and then your library's <em>metadata.db</em> database file.
+        </p>
+        <p>
+          Library zip file size is limited to 500 MB.
+        </p>
+        <p>
+          If you already have books in your library stored in the cloud they <strong>will</strong> be deleted. Uploading a library completely erases your old one.
+        </p>
+      </Dropzone>
     );
   }
 
