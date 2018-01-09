@@ -17,8 +17,12 @@ body.theme-dark {
     background-color: #252526;
   }
 
-  .dropzone:hover {
-    background-color: #3F3F46;
+  div.dropzone {
+    background-color: $md-grey-800;
+
+    &:hover {
+      background-color: #3F3F46;
+    }
   }
 
   .edit-books div.comments,

@@ -39,15 +39,23 @@ a {
   justify-content: center;
 }
 
-.dropzone {
-  border: $gray dotted 0.3em;
-  border-radius: 0.5em;
-  padding: 0.5em;
-  width: 40%;
+div.dropzone {
+  width: 90%;
   margin: auto;
-}
-.dropzone:hover {
-  background-color: $llgray;
+  cursor: pointer;
+  border: $md-grey-600 dotted 0.15em;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  background-color: white;
+
+  &:hover {
+    background-color: $md-grey-50;
+  }
+
+  >p.status {
+    font-size: 100%;
+    font-weight: bold;
+  }
 }
 
 div.loading {
