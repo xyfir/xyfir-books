@@ -10,6 +10,9 @@ import { addFormat } from 'actions/creators/books';
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';
 
+// Components
+import OpenWindow from 'components/misc/OpenWindow';
+
 export default class AddFormat extends React.Component {
 
   constructor(props) {
@@ -85,7 +88,7 @@ export default class AddFormat extends React.Component {
     return (
       <div className='add-format'>
         <p>
-          <strong>Note:</strong> Only <a href='https://en.wikipedia.org/wiki/EPUB' target='_blank'>EPUB</a> format ebooks can be read directly in the xyBooks ebook reader.
+          <strong>Note:</strong> Only <OpenWindow href='https://en.wikipedia.org/wiki/EPUB'>EPUB</OpenWindow> format ebooks can be read directly in the xyBooks ebook reader.
         </p>
 
         <Paper

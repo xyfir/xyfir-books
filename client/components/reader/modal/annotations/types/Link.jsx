@@ -1,18 +1,20 @@
+import { Button } from 'react-md';
 import React from 'react';
 
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
+// Components
+import OpenWindow from 'components/misc/OpenWindow';
 
 export default ({ annotation }) => (
   <div className='link'>
-    <Button
-      floating fixed secondary
-      tooltipPosition='right'
-      fixedPosition='bl'
-      tooltipLabel='Go to source'
-      iconChildren='link'
-      onClick={() => window.open(annotation.value)}
-    />
+    <OpenWindow href={annotation.value}>
+      <Button
+        floating fixed secondary
+        tooltipPosition='right'
+        fixedPosition='bl'
+        tooltipLabel='Go to source'
+        iconChildren='link'
+      />
+    </OpenWindow>
 
     <iframe src={annotation.value} />
   </div>

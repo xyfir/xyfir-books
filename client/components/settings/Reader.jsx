@@ -14,9 +14,10 @@ import { save } from 'actions/creators/index';
 
 // Components
 import ColorPicker from 'components/misc/ColorPicker';
+import OpenWindow from 'components/misc/OpenWindow';
 
 // Modules
-import parseQuery from 'lib/url/parse-query-string';
+import query from 'lib/url/parse-query-string';
 
 export default class ReaderSettings extends React.Component {
 
@@ -27,7 +28,7 @@ export default class ReaderSettings extends React.Component {
   }
 
   componentDidMount() {
-    const q = parseQuery();
+    const q = query();
 
     if (q.subscriptionKey && +q.subscriptionKey != 0) {
       this._annotationsKey.getField().value = q.subscriptionKey;
@@ -234,7 +235,7 @@ export default class ReaderSettings extends React.Component {
           <p>
             A xyAnnotations subscription allows you to find and download annotations for books that you're reading.
             <br />
-            xyAnnotations subscriptions can be purchased directly through <a href='https://annotations.xyfir.com/' target='_blank'>xyAnnotations</a>, or through certain other reader applications that support xyAnnotations.
+            xyAnnotations subscriptions can be purchased directly through <OpenWindow href='https://annotations.xyfir.com/'>xyAnnotations</OpenWindow>, or through certain other reader applications that support xyAnnotations.
             <br />
             New xyBooks accounts are automatically given a free one-month subscription.
           </p>

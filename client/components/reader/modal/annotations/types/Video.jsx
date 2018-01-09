@@ -1,7 +1,8 @@
+import { Button } from 'react-md';
 import React from 'react';
 
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
+// Components
+import OpenWindow from 'components/misc/OpenWindow';
 
 export default ({ link }) => (
   <div className='video'>{
@@ -17,17 +18,18 @@ export default ({ link }) => (
       />
     ) : (
       <div className='normal'>
-        <Button
-          floating fixed secondary
-          tooltipPosition='right'
-          fixedPosition='bl'
-          tooltipLabel='Go to source'
-          iconChildren='link'
-          onClick={() => window.open(link)}
-        />
-        
+        <OpenWindow href={link}>
+          <Button
+            floating fixed secondary
+            tooltipPosition='right'
+            fixedPosition='bl'
+            tooltipLabel='Go to source'
+            iconChildren='link'
+          />
+        </OpenWindow>
+
         <video src={link} controls />
       </div>
     )
   }</div>
-);  
+);

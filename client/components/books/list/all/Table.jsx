@@ -8,6 +8,7 @@ import React from 'react';
 
 // Components
 import Pagination from 'components/misc/Pagination';
+import OpenWindow from 'components/misc/OpenWindow';
 
 // Modules
 import deleteBooks from 'lib/books/delete';
@@ -354,8 +355,8 @@ export default class TableList extends React.Component {
                 }
               })
               .filter(id => id != null)
-              .map(id =>
-                <a target='_blank' href={id.link} key={id.title}>{id.title}</a>
+              .map((id, i) =>
+                <OpenWindow href={id.link} key={i}>{id.title}</OpenWindow>
               )
             }</span>
           </span>
@@ -364,14 +365,13 @@ export default class TableList extends React.Component {
             <span className='name'>Formats</span>
             <span className='links'>{
               book.formats.map((format, i) =>
-                <a
-                  target='_blank'
+                <OpenWindow
                   href={
                     `${XYLIBRARY_URL}/files/` +
                     `${this.props.App.state.account.library}/${format}`
                   }
                   key={i}
-                >{format.split('.').slice(-1)[0].toUpperCase()}</a>
+                >{format.split('.').slice(-1)[0].toUpperCase()}</OpenWindow>
               )
             }</span>
           </span>

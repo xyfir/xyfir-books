@@ -1,4 +1,5 @@
 import Dropzone from 'react-dropzone';
+import { Paper } from 'react-md';
 import request from 'superagent';
 import React from 'react';
 import swal from 'sweetalert';
@@ -9,8 +10,8 @@ import loadBooksFromApi from 'lib/books/load-from-api';
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';
 
-// react-md
-import Paper from 'react-md/lib/Papers';
+// Components
+import OpenWindow from 'components/misc/OpenWindow';
 
 export default class UploadLibrary extends React.Component {
 
@@ -76,7 +77,7 @@ export default class UploadLibrary extends React.Component {
         <p>
           Here you can upload an entire ebook library instead of individual ebook files.
           <br />
-          Only <a target='_blank' href='https://calibre-ebook.com/'>Calibre</a>-compatible libraries are accepted.
+          Only <OpenWindow href='https://calibre-ebook.com/'>Calibre</OpenWindow>-compatible libraries are accepted.
           <br />
           The library must be zipped at the library's root folder. This means when you look inside the zip file you should see folders for all of the authors in your library and then your library's <em>metadata.db</em> database file.
           <br />

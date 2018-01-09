@@ -8,6 +8,9 @@ import React from 'react';
 // Constants
 import { XYANNOTATIONS_URL } from 'constants/config';
 
+// Components
+import OpenWindow from 'components/misc/OpenWindow';
+
 export default class ManageAnnotations extends React.Component {
 
 	constructor(props) {
@@ -124,15 +127,12 @@ export default class ManageAnnotations extends React.Component {
   }
 
   _renderDiscover() {
-    if (!this.state.key) {
-      return (
-        <p>
-          <strong>Note:</strong> You have not set a <a href='https://annotations.xyfir.com/' target='_blank'>Xyfir Annotations</a> subscription key. If you have a key, you can set it in your <a href='#/settings/reader'>reader settings</a>.
-        </p>
-      );
-    }
-
-    return (
+    if (!this.state.key) return (
+      <p>
+        <strong>Note:</strong> You have not set a <OpenWindow href='https://annotations.xyfir.com/'>Xyfir Annotations</OpenWindow> subscription key. If you have a key, you can set it in your <a href='#/settings/reader'>reader settings</a>.
+      </p>
+    );
+    else return (
       <div className='discover flex'>
         <TextField
           id='search'
