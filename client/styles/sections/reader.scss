@@ -178,13 +178,22 @@ span.reader-dialog {
     }
   }
 
-  .book-styling {
-    >table {
-      margin: auto;
+  table.book-styling {
+    width: 100%;
 
-      th {
-        text-align: left;
+    th {
+      font-weight: normal;
+      text-align: left;
+
+      >i.md-icon {
+        vertical-align: middle;
+        margin-right: 0.2em;
       }
+    }
+
+    td {
+      text-align: center;
+      max-width: 1em;
     }
   }
 
