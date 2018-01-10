@@ -9,30 +9,30 @@ import { XYLIBRARY_URL } from 'constants/config';
  */
 function purgeCovers(books) {
 
-  const lastPurge = +localStorage['last_cover_purge'] || 0;
+  const lastPurge = +localStorage.lastCoverPurge || 0;
+  delete localStorage.last_cover_purge;
 
   // Only purge covers at most once a day
   if (!books.length || (Date.now() - lastPurge) < 86400000) return;
 
   setTimeout(() => localforage.keys().then(keys => {
-    // Filter out non-cover keys
-    keys = keys.filter(k => k.indexOf('cover-') == 0);
+    keys
+      // Filter out non-cover keys
+      .filter(k => k.indexOf('cover-') == 0)
+      .forEach(k => {
+        const id = k.split('-')[1];
+        const book = books.find(b => id == b.id);
 
-    keys.forEach(k => {
-      // [ 'cover', id, version ]
-      const t = k.split('-');
+        // Delete if book id no longer exists in books
+        if (!book)
+          localforage.removeItem(k);
+        // Remove covers with old key format
+        // ** Remove this after next published update
+        else if (/^cover-\d+-\d+$/.test(k))
+          localforage.removeItem(k);
+      });
 
-      const book = books.find(b => t[1] == b.id);
-
-      // Delete if book id no longer exists in books
-      if (book === undefined)
-        localforage.removeItem(k);
-      // Delete if book has a higher version number
-      else if (book.versions.cover > t[2])
-        localforage.removeItem(k);
-    });
-
-    localStorage['last_cover_purge'] = Date.now();
+    localStorage.lastCoverPurge = Date.now();
   }), 30 * 1000);
 
 }
@@ -55,9 +55,7 @@ function loadFromApi(book, library) {
       // Element may no longer exist
       if (cover != null) cover.src = URL.createObjectURL(res.body);
 
-      localforage.setItem(
-        `cover-${book.id}-${book.versions.cover}`, res.body
-      );
+      localforage.setItem(`cover-${book.id}`, res.body);
     });
 
 }
@@ -74,7 +72,7 @@ function loadCovers(books, library) {
     const book = books.find(b => id == b.id);
 
     // Determine if we have book's latest cover stored
-    localforage.getItem(`cover-${id}-${book.versions.cover}`)
+    localforage.getItem(`cover-${id}`)
       .then(cover => {
         // Cover not saved to localstorage, pull from API
         if (cover == null)

@@ -68,15 +68,7 @@ export default async function(library, dispatch) {
       .map(b1 => {
         const b2 = books2.find(b2 => b1.id == b2.id) || {};
 
-        Object.assign(b2, b1);
-
-        b2.versions = {
-          metadata: b2.version_metadata,
-          cover: b2.version_cover
-        };
-        delete b2.version_metadata, delete b2.version_cover;
-
-        return b2;
+        return Object.assign(b2, b1);
       })
       .filter(b => b.title !== undefined);
 

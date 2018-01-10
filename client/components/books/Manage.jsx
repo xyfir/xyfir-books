@@ -16,7 +16,7 @@ import buildUrl from 'lib/url/build';
 import { XYLIBRARY_URL } from 'constants/config';
 
 // Action creators
-import { deleteFormat, incrementVersion } from 'actions/books';
+import { deleteFormat } from 'actions/books';
 
 export default class ManageBook extends React.Component {
 
@@ -130,7 +130,8 @@ export default class ManageBook extends React.Component {
       });
   }
 
-  onUploadCover(files) {
+  /** @param {File} file */
+  onUploadCover(file) {
     if (!navigator.onLine) {
       swal('Error', 'This action requires internet connectivity', 'error');
       return;
@@ -141,22 +142,15 @@ export default class ManageBook extends React.Component {
         `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
         `/books/${this.state.id}/cover`
       )
-      .attach('cover', files[0])
+      .attach('cover', file)
       .end((err, res) => {
         if (res.error)
           return swal('Error', 'Could not upload file', 'error');
 
-        const lfKey =
-          `cover-${this.state.id}-` +
-          this.props.data.books.find(b => this.state.id == b.id).versions.cover;
-
-        localforage.setItem(lfKey, files[0])
+        localforage.setItem(`cover-${this.state.id}`, file)
           .then(img => {
             // Load new cover
-            document.querySelector('img.cover').src = files[0].preview;
-
-            // Increment book.versions.cover
-            this.props.dispatch(incrementVersion(this.state.id, 'cover'));
+            document.querySelector('img.cover').src = file.preview;
           })
           .catch(err => location.reload());
       });
@@ -281,7 +275,7 @@ export default class ManageBook extends React.Component {
         >
           <Dropzone
             ref={i => this._dz = i}
-            onDrop={f => this.onUploadCover(f)}
+            onDrop={f => this.onUploadCover(f[0])}
             className='dropzone'
           >
             <img className='cover' id={`cover-${book.id}`} />
