@@ -1,13 +1,12 @@
+import { SelectField, Checkbox, Button, Paper } from 'react-md';
 import React from 'react';
 
-// Action creators
-import { setTheme } from 'actions/settings';
+// Actions
+import { setGeneral, setReader } from 'actions/settings';
 import { save } from 'actions/app';
 
-// react-md
-import SelectField from 'react-md/lib/SelectFields';
-import Button from 'react-md/lib/Buttons/Button';
-import Paper from 'react-md/lib/Papers';
+// Constants
+import * as themes from 'constants/reader-themes';
 
 export default class GeneralSettings extends React.Component {
 
@@ -16,21 +15,31 @@ export default class GeneralSettings extends React.Component {
   }
 
   onSave() {
-    const theme = this.refs.theme.state.value;
+    const matchThemes = window['checkbox--match-themes'].checked;
+    const theme = this._theme.state.value;
+    const {App} = this.props;
 
-    document.body.className = 'theme-' + theme;
+    document.body.className = `theme-${theme}`;
 
-    this.props.dispatch(setTheme(theme));
-    this.props.dispatch(save('config'));
+    App.store.dispatch(setGeneral({ theme, matchThemes }));
+
+    if (matchThemes) {
+      App.store.dispatch(setReader(
+        Object.assign({}, App.state.config.reader, themes[theme.toUpperCase()])
+      ));
+    }
+
+    App.store.dispatch(save('config'));
   }
 
   onClear() {
-    const next = location.reload();
-    localforage.clear().then(next).catch(next);
+    localforage.clear()
+      .then(() => location.reload())
+      .catch(() => this.props.App._alert('Could not clear storage'));
   }
 
   render() {
-    const { config, account } = this.props.data;
+    const {config, account} = this.props.App.state;
 
     return (
       <div className='general-settings'>
@@ -41,7 +50,7 @@ export default class GeneralSettings extends React.Component {
         >
           <SelectField
             id='select--theme'
-            ref='theme'
+            ref={i => this._theme = i}
             label='Theme'
             disabled={Date.now() > account.subscription}
             menuItems={[
@@ -50,6 +59,12 @@ export default class GeneralSettings extends React.Component {
             ]}
             className='md-cell'
             defaultValue={config.general.theme}
+          />
+
+          <Checkbox
+            id='checkbox--match-themes'
+            label='Auto-Match App and Reader Themes'
+            defaultChecked={config.general.matchThemes}
           />
 
           <Button
@@ -66,7 +81,7 @@ export default class GeneralSettings extends React.Component {
         >
           <h2>Clear Local Storage</h2>
           <p>
-            This data will still be available in the cloud and will be redownloaded and saved locally when you access it.
+            Frees up space on your local device. This data will still be available in the cloud and will be redownloaded and saved locally when you access it.
           </p>
 
           <Button
