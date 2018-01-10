@@ -2,7 +2,7 @@ import React from 'react';
 
 // Action creators
 import { setTheme } from 'actions/settings';
-import { save } from 'actions/index';
+import { save } from 'actions/app';
 
 // react-md
 import SelectField from 'react-md/lib/SelectFields';

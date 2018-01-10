@@ -5,7 +5,7 @@ import { XYLIBRARY_URL } from 'constants/config';
 
 // Action creators
 import { loadBooks } from 'actions/books';
-import { save } from 'actions/index';
+import { save } from 'actions/app';
 
 // Constants
 import { XYBOOKS_URL } from 'constants/config';

@@ -1,5 +1,5 @@
 // Action creators
-import { changeView } from 'actions/index';
+import { changeView } from 'actions/app';
 
 // Constants
 import * as VIEWS from 'constants/views';

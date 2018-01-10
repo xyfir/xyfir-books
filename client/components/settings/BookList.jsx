@@ -5,7 +5,7 @@ import React from 'react';
 
 // Action creators
 import { setBookList } from 'actions/settings';
-import { save } from 'actions/index';
+import { save } from 'actions/app';
 
 export default class BookListSettings extends React.Component {
 

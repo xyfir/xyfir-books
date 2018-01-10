@@ -1,4 +1,4 @@
-import * as types from 'constants/actions/index';
+import * as types from 'constants/actions/app';
 
 /** @param {string} view */
 export function changeView(view) {

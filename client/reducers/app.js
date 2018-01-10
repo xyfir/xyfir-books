@@ -3,7 +3,7 @@ import settings from 'reducers/settings';
 import account from 'reducers/account';
 import books from 'reducers/books';
 
-import * as types from 'constants/actions/index';
+import * as types from 'constants/actions/app';
 
 export default function (state, action) {
 

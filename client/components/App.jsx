@@ -7,7 +7,7 @@ import React from 'react';
 
 // Redux store / reducers
 import { createStore } from 'redux';
-import reducers from 'reducers/index';
+import reducers from 'reducers/app';
 
 // Components
 import Advertisement from 'components/app/Advertisement';
@@ -28,12 +28,12 @@ import updateView from 'lib/url/update-view';
 import {
   XYACCOUNTS_URL, LOG_STATE, ENVIRONMENT, XYBOOKS_URL
 } from 'constants/config';
-import { INITIALIZE_STATE } from 'constants/actions/index';
+import { INITIALIZE_STATE } from 'constants/actions/app';
 import { READ_BOOK } from 'constants/views';
 import initialState from 'constants/initial-state';
 
 // Actions
-import { save, setState } from 'actions/index';
+import { save, setState } from 'actions/app';
 
 // Globals
 window.localforage = localForage;

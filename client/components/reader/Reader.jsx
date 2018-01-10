@@ -22,7 +22,7 @@ import { XYLIBRARY_URL, XYBOOKS_URL } from 'constants/config';
 
 // Action creators
 import { updateBook } from 'actions/books';
-import { save } from 'actions/index';
+import { save } from 'actions/app';
 
 export default class Reader extends React.Component {
 

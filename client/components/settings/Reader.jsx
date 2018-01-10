@@ -10,7 +10,7 @@ import * as themes from 'constants/reader-themes';
 // Action creators
 import { setXyAnnotationsKey } from 'actions/account';
 import { setReader } from 'actions/settings';
-import { save } from 'actions/index';
+import { save } from 'actions/app';
 
 // Components
 import ColorPicker from 'components/misc/ColorPicker';

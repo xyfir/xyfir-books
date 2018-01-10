@@ -12,7 +12,7 @@ import query from 'lib/url/parse-query-string';
 
 // Actions
 import { setListView } from 'actions/settings';
-import { save } from 'actions/index';
+import { save } from 'actions/app';
 
 export default class ListAllBooks extends React.Component {
 
