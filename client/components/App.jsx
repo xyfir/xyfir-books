@@ -12,7 +12,7 @@ import reducers from 'reducers/index';
 // Components
 import Advertisement from 'components/app/Advertisement';
 import Navigation from 'components/app/Navigation';
-import Settings from 'components/settings/Index';
+import Settings from 'components/settings/Settings';
 import Account from 'components/account/Account';
 import Library from 'components/library/Library';
 import Loading from 'components/app/Loading';
