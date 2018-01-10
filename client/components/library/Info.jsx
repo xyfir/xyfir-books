@@ -17,7 +17,7 @@ export default class LibraryInfo extends React.Component {
     this.state = { size: 0 };
 
     request
-      .get(`${XYLIBRARY_URL}/libraries/${this.props.data.account.library}`)
+      .get(`${XYLIBRARY_URL}/libraries/${props.App.state.account.library}`)
       .end((err, res) => {
         if (err || res.body.error)
           this.setState({ size: -1 });
@@ -27,6 +27,8 @@ export default class LibraryInfo extends React.Component {
   }
 
   onDownload() {
+    const {App} = this.props;
+
     swal({
       title: 'Download Library',
       text:
@@ -35,66 +37,66 @@ export default class LibraryInfo extends React.Component {
       icon: 'warning',
       buttons: true
     })
-    .then(() => request
+    .then(confirm => confirm && request
       .post(
-        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}/zip`
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}/zip`
       )
       .send({
-        email: this.props.data.account.email
+        email: App.state.account.email
       })
     )
     .then(res => {
-      if (res.body.error)
-        return swal('Error', 'Something went wrong...', 'error');
-
-      swal(
-        'Processing...',
-        'A download link will be sent to your email once it\'s ready. \
-        The download link will be available for 24 hours after being sent.'
-      );
+      if (!res)
+        return;
+      else if (res.body.error)
+        App._alert('Something went wrong...');
+      else
+        App._alert('A download link will be sent to your email once ready.');
     });
   }
 
   render() {
+    const {App} = this.props;
+
     return (
-      <Paper
-        zDepth={1}
-        component='section'
-        className='library-info section flex'
-      >
-        <table>
+      <section className='library-info'>
+        <Paper
+          zDepth={1}
+          component='table'
+          className='library-info section flex'
+        >
+        <tbody>
           <tr>
-            <th>Id</th>
-            <td>{this.props.data.account.library}</td>
+            <th>Identifier</th>
+            <td>{App.state.account.library}</td>
+          </tr>
+          <tr>
+            <th>Books</th>
+            <td>{App.state.books.length}</td>
           </tr>
           <tr>
             <th>Size</th>
             <td>{
               this.state.size == -1
-                ? 'Could not calculate size'
-                : (this.state.size * 0.000001) + 'MB'
+                ? `Could not calculate size`
+                : `${(this.state.size * 0.000001).toFixed(2)} MB`
             }</td>
           </tr>
-        </table>
+        </tbody>
+        </Paper>
 
         <Button
-          floating fixed primary
-          tooltipPosition='right'
-          tooltipLabel='Upload new library'
-          fixedPosition='bl'
+          raised primary
           iconChildren='cloud_upload'
           onClick={() => location.hash = '#/library/upload'}
-        />
+        >Upload</Button>
 
         <Button
-          floating fixed primary
-          tooltipPosition='left'
-          tooltipLabel='Download library'
-          fixedPosition='br'
+          raised primary
           iconChildren='cloud_download'
           onClick={() => this.onDownload()}
-        />
-      </Paper>
+        >Download</Button>
+      </section>
     );
   }
 
