@@ -54,19 +54,6 @@ export default function(state, action) {
         return temp;
       }).call();
 
-    case types.INCREMENT_VERSION:
-      return (() => {
-        let temp = state.slice(0);
-
-        temp.forEach((book, i) => {
-          if (action.id == book.id) {
-            temp[i].versions[action.prop]++;
-          }
-        });
-
-        return temp;
-      }).call();
-
     case types.UPDATE_BOOK:
       return (() => {
         let temp = state.slice(0);

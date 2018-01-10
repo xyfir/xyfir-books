@@ -36,16 +36,6 @@ export function deleteFormat(id, format) {
 
 /**
  * @param {number} id
- * @param {string} prop
- */
-export function incrementVersion(id, prop) {
-  return {
-    type: types.INCREMENT_VERSION, id, prop
-  };
-}
-
-/**
- * @param {number} id
  * @param {object} obj
  */
 export function updateBook(id, obj) {
