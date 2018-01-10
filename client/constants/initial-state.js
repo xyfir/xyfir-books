@@ -8,7 +8,7 @@ export default {
   books: [],
   config: {
     general: {
-      theme: 'light'
+      theme: 'light', matchThemes: true
     },
     bookList: {
       view: 'compact',
@@ -29,7 +29,7 @@ export default {
     query: '', page: 1
   },
   account: {
-    uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 15,
+    uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 1,
     referral: {}, xyAnnotationsKey: ''
   },
   loading: true
