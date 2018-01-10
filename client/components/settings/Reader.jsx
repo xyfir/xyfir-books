@@ -8,8 +8,8 @@ import initialState from 'constants/initial-state';
 import * as themes from 'constants/reader-themes';
 
 // Action creators
+import { setReader, setGeneral } from 'actions/settings';
 import { setXyAnnotationsKey } from 'actions/account';
-import { setReader } from 'actions/settings';
 import { save } from 'actions/app';
 
 // Components
@@ -47,23 +47,26 @@ export default class ReaderSettings extends React.Component {
       );
   }
 
+  /** @param {string} theme */
   onSetTheme(theme) {
-    switch (theme) {
-      case 'light': return this.setState(themes.LIGHT);
-      case 'dark': return this.setState(themes.DARK);
-    }
+    this._theme = theme.toLowerCase();
+    this.setState(themes[theme.toUpperCase()]);
   }
 
   onSaveStyles() {
     const {App} = this.props;
 
-    App.store.dispatch(
-      setReader(
-        Date.now() > App.state.account.subscription
-          ? initialState.config.reader
-          : this.state
-      )
-    );
+    if (Date.now() > App.state.account.subscription) return;
+
+    App.store.dispatch(setReader(this.state));
+
+    if (App.state.config.general.matchThemes && this._theme) {
+      document.body.className = `theme-${this._theme}`;
+      App.store.dispatch(
+        setGeneral({ theme: this._theme, matchThemes: true })
+      );
+    }
+
     App.store.dispatch(save(['config']));
     App._alert('Settings saved successfully');
   }
@@ -90,7 +93,7 @@ export default class ReaderSettings extends React.Component {
   }
 
   render() {
-    const { account } = this.props.App.state;
+    const {account} = this.props.App.state;
 
     return (
       <div className='reader-settings'>
@@ -107,10 +110,7 @@ export default class ReaderSettings extends React.Component {
             id='select--theme'
             label='Reader Theme'
             onChange={v => this.onSetTheme(v)}
-            menuItems={[
-              { label: 'Light', value: 'light' },
-              { label: 'Dark', value: 'dark' }
-            ]}
+            menuItems={['Light', 'Dark']}
             className='md-cell'
           />
 
