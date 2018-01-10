@@ -29,7 +29,6 @@ div.reader {
       padding: 0em 1em;
       position: fixed;
       transition: 0.3s;
-      background-color: $md-primary-color;
 
       &.hide {
         transform: translate(0, 100%)

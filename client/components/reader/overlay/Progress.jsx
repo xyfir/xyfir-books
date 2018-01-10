@@ -28,7 +28,8 @@ export default class ReaderProgressSlider extends React.Component {
 
     return (
       <div className={
-        'progress-slider' + (this.props.show ? '' : ' hide')
+        'progress-slider md-background--primary' +
+        (this.props.show ? '' : ' hide')
       }>
         <Slider
           id='slider--progress'
