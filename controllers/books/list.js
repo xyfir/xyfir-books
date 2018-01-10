@@ -1,40 +1,42 @@
-const db = require("../../lib/db");
+const MySQL = require('lib/mysql');
 
 /*
-    GET api/books
-    RETURN
-        { books: [
-            {
-                id: number, version_metadata: number, version_cover: number,
-                percent_complete: number, word_count: number,
-                last_read: number, bookmarks: [], notes: []
-            }
-        ] }
-    DESCRIPTION
-        Returns info for all books in library
+  GET api/books
+  RETURN
+    {
+      error: boolean, message?: string,
+      books: [{
+        id: number, percent_complete: number, word_count: number,
+        last_read: number, bookmarks: [], notes: []
+      }]
+    }
+  DESCRIPTION
+    Returns info for all books in library
 */
-module.exports = function(req, res) { 
+module.exports = async function(req, res) {
 
-    const sql = `
-        SELECT book_id as id, version_metadata, version_cover,
-        percent_complete, word_count, last_read
-        FROM books WHERE user_id = ?
-    `;
-    
-    db(cn => cn.query(sql, [req.session.uid], (err, rows) => {
-        cn.release();
-        
-        if (err || !rows.length) {
-            res.json({ books: [] });
-        }
-        else {
-            rows.forEach((row, i) => {
-                rows[i].bookmarks = [];
-                rows[i].notes = [];
-            });
-            
-            res.json({ books: rows });
-        }
-    }));
-    
+  const db = new MySQL;
+
+  try {
+    await db.getConnection();
+    const books = await db.query(`
+      SELECT book_id AS id, percent_complete, word_count, last_read
+      FROM books WHERE user_id = ?
+    `, [
+      req.session.uid
+    ]);
+    db.release();
+
+    books.forEach((book, i) => {
+      books[i].bookmarks = [];
+      books[i].notes = [];
+    });
+
+    res.json({ error: false, books });
+  }
+  catch (err) {
+    db.release();
+    res.json({ error: true, message: err, books: [] });
+  }
+
 };
