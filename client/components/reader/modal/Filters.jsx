@@ -51,7 +51,7 @@ export default class Filters extends React.Component {
         <Slider
           id='slider--warmth'
           min={0}
-          max={100}
+          max={50}
           label='Warmth'
           leftIcon={<FontIcon>wb_sunny</FontIcon>}
           onChange={v => this.onUpdate('warmth', v)}
