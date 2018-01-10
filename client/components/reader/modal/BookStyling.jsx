@@ -1,7 +1,5 @@
+import { FontIcon, Button } from 'react-md';
 import React from 'react';
-
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
 
 // Constants
 import * as themes from 'constants/reader-themes';
@@ -22,7 +20,7 @@ export default class BookStyling extends React.Component {
 
   /**
    * Increment or decrement a state property.
-   * @param {string} prop 
+   * @param {string} prop
    * @param {string} op
    */
   onUpdate(prop, op) {
@@ -66,17 +64,18 @@ export default class BookStyling extends React.Component {
     if (this.state.loading) return null;
 
     return (
-      <div className='book-styling'>
-      <table>
+      <table className='book-styling'>
       <tbody>
         <tr>
-          <th>Text Size</th>
+          <th><FontIcon>format_size</FontIcon>Text Size</th>
           <td>
             <Button
               icon primary
               onClick={() => this.onUpdate('fontSize', '+')}
               iconChildren='add'
             />
+          </td>
+          <td>
             <Button
               icon secondary
               onClick={() => this.onUpdate('fontSize', '-')}
@@ -86,13 +85,15 @@ export default class BookStyling extends React.Component {
         </tr>
 
         <tr>
-          <th>Line Spacing</th>
+          <th><FontIcon>format_line_spacing</FontIcon>Line Spacing</th>
           <td>
             <Button
               icon primary
               onClick={() => this.onUpdate('lineHeight', '+')}
               iconChildren='add'
             />
+          </td>
+          <td>
             <Button
               icon secondary
               onClick={() => this.onUpdate('lineHeight', '-')}
@@ -102,23 +103,24 @@ export default class BookStyling extends React.Component {
         </tr>
 
         <tr>
-          <th>Theme</th>
+          <th><FontIcon>format_paint</FontIcon>Theme</th>
           <td>
             <Button
-              flat primary
+              icon primary
               onClick={() => this.onUpdateTheme('LIGHT')}
               iconChildren='brightness_7'
-            >Light</Button>
+            />
+          </td>
+          <td>
             <Button
-              flat secondary
+              icon secondary
               onClick={() => this.onUpdateTheme('DARK')}
               iconChildren='brightness_2'
-            >Dark</Button>
+            />
           </td>
         </tr>
       </tbody>
       </table>
-      </div>
     )
   }
 
