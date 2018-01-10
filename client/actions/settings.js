@@ -1,16 +1,16 @@
 import * as types from 'constants/actions/settings';
 
 /** @param {object} obj */
-export function setBookList(obj) {
+export function setGeneral(obj) {
   return {
-    type: types.SET_BOOK_LIST, obj
+    type: types.SET_GENERAL, obj
   };
 }
 
-/** @param {string} theme */
-export function setTheme(theme) {
+/** @param {object} obj */
+export function setBookList(obj) {
   return {
-    type: types.SET_THEME, theme
+    type: types.SET_BOOK_LIST, obj
   };
 }
 
