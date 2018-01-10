@@ -89,7 +89,7 @@ export default class Reader extends React.Component {
 
     // Attempt to load epub file, either locally or remotely
     try {
-      epubBlob = await localforage.getItem(`book-epub-${id}`);
+      epubBlob = await localforage.getItem(`epub-${id}`);
       if (!epubBlob) throw 'Missing file';
     }
     catch (err) {
@@ -103,7 +103,7 @@ export default class Reader extends React.Component {
         epubBlob = body;
 
         // Save file, no matter if successful
-        localforage.setItem(`book-epub-${id}`, epubBlob)
+        localforage.setItem(`epub-${id}`, epubBlob)
           .then(() => 1)
           .catch(() => 1);
       }
