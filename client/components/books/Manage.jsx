@@ -16,7 +16,7 @@ import buildUrl from 'lib/url/build';
 import { XYLIBRARY_URL } from 'constants/config';
 
 // Action creators
-import { deleteFormat, incrementVersion } from 'actions/creators/books';
+import { deleteFormat, incrementVersion } from 'actions/books';
 
 export default class ManageBook extends React.Component {
 

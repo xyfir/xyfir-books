@@ -21,8 +21,8 @@ import unwrap from 'lib/reader/matches/unwrap';
 import { XYLIBRARY_URL, XYBOOKS_URL } from 'constants/config';
 
 // Action creators
-import { updateBook } from 'actions/creators/books';
-import { save } from 'actions/creators/index';
+import { updateBook } from 'actions/books';
+import { save } from 'actions/index';
 
 export default class Reader extends React.Component {
 

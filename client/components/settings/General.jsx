@@ -1,8 +1,8 @@
 import React from 'react';
 
 // Action creators
-import { setTheme } from 'actions/creators/settings';
-import { save } from 'actions/creators/index';
+import { setTheme } from 'actions/settings';
+import { save } from 'actions/index';
 
 // react-md
 import SelectField from 'react-md/lib/SelectFields';
@@ -14,12 +14,12 @@ export default class GeneralSettings extends React.Component {
   constructor(props) {
     super(props);
   }
-  
+
   onSave() {
     const theme = this.refs.theme.state.value;
-    
+
     document.body.className = 'theme-' + theme;
-    
+
     this.props.dispatch(setTheme(theme));
     this.props.dispatch(save('config'));
   }
@@ -31,7 +31,7 @@ export default class GeneralSettings extends React.Component {
 
   render() {
     const { config, account } = this.props.data;
-    
+
     return (
       <div className='general-settings'>
         <Paper
@@ -51,14 +51,14 @@ export default class GeneralSettings extends React.Component {
             className='md-cell'
             defaultValue={config.general.theme}
           />
-        
+
           <Button
             primary raised
             iconChildren='save'
             onClick={() => this.onSave()}
           >Save</Button>
         </Paper>
-        
+
         <Paper
           zDepth={1}
           component='section'
@@ -68,7 +68,7 @@ export default class GeneralSettings extends React.Component {
           <p>
             This data will still be available in the cloud and will be redownloaded and saved locally when you access it.
           </p>
-          
+
           <Button
             secondary raised
             iconChildren='clear'

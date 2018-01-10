@@ -28,12 +28,12 @@ import updateView from 'lib/url/update-view';
 import {
   XYACCOUNTS_URL, LOG_STATE, ENVIRONMENT, XYBOOKS_URL
 } from 'constants/config';
-import { INITIALIZE_STATE } from 'actions/types/index';
+import { INITIALIZE_STATE } from 'constants/actions/index';
 import { READ_BOOK } from 'constants/views';
 import initialState from 'constants/initial-state';
 
 // Actions
-import { save, setState } from 'actions/creators/index';
+import { save, setState } from 'actions/index';
 
 // Globals
 window.localforage = localForage;

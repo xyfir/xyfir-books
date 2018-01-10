@@ -11,8 +11,8 @@ import Grid from 'components/books/list/all/Grid';
 import query from 'lib/url/parse-query-string';
 
 // Actions
-import { setListView } from 'actions/creators/settings';
-import { save } from 'actions/creators/index';
+import { setListView } from 'actions/settings';
+import { save } from 'actions/index';
 
 export default class ListAllBooks extends React.Component {
 

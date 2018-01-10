@@ -4,8 +4,8 @@ import {
 import React from 'react';
 
 // Action creators
-import { setBookList } from 'actions/creators/settings';
-import { save } from 'actions/creators/index';
+import { setBookList } from 'actions/settings';
+import { save } from 'actions/index';
 
 export default class BookListSettings extends React.Component {
 
@@ -16,10 +16,10 @@ export default class BookListSettings extends React.Component {
       'Title', 'Authors', 'Series', 'Added', 'Published', 'Publisher', 'Rating'
     ];
   }
-  
+
   onSaveTable() {
     const columns = [];
-    
+
     // Populate columns[] with columns to display
     this.columns.forEach(col => {
       if (window[`checkbox--${col}`].checked)

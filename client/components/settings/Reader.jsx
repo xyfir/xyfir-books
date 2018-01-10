@@ -8,9 +8,9 @@ import initialState from 'constants/initial-state';
 import * as themes from 'constants/reader-themes';
 
 // Action creators
-import { setXyAnnotationsKey } from 'actions/creators/account';
-import { setReader } from 'actions/creators/settings';
-import { save } from 'actions/creators/index';
+import { setXyAnnotationsKey } from 'actions/account';
+import { setReader } from 'actions/settings';
+import { save } from 'actions/index';
 
 // Components
 import ColorPicker from 'components/misc/ColorPicker';

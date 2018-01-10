@@ -5,7 +5,7 @@ import React from 'react';
 import swal from 'sweetalert';
 
 // Action creators
-import { addFormat } from 'actions/creators/books';
+import { addFormat } from 'actions/books';
 
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';

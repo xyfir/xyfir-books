@@ -2,7 +2,7 @@ import request from 'superagent';
 import swal from 'sweetalert';
 
 // Action creators
-import { deleteBooks } from 'actions/creators/books';
+import { deleteBooks } from 'actions/books';
 
 // Constants
 import { XYBOOKS_URL } from 'constants/config';

@@ -4,8 +4,8 @@ import request from 'superagent';
 import { XYLIBRARY_URL } from 'constants/config';
 
 // Action creators
-import { loadBooks } from 'actions/creators/books';
-import { save } from 'actions/creators/index';
+import { loadBooks } from 'actions/books';
+import { save } from 'actions/index';
 
 // Constants
 import { XYBOOKS_URL } from 'constants/config';

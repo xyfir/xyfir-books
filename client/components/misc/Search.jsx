@@ -2,7 +2,7 @@ import { TextField, Paper } from 'react-md';
 import React from 'react';
 
 // Action creators
-import { setSearch } from 'actions/creators/index';
+import { setSearch } from 'actions/index';
 
 // Modules
 import parseQuery from 'lib/url/parse-query-string';

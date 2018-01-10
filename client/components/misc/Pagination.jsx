@@ -2,7 +2,7 @@ import { Button } from 'react-md';
 import React from 'react';
 
 // Actions
-import { setPage } from 'actions/creators/index';
+import { setPage } from 'actions/index';
 
 export default class Pagination extends React.Component {
 
