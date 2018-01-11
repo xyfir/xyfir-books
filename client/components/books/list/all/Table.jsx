@@ -262,12 +262,12 @@ export default class TableList extends React.Component {
         <div className='info'>
           <div className='chips'>
             <span className='chip percent-complete'>
-              {book.percent_complete}%
+              {book.percent}%
             </span>
 
-            {book.word_count > 0 ? (
+            {book.words > 0 ? (
               <span className='chip word-count'>
-                {Math.round(book.word_count / 1000)}K
+                {Math.round(book.words / 1000)}K
               </span>
             ) : null}
 

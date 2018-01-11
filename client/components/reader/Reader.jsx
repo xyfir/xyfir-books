@@ -164,7 +164,7 @@ export default class Reader extends React.Component {
         else {
           this.book.rendition.display(
             this.book.locations.cfiFromPercentage(
-              this.state.book.percent_complete / 100
+              this.state.book.percent / 100
             )
           );
         }
@@ -195,7 +195,7 @@ export default class Reader extends React.Component {
       .post(`${XYBOOKS_URL}/api/books/${this.state.book.id}/close`)
       .send({ percentComplete: this.state.percent })
       .end((err, res) => {
-        res.body.percent_complete = this.state.percent;
+        res.body.percent = this.state.percent;
 
         this.props.dispatch(
           updateBook(this.state.book.id, res.body)
@@ -519,7 +519,7 @@ export default class Reader extends React.Component {
    * Calculates and saves the book's word count if not already calculated.
    */
   async _getWordCount() {
-    if (this.state.book.word_count > 0) return;
+    if (this.state.book.words > 0) return;
 
     let count = 0;
 

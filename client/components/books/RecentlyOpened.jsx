@@ -54,12 +54,12 @@ export default class RecentlyOpened extends React.Component {
 
                   <div className='chips'>
                     <span className='chip percent-complete'>
-                      {b.percent_complete}%
+                      {b.percent}%
                     </span>
 
-                    {b.word_count > 0 ? (
+                    {b.words > 0 ? (
                       <span className='chip word-count'>{
-                        Math.round(b.word_count / 1000)
+                        Math.round(b.words / 1000)
                       }K</span>
                     ) : null}
 
