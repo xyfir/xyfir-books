@@ -106,8 +106,8 @@ export default class CompactList extends React.Component {
                       primaryText='Delete'
                       leftIcon={<FontIcon>delete</FontIcon>}
                       onClick={e =>
-                      !e.stopPropagation() &&
-                      deleteBook([b.id], this.props.dispatch)
+                        !e.stopPropagation() &&
+                        deleteBook([b.id], this.props.App)
                       }
                     />
                   ]}

@@ -20,24 +20,24 @@ export default class GridList extends React.Component {
 
     this.state = { selected: -1 };
   }
-  
+
   componentDidMount() {
     loadCovers(this.props.data.books, this.props.data.account.library);
   }
-  
+
   componentDidUpdate() {
     loadCovers(this.props.data.books, this.props.data.account.library);
   }
 
   render() {
     if (!this.props.data.books.length) return <p>You don't have any books!</p>;
-    
+
     let books = sortBooks(
       findMatches(this.props.data.books, this.props.data.search.query),
       'title', true
     );
     const booksCount = books.length;
-    
+
     books = books.splice((this.props.data.search.page - 1) * 25, 25);
 
     return (
@@ -68,17 +68,17 @@ export default class GridList extends React.Component {
                   >Search author(s)</Button>
                   <Button
                     flat
-                    onClick={() => deleteBook([b.id], this.props.dispatch)}
+                    onClick={() => deleteBook([b.id], this.props.App)}
                     iconChildren='delete'
                   >Delete</Button>
                 </div>
               ) : null}
-              
+
               <img
                 className='cover'
                 id={`cover-${b.id}`}
               />
-              
+
               <span className='title'>{b.title}</span>
               <span className='authors'>{b.authors}</span>
             </li>
@@ -88,7 +88,7 @@ export default class GridList extends React.Component {
         <Pagination
           itemsPerPage={25}
           dispatch={this.props.dispatch}
-          items={booksCount} 
+          items={booksCount}
           data={this.props.data}
         />
       </div>

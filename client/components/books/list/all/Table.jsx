@@ -102,7 +102,7 @@ export default class TableList extends React.Component {
     const selected = this.state.selected.slice();
     this.setState({ selected: [] });
 
-    deleteBooks(selected, this.props.App.store.dispatch);
+    deleteBooks(selected, this.props.App);
   }
 
   /** @param {string} column */
