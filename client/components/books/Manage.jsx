@@ -66,7 +66,7 @@ export default class ManageBook extends React.Component {
     request
       .get(
         `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
-        `/books/${this.state.id}/metadata`
+        `/books/${this.state.id}/metadata/fetch`
       )
       .query(query)
       .end((err, res) => {
