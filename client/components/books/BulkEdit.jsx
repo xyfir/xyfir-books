@@ -120,7 +120,7 @@ export default class EditBooks extends React.Component {
             `/books/${id}/metadata`
           )
           .send({
-            data: JSON.stringify(data)
+            normal: data
           });
 
         if (res.body.error) throw res.body.error;

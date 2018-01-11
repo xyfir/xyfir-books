@@ -196,7 +196,7 @@ export default class ManageBook extends React.Component {
         `/books/${this.state.id}/metadata`
       )
       .send({
-        data: JSON.stringify(data)
+        normal: data
       })
       .end((err, res) => {
         this.setState({ saving: false });
