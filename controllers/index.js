@@ -73,16 +73,6 @@ router.delete(
   require('./books/note/remove')
 );
 
-/* Library Manager */
-router.post(
-  '/library-manager/:lib/library',
-  require('./library-manager/add-library')
-);
-router.post(
-  '/library-manager/:lib/books',
-  require('./library-manager/add-books')
-);
-
 /* Version */
 router.get('/version', require('./version'));
 
