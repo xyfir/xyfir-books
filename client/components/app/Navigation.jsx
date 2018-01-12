@@ -174,12 +174,6 @@ export default class AppNavigation extends React.Component {
               primaryText='Manage Library'
             />
           </a>,
-          <a href='#/account/purchase/subscription'>
-            <ListItem
-              leftIcon={<FontIcon>access_time</FontIcon>}
-              primaryText='Subscription'
-            />
-          </a>,
           <a href='#/account'>
             <ListItem
               leftIcon={<FontIcon>account_box</FontIcon>}
