@@ -18,7 +18,7 @@ import clickListener from 'lib/reader/listeners/click';
 import unwrap from 'lib/reader/matches/unwrap';
 
 // Constants
-import { XYLIBRARY_URL, XYBOOKS_URL } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 // Action creators
 import { updateBook } from 'actions/books';
@@ -71,7 +71,7 @@ export default class Reader extends React.Component {
     const {App} = this.props;
 
     // Build url to .epub file to read
-    let url = `${XYLIBRARY_URL}/files/${this.props.data.account.library}/`;
+    let url = `${XYLIBRARY_URL}/files/${App.state.account.library}/`;
     let hasEpub = false;
 
     this.state.book.formats.forEach(format => {
@@ -117,8 +117,15 @@ export default class Reader extends React.Component {
     try {
       if (!navigator.onLine) throw 'Offline';
 
-      const res = await request.get(`${XYBOOKS_URL}/api/books/${id}`);
-      bookInfo = res.body;
+      const res = await request
+        .get(
+          `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+          `/books/${id}/metadata`
+        )
+        .query({
+          xyfir: 'notes,bookmarks'
+        });
+      bookInfo = res.body.metadata;
 
       bookInfo.annotations = await updateAnnotations(
         this.state.book.annotations,
@@ -127,9 +134,8 @@ export default class Reader extends React.Component {
     }
     // Set default values if not available locally
     catch (err) {
-      if (!this.state.book.last_read) {
+      if (!this.state.book.notes) {
         bookInfo.notes = [],
-        bookInfo.last_read = 0,
         bookInfo.bookmarks = [];
       }
       if (!this.state.book.annotations)
@@ -191,20 +197,30 @@ export default class Reader extends React.Component {
 
     if (!this.book) return;
 
-    navigator.onLine && request
-      .post(`${XYBOOKS_URL}/api/books/${this.state.book.id}/close`)
-      .send({ percentComplete: this.state.percent })
-      .end((err, res) => {
-        res.body.percent = this.state.percent;
-
-        this.props.dispatch(
-          updateBook(this.state.book.id, res.body)
-        );
-        this.props.dispatch(save('books'));
-      });
-
     this.book.destroy();
     window._book = this.book = undefined;
+
+    const data = {
+      percent: this.state.percent,
+      last_read: Date.now()
+    };
+
+    const {App} = this.props;
+    App.store.dispatch(updateBook(this.state.book.id, data));
+    App.store.dispatch(save('books'));
+
+    navigator.onLine && request
+      .put(
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+        `/books/${this.state.book.id}/metadata`
+      )
+      .send({
+        xyfir: data
+      })
+      .end((err, res) => {
+        if (err || res.body.error)
+          console.error('Reader.componentWillUnmount()', err, res);
+      });
   }
 
   /**
