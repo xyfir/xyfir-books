@@ -114,25 +114,6 @@ export default class Reader extends React.Component {
       }
     }
 
-    let annotations = [];
-
-    // Load annotations
-    try {
-      if (!navigator.onLine) throw 'Offline';
-
-      annotations = await updateAnnotations(
-        this.state.book.annotations,
-        App.state.account.xyAnnotationsKey
-      );
-    }
-    // Set default value if not available locally
-    catch (err) {
-      annotations = this.state.book.annotations || [];
-    }
-
-    // Merge object with book in states and storage
-    this._updateBook({ annotations });
-
     // Create EPUBJS book
     window._book = this.book = new EPUB(epubBlob, {});
 
@@ -173,6 +154,15 @@ export default class Reader extends React.Component {
         this._getWordCount();
 
         this.setState({ loading: false });
+
+        return updateAnnotations(
+          this.state.book.annotations,
+          App.state.account.xyAnnotationsKey
+        );
+      })
+      .then(annotations => {
+        // Merge object with book in states and storage
+        this._updateBook({ annotations });
       })
       .catch(err => !console.error(err) && history.back());
   }
