@@ -7,9 +7,6 @@ import { XYLIBRARY_URL } from 'constants/config';
 import { loadBooks } from 'actions/books';
 import { save } from 'actions/app';
 
-// Constants
-import { XYBOOKS_URL } from 'constants/config';
-
 /**
  * Pull annotations from stored books and merge with books downloaded from API.
  * @async
@@ -52,27 +49,11 @@ async function mergeAnnotations(books) {
 export default async function(library, dispatch) {
 
   try {
-    let res = await Promise.all([
-      request.get(`${XYBOOKS_URL}/api/books`), // xyBooks DB
-      request.get(`${XYLIBRARY_URL}/libraries/${library}/books`) // xyLibrary
-    ]);
-
-    let books1 = res[0].body.books;
-    let books2 = res[1].body.books;
+    let res = await request.get(`${XYLIBRARY_URL}/libraries/${library}/books`);
+    let {books} = res.body;
     res = null;
 
-    if (!books1.length) return [];
-
-    // Merge books1 and books2
-    let books = books1
-      .map(b1 => {
-        const b2 = books2.find(b2 => b1.id == b2.id) || {};
-
-        return Object.assign(b2, b1);
-      })
-      .filter(b => b.title !== undefined);
-
-    books1 = books2 = null;
+    if (!books.length) return [];
 
     // Merge annotations from books saved to local storage
     books = await mergeAnnotations(books);
