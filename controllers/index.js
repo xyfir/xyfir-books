@@ -32,45 +32,9 @@ router.post(
 );
 
 /* Books */
-router.get(
-  '/books',
-  require('./books/list')
-);
-router.delete(
-  '/books',
-  require('./books/delete')
-);
 router.post(
   '/books/email-upload',
   require('./books/email-upload')
-);
-router.get(
-  '/books/:book',
-  require('./books/open')
-);
-router.post(
-  '/books/:book/close',
-  require('./books/close')
-);
-router.post(
-  '/books/:book/bookmark',
-  require('./books/bookmark/add')
-);
-router.delete(
-  '/books/:book/bookmark',
-  require('./books/bookmark/remove')
-);
-router.put(
-  '/books/:book/word-count',
-  require('./books/word-count')
-);
-router.post(
-  '/books/:book/note',
-  require('./books/note/add')
-);
-router.delete(
-  '/books/:book/note',
-  require('./books/note/remove')
 );
 
 /* Version */
