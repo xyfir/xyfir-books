@@ -4,7 +4,7 @@ import marked from 'marked';
 import React from 'react';
 
 // Constants
-import { XYBOOKS_URL } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 export default class ViewNote extends React.Component {
 
@@ -23,25 +23,25 @@ export default class ViewNote extends React.Component {
   onDelete() {
     const {Reader, Notes} = this.props;
     const {created} = Reader.state.book.notes[Notes.state.note];
+    const {App} = Reader.props;
+    const notes = Reader.state.book.notes.filter(n => created != n.created);
+
+    Notes.setState({ view: 'list' });
+    Reader._updateBook({ notes });
+    Reader.onCycleHighlightMode();
 
     request
-      .delete(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/note`)
-      .send({ created })
+      .put(
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+        `/books/${Reader.state.book.id}/metadata`
+      )
+      .send({
+        xyfir: {
+          notes: JSON.stringify(notes)
+        }
+      })
       .end((err, res) => {
-        if (err || res.body.error) {
-          Reader.props.alert('Could not delete note.');
-        }
-        else {
-          const notes = Reader.state.book.notes.filter(
-            n => created != n.created
-          );
-
-          Notes.setState({ view: 'list' });
-          Reader._updateBook({ notes });
-
-          // Ensure highlighted content in book is updated
-          Reader.onCycleHighlightMode();
-        }
+        if (err || res.body.error) console.error('onDelete()', err, res);
       });
   }
 

@@ -6,7 +6,7 @@ import React from 'react';
 import Highlight from 'components/reader/modal/notes/Highlight';
 
 // Constants
-import { XYBOOKS_URL } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 export default class CreateNote extends React.Component {
 
@@ -16,37 +16,34 @@ export default class CreateNote extends React.Component {
 
   onCreate() {
     const {Reader} = this.props;
-    const data = {
+    const {App} = Reader.props;
+    const notes = Reader.state.book.notes.concat([{
       cfi: Reader.book.rendition.location.start.cfi,
-      range: JSON.stringify({
+      range: {
         start: Reader.book.rendition.location.start.cfi,
         end: Reader.book.rendition.location.end.cfi
-      }),
+      },
       created: Date.now(),
       content: this._content.value,
-      highlights: JSON.stringify(this._highlight._getHighlights())
-    };
+      highlights: this._highlight._getHighlights()
+    }]);
+
+    Reader._updateBook({ notes });
+    Reader.onCycleHighlightMode();
+    Reader.onCloseModal();
 
     request
-      .post(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/note`)
-      .send(data)
+      .put(
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+        `/books/${Reader.state.book.id}/metadata`
+      )
+      .send({
+        xyfir: {
+          notes: JSON.stringify(notes)
+        }
+      })
       .end((err, res) => {
-        if (err || res.body.error) {
-          Reader.props.alert('Could not create note.');
-        }
-        else {
-          data.range = JSON.parse(data.range),
-          data.highlights = JSON.parse(data.highlights);
-
-          const notes = Reader.state.book.notes.concat([data]);
-
-          Reader._updateBook({ notes });
-
-          // Ensure highlighted content in book is updated
-          Reader.onCycleHighlightMode();
-
-          Reader.onCloseModal();
-        }
+        if (err || res.body.error) console.error('onCreate()', err, res);
       });
   }
 
