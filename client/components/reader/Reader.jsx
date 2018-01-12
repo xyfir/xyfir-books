@@ -29,10 +29,11 @@ export default class Reader extends React.Component {
   constructor(props) {
     super(props);
 
+    const {App} = this.props;
     const id = window.location.hash.split('/')[3];
 
     this.state = {
-      book: this.props.data.books.find(b => id == b.id),
+      book: App.state.books.find(b => id == b.id),
       pagesLeft: 0, percent: 0, loading: true,
       history: {
         items: [], index: -1, ignore: false
@@ -41,7 +42,7 @@ export default class Reader extends React.Component {
         target: '', show: ''
       },
       highlight: {
-        mode: this.props.data.config.reader.defaultHighlightMode,
+        mode: App.state.config.reader.defaultHighlightMode,
         index: 0
       }
     };
@@ -85,7 +86,7 @@ export default class Reader extends React.Component {
     if (!hasEpub) return history.back();
 
     const { id } = this.state.book;
-    let bookInfo = {}, epubBlob;
+    let epubBlob;
 
     // Attempt to load epub file, either locally or remotely
     try {
@@ -113,37 +114,24 @@ export default class Reader extends React.Component {
       }
     }
 
-    // Load extra data (notes, annotations, etc)
+    let annotations = [];
+
+    // Load annotations
     try {
       if (!navigator.onLine) throw 'Offline';
 
-      const res = await request
-        .get(
-          `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
-          `/books/${id}/metadata`
-        )
-        .query({
-          xyfir: 'notes,bookmarks'
-        });
-      bookInfo = res.body.metadata;
-
-      bookInfo.annotations = await updateAnnotations(
+      annotations = await updateAnnotations(
         this.state.book.annotations,
         App.state.account.xyAnnotationsKey
       );
     }
-    // Set default values if not available locally
+    // Set default value if not available locally
     catch (err) {
-      if (!this.state.book.notes) {
-        bookInfo.notes = [],
-        bookInfo.bookmarks = [];
-      }
-      if (!this.state.book.annotations)
-        bookInfo.annotations = [];
+      annotations = this.state.book.annotations || [];
     }
 
-    // Merge bookInfo with book in states and storage
-    this._updateBook(bookInfo);
+    // Merge object with book in states and storage
+    this._updateBook({ annotations });
 
     // Create EPUBJS book
     window._book = this.book = new EPUB(epubBlob, {});
@@ -373,7 +361,7 @@ export default class Reader extends React.Component {
    * @return {object}
    */
   async _getStyles() {
-    const s1 = this.props.data.config.reader;
+    const s1 = this.props.App.state.config.reader;
 
     try {
       const s2 = await localforage.getItem(`styling-${this.state.book.id}`);
@@ -522,13 +510,13 @@ export default class Reader extends React.Component {
    * @param {object} obj
    */
   _updateBook(obj) {
-    this.props.dispatch(updateBook(
+    this.props.App.store.dispatch(updateBook(
       this.state.book.id, obj
     ));
     this.setState({
       book: Object.assign({}, this.state.book, obj)
     });
-    this.props.dispatch(save('books'));
+    this.props.App.store.dispatch(save('books'));
   }
 
   /**
