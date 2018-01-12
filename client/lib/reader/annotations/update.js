@@ -8,14 +8,14 @@ import { XYANNOTATIONS_URL } from 'constants/config';
  * @async
  * @param {object[]} sets - An array of annotation sets
  * @param {string} key - Xyfir Annotations subscription key
- * @return {object[]} A promise that always resolves to an array of updated
- * annotation sets, or an empty array on error.
+ * @return {object[]} An array of updated annotation sets, or an empty array
+ *  on error.
  */
 export default async function(sets, key) {
 
-  if (!sets || !sets.length || !key || !navigator.onLine) return [];
-
   try {
+    if (!sets || !sets.length || !key || !navigator.onLine) throw 'Skip';
+
     const res = await request
       .get(`${XYANNOTATIONS_URL}/api/annotations`)
       .query({
@@ -23,7 +23,7 @@ export default async function(sets, key) {
         sets: JSON.stringify(sets.map(s => ({id: s.id, version: s.version})))
       });
 
-    if (res.body.error) throw 'Could not update annotations';
+    if (res.body.error) throw 'Received xyAnnotations error';
 
     // Check if new version has been received
     sets.forEach((set, i) => {
@@ -36,7 +36,7 @@ export default async function(sets, key) {
     return sets;
   }
   catch (err) {
-    console.error('lib/reader/annotations/update', err);
+    console.warn('lib/reader/annotations/update', err);
     return sets || [];
   }
 
