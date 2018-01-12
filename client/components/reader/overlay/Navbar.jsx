@@ -5,7 +5,7 @@ import request from 'superagent';
 import React from 'react';
 
 // Constants
-import { XYBOOKS_URL } from 'constants/config';
+import { XYLIBRARY_URL } from 'constants/config';
 
 export default class ReaderNavbar extends React.Component {
 
@@ -44,36 +44,37 @@ export default class ReaderNavbar extends React.Component {
    */
   onBookmark() {
     const {Reader} = this.props;
-    const cfi = Reader.book.rendition.location.start.cfi;
+    const {App} = Reader.props;
+    const {cfi} = Reader.book.rendition.location.start;
 
-    // Update app/component state
-    const update = bookmarks => Reader._updateBook({ bookmarks });
+    let bookmarks = [];
 
     // Remove bookmark
     if (this._isBookmarked()) {
-      request
-        .delete(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/bookmark`)
-        .send({ cfi })
-        .end((err, res) => {
-          if (!err && !res.body.error)
-            update(Reader.state.book.bookmarks.filter(bm => cfi != bm.cfi));
-        });
+      bookmarks = Reader.state.book.bookmarks.filter(b => cfi != b.cfi);
     }
     // Add bookmark
     else {
-      request
-        .post(`${XYBOOKS_URL}/api/books/${Reader.state.book.id}/bookmark`)
-        .send({ cfi })
-        .end((err, res) => {
-          if (!res.body.error) {
-            update(
-              Reader.state.book.bookmarks.concat([{
-                cfi, created: Date.now()
-              }])
-            );
-          }
-        });
+      bookmarks = Reader.state.book.bookmarks.concat([{
+        cfi, created: Date.now()
+      }]);
     }
+
+    Reader._updateBook({ bookmarks })
+
+    request
+      .put(
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+        `/books/${Reader.state.book.id}/metadata`
+      )
+      .send({
+        xyfir: {
+          bookmarks: JSON.stringify(bookmarks)
+        }
+      })
+      .end((err, res) => {
+        if (err || res.body.error) console.error('onBookmark()', err, res);
+      });
   }
 
   /**
