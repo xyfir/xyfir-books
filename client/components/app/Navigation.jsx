@@ -174,12 +174,16 @@ export default class AppNavigation extends React.Component {
               primaryText='Manage Library'
             />
           </a>,
-          <a href='#/account'>
-            <ListItem
-              leftIcon={<FontIcon>account_box</FontIcon>}
-              primaryText='My Account'
-            />
-          </a>,
+          !window.cordova ? (
+            <a href='#/account'>
+              <ListItem
+                leftIcon={<FontIcon>account_box</FontIcon>}
+                primaryText='My Account'
+              />
+            </a>
+          ) : (
+            <a />
+          ),
           <a onClick={() => this.onLogout()}>
             <ListItem
               leftIcon={<FontIcon>close</FontIcon>}
