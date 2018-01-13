@@ -1,27 +1,28 @@
+import { Button, Paper } from 'react-md';
 import moment from 'moment';
 import React from 'react';
 import copy from 'copyr';
 
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
-import Paper from 'react-md/lib/Papers';
-
 // Components
 import Purchase from 'components/account/Purchase';
+
+const PurchaseButton = () => (
+  <Button
+    raised primary
+    onClick={() => location.hash = '#/account/purchase/subscription'}
+  >Purchase</Button>
+);
 
 export default class Account extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.canPurchase = !window.cordova;
   }
 
   render() {
-    if (this.props.data.view.split('/')[1] == 'PURCHASE')
-      return <Purchase {...this.props} />
+    const {view, account} = this.props.App.state;
 
-    const { account } = this.props.data;
+    if (view.split('/')[1] == 'PURCHASE') return <Purchase {...this.props} />
 
     return (
       <div className='account'>
@@ -54,61 +55,38 @@ export default class Account extends React.Component {
           <h3>Subscription</h3>
 
           {account.subscription > Date.now() ? (
-            <div>
+            <React.Fragment>
               <p>
                 Your subscription will expire on {
                   moment(account.subscription).format('YYYY-MM-DD')
                 }.
-
-                <br />
-
-                Your library size limit is {account.librarySizeLimit}GB.
               </p>
 
-              {this.canPurchase ? (
-                <Button
-                  raised primary
-                  onClick={() =>
-                    location.hash = '#/account/purchase/subscription'
-                  }
-                >Purchase</Button>
-              ) : (
-                <p>Subscriptions must be purchased via xyBooks' website.</p>
-              )}
-            </div>
-          ) : (
-            <div>
-              <p>
-                You do not have a Xyfir Books subscription.
+              <p>Your library size limit is {account.librarySizeLimit}GB.</p>
 
-                <br />
+              <PurchaseButton />
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <p>You do not have a Xyfir Books subscription.</p>
 
                 {account.subscription ? (
-                  <span>
-                    Your library will be deleted after {
-                      moment(account.subscription)
-                        .add(7, 'days')
-                        .format('YYYY-MM-DD')
-                    }.
-
-                    <br />
-
-                    Purchase a subscription to prevent your library from being deleted.
-                  </span>
+                  <React.Fragment>
+                    <p>
+                      Your library will be deleted after {
+                        moment(account.subscription)
+                          .add(7, 'days')
+                          .format('YYYY-MM-DD')
+                      }.
+                    </p>
+                    <p>
+                      Purchase a subscription to prevent your library from being deleted.
+                    </p>
+                  </React.Fragment>
                 ) : null}
-              </p>
 
-              {this.canPurchase ? (
-                <Button
-                  raised primary
-                  onClick={() =>
-                    location.hash = '#/account/purchase/subscription'
-                  }
-                >Purchase</Button>
-              ) : (
-                <p>Subscriptions must be purchased via xyBooks' website.</p>
-              )}
-            </div>
+              <PurchaseButton />
+            </React.Fragment>
           )}
         </Paper>
       </div>
