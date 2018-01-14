@@ -1,5 +1,5 @@
 import {
-  DatePicker, TextField, Button, DialogContainer, Paper
+  DatePicker, TextField, Button, Paper
 } from 'react-md';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
@@ -9,6 +9,7 @@ import swal from 'sweetalert';
 
 // Modules
 import loadCovers from 'lib/books/load-covers';
+import openWindow from 'lib/util/open-window';
 import loadBooks from 'lib/books/load-from-api';
 import buildUrl from 'lib/url/build';
 
@@ -27,7 +28,6 @@ export default class ManageBook extends React.Component {
       id: window.location.hash.split('/')[3],
       downloadingMetadata: false,
       editComments: false,
-      findCover: false,
       saving: false
     };
   }
@@ -290,35 +290,16 @@ export default class ManageBook extends React.Component {
 
             <Button
               flat secondary
-              onClick={() => this.setState({ findCover: true })}
+              onClick={() =>
+                openWindow(
+                  `https://www.google.com/search?q=${
+                    encodeURIComponent(book.authors + ' ' + book.title)
+                  }&tbm=isch`
+                )
+              }
               iconChildren='search'
             >Find Cover</Button>
           </div>
-
-          <DialogContainer
-            fullPage
-            id='dialog--find-cover'
-            onHide={() => this.setState({ findCover: false })}
-            visible={this.state.findCover}
-            aria-label='find-book-cover'
-          >
-            <Button
-              floating fixed primary
-              tooltipPosition='left'
-              fixedPosition='br'
-              tooltipLabel='Close'
-              iconChildren='close'
-              onClick={() => this.setState({ findCover: false })}
-            />
-
-            <iframe
-              className='cover-search'
-              src={this.state.findCover ? (
-                'https://www.bing.com/images/search?q=' +
-                encodeURIComponent(book.authors + ' ' + book.title)
-              ) : ''}
-            />
-          </DialogContainer>
         </Paper>
 
         <Paper
