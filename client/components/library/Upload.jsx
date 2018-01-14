@@ -9,9 +9,6 @@ import loadBooksFromApi from 'lib/books/load-from-api';
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';
 
-// Components
-import OpenWindow from 'components/misc/OpenWindow';
-
 export default class UploadLibrary extends React.Component {
 
   constructor(props) {
@@ -69,7 +66,7 @@ export default class UploadLibrary extends React.Component {
           Here you can upload an entire ebook library instead of individual ebook files.
         </p>
         <p>
-          Only <OpenWindow href='https://calibre-ebook.com/'>Calibre</OpenWindow>-compatible libraries are accepted.
+          Only Calibre-compatible libraries are accepted.
         </p>
         <p>
           The library must be zipped at the library's root folder. This means when you look inside the zip file you should see folders for all of the authors in your library and then your library's <em>metadata.db</em> database file.
