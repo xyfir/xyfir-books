@@ -68,7 +68,13 @@ export default class LibraryInfo extends React.Component {
         <tbody>
           <tr>
             <th>Identifier</th>
-            <td>{App.state.account.library}</td>
+            <td>
+              <input
+                type='text'
+                value={App.state.account.library}
+                onFocus={e => e.target.select()}
+              />
+            </td>
           </tr>
           <tr>
             <th>Books</th>
