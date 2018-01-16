@@ -127,10 +127,17 @@ export default class Reader extends React.Component {
         return this.book.rendition.display();
       })
       .then(() => {
-        // ** Save / load
-        return this.book.locations.generate(1000);
+        return localforage.getItem(`locations-${this.state.book.id}`);
       })
-      .then(pages => {
+      .then(locations => {
+        return locations == null
+          ? this.book.locations.generate(1000)
+          : Promise.resolve(locations)
+      })
+      .then(locations => {
+        if (!this.book.locations._locations.length)
+          this.book.locations.load(locations);
+
         // Set initial location to bookmark
         if (this.state.book.bookmarks.length > 0) {
           this.book.rendition.display(this.state.book.bookmarks[0].cfi);
@@ -163,6 +170,12 @@ export default class Reader extends React.Component {
       .then(annotations => {
         // Merge object with book in states and storage
         this._updateBook({ annotations });
+
+        // Save locations
+        localforage.setItem(
+          `locations-${this.state.book.id}`,
+          this.book.locations._locations
+        );
       })
       .catch(err => !console.error(err) && history.back());
   }
