@@ -20,7 +20,7 @@ export default class ReaderOverlay extends React.Component {
   render() {
     const {Reader} = this.props;
 
-    if (!Reader.book) return null;
+    if (!Reader.book || !Reader.book.rendition.location) return null;
 
     return (
       <div className='overlay'>
