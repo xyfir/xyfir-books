@@ -46,7 +46,7 @@ export default class ListAllBooks extends React.Component {
       delete qo.search;
       const qa = Object.keys(qo);
 
-      const value = `${qa[0]}:${qo[qa[0]].replace(/\s/g, '_')}`;
+      const value = `"${qa[0]}:${qo[qa[0]]}"`;
 
       // Only set if value is different
       if (this.props.data.search.query != value)
