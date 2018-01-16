@@ -50,7 +50,7 @@ export default async function(library, dispatch) {
 
   try {
     let res = await request.get(`${XYLIBRARY_URL}/libraries/${library}/books`);
-    let {books} = res.body;
+    let books = Array.isArray(res.body) ? res.body : res.body.books;
     res = null;
 
     if (!books.length) return [];
