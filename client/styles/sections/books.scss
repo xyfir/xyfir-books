@@ -59,12 +59,12 @@ ul.recently-opened.books {
 }
 
 div.manage-book {
-  section.cover {
+  >section.cover {
     display: flex;
     align-items: center;
     flex-direction: column;
 
-    .dropzone {
+    >div.dropzone {
       width: initial;
       display: inline-block;
       margin-bottom: 0.5em;
@@ -77,12 +77,6 @@ div.manage-book {
 
     div {
       margin: auto;
-    }
-  }
-
-  section.formats {
-    table.formats {
-      margin-bottom: 1em;
     }
   }
 }

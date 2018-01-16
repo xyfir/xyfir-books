@@ -5,7 +5,6 @@ import Dropzone from 'react-dropzone';
 import request from 'superagent';
 import moment from 'moment';
 import React from 'react';
-import swal from 'sweetalert';
 
 // Modules
 import loadCovers from 'lib/books/load-covers';
@@ -25,7 +24,7 @@ export default class ManageBook extends React.Component {
     super(props);
 
     this.state = {
-      id: window.location.hash.split('/')[3],
+      id: +window.location.hash.split('/')[3],
       downloadingMetadata: false,
       editComments: false,
       saving: false
@@ -33,46 +32,44 @@ export default class ManageBook extends React.Component {
   }
 
   componentDidMount() {
-    loadCovers(this.props.data.books, this.props.data.account.library);
+    const {books, account} = this.props.App.state;
+    loadCovers(books, account.library);
   }
 
   onDownloadMetadata() {
-    if (!navigator.onLine) {
-      swal('Error', 'This action requires internet connectivity', 'error');
-      return;
-    }
+    const {App} = this.props;
+
+    if (!navigator.onLine) return App._alert('Internet connection required');
 
     this.setState({ downloadingMetadata: true });
 
-    let query = {};
+    const query = {};
 
     // Get metadata using ISBN
     this._identifiers.value
       .split(', ')
       .forEach(id => {
-        const t = id.split(':');
+        const [key, val] = id.split(':');
 
-        if (t[0] == 'isbn') query = { isbn: t[1] };
+        if (key == 'isbn') query.isbn = val;
       });
 
     // Get metadata using author/title
     if (!query.isbn) {
-      query = {
-        author: this._authors.value,
-        title: this._title.value
-      };
+      query.author = this._authors.value,
+      query.title = this._title.value;
     }
 
     request
       .get(
-        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
         `/books/${this.state.id}/metadata/fetch`
       )
       .query(query)
       .end((err, res) => {
         if (err || res.body.error) {
           this.setState({ downloadingMetadata: false });
-          return swal('Error', 'Could not find metadata', 'error');
+          return App._alert('Could not find metadata');
         }
 
         res.body.metadata
@@ -112,40 +109,37 @@ export default class ManageBook extends React.Component {
   }
 
   onDeleteFormat(f) {
-    if (!navigator.onLine) {
-      swal('Error', 'This action requires internet connectivity', 'error');
-      return;
-    }
+    const {App} = this.props;
+
+    if (!navigator.onLine) return App._alert('Internet connection required');
 
     request
       .delete(
-        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
         `/books/${this.state.id}/format/${f}`
       )
       .end((err, res) => {
         if (err || res.body.error)
-          swal('Error', 'Could not delete format', 'error');
+          App._alert('Could not delete format');
         else
-          this.props.dispatch(deleteFormat(this.state.id, f));
+          App.store.dispatch(deleteFormat(this.state.id, f));
       });
   }
 
   /** @param {File} file */
   onUploadCover(file) {
-    if (!navigator.onLine) {
-      swal('Error', 'This action requires internet connectivity', 'error');
-      return;
-    }
+    const {App} = this.props;
+
+    if (!navigator.onLine) return App._alert('Internet connection required');
 
     request
       .put(
-        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
         `/books/${this.state.id}/cover`
       )
       .attach('cover', file)
       .end((err, res) => {
-        if (res.error)
-          return swal('Error', 'Could not upload file', 'error');
+        if (res.error) return App._alert('Could not upload file');
 
         localforage.setItem(`cover-${this.state.id}`, file)
           .then(img => {
@@ -157,10 +151,9 @@ export default class ManageBook extends React.Component {
   }
 
   onSaveChanges() {
-    if (!navigator.onLine) {
-      swal('Error', 'This action requires internet connectivity', 'error');
-      return;
-    }
+    const {App} = this.props;
+
+    if (!navigator.onLine) return App._alert('Internet connection required');
 
     this.setState({ saving: true });
 
@@ -192,7 +185,7 @@ export default class ManageBook extends React.Component {
     // Send to xyLibrary
     request
       .put(
-        `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
         `/books/${this.state.id}/metadata`
       )
       .send({
@@ -201,19 +194,16 @@ export default class ManageBook extends React.Component {
       .end((err, res) => {
         this.setState({ saving: false });
 
-        if (err || res.body.error)
-          return swal('Error', 'An unknown error occured', 'error');
+        if (err || res.body.error) return App._alert('Could not update book');
 
         // Reload state.books and update local storage books
-        loadBooks(
-          this.props.data.account.library,
-          this.props.dispatch
-        );
+        loadBooks(App.state.account.library, App.store.dispatch);
       });
   }
 
   render() {
-    const book = this.props.data.books.find(b => this.state.id == b.id);
+    const {App} = this.props;
+    const book = App.state.books.find(b => this.state.id == b.id);
 
     return (
       <div className='manage-book'>
@@ -262,10 +252,26 @@ export default class ManageBook extends React.Component {
             id='number--series-index'
             ref={i => this._seriesIndex = i}
             type='number'
-            label='Series Index'
+            label='Series Number'
             className='md-cell'
             defaultValue={book.series_index || 1}
           />
+
+          <Button
+            primary flat
+            onClick={() => this.onDownloadMetadata()}
+            disabled={this.state.downloadingMetadata}
+            iconChildren='cloud_download'
+            tooltipLabel={
+              'Using available data, metadata will be downloaded from ' +
+              'various internet sources'
+            }
+            tooltipPosition='top'
+          >{
+            this.state.downloadingMetadata
+              ? 'Downloading...'
+              : 'Download Metadata'
+          }</Button>
         </Paper>
 
         <Paper
@@ -310,6 +316,7 @@ export default class ManageBook extends React.Component {
           <TextField
             floating
             id='number--rating'
+            min={0}
             max={5}
             ref={i => this._rating = i}
             type='number'
@@ -324,7 +331,7 @@ export default class ManageBook extends React.Component {
             rows={2}
             type='text'
             label='Tags'
-            helpText='Separate tags with a command and a space'
+            helpText='Separate tags with a comment and a space'
             className='md-cell'
             defaultValue={book.tags.join(', ')}
           />
@@ -334,7 +341,7 @@ export default class ManageBook extends React.Component {
             ref={i => this._identifiers = i}
             type='text'
             label='Identifiers'
-            helpText='ISBN, Amazon, etc. Format: identifier_name:id,..'
+            helpText='ISBN, Amazon, etc. Format: name:id, name:id, ...'
             className='md-cell'
             defaultValue={
               Object
@@ -371,25 +378,6 @@ export default class ManageBook extends React.Component {
         <Paper
           zDepth={1}
           component='section'
-          className='download-metadata section flex'
-        >
-          {this.state.downloadingMetadata ? (
-            <p>Attempting to find metadata... This can take a while.</p>
-          ) : (
-            <p>xyBooks will attempt to download metadata for this book from the internet using its authors and title, or its ISBN.</p>
-          )}
-
-          <Button
-            primary flat
-            onClick={() => this.onDownloadMetadata()}
-            disabled={this.state.downloadingMetadata}
-            iconChildren='cloud_download'
-          >Download Metadata</Button>
-        </Paper>
-
-        <Paper
-          zDepth={1}
-          component='section'
           className='comments section flex'
         >{this.state.editComments ? (
           <TextField
@@ -399,9 +387,9 @@ export default class ManageBook extends React.Component {
             type='text'
             label='Comments'
             helpText={
-              'Despite the name, the comments metadata field is typically ' +
-              'used for the book\'s description, but it can be used for ' +
-              'anything.'
+              `Despite the name, the comments metadata field is typically ` +
+              `used for the book's description, but it can be used for ` +
+              `anything. HTML is supported.`
             }
             className='md-cell'
             defaultValue={book.comments || ''}
