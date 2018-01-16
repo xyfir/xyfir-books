@@ -26,6 +26,7 @@ export default class ManageBook extends React.Component {
     this.state = {
       id: +window.location.hash.split('/')[3],
       downloadingMetadata: false,
+      embeddingMetadata: false,
       editComments: false,
       saving: false
     };
@@ -105,6 +106,28 @@ export default class ManageBook extends React.Component {
           });
 
         this.setState({ downloadingMetadata: false });
+      });
+  }
+
+  onEmbedMetadata() {
+    const {App} = this.props;
+
+    if (!navigator.onLine) return App._alert('Internet connection required');
+
+    this.setState({ embeddingMetadata: true });
+
+    request
+      .post(
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+        `/books/${this.state.id}/metadata/embed`
+      )
+      .end((err, res) => {
+        this.setState({ embeddingMetadata: false });
+
+        if (err || res.body.error)
+          return App._alert('Could not embed metadata');
+        else
+          return App._alert('Metadata embedded');
       });
   }
 
@@ -257,21 +280,39 @@ export default class ManageBook extends React.Component {
             defaultValue={book.series_index || 1}
           />
 
-          <Button
-            primary flat
-            onClick={() => this.onDownloadMetadata()}
-            disabled={this.state.downloadingMetadata}
-            iconChildren='cloud_download'
-            tooltipLabel={
-              'Using available data, metadata will be downloaded from ' +
-              'various internet sources'
-            }
-            tooltipPosition='top'
-          >{
-            this.state.downloadingMetadata
-              ? 'Downloading...'
-              : 'Download Metadata'
-          }</Button>
+          <div>
+            <Button
+              primary flat
+              onClick={() => this.onDownloadMetadata()}
+              disabled={this.state.downloadingMetadata}
+              iconChildren='cloud_download'
+              tooltipLabel={
+                'Using available data, metadata will be downloaded from ' +
+                'various internet sources'
+              }
+              tooltipPosition='top'
+            >{
+              this.state.downloadingMetadata
+                ? 'Downloading...'
+                : 'Download Metadata'
+            }</Button>
+
+            <Button
+              secondary flat
+              onClick={() => this.onEmbedMetadata()}
+              disabled={this.state.embeddingMetadata}
+              iconChildren='archive'
+              tooltipLabel={
+                `This book's metadata from your library's database will be ` +
+                `embedded into the actual ebook files`
+              }
+              tooltipPosition='top'
+            >{
+              this.state.embeddingMetadata
+                ? 'Embedding...'
+                : 'Embed Metadata'
+            }</Button>
+          </div>
         </Paper>
 
         <Paper
