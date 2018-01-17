@@ -1,9 +1,6 @@
 const request = require('superagent');
-const mysql = require('lib/mysql');
-const path = require('path');
-const fs = require('fs');
-
 const config = require('config');
+const MySQL = require('lib/mysql');
 
 /*
   POST api/books/email-upload
@@ -16,32 +13,24 @@ const config = require('config');
 */
 module.exports = async function(req, res) {
 
-  const db = new mysql;
+  const db = new MySQL;
 
   try {
     await db.getConnection();
-
-    const sql = `
-      SELECT library_id FROM users WHERE email = ?
-    `,
-    vars = [
-      req.body.sender
-    ],
-    rows = await db.query(sql, vars);
-
+    const rows = await db.query(
+      'SELECT library_id FROM users WHERE email = ?',
+      [req.body.sender]
+    );
     db.release();
 
     if (!rows.length) throw 'No user exists with email';
 
+    const library = rows[0].library_id;
     const files = JSON.parse(req.body.attachments);
 
     if (!Array.isArray(files)) throw 'No files uploaded';
 
     for (let file of files) {
-      const fpath = path.resolve(
-        __dirname, '../../../uploads/', Date.now() + ' - ' + file.name
-      );
-
       try {
         // Download attachment
         const dl = await request
@@ -49,25 +38,12 @@ module.exports = async function(req, res) {
           .buffer(true)
           .parse(request.parse['application/octet-stream']);
 
-        // Write to file so path can be passed to superagent
-        await (new Promise((resolve, reject) =>
-          fs.writeFile(
-            fpath, dl.body, err => err ? reject(err) : resolve()
-          )
-        ));
-
         // Upload file to xyLibrary
         await request
-          .post(
-            config.addresses.library + 'libraries/' +
-            rows[0].library_id + '/books'
-          )
-          .attach('book', fpath);
+          .post(`${config.addresses.library}libraries/${library}/books`)
+          .attach('book', dl.body, file.name);
       }
-      catch (err) { }
-
-      // Delete downloaded file
-      await (new Promise( r => fs.unlink(fpath, () => r()) ));
+      catch (err) {}
     }
 
     res.status(200).send();
@@ -76,5 +52,5 @@ module.exports = async function(req, res) {
     db.release();
     res.status(406).send();
   }
-  
+
 };
