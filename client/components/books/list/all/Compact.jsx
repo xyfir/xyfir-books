@@ -40,7 +40,7 @@ export default class CompactList extends React.Component {
 
     let books = sortBooks(
       findMatches(App.state.books, App.state.search.query),
-      'last_read', true
+      'timestamp', false
     );
     const booksCount = books.length;
 
