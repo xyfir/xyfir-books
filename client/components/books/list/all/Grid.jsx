@@ -2,6 +2,7 @@ import React from 'react';
 
 // Components
 import Pagination from 'components/misc/Pagination';
+import NoBooks from 'components/books/NoBooks';
 
 // Modules
 import findMatches from 'lib/books/find-matching';
@@ -22,23 +23,27 @@ export default class GridList extends React.Component {
   }
 
   componentDidMount() {
-    loadCovers(this.props.data.books, this.props.data.account.library);
+    const {books, account} = this.props.App.state;
+    loadCovers(books, account.library);
   }
 
   componentDidUpdate() {
-    loadCovers(this.props.data.books, this.props.data.account.library);
+    const {books, account} = this.props.App.state;
+    loadCovers(books, account.library);
   }
 
   render() {
-    if (!this.props.data.books.length) return <p>You don't have any books!</p>;
+    const {App} = this.props;
+
+    if (!App.state.books.length) return <NoBooks {...this.props} />
 
     let books = sortBooks(
-      findMatches(this.props.data.books, this.props.data.search.query),
-      'title', true
+      findMatches(App.state.books, App.state.search.query),
+      'last_read', true
     );
     const booksCount = books.length;
 
-    books = books.splice((this.props.data.search.page - 1) * 25, 25);
+    books = books.splice((App.state.search.page - 1) * 25, 25);
 
     return (
       <div>
@@ -68,7 +73,7 @@ export default class GridList extends React.Component {
                   >Search author(s)</Button>
                   <Button
                     flat
-                    onClick={() => deleteBook([b.id], this.props.App)}
+                    onClick={() => deleteBook([b.id], App)}
                     iconChildren='delete'
                   >Delete</Button>
                 </div>
@@ -87,9 +92,9 @@ export default class GridList extends React.Component {
 
         <Pagination
           itemsPerPage={25}
-          dispatch={this.props.dispatch}
+          dispatch={App.store.dispatch}
           items={booksCount}
-          data={this.props.data}
+          data={App.state}
         />
       </div>
     );
