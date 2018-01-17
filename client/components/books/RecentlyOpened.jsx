@@ -1,6 +1,9 @@
 import { FontIcon } from 'react-md';
 import React from 'react';
 
+// Components
+import NoBooks from 'components/books/NoBooks';
+
 // Modules
 import loadCovers from 'lib/books/load-covers';
 import sortBooks from 'lib/books/sort';
@@ -13,19 +16,23 @@ export default class RecentlyOpened extends React.Component {
   }
 
   componentDidMount() {
-    loadCovers(this.props.data.books, this.props.data.account.library);
+    const {books, account} = this.props.App.state;
+    loadCovers(books, account.library);
   }
 
   componentDidUpdate() {
-    loadCovers(this.props.data.books, this.props.data.account.library);
+    const {books, account} = this.props.App.state;
+    loadCovers(books, account.library);
   }
 
   render() {
-    if (!this.props.data.books.length) return <p>You don't have any books!</p>;
+    const {App} = this.props;
+
+    if (!App.state.books.length) return <NoBooks {...this.props} />
 
     return (
       <ul className='recently-opened books'>{
-        sortBooks(this.props.data.books, 'last_read', true)
+        sortBooks(App.state.books, 'last_read', true)
           .slice(-4)
           .reverse()
           .map(b => {
