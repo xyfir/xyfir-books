@@ -1,5 +1,8 @@
 import React from 'react';
 
+// Components
+import Navigation from 'components/reader/modal/Navigation';
+
 export default class BookInfo extends React.Component {
 
   constructor(props) {
@@ -7,16 +10,18 @@ export default class BookInfo extends React.Component {
   }
 
   render() {
-    const { book } = this.props.Reader.state;
+    const {book} = this.props.Reader.state;
 
     return (
-      <div className='book-info'>
+      <section className='book-info'>
+        <Navigation {...this.props} title='Book Info' />
+
         <table><tbody>
           <tr>
             <th>Title</th>
             <td>{book.title}</td>
           </tr>
-          
+
           <tr>
             <th>Authors</th>
             <td>{book.authors}</td>
@@ -54,8 +59,8 @@ export default class BookInfo extends React.Component {
           className='comments'
           dangerouslySetInnerHTML={{__html: book.comments }}
         />
-      </div>
-    )
+      </section>
+    );
   }
 
 }
