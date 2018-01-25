@@ -9,6 +9,7 @@ import React from 'react';
 import { XYANNOTATIONS_URL } from 'constants/config';
 
 // Components
+import Navigation from 'components/reader/modal/Navigation';
 import OpenWindow from 'components/misc/OpenWindow';
 
 export default class ManageAnnotations extends React.Component {
@@ -90,25 +91,30 @@ export default class ManageAnnotations extends React.Component {
 
     return (
       <div className='manage-annotations view-set'>
-        <Button
-          raised
-          onClick={() => this.setState({ set: 0 })}
-          iconChildren='arrow_back'
-        >Back</Button>
-
-        {isDownloaded ? (
-          <Button
-            raised secondary
-            onClick={() => this.onDelete()}
-            iconChildren='delete'
-          >Trash</Button>
-        ) : (
-          <Button
-            raised primary
-            onClick={() => this.onDownload()}
-            iconChildren='cloud_download'
-          >Save</Button>
-        )}
+        <Navigation
+          {...this.props}
+          title='Annotations'
+          actions={[
+            <Button
+              icon
+              onClick={() => this.setState({ set: 0 })}
+              iconChildren='search'
+            />,
+            isDownloaded ? (
+              <Button
+                icon
+                onClick={() => this.onDelete()}
+                iconChildren='delete'
+              />
+            ) : (
+              <Button
+                icon
+                onClick={() => this.onDownload()}
+                iconChildren='cloud_download'
+              />
+            )
+          ]}
+        />
 
         <h3 className='title'>{set.set_title}</h3>
 
@@ -188,22 +194,26 @@ export default class ManageAnnotations extends React.Component {
 		if (this.state.set) return this._renderView(annotations);
 
     return (
-      <TabsContainer
-        colored
-        className='manage-annotations find'
-        onTabChange={i => this.setState({ tab: i })}
-        activeTabIndex={this.state.tab}
-      >
-      <Tabs tabId='tab'>
-        <Tab label='Discover'>
-          {this.state.tab == 0 ? this._renderDiscover() : null}
-        </Tab>
+      <section className='manage-annotations container'>
+        <Navigation {...this.props} title='Annotations' />
 
-        <Tab label='Downloaded'>
-          {this.state.tab == 1 ? this._renderDownloaded(annotations) : null}
-        </Tab>
-      </Tabs>
-      </TabsContainer>
+        <TabsContainer
+          colored
+          className='manage-annotations find'
+          onTabChange={i => this.setState({ tab: i })}
+          activeTabIndex={this.state.tab}
+        >
+        <Tabs tabId='tab'>
+          <Tab label='Discover'>
+            {this.state.tab == 0 ? this._renderDiscover() : null}
+          </Tab>
+
+          <Tab label='Downloaded'>
+            {this.state.tab == 1 ? this._renderDownloaded(annotations) : null}
+          </Tab>
+        </Tabs>
+        </TabsContainer>
+      </section>
     );
 	}
 

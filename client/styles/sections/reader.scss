@@ -97,7 +97,11 @@ span.reader-dialog {
   }
 
   div.manage-annotations.view-set {
-    padding: 1em;
+    text-align: left;
+
+    >h3, >span, >div {
+      margin: 0.5em 1em;
+    }
 
     >span.book {
       display: block;
