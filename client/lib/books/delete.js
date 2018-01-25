@@ -3,6 +3,7 @@ import swal from 'sweetalert';
 
 // Action creators
 import { deleteBooks } from 'actions/books';
+import { save } from 'actions/app';
 
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';
@@ -43,6 +44,7 @@ export default async function(books, App) {
     if (res.body.error) throw res.body;
 
     App.store.dispatch(deleteBooks(books));
+    App.store.dispatch(save('books'));
 
     try{
       for (let book of books) {
