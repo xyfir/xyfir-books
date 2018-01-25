@@ -43,6 +43,18 @@ export default async function(books, App) {
     if (res.body.error) throw res.body;
 
     App.store.dispatch(deleteBooks(books));
+
+    try{
+      for (let book of books) {
+        await Promise.all(
+          ['cover', 'styling', 'epub', 'locations'].map(k =>
+            localforage.removeItem(`${k}-${book}`)
+          )
+        );
+      }
+    }
+    catch (err) {}
+
     return true;
   }
   catch (err) {
