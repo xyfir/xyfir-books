@@ -22,50 +22,29 @@ export default class ReaderModal extends React.Component {
     };
   }
 
-  /**
-   * Close the fullscreen modal.
-   */
-  onFullscreenClose() {
-    if (this.state.canResize) {
-      // For some reason if the user closes while in fullscreen and then
-      // reopens and clicks the 'shrink' button the Dialog breaks
-      this.setState(
-        { fullscreen: false }, () => this.props.Reader.onCloseModal()
-      );
-    }
-    else {
-      this.props.Reader.onCloseModal();
-    }
-  }
-
-  /**
-   * Toggle fullscreen.
-   */
-  onResize() {
-    this.setState({ fullscreen: !this.state.fullscreen });
-  }
-
   render() {
     const {show} = this.props.Reader.state.modal;
-    
+
     const view = (() => {
+      const props = Object.assign({}, this.props, { Modal: this });
+
       switch (show) {
         case 'manageAnnotations':
-          return <ManageAnnotations {...this.props} />
+          return <ManageAnnotations {...props} />
         case 'viewAnnotations':
-          return <ViewAnnotations {...this.props} />
+          return <ViewAnnotations {...props} />
         case 'bookStyling':
-          return <BookStyling {...this.props} />
+          return <BookStyling {...props} />
         case 'bookmarks':
-          return <Bookmarks {...this.props} />
+          return <Bookmarks {...props} />
         case 'bookInfo':
-          return <BookInfo {...this.props} />
+          return <BookInfo {...props} />
         case 'filters':
-          return <Filters {...this.props} />
+          return <Filters {...props} />
         case 'notes':
-          return <Notes {...this.props} />
+          return <Notes {...props} />
         case 'toc':
-          return <TableOfContents {...this.props} />
+          return <TableOfContents {...props} />
         default:
           return null;
       }
@@ -74,12 +53,7 @@ export default class ReaderModal extends React.Component {
     if (!view) return null;
 
     const { forceFullscreen, noFullscreen } = view.type;
-    
-    const canResize =
-      this.state.canResize &&
-      !forceFullscreen &&
-      !noFullscreen;
-    
+
     const fullscreen = noFullscreen ?
       false :
       forceFullscreen || this.state.fullscreen;
@@ -91,36 +65,13 @@ export default class ReaderModal extends React.Component {
         visible={true}
         fullPage={fullscreen}
         className={
-          'reader-dialog' + (noFullscreen ? ' transparent' : '')
+          'reader-dialog container' + (noFullscreen ? ' transparent' : '')
         }
         aria-label='reader-modal'
         focusOnMount={false}
-        contentClassName='md-dialog-content--padded'
-      >
-        {canResize ? (
-          <Button
-            floating fixed primary
-            tooltipPosition='right'
-            fixedPosition='bl'
-            tooltipLabel={fullscreen ? 'Shrink' : 'Full Screen'}
-            iconChildren={fullscreen ? 'fullscreen_exit' : 'fullscreen'}
-            onClick={() => this.onResize()}
-          />
-        ) : null}
-
-        {fullscreen ? (
-          <Button
-            floating fixed primary
-            tooltipPosition='left'
-            fixedPosition='br'
-            tooltipLabel='Close'
-            iconChildren='close'
-            onClick={() => this.onFullscreenClose()}
-          />
-        ) : null}
-
-        {view}
-      </DialogContainer>
+        autopadContent={false}
+        contentClassName='reader-dialog content'
+      >{view}</DialogContainer>
     );
   }
 
