@@ -3,6 +3,7 @@ import request from 'superagent';
 import React from 'react';
 
 // Components
+import Navigation from 'components/reader/modal/Navigation';
 import Highlight from 'components/reader/modal/notes/Highlight';
 
 // Constants
@@ -49,31 +50,38 @@ export default class CreateNote extends React.Component {
 
   render() {
     return (
-      <div className='create-note flex'>
-        <Highlight ref={i => this._highlight = i} {...this.props} />
-
-        <TextField
-          id='textarea--note'
-          ref={i => this._content = i}
-          rows={2}
-          type='text'
-          label='Note'
-          className='md-cell'
+      <section className='create-note container'>
+        <Navigation
+          {...this.props}
+          title='Create Note'
+          actions={[
+            <Button
+              icon
+              onClick={() => this.props.Notes.setState({ view: 'list' })}
+              iconChildren='list'
+            />
+          ]}
         />
 
-        <div>
-          <Button
-            raised
-            onClick={() => this.props.Notes.setState({ view: 'list' })}
-            iconChildren='arrow_back'
-          >Back</Button>
+        <div className='create-note form flex'>
+          <Highlight ref={i => this._highlight = i} {...this.props} />
+
+          <TextField
+            id='textarea--note'
+            ref={i => this._content = i}
+            rows={2}
+            type='text'
+            label='Note'
+            className='md-cell'
+          />
+
           <Button
             raised primary
             onClick={() => this.onCreate()}
             iconChildren='create'
           >Create</Button>
         </div>
-      </div>
+      </section>
     );
   }
 
