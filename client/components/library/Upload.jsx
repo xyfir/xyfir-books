@@ -3,9 +3,6 @@ import request from 'superagent';
 import React from 'react';
 import swal from 'sweetalert';
 
-// Modules
-import loadBooksFromApi from 'lib/books/load-from-api';
-
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';
 
@@ -44,8 +41,9 @@ export default class UploadLibrary extends React.Component {
           return App._alert('Could not upload library');
 
         App._alert('Library uploaded successfully. Reloading library...');
-
-        loadBooksFromApi(App.state.account.library, App.store.dispatch);
+        localforage.clear()
+          .then(() => location.reload())
+          .catch(() => location.reload());
       });
   }
 

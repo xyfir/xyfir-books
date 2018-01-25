@@ -4,9 +4,6 @@ import {
 import request from 'superagent';
 import React from 'react';
 
-// Modules
-import loadBooksFromApi from 'lib/books/load-from-api';
-
 // Components
 import OpenWindow from 'components/misc/OpenWindow';
 
@@ -41,8 +38,10 @@ export default class NoBooks extends React.Component {
         if (err || res.body.error)
           return App._alert('Could not update library');
 
-        loadBooksFromApi(App.state.account.library);
-        App._alert('Your library has been updated');
+        App._alert('Library updated. Reloading library...');
+        localforage.clear()
+          .then(() => location.reload())
+          .catch(() => location.reload());
       });
   }
 
