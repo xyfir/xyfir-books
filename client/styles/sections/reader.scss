@@ -46,13 +46,9 @@ div.reader {
 }
 
 span.reader-dialog {
-  >div.md-dialog--full-page {
-    >div.create-note, >div.note {
-      padding: 1em;
-    }
-  }
+  div.create-note.form {
+    margin: 0.5em 1em;
 
-  div.create-note {
     >div.highlight {
       >div.visible-text {
         max-height: 12em;
@@ -65,7 +61,13 @@ span.reader-dialog {
     }
   }
 
-  div.note {
+  section.note {
+    text-align: left;
+
+    >div {
+      margin: 0.5em 1em;
+    }
+
     >div.highlights {
       >span {
         font-style: italic;
@@ -79,10 +81,6 @@ span.reader-dialog {
           color: black;
         }
       }
-    }
-
-    >div.content {
-      margin: 1em 0em;
     }
   }
 
@@ -153,33 +151,46 @@ span.reader-dialog {
     }
   }
 
-  .book-info {
-    table {
-      width: 100%;
+  section.book-info {
+    >table {
+      margin: 0.5em 1em;
+      width: calc(100% - 2em);
 
       th, td {
         border-bottom: solid 0.1em $llgray;
         text-align: left;
       }
+
+      span.tag {
+        display: inline-block;
+        margin: 0em 0.2em;
+
+        &:first-child {
+          margin-left: 0em;
+        }
+      }
     }
 
-    .tag {
-      display: inline-block;
-      margin: 0em 0.2em;
+    >div.comments {
+      margin: 0 1em;
+      text-align: left;
+    }
+  }
+
+  section.list-container {
+    >ul.md-list {
+      padding-bottom: 0;
     }
 
-    .tag:first-child {
-      margin-left: 0em;
-    }
-
-    .comments {
-      padding-top: 1em;
-      margin-top: 1em;
+    >p {
+      margin: 1em;
+      font-size: 100%;
     }
   }
 
   table.book-styling {
-    width: 100%;
+    width: calc(100% - 5em);
+    margin: 1em auto;
 
     th {
       font-weight: normal;
@@ -197,22 +208,9 @@ span.reader-dialog {
     }
   }
 
-  .filters {
-    width: 85%;
-    margin: auto;
-
-    .slider {
-      display: flex;
-      height: 3em;
-
-      .slider-container {
-        flex: 10;
-      }
-
-      i.md-icon {
-        flex: 1;
-      }
-    }
+  div.filters {
+    width: calc(100% - 5em);
+    margin: 1em auto;
   }
 }
 
