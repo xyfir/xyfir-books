@@ -9,7 +9,7 @@ export default class Notes extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = { note: props.Reader.state.modal.target || -1 };
     this.state.view =
       this.state.note > -1 ? 'view' :
@@ -17,7 +17,7 @@ export default class Notes extends React.Component {
   }
 
   render() {
-    const props = { Reader: this.props.Reader, Notes: this };
+    const props = Object.assign({}, this.props, { Notes: this });
 
     switch (this.state.view) {
       case 'create': return <Create {...props} />;
