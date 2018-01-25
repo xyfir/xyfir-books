@@ -6,6 +6,9 @@ import React from 'react';
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';
 
+// Components
+import Navigation from 'components/reader/modal/Navigation';
+
 export default class ViewNote extends React.Component {
 
   constructor(props) {
@@ -50,7 +53,34 @@ export default class ViewNote extends React.Component {
     const note = Reader.state.book.notes[Notes.state.note];
 
     return (
-      <div className='note'>
+      <section className='note'>
+        <Navigation
+          {...this.props}
+          title='Note'
+          actions={[
+            <Button
+              icon
+              onClick={() => this.onGoTo()}
+              iconChildren='navigation'
+            />,
+            <Button
+              icon
+              onClick={() => this.onDelete()}
+              iconChildren='delete'
+            />,
+            <Button
+              icon
+              onClick={() => Notes.setState({ view: 'create' })}
+              iconChildren='create'
+            />,
+            <Button
+              icon
+              onClick={() => this.props.Notes.setState({ view: 'list' })}
+              iconChildren='list'
+            />
+          ]}
+        />
+
         <div className='highlights'>{
           note.highlights.map((hl, i) => <span key={i}>{hl}</span>)
         }</div>
@@ -61,23 +91,7 @@ export default class ViewNote extends React.Component {
             __html: marked(note.content, { sanitize: true })
           }}
         />
-
-        <Button
-          raised
-          onClick={() => Notes.setState({ view: 'list' })}
-          iconChildren='arrow_back'
-        >Back</Button>
-        <Button
-          raised primary
-          onClick={() => this.onGoTo()}
-          iconChildren='navigation'
-        >Go To</Button>
-        <Button
-          raised secondary
-          onClick={() => this.onDelete()}
-          iconChildren='delete'
-        >Delete</Button>
-      </div>
+      </section>
     );
   }
 
