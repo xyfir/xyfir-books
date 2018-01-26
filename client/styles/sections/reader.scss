@@ -84,6 +84,10 @@ span.reader-dialog {
     }
   }
 
+  section.manage-annotations.container {
+    text-align: left;
+  }
+
   section.manage-annotations.find {
     >ul {
       padding: 0.5em 0em;
@@ -96,7 +100,7 @@ span.reader-dialog {
     }
   }
 
-  div.manage-annotations.view-set {
+  section.manage-annotations.view-set {
     text-align: left;
 
     >h3, >span, >div {
