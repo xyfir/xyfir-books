@@ -48,7 +48,7 @@ export default class Reader extends React.Component {
       }
     };
 
-    this.onCycleHighlightMode = this.onCycleHighlightMode.bind(this);
+    this.onSetHighlightMode = this.onSetHighlightMode.bind(this);
     this.onHighlightClicked = this.onHighlightClicked.bind(this);
     this._addEventListeners = this._addEventListeners.bind(this);
     this._applyHighlights = this._applyHighlights.bind(this);
@@ -158,7 +158,7 @@ export default class Reader extends React.Component {
         this._applyFilters(f);
         this._addEventListeners();
         this._applyStyles();
-        this._applyHighlights(this.state.highlight, true);
+        this._applyHighlights(this.state.highlight);
         this._getWordCount();
 
         this.setState({ loading: false });
@@ -216,10 +216,20 @@ export default class Reader extends React.Component {
   }
 
   /**
-   * Cycle through highlight modes.
+   * @typedef {object} HighlightMode
+   * @prop {string} mode
+   * @prop {number} [index]
+   * @prop {string} [message]
+   * @prop {string} [previousMode]
    */
-  onCycleHighlightMode() {
-    const highlight = (() => {
+  /**
+   * Set or cycle through highlight modes.
+   * @param {HighlightMode} [highlight] Allows highlight mode to be set directly
+   *  instead of cycling to next mode.
+   * @return {HighlightMode}
+   */
+  onSetHighlightMode(highlight) {
+    highlight = highlight || (() => {
       switch (this.state.highlight.mode) {
         // none -> notes
         case 'none':
@@ -259,7 +269,8 @@ export default class Reader extends React.Component {
           return 'Highlighting annotations from ' +
             this.state.book.annotations[highlight.index].set_title
       }
-    })();
+    })(),
+    highlight.previousMode = this.state.highlight.mode;
 
     this._applyHighlights(highlight);
     this.setState({ highlight });
@@ -342,7 +353,7 @@ export default class Reader extends React.Component {
         return this.book.rendition.next();
       case 'cycle highlights':
         return this._overlay._status._setStatus(
-          this.onCycleHighlightMode()
+          this.onSetHighlightMode()
         );
       case 'show book info':
         return this.onToggleShow('bookInfo');
@@ -472,7 +483,7 @@ export default class Reader extends React.Component {
     // Add swipe and click listeners
     this.book.rendition.on('rendered', (section, view) => {
       this._applyStyles();
-      this._applyHighlights(this.state.highlight, true);
+      this._applyHighlights(this.state.highlight);
 
       const [{document}] = this.book.rendition.getContents();
 
@@ -490,33 +501,30 @@ export default class Reader extends React.Component {
 
   /**
    * Apply highlights to the book's rendered HTML.
-   * @param {object} highlight
-   * @param {boolean} [skipUnwrap=false]
+   * @param {HighlightMode} highlight
    */
-  _applyHighlights(highlight, skipUnwrap = false) {
+  _applyHighlights(highlight) {
     const {notes, annotations} = this.state.book;
     const [{document}] = this.book.rendition.getContents();
 
-    // Either annotations or notes can go to none
-    if (highlight.mode == 'none' && !skipUnwrap) {
-      unwrap(document, 'annotation');
-      unwrap(document, 'note');
+    // Unwrap if needed
+    switch (highlight.previousMode) {
+      case 'notes':
+        unwrap(document, 'note');
+        break;
+      case 'annotations':
+        unwrap(document, 'annotation');
     }
-    // Notes can only come after none
-    else if (highlight.mode == 'notes') {
+
+    // Apply appropriate highlights
+    if (highlight.mode == 'notes') {
       highlightNotes(this.book, notes);
     }
-    // Annotations can come after notes or another annotation set
-    else if (highlight.mode == 'annotations') {
-      // Can be skipped if 'annotations' default and first load
-      if (!skipUnwrap) {
-        unwrap(document, 'note');
-        unwrap(document, 'annotation');
-      }
-
-      // Ensure book has annotation set
-      if (annotations && annotations[highlight.index])
-        insertAnnotations(this.book, annotations[highlight.index]);
+    else if (
+      highlight.mode == 'annotations' &&
+      annotations && annotations[highlight.index]
+    ) {
+      insertAnnotations(this.book, annotations[highlight.index]);
     }
   }
 
