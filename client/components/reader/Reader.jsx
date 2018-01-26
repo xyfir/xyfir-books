@@ -43,7 +43,8 @@ export default class Reader extends React.Component {
       },
       highlight: {
         mode: App.state.config.reader.defaultHighlightMode,
-        index: 0
+        index: 0,
+        message: ''
       }
     };
 
@@ -245,6 +246,18 @@ export default class Reader extends React.Component {
           else {
             return { mode: 'none' };
           }
+      }
+    })();
+
+    highlight.message = (() => {
+      switch (highlight.mode) {
+        case 'none':
+          return 'Highlights turned off';
+        case 'notes':
+          return 'Now highlighting notes';
+        case 'annotations':
+          return 'Highlighting annotations from ' +
+            this.state.book.annotations[highlight.index].set_title
       }
     })();
 

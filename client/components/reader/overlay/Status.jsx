@@ -11,22 +11,8 @@ export default class ReaderStatus extends React.Component {
   _setStatus(hl) {
     clearTimeout(this.timeout);
 
-    const status = (() => {
-      switch (hl.mode) {
-        case 'none':
-          return 'Highlights turned off';
-        
-        case 'notes':
-          return 'Now highlighting notes';
-
-        case 'annotations':
-          return 'Now highlighting annotations from set ' +
-            this.props.Reader.state.book.annotations[hl.index].set_title;
-      }
-    })();
-
     // Notify user of new highlight mode for 5 seconds
-    this.setState({ status });
+    this.setState({ status: hl.message });
     this.timeout = setTimeout(() => this.setState({ status: '' }), 5000);
   }
 
@@ -45,7 +31,7 @@ export default class ReaderStatus extends React.Component {
           : pagesLeft + ' pages left in chapter'
       )
     }
-    
+
     return <span className='status'>{status}</span>
   }
 
