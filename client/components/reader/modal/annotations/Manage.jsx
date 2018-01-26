@@ -15,12 +15,25 @@ import OpenWindow from 'components/misc/OpenWindow';
 export default class ManageAnnotations extends React.Component {
 
 	constructor(props) {
-		super(props);
+    super(props);
+
+    const {Reader} = props, {App} = Reader.props;
 
 		this.state = {
-			key: this.props.Reader.props.data.account.xyAnnotationsKey,
+			key: App.state.account.xyAnnotationsKey,
 			sets: [], set: 0, tab: 0
-		};
+    };
+
+    request
+      .get(`${XYANNOTATIONS_URL}/api/sets`)
+      .query({
+        sort: 'top',
+        setTitle: '',
+        bookTitle: Reader.state.book.title,
+        direction: 'desc',
+        bookAuthors: Reader.state.book.authors
+      })
+      .end((err, res) => !err && this.setState(res.body));
 	}
 
 	onSearch() {
@@ -92,7 +105,7 @@ export default class ManageAnnotations extends React.Component {
       : this.state.sets.find(a => a.id == this.state.set);
 
     return (
-      <div className='manage-annotations view-set'>
+      <section className='manage-annotations view-set'>
         <Navigation
           {...this.props}
           title='Annotations'
@@ -130,7 +143,7 @@ export default class ManageAnnotations extends React.Component {
             marked(set.set_description, { sanitize: true })
           }}
         />
-      </div>
+      </section>
     );
   }
 
