@@ -15,6 +15,7 @@ import updateAnnotations from 'lib/reader/annotations/update';
 import highlightNotes from 'lib/reader/notes/highlight';
 import swipeListener from 'lib/reader/listeners/swipe';
 import clickListener from 'lib/reader/listeners/click';
+import loadBook from 'lib/books/load';
 import unwrap from 'lib/reader/matches/unwrap';
 
 // Constants
@@ -52,7 +53,6 @@ export default class Reader extends React.Component {
     this.onHighlightClicked = this.onHighlightClicked.bind(this);
     this._addEventListeners = this._addEventListeners.bind(this);
     this._applyHighlights = this._applyHighlights.bind(this);
-    this._getWordCount = this._getWordCount.bind(this);
     this._applyFilters = this._applyFilters.bind(this);
     this.onToggleShow = this.onToggleShow.bind(this);
     this.onCloseModal = this.onCloseModal.bind(this);
@@ -69,61 +69,21 @@ export default class Reader extends React.Component {
   /**
    * Load / initialize book.
    */
-  async componentWillMount() {
+  componentWillMount() {
     const {App} = this.props;
 
-    // Build url to .epub file to read
-    let url = `${XYLIBRARY_URL}/files/${App.state.account.library}/`;
-    let hasEpub = false;
+    loadBook(App, this.state.book)
+      .then(blob => {
+        // Create EPUBJS book
+        window._book = this.book = new EPUB(blob, {});
 
-    this.state.book.formats.forEach(format => {
-      if (format.split('.').slice(-1)[0] == 'epub') {
-        hasEpub = true,
-        url += format;
-      }
-    });
+        this.book.renderTo(window.bookView, {
+          height: window.innerHeight + 'px',
+          width: window.innerWidth + 'px'
+        });
 
-    // We can only read epub files
-    if (!hasEpub) return history.back();
-
-    const { id } = this.state.book;
-    let epubBlob;
-
-    // Attempt to load epub file, either locally or remotely
-    try {
-      epubBlob = await localforage.getItem(`epub-${id}`);
-      if (!epubBlob) throw 'Missing file';
-    }
-    catch (err) {
-      if (!navigator.onLine) {
-        App._alert('You do not have that book downloaded for offline use');
-        return history.back();
-      }
-
-      try {
-        const {body} = await request.get(url).responseType('blob');
-        epubBlob = body;
-
-        // Save file, no matter if successful
-        localforage.setItem(`epub-${id}`, epubBlob)
-          .then(() => 1)
-          .catch(() => 1);
-      }
-      catch (err) {
-        App._alert('Could not download ebook file');
-        return history.back();
-      }
-    }
-
-    // Create EPUBJS book
-    window._book = this.book = new EPUB(epubBlob, {});
-
-    this.book.renderTo(window.bookView, {
-      height: window.innerHeight + 'px',
-      width: window.innerWidth + 'px'
-    });
-
-    this.book.ready
+        return this.book.ready;
+      })
       .then(() => {
         return this.book.rendition.display();
       })
@@ -170,7 +130,6 @@ export default class Reader extends React.Component {
       .then(() => {
         this._addEventListeners();
         this._applyHighlights(this.state.highlight);
-        this._getWordCount();
 
         this.setState({ loading: false });
 
@@ -542,42 +501,9 @@ export default class Reader extends React.Component {
    * @param {object} obj
    */
   _updateBook(obj) {
-    this.props.App.store.dispatch(updateBook(
-      this.state.book.id, obj
-    ));
-    this.setState({
-      book: Object.assign({}, this.state.book, obj)
-    });
+    this.props.App.store.dispatch(updateBook(this.state.book.id, obj));
+    this.setState({ book: Object.assign({}, this.state.book, obj) });
     this.props.App.store.dispatch(save('books'));
-  }
-
-  /**
-   * Calculates and saves the book's word count if not already calculated.
-   */
-  async _getWordCount() {
-    if (this.state.book.words > 0) return;
-
-    let count = 0;
-
-    // Used to render each chapter
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-
-    // Loop through all files in book
-    for (let item of this.book.spine.items) {
-      // Ignore non-html files
-      if (!/html$/.test(item.href.split('.').slice(-1)[0])) continue;
-
-      // Set HTML to frame
-      iframe.contentDocument.documentElement.innerHTML =
-        await this.book.archive.zip.files[item.href].async('string');
-
-      // Count text, not HTML
-      count += iframe.contentDocument.body.innerText.split(/\s+/).length;
-    }
-
-    iframe.remove();
   }
 
   render() {
