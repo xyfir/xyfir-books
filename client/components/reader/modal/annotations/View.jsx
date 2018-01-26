@@ -1,6 +1,4 @@
-import {
-  ListItem, FontIcon, Toolbar, Divider, Button, Drawer
-} from 'react-md';
+import { ListItem, FontIcon, Divider, Button } from 'react-md';
 import marked from 'marked';
 import React from 'react';
 
@@ -8,6 +6,7 @@ import React from 'react';
 import annotationTypes from 'constants/annotation-types';
 
 // Components
+import Navigation from 'components/reader/modal/Navigation';
 import Document from 'components/reader/modal/annotations/types/Document';
 import Search from 'components/reader/modal/annotations/types/Search';
 import Image from 'components/reader/modal/annotations/types/Image';
@@ -59,50 +58,25 @@ export default class ViewAnnotations extends React.Component {
       }
     })();
 
+    const drawerItems = this.state.annotations.map((a, index) =>
+      <ListItem
+        key={a.id}
+        onClick={() => this.setState({ index })}
+        leftIcon={
+          <FontIcon>{annotationTypes[a.type].icon}</FontIcon>
+        }
+        primaryText={a.name}
+        secondaryText={annotationTypes[a.type].name}
+      />
+    );
+
     return (
       <div className='annotation'>
-        <Toolbar
-          colored
-          title={annotation.name}
-          nav={
-            <Button
-              icon
-              onClick={() => this.setState({ drawer: true })}
-              iconChildren='menu'
-            />
-          }
-        />
-
-        <Drawer
-          onVisibilityChange={v => this.setState({ drawer: v })}
-          autoclose={true}
-          navItems={
-            this.state.annotations.map((a, index) =>
-              <ListItem
-                key={a.id}
-                onClick={() => this.setState({ index })}
-                leftIcon={
-                  <FontIcon>{annotationTypes[a.type].icon}</FontIcon>
-                }
-                primaryText={a.name}
-                secondaryText={annotationTypes[a.type].name}
-              />
-            )
-          }
-          visible={this.state.drawer}
-          header={
-            <Toolbar
-              colored
-              nav={
-                <Button
-                  icon
-                  onClick={() => this.setState({ drawer: false })}
-                  iconChildren='arrow_back'
-                />
-              }
-            />
-          }
-          type={Drawer.DrawerTypes.TEMPORARY}
+        <Navigation
+          {...this.props}
+          title={annotationTypes[annotation.type].name}
+          noSizing={true}
+          drawerItems={drawerItems}
         />
 
         <div className='content'>{view}</div>
