@@ -155,9 +155,20 @@ export default class Reader extends React.Component {
         return this._getFilters();
       })
       .then(f => {
-        this._applyFilters(f);
-        this._addEventListeners();
         this._applyStyles();
+        this._applyFilters(f);
+
+        return new Promise(resolve => {
+          const interval = setInterval(() => {
+            if (!this.book.rendition.getContents().length) return;
+
+            clearInterval(interval);
+            resolve();
+          }, 50);
+        });
+      })
+      .then(() => {
+        this._addEventListeners();
         this._applyHighlights(this.state.highlight);
         this._getWordCount();
 
@@ -492,11 +503,6 @@ export default class Reader extends React.Component {
     });
 
     window.addEventListener('message', this.onHighlightClicked);
-
-    const [{document}] = this.book.rendition.getContents();
-
-    swipeListener(document, this.book, this.onSwipe);
-    clickListener(document, this.book, this.onClick);
   }
 
   /**
