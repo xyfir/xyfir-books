@@ -1,5 +1,5 @@
 /**
- * Listen for clicks and convert them to actions based on the location of the 
+ * Listen for clicks and convert them to actions based on the location of the
  * click on the page.
  * @param {HTMLElement} el - The element to add event listeners to.
  * @param {object} book - EPUBJS book
@@ -8,6 +8,9 @@
 export default function(el, book, fn) {
 
   el.addEventListener('click', event => {
+
+    if (event.ignore) return;
+    event.ignore = true;
 
     const [{document}] = book.rendition.getContents();
 

@@ -16,12 +16,18 @@ export default function(el, book, fn) {
   let startX, startY, startTime;
 
   el.addEventListener('touchstart', e => {
+    if (e.ignore) return;
+    e.ignore = true;
+
     startX = e.changedTouches[0].pageX;
     startY = e.changedTouches[0].pageY;
     startTime = Date.now();
   }, false);
 
   el.addEventListener('touchend', e => {
+    if (e.ignore) return;
+    e.ignore = true;
+
     // Get distance traveled by finger while in contact with surface
     const distX = e.changedTouches[0].pageX - startX;
     const distY = e.changedTouches[0].pageY - startY;

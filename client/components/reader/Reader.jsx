@@ -503,6 +503,8 @@ export default class Reader extends React.Component {
     });
 
     window.addEventListener('message', this.onHighlightClicked);
+
+    this.book.rendition.emit('rendered');
   }
 
   /**
