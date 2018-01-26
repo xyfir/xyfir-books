@@ -65,7 +65,8 @@ export default class ReaderModal extends React.Component {
         visible={true}
         fullPage={fullscreen}
         className={
-          'reader-dialog container' + (noFullscreen ? ' transparent' : '')
+          'reader-dialog container' +
+          (noFullscreen ? ' no-fullscreen transparent' : '')
         }
         aria-label='reader-modal'
         focusOnMount={false}

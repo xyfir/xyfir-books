@@ -45,7 +45,12 @@ div.reader {
   }
 }
 
-span.reader-dialog {
+span.reader-dialog.container {
+  &.no-fullscreen >div.md-dialog--centered {
+    max-width: 100%;
+    width: 100%;
+  }
+
   div.create-note.form {
     margin: 0.5em 1em;
 
