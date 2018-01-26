@@ -171,7 +171,7 @@ export default class ReaderNavbar extends React.Component {
             <ListItem
               onClick={e =>
                 !e.stopPropagation() &&
-                Reader.onCycleHighlightMode()
+                Reader.onSetHighlightMode()
               }
               leftIcon={<FontIcon>highlight</FontIcon>}
               primaryText='Set Highlight Mode'

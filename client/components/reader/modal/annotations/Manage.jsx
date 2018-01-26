@@ -52,21 +52,20 @@ export default class ManageAnnotations extends React.Component {
       })
       .end((err, res) => {
         if (
-          err || res.body.error || !res.body[set.id] || !res.body[set.id].items
+          err || res.body.error ||
+          !res.body[set.id] || !res.body[set.id].items
         ) {
-          Reader.props.alert('Could not download set');
+          return Reader.props.alert('Could not download set');
         }
-        else {
-          set.items = res.body[set.id].items;
 
-          annotations.push(set);
+        set.items = res.body[set.id].items;
 
-          Reader._updateBook({ annotations });
-          this.setState({ set: 0 });
+        const index = annotations.push(set) - 1;
+        Reader._updateBook({ annotations });
 
-          // Ensure current book's highlighted content is updated
-          Reader.onCycleHighlightMode();
-        }
+        this.setState({ set: 0 });
+
+        Reader.onSetHighlightMode({ mode: 'annotations', index });
       });
 	}
 
@@ -77,10 +76,13 @@ export default class ManageAnnotations extends React.Component {
 
 		// Remove set from book.annotations
 		Reader._updateBook({ annotations });
-		this.setState({ set: 0 });
 
-		// Ensure current book's highlighted content is updated
-		Reader.onCycleHighlightMode();
+    this.setState({ set: 0 });
+
+    if (annotations.length)
+      Reader.onSetHighlightMode({ mode: 'annotations', index: 0 });
+    else
+		  Reader.onSetHighlightMode({ mode: 'none' });
 	}
 
   _renderView(annotations) {

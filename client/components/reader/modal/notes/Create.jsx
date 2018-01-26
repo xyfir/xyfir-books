@@ -30,8 +30,8 @@ export default class CreateNote extends React.Component {
     }]);
 
     Reader._updateBook({ notes });
-    Reader.onCycleHighlightMode();
     Reader.onCloseModal();
+    Reader.onSetHighlightMode({ mode: 'notes' });
 
     request
       .put(

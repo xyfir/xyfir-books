@@ -31,7 +31,7 @@ export default class ViewNote extends React.Component {
 
     Notes.setState({ view: 'list' });
     Reader._updateBook({ notes });
-    Reader.onCycleHighlightMode();
+    Reader.onSetHighlightMode({ mode: 'notes' });
 
     request
       .put(
