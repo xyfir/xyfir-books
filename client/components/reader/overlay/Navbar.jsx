@@ -167,6 +167,15 @@ export default class ReaderNavbar extends React.Component {
               primaryText='Manage Annotations'
               leftIcon={<FontIcon>speaker_notes</FontIcon>}
               onClick={() => Reader.onToggleShow('manageAnnotations')}
+            />,
+            <ListItem
+              onClick={e =>
+                !e.stopPropagation() &&
+                Reader.onCycleHighlightMode()
+              }
+              leftIcon={<FontIcon>highlight</FontIcon>}
+              primaryText='Set Highlight Mode'
+              secondaryText={Reader.state.highlight.message}
             />
           ]}
           visible={this.state.drawer}
