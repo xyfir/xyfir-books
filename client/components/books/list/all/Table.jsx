@@ -14,6 +14,7 @@ import OpenWindow from 'components/misc/OpenWindow';
 import deleteBooks from 'lib/books/delete';
 import findMatches from 'lib/books/find-matching';
 import loadCovers from 'lib/books/load-covers';
+import countWords from 'lib/books/count-words';
 import sortBooks from 'lib/books/sort';
 import toUrl from 'lib/url/clean';
 import rand from 'lib/random/number';
@@ -197,7 +198,8 @@ export default class TableList extends React.Component {
   /** @return {JSX.Element} */
   _renderSelectedBook() {
     const {selected} = this.state;
-    const {books} = this.props.App.state;
+    const {App} = this.props;
+    const {books} = App.state;
     const book = books.find(b => b.id == selected[selected.length - 1]);
 
     if (!book) return null;
@@ -255,6 +257,16 @@ export default class TableList extends React.Component {
               tooltipLabel='Add new formats to book'
               iconChildren='add_box'
               onClick={() => location.hash = `#/books/add-format/${book.url}`}
+            />
+          ) : null}
+
+          {selected.length == 1 ? (
+            <Button
+              icon secondary
+              tooltipPosition='bottom'
+              tooltipLabel='Count words'
+              iconChildren='plus_one'
+              onClick={() => countWords(App, book)}
             />
           ) : null}
         </div>
