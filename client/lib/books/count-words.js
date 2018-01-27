@@ -25,7 +25,6 @@ export default async function(App, book) {
   // Load / read contents of file
   const zip = new JSZip;
   await zip.loadAsync(await loadBook(App, book));
-  window.__zip = zip;
 
   // Used to render each chapter
   const iframe = document.createElement('iframe');
