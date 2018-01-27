@@ -1,3 +1,4 @@
+import { Button } from 'react-md';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
 import React from 'react';
@@ -68,14 +69,16 @@ export default class UploadBooks extends React.Component {
   render() {
     return (
       <Dropzone
+        ref={i => this._dropzone = i}
         onDrop={f => this.onUpload(f)}
         disabled={this.state.uploading}
         className='dropzone upload-books'
+        disableClick={true}
       >
         <p className='status'>{
           this.state.uploading
             ? 'Uploading file(s), please wait...'
-            : 'Drag and drop ebooks or click box to choose files to upload'
+            : 'Drag and drop ebooks or use button to select files for upload'
         }</p>
 
         <p>
@@ -87,6 +90,12 @@ export default class UploadBooks extends React.Component {
         <p>
           You can also upload books by sending emails to <a href='mailto:upload-books@xyfir.com'>upload-books@xyfir.com</a> with ebook files attached. Books will only be uploaded to your account if the email is sent from the email address that is linked to your xyBooks account. You may upload up to 25MB worth of ebooks per email.
         </p>
+
+        <Button
+          primary raised
+          iconChildren='file_upload'
+          onClick={() => this._dropzone.open()}
+        >Select Files</Button>
       </Dropzone>
     );
   }

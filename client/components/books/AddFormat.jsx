@@ -102,11 +102,25 @@ export default class AddFormat extends React.Component {
           </p>
           <p><strong>Current Available Formats:</strong> {formats.join(', ')}</p>
 
-          <Dropzone onDrop={f => this.onUpload(f)} className='dropzone'>{
-            this.state.uploading
-              ? 'Uploading file, please wait...'
-              : 'Drag and drop ebook or click box to choose a file to upload.'
-          }</Dropzone>
+          <Dropzone
+            ref={i => this._dropzone = i}
+            onDrop={f => this.onUpload(f)}
+            disabled={this.state.uploading}
+            className='dropzone'
+            disableClick={true}
+          >
+            <p className='status'>{
+              this.state.uploading
+                ? 'Uploading file, please wait...'
+                : 'Drag and drop ebook or use button to select file for upload'
+            }</p>
+
+            <Button
+              primary raised
+              iconChildren='file_upload'
+              onClick={() => this._dropzone.open()}
+            >Select a File</Button>
+          </Dropzone>
         </Paper>
 
         <Paper

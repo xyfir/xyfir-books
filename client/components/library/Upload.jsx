@@ -1,3 +1,4 @@
+import { Button } from 'react-md';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
 import React from 'react';
@@ -50,14 +51,16 @@ export default class UploadLibrary extends React.Component {
   render() {
     return (
       <Dropzone
+        ref={i => this._dropzone = i}
         onDrop={f => this.onUpload(f)}
         disabled={this.state.uploading}
         className='dropzone upload-library'
+        disableClick={true}
       >
         <p className='status'>{
           this.state.uploading
             ? 'Uploading library, this may take a while...'
-            : 'Drag and drop zip file or click to choose a file to upload.'
+            : 'Drag and drop zip file or use button to select file for upload'
         }</p>
 
         <p>
@@ -75,6 +78,12 @@ export default class UploadLibrary extends React.Component {
         <p>
           If you already have books in your library stored in the cloud they <strong>will</strong> be deleted. Uploading a library completely erases your old one.
         </p>
+
+        <Button
+          primary raised
+          iconChildren='file_upload'
+          onClick={() => this._dropzone.open()}
+        >Select Files</Button>
       </Dropzone>
     );
   }
