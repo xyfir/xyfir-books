@@ -8,6 +8,7 @@ import NoBooks from 'components/books/NoBooks';
 // Modules
 import findMatches from 'lib/books/find-matching';
 import loadCovers from 'lib/books/load-covers';
+import countWords from 'lib/books/count-words';
 import deleteBook from 'lib/books/delete';
 import sortBooks from 'lib/books/sort';
 import buildUrl from 'lib/url/build';
@@ -26,6 +27,11 @@ export default class CompactList extends React.Component {
   componentDidUpdate() {
     const {books, account} = this.props.App.state;
     loadCovers(books, account.library);
+  }
+
+  onCountWords(event, book) {
+    event.stopPropagation();
+    countWords(this.props.App, book);
   }
 
   onListItemClick(e, b, u) {
@@ -106,6 +112,11 @@ export default class CompactList extends React.Component {
                       primaryText='Search author(s)'
                       leftIcon={<FontIcon>person</FontIcon>}
                       onClick={e => this.onListItemClick(e, b, 'authors')}
+                    />,
+                    <ListItem
+                      primaryText='Count words'
+                      leftIcon={<FontIcon>plus_one</FontIcon>}
+                      onClick={e => this.onCountWords(e, b)}
                     />,
                     <ListItem
                       primaryText='Delete'
