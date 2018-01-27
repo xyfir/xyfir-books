@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -20,8 +20,8 @@
     "express-session": "^1.15.6",
     "github-markdown-css": "^2.10.0",
     "jszip": "^3.1.5",
-    "localforage": "^1.5.5",
-    "mailgun-js": "^0.14.1",
+    "localforage": "^1.5.6",
+    "mailgun-js": "^0.14.2",
     "marked": "^0.3.12",
     "moment": "^2.20.1",
     "mysql": "^2.15.0",
@@ -29,7 +29,7 @@
     "randomstring": "^1.1.5",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-dropzone": "^4.2.5",
+    "react-dropzone": "^4.2.7",
     "react-md": "^1.2.11",
     "react-stripe-checkout": "^2.6.3",
     "redux": "^3.7.2",
