@@ -10,7 +10,6 @@ import { createStore } from 'redux';
 import reducers from 'reducers/app';
 
 // Components
-import Advertisement from 'components/app/Advertisement';
 import Navigation from 'components/app/Navigation';
 import Settings from 'components/settings/Settings';
 import Account from 'components/account/Account';
@@ -74,6 +73,9 @@ class App extends React.Component {
         return location.hash = '#/' + location.hash.substr(1);
       updateView(this.store);
     };
+
+    // setTimeout(() => this._loadAd(), 120000);
+    setTimeout(() => this._loadAd(), 3000);
   }
 
   async componentWillMount() {
@@ -164,9 +166,33 @@ class App extends React.Component {
       .catch(err => location.replace(`${XYACCOUNTS_URL}/#/login/service/14`));
   }
 
-  /** @param {string} message - The text content of the toast. */
-  _alert(message) {
-    this._Alert._alert(message);
+  /**
+   * Creates a 'toast' for react-md Snackbar component.
+   * @param {string} text
+   * @param {string|object} [action=close]
+   * @param {boolean} [autohide=true]
+   */
+  _alert(text, action = 'close', autohide = true) {
+    this._Alert._alert(text, action, autohide);
+  }
+
+  _loadAd() {
+    // Only display if user is not premium
+    if (this.state.account.subscription > Date.now()) return;
+
+    request
+      .get(`${XYBOOKS_URL}/api/ad`)
+      .end((err, res) => {
+        if (err || res.body.error) return;
+
+        const {ad} = res.body;
+
+        this._alert(
+          `(Ad) ${ad.normalText.title}: ${ad.normalText.description}`,
+          'close', false
+        );
+        setTimeout(() => this._loadAd(), 300000);
+      });
   }
 
   render() {
@@ -192,10 +218,7 @@ class App extends React.Component {
 
         <div className={
           `main ${this.state.view != READ_BOOK ? 'md-toolbar-relative' : ''}`
-        }>
-          <Advertisement data={this.state} />
-          {view}
-        </div>
+        }>{view}</div>
 
         <Alert ref={i => this._Alert = i} />
       </div>
