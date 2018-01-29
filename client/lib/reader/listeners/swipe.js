@@ -6,12 +6,13 @@
  */
 export default function(el, book, fn) {
 
+  // Defaults: 100, 350, 100
   // Required min distance traveled to be considered swipe
-  const threshold   = 100;
+  const threshold   = 50;
   // Maximum time allowed to travel that distance
-  const allowedTime = 350;
+  const allowedTime = 500;
   // Maximum distance allowed at the same time in perpendicular direction
-  const restraint   = 100;
+  const restraint   = 200;
 
   let startX, startY, startTime;
 
