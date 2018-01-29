@@ -19,18 +19,23 @@ export default class AppAlert extends React.Component {
 
   /**
    * Creates a 'toast' for react-md Snackbar component.
-   * @param {string} message - The text content of the toast.
+   * @param {string} text
+   * @param {string|object} [action=close]
+   * @param {boolean} [autohide=true]
    */
-  _alert(message) {
+  _alert(text, action = 'close', autohide = true) {
     this.setState({
-      toasts: this.state.toasts.concat([{ text: message }])
+      toasts: this.state.toasts.concat([{ text, action, autohide }])
     });
   }
 
   render() {
+    const {toasts} = this.state;
+
     return (
       <Snackbar
-        toasts={this.state.toasts}
+        toasts={toasts}
+        autohide={toasts.length && toasts[0].autohide}
         onDismiss={() => this.onDismissAlert()}
       />
     );
