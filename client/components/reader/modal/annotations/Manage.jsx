@@ -28,7 +28,7 @@ export default class ManageAnnotations extends React.Component {
       .get(`${XYANNOTATIONS_URL}/api/sets`)
       .query({
         sort: 'top',
-        setTitle: '',
+        title: '',
         bookTitle: Reader.state.book.title,
         direction: 'desc',
         bookAuthors: Reader.state.book.authors
