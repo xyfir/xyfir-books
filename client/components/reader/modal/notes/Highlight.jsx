@@ -8,7 +8,8 @@ export default class HighlightText extends React.Component {
 
     this.state = {
       visibleText: this._getVisibleText(), start: 0, end: 0
-    };
+    },
+    this.state.end = this.state.visibleText.indexOf('\n');
   }
 
   /**
@@ -18,28 +19,20 @@ export default class HighlightText extends React.Component {
    * @param {string} change - 'start|end'
    */
   onSlide(start, end, change) {
-    let percent, slider;
+    let percent;
 
     switch (change) {
       case 'start':
         end = start > end ? start : end,
-        slider = this.refs.sliderEnd,
         percent = (end / this.state.visibleText.length) * 100;
         break;
 
       case 'end':
         start = start > end ? end : start,
-        slider = this.refs.sliderStart,
         percent = (start / this.state.visibleText.length) * 100;
     }
 
     this.setState({ start, end });
-    
-    // react-md's slider does not update when the value prop changes and only
-    // when the slider is interacted with directly
-    slider.setState({
-      trackFillWidth: percent + '%', thumbLeft: `calc(${percent}% - 6px)`
-    });
   }
 
   /** @return {string[]} */
@@ -50,13 +43,12 @@ export default class HighlightText extends React.Component {
     else {
       return this.state.visibleText
         .substring(this.state.start, this.state.end)
-        .trim()
-        .split('\n\n');
+        .split('\n');
     }
   }
 
   /**
-   * Returns all of the text content that is visible within the current page. 
+   * Returns all of the text content that is visible within the current page.
    * Each would-be HTML element is separated by `\n\n`.
    * @return {string}
    */
@@ -75,44 +67,49 @@ export default class HighlightText extends React.Component {
       fullRange.setEnd(endRange.startContainer, endRange.startOffset);
 
     // Get the text content of the range
-    return fullRange.toString();
+    return fullRange
+      .toString()
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => !!l)
+      .join('\n');
   }
 
   render() {
-    const visibleText = (
-      this.state.visibleText.substring(0, this.state.start) +
+    const {visibleText, start, end} = this.state;
+
+    const _visibleText = (
+      visibleText.substring(0, start) +
         `<span style='background-color: yellow;'>${
-          this.state.visibleText.substring(this.state.start, this.state.end)
+          visibleText.substring(start, end)
         }</span>` +
-      this.state.visibleText.substring(this.state.end)
+      visibleText.substring(end)
     )
-    .replace(/\n\n/g, '<br /><br />')
+    .replace(/\n/g, '<br /><br />')
 
     return (
       <div className='highlight'>
         <div
           className='visible-text'
-          dangerouslySetInnerHTML={{ __html: visibleText }}
+          dangerouslySetInnerHTML={{ __html: _visibleText }}
         />
 
         <Slider
           id='slider--highlight-start'
           min={0}
-          ref='sliderStart'
-          max={this.state.visibleText.length}
+          max={visibleText.length}
           label='Highlight Start'
-          value={this.state.start}
-          onChange={v => this.onSlide(v, this.state.end, 'start')}
+          value={start}
+          onChange={v => this.onSlide(v, end, 'start')}
         />
 
         <Slider
           id='slider--highlight-end'
           min={0}
-          ref='sliderEnd'
-          max={this.state.visibleText.length}
+          max={visibleText.length}
           label='Highlight End'
-          value={this.state.end}
-          onChange={v => this.onSlide(this.state.start, v, 'end')}
+          value={end}
+          onChange={v => this.onSlide(start, v, 'end')}
         />
       </div>
     );
