@@ -131,7 +131,7 @@ export default class ManageAnnotations extends React.Component {
           ]}
         />
 
-        <h3 className='title'>{set.set_title}</h3>
+        <h3 className='title'>{set.title}</h3>
 
         <span className='book'>
           {set.book_title} by {set.book_authors}
@@ -140,7 +140,7 @@ export default class ManageAnnotations extends React.Component {
         <div
           className='markdown-body description'
           dangerouslySetInnerHTML={{ __html:
-            marked(set.set_description, { sanitize: true })
+            marked(set.description, { sanitize: true })
           }}
         />
       </section>
@@ -170,11 +170,11 @@ export default class ManageAnnotations extends React.Component {
               threeLines
               key={a.id}
               onClick={() => this.setState({ set: a.id })}
-              primaryText={a.set_title}
+              primaryText={a.title}
               secondaryText={
                 `${a.book_title} by ${a.book_authors}` +
                 '\n' +
-                a.set_description.split('\n')[0]
+                a.description.split('\n')[0]
               }
             />
           )
@@ -191,11 +191,11 @@ export default class ManageAnnotations extends React.Component {
             threeLines
             key={a.id}
             onClick={() => this.setState({ set: a.id })}
-            primaryText={a.set_title}
+            primaryText={a.title}
             secondaryText={
               `Contains ${a.items.length} annotations` +
               '\n' +
-              a.set_description.split('\n')[0]
+              a.description.split('\n')[0]
             }
           />
         )

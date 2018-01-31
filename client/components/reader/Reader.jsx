@@ -237,7 +237,7 @@ export default class Reader extends React.Component {
           return 'Now highlighting notes';
         case 'annotations':
           return 'Highlighting annotations from ' +
-            this.state.book.annotations[highlight.index].set_title
+            this.state.book.annotations[highlight.index].title
       }
     })(),
     highlight.previousMode = this.state.highlight.mode;
