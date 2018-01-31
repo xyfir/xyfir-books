@@ -1,4 +1,4 @@
-import { Slider } from 'react-md';
+import { Slider, Button } from 'react-md';
 import React from 'react';
 
 export default class HighlightText extends React.Component {
@@ -13,23 +13,27 @@ export default class HighlightText extends React.Component {
   }
 
   /**
-   * Handle sliders.
    * @param {number} start
    * @param {number} end
    * @param {string} change - 'start|end'
    */
-  onSlide(start, end, change) {
+  onChange(start, end, change) {
+    const limit = this.state.visibleText.length;
     let percent;
+
+    start = start < 0 ? 0 : start,
+    end = end < 0 ? 0 : end,
+    end = end > limit ? limit : end;
 
     switch (change) {
       case 'start':
         end = start > end ? start : end,
-        percent = (end / this.state.visibleText.length) * 100;
+        percent = (end / limit) * 100;
         break;
 
       case 'end':
         start = start > end ? end : start,
-        percent = (start / this.state.visibleText.length) * 100;
+        percent = (start / limit) * 100;
     }
 
     this.setState({ start, end });
@@ -94,23 +98,47 @@ export default class HighlightText extends React.Component {
           dangerouslySetInnerHTML={{ __html: _visibleText }}
         />
 
-        <Slider
-          id='slider--highlight-start'
-          min={0}
-          max={visibleText.length}
-          label='Highlight Start'
-          value={start}
-          onChange={v => this.onSlide(v, end, 'start')}
-        />
+        <div className='control-container'>
+          <Button
+            icon secondary
+            onClick={() => this.onChange(start - 1, end, 'start')}
+            iconChildren='keyboard_arrow_left'
+          />
+          <Slider
+            id='slider--highlight-start'
+            min={0}
+            max={visibleText.length}
+            label='Highlight Start'
+            value={start}
+            onChange={v => this.onChange(v, end, 'start')}
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onChange(start + 1, end, 'start')}
+            iconChildren='keyboard_arrow_right'
+          />
+        </div>
 
-        <Slider
-          id='slider--highlight-end'
-          min={0}
-          max={visibleText.length}
-          label='Highlight End'
-          value={end}
-          onChange={v => this.onSlide(start, v, 'end')}
-        />
+        <div className='control-container'>
+          <Button
+            icon secondary
+            onClick={() => this.onChange(start, end - 1, 'end')}
+            iconChildren='keyboard_arrow_left'
+          />
+          <Slider
+            id='slider--highlight-end'
+            min={0}
+            max={visibleText.length}
+            label='Highlight End'
+            value={end}
+            onChange={v => this.onChange(start, v, 'end')}
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onChange(start, end + 1, 'end')}
+            iconChildren='keyboard_arrow_right'
+          />
+        </div>
       </div>
     );
   }

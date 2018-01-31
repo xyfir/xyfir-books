@@ -59,6 +59,16 @@ span.reader-dialog.container {
         max-height: 12em;
         overflow: auto;
       }
+
+      >div.control-container {
+        display: flex;
+        align-items: center;
+
+        >div.md-slider-container {
+          flex: 1;
+          margin: 0 0.2em;
+        }
+      }
     }
 
     >div.md-text-field-container {
