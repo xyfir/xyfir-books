@@ -385,6 +385,9 @@ export default class Reader extends React.Component {
         'line-height': `${styles.lineHeight}em`,
         'background-color': styles.backgroundColor
       },
+      'body': {
+        'background-color': styles.backgroundColor
+      },
       'span.annotation': {
         'background-color': styles.annotationColor,
         'cursor': 'pointer'
