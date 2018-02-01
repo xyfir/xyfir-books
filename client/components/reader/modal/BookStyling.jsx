@@ -3,6 +3,7 @@ import React from 'react';
 
 // Constants
 import * as themes from 'constants/reader-themes';
+import fonts from 'constants/fonts';
 
 export default class BookStyling extends React.Component {
 
@@ -16,6 +17,20 @@ export default class BookStyling extends React.Component {
     this.props.Reader._getStyles().then(s =>
       this.setState(Object.assign({}, s, { loading: false }))
     );
+  }
+
+  /** @param {boolean} next */
+  onChangeFont(next) {
+    let fontFamily = this.state.fontFamily;
+    const index = fonts.indexOf(fontFamily);
+
+    if (next)
+      fontFamily = index == fonts.length - 1 ? fonts[0] : fonts[index + 1];
+    else
+      fontFamily = index == 0 ? fonts[fonts.length - 1] : fonts[index - 1];
+
+    this.setState({ fontFamily }, () => this._saveStyling());
+    this.props.Reader.book.rendition.themes.font(fontFamily);
   }
 
   /**
@@ -74,8 +89,6 @@ export default class BookStyling extends React.Component {
               onClick={() => this.onUpdate('fontSize', '+')}
               iconChildren='add'
             />
-          </td>
-          <td>
             <Button
               icon secondary
               onClick={() => this.onUpdate('fontSize', '-')}
@@ -92,8 +105,6 @@ export default class BookStyling extends React.Component {
               onClick={() => this.onUpdate('lineHeight', '+')}
               iconChildren='add'
             />
-          </td>
-          <td>
             <Button
               icon secondary
               onClick={() => this.onUpdate('lineHeight', '-')}
@@ -110,12 +121,28 @@ export default class BookStyling extends React.Component {
               onClick={() => this.onUpdateTheme('LIGHT')}
               iconChildren='brightness_7'
             />
-          </td>
-          <td>
             <Button
               icon secondary
               onClick={() => this.onUpdateTheme('DARK')}
               iconChildren='brightness_2'
+            />
+          </td>
+        </tr>
+
+        <tr>
+          <th>
+            <FontIcon>font_download</FontIcon>Font ({this.state.fontFamily})
+          </th>
+          <td>
+            <Button
+              icon primary
+              onClick={() => this.onChangeFont()}
+              iconChildren='keyboard_arrow_left'
+            />
+            <Button
+              icon secondary
+              onClick={() => this.onChangeFont(true)}
+              iconChildren='keyboard_arrow_right'
             />
           </td>
         </tr>
