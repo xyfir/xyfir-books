@@ -13,8 +13,13 @@ export default class ReaderOverlay extends React.Component {
     this.state = { show: false };
   }
 
-  _toggleShow() {
-    this.setState({ show: !this.state.show });
+  get show() {
+    return this.state.show;
+  }
+
+  /** @param {boolean} show */
+  set show(show) {
+    this.setState({ show });
   }
 
   render() {
