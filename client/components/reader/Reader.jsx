@@ -376,8 +376,10 @@ export default class Reader extends React.Component {
     const styles = await this._getStyles();
 
     this.book.rendition.themes.default({
+      '*': {
+        'color': `${styles.color} !important`
+      },
       'html': {
-        'color': `${styles.color} !important`,
         'font-size': `${styles.fontSize}em`,
         'font-family': styles.fontFamily,
         'line-height': `${styles.lineHeight}em`,
