@@ -18,14 +18,24 @@ export default function(items) {
   items.forEach((item, itemIndex) =>
     item.searches.forEach((search, searchIndex) =>
       order.push({
-        item: itemIndex, search: searchIndex, text: search.main
+        item: itemIndex, search: searchIndex, length: search.main.length,
+        before: !!search.before, after: !!search.after
       })
     )
   );
 
   return order
-    .sort((a, b) => a.text.length - b.text.length)
-    .map(o => Object({ item: o.item, search: o.search }))
+    // Both specific and global searches are sorted by `main` length, but
+    // specific searches come first
+    .sort((a, b) => {
+      if (!(a.before || a.after) && (b.before || b.after))
+        return -1;
+      else if ((a.before || a.after) && !(b.before || b.after))
+        return 1;
+      else
+        return a.length - b.length;
+    })
+    .map(o => ({ item: o.item, search: o.search }))
     .reverse();
 
 }
