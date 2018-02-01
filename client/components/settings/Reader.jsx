@@ -6,6 +6,7 @@ import React from 'react';
 import { XYANNOTATIONS_URL, XYBOOKS_URL } from 'constants/config';
 import initialState from 'constants/initial-state';
 import * as themes from 'constants/reader-themes';
+import fonts from 'constants/fonts';
 
 // Action creators
 import { setReader, setGeneral } from 'actions/settings';
@@ -116,6 +117,15 @@ export default class ReaderSettings extends React.Component {
 
           <br />
 
+          <SelectField
+            id='select--font'
+            label='Font'
+            value={this.state.fontFamily}
+            onChange={v => this.setState({ fontFamily: v })}
+            menuItems={fonts}
+            className='md-cell'
+          />
+
           <TextField
             id='number--font-size'
             min={0.1}
@@ -128,8 +138,11 @@ export default class ReaderSettings extends React.Component {
           />
 
           <span
-            className='example font-size'
-            style={{fontSize: this.state.fontSize + 'em'}}
+            className='example font'
+            style={{
+              fontSize: this.state.fontSize + 'em',
+              fontFamily: this.state.fontFamily
+            }}
           >Example Text</span>
 
           <br />

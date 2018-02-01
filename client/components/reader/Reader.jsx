@@ -380,6 +380,7 @@ export default class Reader extends React.Component {
       'html': {
         'color': `${styles.color} !important`,
         'font-size': `${styles.fontSize}em`,
+        'font-family': styles.fontFamily,
         'line-height': `${styles.lineHeight}em`,
         'background-color': styles.backgroundColor
       },
