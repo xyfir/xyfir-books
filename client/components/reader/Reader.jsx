@@ -273,15 +273,14 @@ export default class Reader extends React.Component {
   /**
    * Open or close a modal.
    * @param {string} show
-   * @param {boolean} [closeModal=false]
    */
-  onToggleShow(show, closeModal = false) {
-    if (closeModal) this.onCloseModal();
-
+  onToggleShow(show) {
     if (!!this.state.show)
       this.setState({ modal: { show: '', target: '' } });
     else
       this.setState({ modal: { show, target: '' } });
+
+    this._overlay.show = false;
   }
 
   /**
@@ -328,7 +327,7 @@ export default class Reader extends React.Component {
       case 'show book info':
         return this.onToggleShow('bookInfo');
       case 'toggle navbar':
-        return this._overlay._toggleShow();
+        return this._overlay.show = !this._overlay.show;
     }
   }
 
