@@ -20,22 +20,22 @@ export default class BookContentSearch extends React.Component {
 
   onSearch() {
     const {Reader} = this.props;
-    const section = Reader.book.section();
+    const contents = Reader.book.rendition.getContents()[0];
     const search = new RegExp(escapeRegex(this._search.value), 'gi');
 
-    const elements = this._findMatchingElements(section.document.body, search);
     const matches = [];
+    const nodes = this._findMatchingNodes(contents.content, search);
 
-    for (let el of elements) {
-      const content = el.innerText;
+    for (let node of nodes) {
+      const content = node.innerText;
       const start = content.search(search);
       const end = start + this._search.value.length;
 
       const match = {
-        cfi: section.cfiFromElement(el),
         before: content.substring(0, start),
         match: content.substring(start, end),
-        after: content.substring(end)
+        after: content.substring(end),
+        cfi: contents.cfiFromNode(node)
       };
 
       match.before = match.before.length > 100
@@ -52,58 +52,25 @@ export default class BookContentSearch extends React.Component {
   }
 
   /**
-   * @param {HTMLElement} el
-   * @return {HTMLElement}
-   */
-  _getAncestors(el) {
-    const elements = [];
-    for (; el; el = el.parentElement) {
-      elements.unshift(el);
-    }
-    return elements;
-  }
-
-  /**
-   * @param {HTMLElement} ancestor
-   * @param {HTMLElement} child
-   * @return {boolean}
-   */
-  _isAncestor(ancestor, child) {
-    return false;
-    // if (ancestor === child) return false;
-
-    // const ancestors = this._getAncestors(child);
-
-    // return ancestors.findIndex(a => a === ancestor) > -1;
-  }
-
-  /**
-   * Recursively calls itself to find the deepest possible elements whose
+   * Recursively calls itself to find the deepest possible nodes whose
    *  `innerText` property matches the search.
-   * @param {HTMLElement} el
+   * @param {Node} node
    * @param {RegExp} search
-   * @return {HTMLElement[]}
+   * @return {Node[]}
   */
-  _findMatchingElements(el, search) {
-    if (!search.test(el.innerText)) return [];
+  _findMatchingNodes(node, search) {
+    if (!search.test(node.innerText)) return [];
 
-    let matches = [el];
+    let matches = [node];
 
-    for (let child of el.children) {
-      matches = matches.concat(this._findMatchingElements(child, search));
+    for (let child of node.childNodes) {
+      matches = matches.concat(this._findMatchingNodes(child, search));
     }
 
-    // Mark elements that contain a matching child element
-    // for (let m1 of matches) {
-    //   for (let m2 of matches) {
-    //     // if (m1.parentElement === m2) m2.ignore = true;
-    //     if (this._isAncestor(m1, m2)) m1.ignore = true;
-    //   }
-    // }
-
+    // Remove parent node, since children contain matches
     if (matches.length > 1) matches.shift();
 
-    return matches.filter(e => !e.ignore);
+    return matches;
   }
 
   render() {
