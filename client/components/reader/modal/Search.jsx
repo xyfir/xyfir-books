@@ -17,9 +17,17 @@ export default class BookContentSearch extends React.Component {
     this.state = { matches: [], searching: false, query: '' };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    const {Reader} = this.props;
+
     // Disable highlights so they don't mess with the search
-    this.props.Reader.onSetHighlightMode({ mode: 'none' });
+    Reader.onSetHighlightMode({ mode: 'none' });
+
+    const search = await localforage.getItem(`search-${Reader.state.book.id}`);
+
+    if (!search) return;
+
+    this.setState(search);
   }
 
   componentDidMount() {
@@ -29,15 +37,21 @@ export default class BookContentSearch extends React.Component {
   /** @param {string} cfi */
   onGoTo(cfi) {
     const {Reader} = this.props;
+    const {state} = this;
+
+    if (state.searching) return;
 
     Reader.book.rendition.display(cfi);
-    Reader.onSetHighlightMode({
-      mode: 'search', search: this.state.query
-    });
+    Reader.onSetHighlightMode({ mode: 'search', search: state.query });
+    Reader.onCloseModal();
+
+    localforage.setItem(`search-${Reader.state.book.id}`, state);
   }
 
   async onSearch() {
     await new Promise(r => this.setState({ matches: [], searching: true }, r));
+
+    if (!this.state.query.length) return this.setState({ searching: false });
 
     const {Reader} = this.props;
     const currentCFI = Reader.book.rendition.location.start.cfi;
@@ -57,8 +71,6 @@ export default class BookContentSearch extends React.Component {
     const {Reader} = this.props;
     const content = Reader.book.rendition.getContents()[0];
     const {query} = this.state;
-
-    if (!query.length) return this.setState({ results: [] });
 
     const matches = [];
     const search = new RegExp(escapeRegex(query), 'gi');

@@ -172,6 +172,8 @@ export default class Reader extends React.Component {
     App.store.dispatch(updateBook(this.state.book.id, data));
     App.store.dispatch(save('books'));
 
+    localforage.removeItem(`search-${this.state.book.id}`);
+
     navigator.onLine && request
       .put(
         `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
