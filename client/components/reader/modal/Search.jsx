@@ -10,7 +10,7 @@ export default class BookContentSearch extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { matches: [] };
+    this.state = { matches: [], searching: false };
   }
 
   componentWillMount() {
@@ -27,7 +27,24 @@ export default class BookContentSearch extends React.Component {
     this.props.Reader.book.rendition.display(cfi);
   }
 
-  onSearch() {
+  async onSearch() {
+    await new Promise(r => this.setState({ matches: [], searching: true }, r));
+
+    const {Reader} = this.props;
+    const currentCFI = Reader.book.rendition.location.start.cfi;
+    window.bookView.style.display = 'none';
+
+    for (let item of Reader.book.spine.items) {
+      await Reader.book.rendition.display(item.href);
+      this._searchChapter();
+    }
+
+    await Reader.book.rendition.display(currentCFI);
+    this.setState({ searching: false });
+    window.bookView.style.display = '';
+  }
+
+  _searchChapter() {
     const {Reader} = this.props;
     const content = Reader.book.rendition.getContents()[0];
     const query = this._search.value;
@@ -70,7 +87,7 @@ export default class BookContentSearch extends React.Component {
       }
     }
 
-    this.setState({ matches });
+    this.setState({ matches: this.state.matches.concat(matches) });
   }
 
   /**
@@ -109,6 +126,7 @@ export default class BookContentSearch extends React.Component {
             id='search--search'
             ref={i => this._search = i}
             type='search'
+            disabled={this.state.searching}
             onKeyPress={e => e.key == 'Enter' && this.onSearch()}
             placeholder='Search'
           />
