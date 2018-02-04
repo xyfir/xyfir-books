@@ -39,26 +39,35 @@ export default class BookContentSearch extends React.Component {
     const nodes = this._findMatchingNodes(content.content, search);
 
     for (let node of nodes) {
-      const text  = node.innerText;
-      const start = text.search(search);
-      const end = start + query.length;
+      const indexes = [];
+      const text = node.innerText;
+      let match;
 
-      const match = {
-        before: text.substring(0, start),
-        match: text.substring(start, end),
-        after: text.substring(end),
-        cfi: content.cfiFromNode(node)
-      };
+      // Node's text may have multiple matches
+      while (match = search.exec(text)) {
+        indexes.push(match.index);
+      }
 
-      // Limit `before` and `after` to 100 characters
-      match.before = match.before.length > 100
-        ? ('...' + match.before.substr(match.before.length - 100))
-        : match.before,
-      match.after = match.after.length > 100
-        ? (match.after.substr(0, 100) + '...')
-        : match.after;
+      for (let start of indexes) {
+        const end = start + query.length;
 
-      matches.push(match);
+        const match = {
+          before: text.substring(0, start),
+          match: text.substring(start, end),
+          after: text.substring(end),
+          cfi: content.cfiFromNode(node)
+        };
+
+        // Limit `before` and `after` to 100 characters
+        match.before = match.before.length > 100
+          ? ('...' + match.before.substr(match.before.length - 100))
+          : match.before,
+        match.after = match.after.length > 100
+          ? (match.after.substr(0, 100) + '...')
+          : match.after;
+
+        matches.push(match);
+      }
     }
 
     this.setState({ matches });
