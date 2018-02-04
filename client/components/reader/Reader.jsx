@@ -401,7 +401,7 @@ export default class Reader extends React.Component {
         'cursor': 'pointer'
       },
       'span.search': {
-        'background-color': styles.highlightColor,
+        'background-color': styles.searchMatchColor,
         'cursor': 'pointer'
       },
       'span.note': {
