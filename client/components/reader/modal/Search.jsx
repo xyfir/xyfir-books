@@ -5,6 +5,10 @@ import React from 'react';
 // Components
 import Navigation from 'components/reader/modal/Navigation';
 
+// Modules
+import getMatchIndexes from 'lib/reader/matches/find-indexes';
+import wrapMatches from 'lib/reader/matches/wrap';
+
 export default class BookContentSearch extends React.Component {
 
   constructor(props) {
@@ -24,7 +28,12 @@ export default class BookContentSearch extends React.Component {
 
   /** @param {string} cfi */
   onGoTo(cfi) {
-    this.props.Reader.book.rendition.display(cfi);
+    const {Reader} = this.props;
+
+    Reader.book.rendition.display(cfi);
+    Reader.onSetHighlightMode({
+      mode: 'search', search: this.state.query
+    });
   }
 
   async onSearch() {

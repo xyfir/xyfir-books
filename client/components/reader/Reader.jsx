@@ -12,7 +12,8 @@ import Modal from 'components/reader/modal/Modal';
 // Modules
 import insertAnnotations from 'lib/reader/annotations/insert';
 import updateAnnotations from 'lib/reader/annotations/update';
-import highlightNotes from 'lib/reader/notes/highlight';
+import highlightSearch from 'lib/reader/highlight/search';
+import highlightNotes from 'lib/reader/highlight/notes';
 import swipeListener from 'lib/reader/listeners/swipe';
 import clickListener from 'lib/reader/listeners/click';
 import loadBook from 'lib/books/load';
@@ -189,6 +190,7 @@ export default class Reader extends React.Component {
    * @typedef {object} HighlightMode
    * @prop {string} mode
    * @prop {number} [index]
+   * @prop {string} [search]
    * @prop {string} [message]
    * @prop {string} [previousMode]
    */
@@ -234,7 +236,9 @@ export default class Reader extends React.Component {
         case 'none':
           return 'Highlights turned off';
         case 'notes':
-          return 'Now highlighting notes';
+          return 'Highlighting notes';
+        case 'search':
+          return 'Highlighting search matches';
         case 'annotations':
           return 'Highlighting annotations from ' +
             this.state.book.annotations[highlight.index].title
@@ -336,7 +340,7 @@ export default class Reader extends React.Component {
    * @param {MessageEvent} event
    * @param {object} event.data
    * @param {boolean} event.data.epubjs
-   * @param {string} event.data.type
+   * @param {string} event.data.type - `"note|annotation|search"`
    * @param {string} event.data.key
    */
   onHighlightClicked(event) {
@@ -346,7 +350,9 @@ export default class Reader extends React.Component {
       modal: {
         closeWait: Date.now() + 100,
         target: event.data.key,
-        show: event.data.type == 'note' ? 'notes' : 'viewAnnotations'
+        show: {
+          note: 'notes', search: 'search', annotation: 'viewAnnotations'
+        }[event.data.type]
       }
     });
   }
@@ -390,6 +396,10 @@ export default class Reader extends React.Component {
       },
       'span.annotation': {
         'background-color': styles.annotationColor,
+        'cursor': 'pointer'
+      },
+      'span.search': {
+        'background-color': styles.highlightColor,
         'cursor': 'pointer'
       },
       'span.note': {
@@ -484,6 +494,9 @@ export default class Reader extends React.Component {
       case 'notes':
         unwrap(document, 'note');
         break;
+      case 'search':
+        unwrap(document, 'search');
+        break;
       case 'annotations':
         unwrap(document, 'annotation');
     }
@@ -491,6 +504,9 @@ export default class Reader extends React.Component {
     // Apply appropriate highlights
     if (highlight.mode == 'notes') {
       highlightNotes(this.book, notes);
+    }
+    else if (highlight.mode == 'search') {
+      highlightSearch(this.book, highlight.search);
     }
     else if (
       highlight.mode == 'annotations' &&
