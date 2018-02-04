@@ -10,7 +10,7 @@ export default class BookContentSearch extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { matches: [], searching: false };
+    this.state = { matches: [], searching: false, query: '' };
   }
 
   componentWillMount() {
@@ -47,7 +47,7 @@ export default class BookContentSearch extends React.Component {
   _searchChapter() {
     const {Reader} = this.props;
     const content = Reader.book.rendition.getContents()[0];
-    const query = this._search.value;
+    const {query} = this.state;
 
     if (!query.length) return this.setState({ results: [] });
 
@@ -126,7 +126,9 @@ export default class BookContentSearch extends React.Component {
             id='search--search'
             ref={i => this._search = i}
             type='search'
+            value={this.state.searching ? 'Searching...' : this.state.query}
             disabled={this.state.searching}
+            onChange={v => this.setState({ query: v })}
             onKeyPress={e => e.key == 'Enter' && this.onSearch()}
             placeholder='Search'
           />
