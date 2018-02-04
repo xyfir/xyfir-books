@@ -144,6 +144,11 @@ export default class ReaderNavbar extends React.Component {
               onClick={() => Reader.onToggleShow('toc')}
             />,
             <ListItem
+              primaryText='Search'
+              leftIcon={<FontIcon>search</FontIcon>}
+              onClick={() => Reader.onToggleShow('search')}
+            />,
+            <ListItem
               primaryText='Notes'
               leftIcon={<FontIcon>note</FontIcon>}
               onClick={() => Reader.onToggleShow('notes')}

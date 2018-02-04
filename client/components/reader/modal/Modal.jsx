@@ -3,6 +3,7 @@ import React from 'react';
 
 // Components
 import ManageAnnotations from 'components/reader/modal/annotations/Manage';
+import SearchBookContent from 'components/reader/modal/Search';
 import ViewAnnotations from 'components/reader/modal/annotations/View';
 import TableOfContents from 'components/reader/modal/TableOfContents';
 import BookStyling from 'components/reader/modal/BookStyling';
@@ -41,6 +42,8 @@ export default class ReaderModal extends React.Component {
           return <BookInfo {...props} />
         case 'filters':
           return <Filters {...props} />
+        case 'search':
+          return <SearchBookContent {...props} />
         case 'notes':
           return <Notes {...props} />
         case 'toc':
