@@ -46,4 +46,10 @@ body.theme-dark {
       background-color: #252526;
     }
   }
+
+  span.reader-dialog.container {
+    section.book-content-search >ul.matches >li.match:hover {
+      background-color: $md-grey-700;
+    }
+  }
 }

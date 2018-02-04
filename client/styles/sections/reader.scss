@@ -235,6 +235,42 @@ span.reader-dialog.container {
     width: calc(100% - 5em);
     margin: 1em auto;
   }
+
+  section.book-content-search {
+    text-align: left;
+
+    >div.search {
+      display: flex;
+
+      >button {
+        margin: 0.2em;
+      }
+    }
+
+    >ul.matches {
+      list-style: none;
+      padding: 0;
+      margin: 0.5em;
+
+      >li.match {
+        border-bottom: solid $md-grey-200;
+        padding: 0.5em 0;
+        cursor: pointer;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: $md-grey-50;
+        }
+
+        >span.match {
+          font-weight: bold;
+        }
+      }
+    }
+  }
 }
 
 div.reader-drawer-overlay {
