@@ -107,6 +107,8 @@ export default class ReaderSettings extends React.Component {
           component='section'
           className='theme section flex'
         >
+          <h3>Styling</h3>
+
           <SelectField
             id='select--theme'
             label='Reader Theme'
@@ -182,20 +184,17 @@ export default class ReaderSettings extends React.Component {
 
           <br />
 
-          <TextField
-            id='number--line-spacing'
-            min={1}
-            step={0.1}
-            type='number'
-            label='Line Spacing'
-            value={this.state.lineHeight}
-            onChange={v => this.setState({ lineHeight: +v })}
-            className='md-cell'
+          <ColorPicker
+            id='-color'
+            label='Search Match Color'
+            value={this.state.searchMatchColor}
+            onChange={v => this.setState({ searchMatchColor: v })}
           />
 
-          <div style={{lineHeight: this.state.lineHeight}}>
-            Line 1<br />Line 2<br />Line 3
-          </div>
+          <span style={{
+            color: this.state.color,
+            backgroundColor: this.state.searchMatchColor
+          }}>Example Text</span>
 
           <br />
 
@@ -213,6 +212,23 @@ export default class ReaderSettings extends React.Component {
 
           <br />
 
+          <TextField
+            id='number--line-spacing'
+            min={1}
+            step={0.1}
+            type='number'
+            label='Line Spacing'
+            value={this.state.lineHeight}
+            onChange={v => this.setState({ lineHeight: +v })}
+            className='md-cell'
+          />
+
+          <div style={{lineHeight: this.state.lineHeight}}>
+            Line 1<br />Line 2<br />Line 3
+          </div>
+
+          <br />
+
           <SelectField
             id='select--default-highlight-mode'
             label='Default Highlight Mode'
@@ -226,17 +242,19 @@ export default class ReaderSettings extends React.Component {
             defaultValue='none'
           />
 
-          <Button
-            primary raised
-            iconChildren='save'
-            onClick={() => this.onSaveStyles()}
-          >Save</Button>
+          <div>
+            <Button
+              primary raised
+              iconChildren='save'
+              onClick={() => this.onSaveStyles()}
+            >Save</Button>
 
-          <Button
-            secondary raised
-            iconChildren='clear'
-            onClick={() => this.onResetStyles()}
-          >Reset</Button>
+            <Button
+              secondary raised
+              iconChildren='clear'
+              onClick={() => this.onResetStyles()}
+            >Reset</Button>
+          </div>
         </Paper>
 
         <Paper
