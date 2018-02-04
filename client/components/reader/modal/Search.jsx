@@ -13,6 +13,15 @@ export default class BookContentSearch extends React.Component {
     this.state = { matches: [] };
   }
 
+  componentWillMount() {
+    // Disable highlights so they don't mess with the search
+    this.props.Reader.onSetHighlightMode({ mode: 'none' });
+  }
+
+  componentDidMount() {
+    this._search.focus();
+  }
+
   /** @param {string} cfi */
   onGoTo(cfi) {
     this.props.Reader.book.rendition.display(cfi);
@@ -20,24 +29,28 @@ export default class BookContentSearch extends React.Component {
 
   onSearch() {
     const {Reader} = this.props;
-    const contents = Reader.book.rendition.getContents()[0];
-    const search = new RegExp(escapeRegex(this._search.value), 'gi');
+    const content = Reader.book.rendition.getContents()[0];
+    const query = this._search.value;
+
+    if (!query.length) return this.setState({ results: [] });
 
     const matches = [];
-    const nodes = this._findMatchingNodes(contents.content, search);
+    const search = new RegExp(escapeRegex(query), 'gi');
+    const nodes = this._findMatchingNodes(content.content, search);
 
     for (let node of nodes) {
-      const content = node.innerText;
-      const start = content.search(search);
-      const end = start + this._search.value.length;
+      const text  = node.innerText;
+      const start = text.search(search);
+      const end = start + query.length;
 
       const match = {
-        before: content.substring(0, start),
-        match: content.substring(start, end),
-        after: content.substring(end),
-        cfi: contents.cfiFromNode(node)
+        before: text.substring(0, start),
+        match: text.substring(start, end),
+        after: text.substring(end),
+        cfi: content.cfiFromNode(node)
       };
 
+      // Limit `before` and `after` to 100 characters
       match.before = match.before.length > 100
         ? ('...' + match.before.substr(match.before.length - 100))
         : match.before,
@@ -87,6 +100,7 @@ export default class BookContentSearch extends React.Component {
             id='search--search'
             ref={i => this._search = i}
             type='search'
+            onKeyPress={e => e.key == 'Enter' && this.onSearch()}
             placeholder='Search'
           />
           <Button
