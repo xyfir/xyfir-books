@@ -1,8 +1,13 @@
 .home {
-  margin: 0em;
+  text-align: justify;
+  margin: 0;
 
   p {
     width: 100%;
+  }
+
+  h2 {
+    margin-bottom: 0.2em;
   }
 
   section.free, section.main, nav, footer {
@@ -56,6 +61,8 @@
 
     >img {
       height: 30em;
+      margin-top: -2em;
+      margin-bottom: -1.5em;
     }
   }
 
@@ -72,11 +79,13 @@
   }
 
   section.free {
-    .note {
+    >span.note {
       display: block;
     }
 
-    button {
+    >button {
+      margin-bottom: 0.5em;
+      margin-top: 0;
       font-size: 2.5em;
       height: 2.5em;
     }
@@ -101,79 +110,85 @@
     }
   }
 
-  section.premium >div.comparison {
-    display: flex;
-    flex-wrap: wrap;
-    text-align: center;
-    justify-content: center;
+  section.premium {
+    padding: 0.5em;
 
-    >div.package {
-      width: 20em;
-      margin: 1em;
-      padding: 0.5em;
+    >div.comparison {
+      display: flex;
+      flex-wrap: wrap;
+      text-align: center;
+      justify-content: center;
 
-      >header {
-        >span.title {
-          text-transform: uppercase;
-          font-size: 200%;
+      >div.package {
+        width: 20em;
+        margin: 1em;
+        padding: 0.5em;
+
+        >header {
+          >span.title {
+            text-transform: uppercase;
+            font-size: 200%;
+          }
+
+          >span.price {
+            font-size: 300%;
+            display: block;
+
+            &:before {
+              content: '$';
+              font-size: 40%;
+              vertical-align: super;
+            }
+
+            &:after {
+              content: '/YR';
+              font-size: 30%;
+            }
+          }
         }
 
-        >span.price {
-          font-size: 300%;
+        >span {
           display: block;
+          margin: 1em 0;
+        }
 
-          &:before {
-            content: '$';
-            font-size: 40%;
-            vertical-align: super;
+        >a.button {
+          font-size: 125%;
+          text-transform: uppercase;
+          display: block;
+          border: solid;
+          border-radius: 0.2em;
+        }
+
+        &.free {
+          >header>span, a.button {
+            color: $md-secondary-color;
           }
-
-          &:after {
-            content: '/YR';
-            font-size: 30%;
+          >a.button:hover,
+          >header>span.price:after,
+          >header>span.price:before {
+            color: $md-primary-color;
           }
         }
-      }
 
-      >span {
-        display: block;
-        margin: 1em 0;
-      }
-
-      >a.button {
-        font-size: 125%;
-        text-transform: uppercase;
-        display: block;
-        border: solid;
-        border-radius: 0.2em;
-      }
-
-      &.free {
-        >header>span, a.button {
-          color: $md-secondary-color;
-        }
-        >a.button:hover,
-        >header>span.price:after,
-        >header>span.price:before {
-          color: $md-primary-color;
-        }
-      }
-
-      &.premium {
-        >header>span, a.button {
-          color: $md-primary-color;
-        }
-        >a.button:hover,
-        >header>span.price:after,
-        >header>span.price:before {
-          color: $md-secondary-color;
+        &.premium {
+          >header>span, a.button {
+            color: $md-primary-color;
+          }
+          >a.button:hover,
+          >header>span.price:after,
+          >header>span.price:before {
+            color: $md-secondary-color;
+          }
         }
       }
     }
   }
 
   @media (max-width: 400px) {
-    text-align: center;
+    section {
+      padding: 0.5em;
+    }
 
     section.with-screenshot {
       >img {
@@ -183,10 +198,8 @@
   }
 
   @media (min-width: 401px) {
-    text-align: justify;
-
     section {
-      padding: 1% 20%;
+      padding: 0.5em 20%;
     }
   }
 
