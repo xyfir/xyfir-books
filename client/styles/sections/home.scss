@@ -66,18 +66,6 @@
     }
   }
 
-  section.install {
-    p {
-      margin-bottom: 1em;
-    }
-
-    a[class^="icon-"] {
-      font-size: 125%;
-      display: inline-block;
-      padding-right: 0.4em;
-    }
-  }
-
   section.free {
     >span.note {
       display: block;
@@ -98,15 +86,31 @@
     align-items: center;
     justify-content: center;
 
-    .subtitle {
-      line-height: 1.5;
+    h1 {
+      margin-bottom: 0;
     }
 
-    .platforms {
+    .subtitle {
+      line-height: 1.5;
       display: block;
-      font-size: 50%;
-      color: $dgray;
-      margin-top: 2em;
+      margin: 1em 0;
+    }
+
+    div.platforms {
+      font-size: 60%;
+
+      >a.platform {
+        margin: 0.3em;
+
+        &:hover {
+          border-bottom: solid 0.1em;
+        }
+
+        >i.md-icon {
+          color: inherit;
+          vertical-align: sub;
+        }
+      }
     }
   }
 
@@ -193,6 +197,12 @@
     section.with-screenshot {
       >img {
         height: 24em;
+      }
+    }
+
+    a.platform {
+      &.mac, &.windows, &.linux {
+        display: none;
       }
     }
   }
