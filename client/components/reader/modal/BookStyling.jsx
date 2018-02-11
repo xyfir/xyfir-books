@@ -29,8 +29,7 @@ export default class BookStyling extends React.Component {
     else
       fontFamily = index == 0 ? fonts[fonts.length - 1] : fonts[index - 1];
 
-    this.setState({ fontFamily }, () => this._saveStyling());
-    this.props.Reader.book.rendition.themes.font(fontFamily);
+    this._update({ fontFamily });
   }
 
   /**
@@ -42,12 +41,7 @@ export default class BookStyling extends React.Component {
     let value = +this.state[prop] + (op == '+' ? 0.1 : -0.1);
     value = value < 1 ? 1 : value;
 
-    // Set and save styling
-    this.setState({ [prop]: value }, () => this._saveStyling());
-
-    prop = prop == 'fontSize' ? 'font-size' : 'line-height';
-
-    this.props.Reader.book.rendition.themes.override(prop, value + 'em');
+    this._update({ [prop]: value });
   }
 
   /**
@@ -55,24 +49,24 @@ export default class BookStyling extends React.Component {
    * @param {string} val
    */
   onUpdateTheme(val) {
-    const style = themes[val];
-
-    this.setState(style, () =>
-      this._saveStyling(() =>
-        this.props.Reader._applyStyles()
-      )
-    );
+    this._update(themes[val]);
   }
 
   /**
-   * Save the style changes to local storage.
-   * @param {function} [fn]
+   * Update state, update locally saved styles, and apply new styles.
+   * @async
+   * @param {object} obj
    */
-  _saveStyling(fn) {
-    localforage.setItem(
-      'styling-' + this.props.Reader.state.book.id,
-      this.state
-    ).then(() => fn ? fn() : 1);
+  async _update(obj) {
+    const {Reader} = this.props;
+
+    await new Promise(r => this.setState(obj, r));
+
+    const styles = Object.assign({}, this.state);
+    delete styles.loading;
+
+    await localforage.setItem(`styling-${Reader.state.book.id}`, styles);
+    await Reader._applyStyles();
   }
 
   render() {
