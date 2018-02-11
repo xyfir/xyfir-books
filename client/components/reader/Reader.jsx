@@ -383,18 +383,18 @@ export default class Reader extends React.Component {
   async _applyStyles() {
     const styles = await this._getStyles();
 
+    // Unfortunately, !important is needed to fight the publisher's styling
     this.book.rendition.themes.default({
       '*': {
-        'color': `${styles.color} !important`
+        'color': `${styles.color} !important`,
+        'font-family': `${styles.fontFamily} !important`
       },
-      'html': {
-        'font-size': `${styles.fontSize}em`,
-        'font-family': styles.fontFamily,
-        'line-height': `${styles.lineHeight}em`,
-        'background-color': styles.backgroundColor
+      'html, body': {
+        'background-color': `${styles.backgroundColor} !important`
       },
-      'body': {
-        'background-color': styles.backgroundColor
+      'p, span': {
+        'font-size': `${styles.fontSize}em !important`,
+        'line-height': `${styles.lineHeight}em !important`
       },
       'span.annotation': {
         'background-color': styles.annotationColor,
