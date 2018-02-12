@@ -397,6 +397,10 @@ export default class Reader extends React.Component {
         'color': `${styles.color} !important`,
         'font-family': `${styles.fontFamily} !important`
       },
+      'p': {
+        'text-align': `${styles.textAlign} !important`,
+        'text-indent': `${styles.textIndent}em !important`
+      },
       'html, body': {
         'background-color': `${styles.backgroundColor} !important`
       },

@@ -2,8 +2,8 @@ import { FontIcon, Button } from 'react-md';
 import React from 'react';
 
 // Constants
-import * as themes from 'constants/reader-themes';
-import fonts from 'constants/fonts';
+import * as themes from 'constants/reader/themes';
+import { FONTS, ALIGNMENTS } from 'constants/reader/styles';
 
 export default class BookStyling extends React.Component {
 
@@ -21,15 +21,34 @@ export default class BookStyling extends React.Component {
 
   /** @param {boolean} next */
   onChangeFont(next) {
-    let fontFamily = this.state.fontFamily;
-    const index = fonts.indexOf(fontFamily);
+    let {fontFamily} = this.state;
+    const index = FONTS.indexOf(fontFamily);
 
     if (next)
-      fontFamily = index == fonts.length - 1 ? fonts[0] : fonts[index + 1];
+      fontFamily = index == FONTS.length - 1 ? FONTS[0] : FONTS[index + 1];
     else
-      fontFamily = index == 0 ? fonts[fonts.length - 1] : fonts[index - 1];
+      fontFamily = index == 0 ? FONTS[FONTS.length - 1] : FONTS[index - 1];
 
     this._update({ fontFamily });
+  }
+
+  /** @param {boolean} next */
+  onChangeTextAlign(next) {
+    let {textAlign} = this.state;
+    const index = ALIGNMENTS.indexOf(textAlign);
+
+    if (next) {
+      textAlign = index == ALIGNMENTS.length - 1
+        ? ALIGNMENTS[0]
+        : ALIGNMENTS[index + 1];
+    }
+    else {
+      textAlign = index == 0
+        ? ALIGNMENTS[ALIGNMENTS.length - 1]
+        : ALIGNMENTS[index - 1];
+    }
+
+    this._update({ textAlign });
   }
 
   /**
@@ -128,6 +147,40 @@ export default class BookStyling extends React.Component {
           <Button
             icon secondary
             onClick={() => this.onChangeFont(true)}
+            iconChildren='keyboard_arrow_right'
+          />
+        </div>
+
+        <div>
+          <span>
+            <FontIcon>format_indent_increase</FontIcon>
+            Indentation
+          </span>
+          <Button
+            icon primary
+            onClick={() => this.onUpdate('textIndent', '+')}
+            iconChildren='add'
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onUpdate('textIndent', '-')}
+            iconChildren='remove'
+          />
+        </div>
+
+        <div>
+          <span>
+            <FontIcon>format_align_left</FontIcon>
+            Alignment ({this.state.textAlign})
+          </span>
+          <Button
+            icon primary
+            onClick={() => this.onChangeTextAlign()}
+            iconChildren='keyboard_arrow_left'
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onChangeTextAlign(true)}
             iconChildren='keyboard_arrow_right'
           />
         </div>

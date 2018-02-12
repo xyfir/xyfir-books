@@ -1,5 +1,5 @@
 // Constants
-import * as readerThemes from 'constants/reader-themes';
+import * as readerThemes from 'constants/reader/themes';
 import { RECENTLY_OPENED } from 'constants/views';
 
 export default {
@@ -22,8 +22,8 @@ export default {
       }
     },
     reader: Object.assign({}, readerThemes.LIGHT, {
-      fontSize: 1.2, lineHeight: 1.4, fontFamily: 'Serif',
-      defaultHighlightMode: 'none'
+      fontSize: 1.2, lineHeight: 1.4, fontFamily: 'Serif', textIndent: 2,
+      textAlign: 'Justify', defaultHighlightMode: 'none'
     })
   },
   search: {
