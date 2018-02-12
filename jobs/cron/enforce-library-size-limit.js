@@ -18,7 +18,7 @@ module.exports = async function() {
       SELECT
         user_id, email, library_id, library_size_limit, library_delete
       FROM users
-      WHERE library_id != ''
+      WHERE library_wiped = 0
     `);
 
     if (!rows.length) throw 'No libraries to handle';
@@ -65,7 +65,7 @@ module.exports = async function() {
           'Xyfir Books - Library Size Limit Reached',
           message
         );
-        
+
         // Library's first time going over limit: set library_delete
         if (row.library_delete[0] == '0') {
           await db.query(`
@@ -82,6 +82,11 @@ module.exports = async function() {
         );
 
         if (res.body.error) return;
+
+        await db.query(
+          'UPDATE users SET library_wiped = 1 WHERE user_id = ?',
+          [row.user_id]
+        );
 
         // Notify user that their library was deleted
         const message = `

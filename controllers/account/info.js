@@ -83,9 +83,12 @@ module.exports = async function(req, res) {
 
     if (!row) throw 'User does not exist';
 
-    await db.query(
-      'UPDATE users SET last_active = NOW() WHERE user_id = ?', [uid]
-    );
+    await db.query(`
+      UPDATE users SET last_active = NOW(), library_wiped = 0
+      WHERE user_id = ?
+    `, [
+      uid
+    ]);
     db.release();
 
     row.referral = JSON.parse(row.referral);
