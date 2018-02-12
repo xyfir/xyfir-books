@@ -5,8 +5,8 @@ import React from 'react';
 // Constants
 import { XYANNOTATIONS_URL, XYBOOKS_URL } from 'constants/config';
 import initialState from 'constants/initial-state';
-import * as themes from 'constants/reader-themes';
-import fonts from 'constants/fonts';
+import * as themes from 'constants/reader/themes';
+import { FONTS } from 'constants/reader/styles';
 
 // Action creators
 import { setReader, setGeneral } from 'actions/settings';
@@ -124,7 +124,7 @@ export default class ReaderSettings extends React.Component {
             label='Font'
             value={this.state.fontFamily}
             onChange={v => this.setState({ fontFamily: v })}
-            menuItems={fonts}
+            menuItems={FONTS}
             className='md-cell'
           />
 
