@@ -39,7 +39,7 @@ export default class Reader extends React.Component {
       book: App.state.books.find(b => id == b.id),
       pagesLeft: 0, percent: 0, loading: true,
       history: {
-        items: [], index: -1, ignore: false
+        items: [], index: -1
       },
       modal: {
         target: '', show: ''
@@ -56,6 +56,7 @@ export default class Reader extends React.Component {
     this._addEventListeners = this._addEventListeners.bind(this);
     this._applyHighlights = this._applyHighlights.bind(this);
     this._applyFilters = this._applyFilters.bind(this);
+    this.onAnchorClick = this.onAnchorClick.bind(this);
     this.onToggleShow = this.onToggleShow.bind(this);
     this.onCloseModal = this.onCloseModal.bind(this);
     this._applyStyles = this._applyStyles.bind(this);
@@ -256,28 +257,6 @@ export default class Reader extends React.Component {
   }
 
   /**
-   * Add epub CFI to history.
-   * @param {object} location
-   */
-  onAddToHistory(location) {
-    if (this.state.history.ignore) {
-      const history = Object.assign({}, this.state.history);
-
-      history.ignore = false;
-      this.setState({ history });
-    }
-    else {
-      const items = this.state.history.items.slice(0);
-
-      if (items.length == 20) items.shift();
-
-      items.push(location.start.cfi);
-
-      this.setState({ history: { items, index: -1, ignore: false } });
-    }
-  }
-
-  /**
    * Open or close a modal.
    * @param {string} show
    */
@@ -339,13 +318,30 @@ export default class Reader extends React.Component {
   }
 
   /**
-   * Listens for clicks on `<a>` elements that point to outbound links.
+   * Listens for clicks on `<a>` elements.
    * @param {MouseEvent} e
    */
   onAnchorClick(e) {
-    if (e.target.nodeName == 'A' && /^https?:\/\//.test(e.target.href)) {
+    if (e.target.nodeName != 'A') return;
+
+    // !! e.target.href and getAttribute('href') return different values
+    const href = e.target.getAttribute('href');
+
+    // Outbound link
+    if (/^https?:\/\//.test(href)) {
       e.preventDefault();
-      openWindow(e.target.href);
+      openWindow(href);
+    }
+    // Points to location in book
+    else {
+      const items = this.state.history.items.slice();
+
+      if (items.length == 20) items.shift();
+
+      items.push(this.book.rendition.location.start.cfi);
+
+      this.setState({ history: { items, index: -1 } });
+      this._overlay.show = false;
     }
   }
 
@@ -460,10 +456,7 @@ export default class Reader extends React.Component {
   _addEventListeners() {
     // Update pages left in chapter
     // Update percent complete
-    // Add location to history
     this.book.rendition.on('relocated', location => {
-      this.onAddToHistory(location);
-
       let pagesLeft =
         this.book.rendition.manager.location[0].totalPages -
         this.book.rendition.manager.location[0].pages[0];

@@ -31,10 +31,7 @@ export default class ReaderNavbar extends React.Component {
       else
         history.index--;
 
-      history.ignore = true;
-
       Reader.setState({ history });
-
       Reader.book.rendition.display(history.items[history.index]);
     }
   }
