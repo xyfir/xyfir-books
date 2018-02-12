@@ -74,8 +74,7 @@ class App extends React.Component {
       updateView(this.store);
     };
 
-    // setTimeout(() => this._loadAd(), 120000);
-    setTimeout(() => this._loadAd(), 3000);
+    setTimeout(() => this._loadAd(), 120000);
   }
 
   async componentWillMount() {
@@ -191,7 +190,7 @@ class App extends React.Component {
           `(Ad) ${ad.normalText.title}: ${ad.normalText.description}`,
           'close', false
         );
-        setTimeout(() => this._loadAd(), 300000);
+        setTimeout(() => this._loadAd(), 1800000);
       });
   }
 
