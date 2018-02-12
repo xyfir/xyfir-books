@@ -4,9 +4,9 @@ import React from 'react';
 
 // Constants
 import { XYANNOTATIONS_URL, XYBOOKS_URL } from 'constants/config';
+import { FONTS, ALIGNMENTS } from 'constants/reader/styles';
 import initialState from 'constants/initial-state';
 import * as themes from 'constants/reader/themes';
-import { FONTS } from 'constants/reader/styles';
 
 // Action creators
 import { setReader, setGeneral } from 'actions/settings';
@@ -19,6 +19,20 @@ import OpenWindow from 'components/misc/OpenWindow';
 
 // Modules
 import query from 'lib/url/parse-query-string';
+
+const BackgroundColorExample = ({styles, backgroundColor}) => (
+  <span
+    style={{
+      color: styles.color,
+      fontSize: styles.fontSize + 'em',
+      fontFamily: styles.fontFamily,
+      backgroundColor: styles.backgroundColor
+    }}
+    className='example background-color'
+  >
+    Example. <span style={{backgroundColor}}>Highlight.</span> Example.
+  </span>
+);
 
 export default class ReaderSettings extends React.Component {
 
@@ -117,7 +131,7 @@ export default class ReaderSettings extends React.Component {
             className='md-cell'
           />
 
-          <br />
+          <br /><br />
 
           <SelectField
             id='select--font'
@@ -125,6 +139,15 @@ export default class ReaderSettings extends React.Component {
             value={this.state.fontFamily}
             onChange={v => this.setState({ fontFamily: v })}
             menuItems={FONTS}
+            className='md-cell'
+          />
+
+          <SelectField
+            id='select--text-align'
+            label='Alignment'
+            value={this.state.textAlign}
+            onChange={v => this.setState({ textAlign: v })}
+            menuItems={ALIGNMENTS}
             className='md-cell'
           />
 
@@ -139,13 +162,42 @@ export default class ReaderSettings extends React.Component {
             className='md-cell'
           />
 
+          <TextField
+            id='number--text-indent'
+            min={0}
+            step={0.1}
+            type='number'
+            label='Indentation'
+            value={this.state.textIndent}
+            onChange={v => this.setState({ textIndent: +v })}
+            className='md-cell'
+          />
+
+          <TextField
+            id='number--line-spacing'
+            min={1}
+            step={0.1}
+            type='number'
+            label='Line Spacing'
+            value={this.state.lineHeight}
+            onChange={v => this.setState({ lineHeight: +v })}
+            className='md-cell'
+          />
+
           <span
-            className='example font'
+            className='example text'
             style={{
+              color: this.state.color,
               fontSize: this.state.fontSize + 'em',
-              fontFamily: this.state.fontFamily
+              textAlign: this.state.textAlign,
+              fontFamily: this.state.fontFamily,
+              lineHeight: this.state.lineHeight + 'em',
+              textIndent: this.state.textIndent + 'em',
+              backgroundColor: this.state.backgroundColor
             }}
-          >Example Text</span>
+          >
+            Example text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam viverra est at lacus convallis, at ullamcorper nisi pretium. Praesent ullamcorper felis eu mi egestas, at gravida nibh cursus. Nunc rutrum, ante eget malesuada efficitur, nisl massa bibendum arcu, ac condimentum urna ex in est. Sed ipsum dolor, pretium eu egestas at, tempor eget dolor. Fusce vehicula, ante quis vestibulum viverra, tellus nisi vestibulum leo, vel lobortis libero purus at ipsum. In id enim vitae felis mollis tempor. Duis egestas vitae arcu vitae egestas. Nunc ultricies felis lacus, ut suscipit mauris iaculis vitae.
+          </span>
 
           <br />
 
@@ -163,12 +215,7 @@ export default class ReaderSettings extends React.Component {
             onChange={v => this.setState({ backgroundColor: v })}
           />
 
-          <span style={{
-            color: this.state.color,
-            backgroundColor: this.state.backgroundColor
-          }}>Example Text</span>
-
-          <br />
+          <br /><br />
 
           <ColorPicker
             id='highlight-color'
@@ -177,10 +224,10 @@ export default class ReaderSettings extends React.Component {
             onChange={v => this.setState({ highlightColor: v })}
           />
 
-          <span style={{
-            color: this.state.color,
-            backgroundColor: this.state.highlightColor
-          }}>Example Text</span>
+          <BackgroundColorExample
+            styles={this.state}
+            backgroundColor={this.state.highlightColor}
+          />
 
           <br />
 
@@ -191,10 +238,10 @@ export default class ReaderSettings extends React.Component {
             onChange={v => this.setState({ searchMatchColor: v })}
           />
 
-          <span style={{
-            color: this.state.color,
-            backgroundColor: this.state.searchMatchColor
-          }}>Example Text</span>
+          <BackgroundColorExample
+            styles={this.state}
+            backgroundColor={this.state.searchMatchColor}
+          />
 
           <br />
 
@@ -205,27 +252,10 @@ export default class ReaderSettings extends React.Component {
             onChange={v => this.setState({ annotationColor: v })}
           />
 
-          <span style={{
-            color: this.state.color,
-            backgroundColor: this.state.annotationColor
-          }}>Example Text</span>
-
-          <br />
-
-          <TextField
-            id='number--line-spacing'
-            min={1}
-            step={0.1}
-            type='number'
-            label='Line Spacing'
-            value={this.state.lineHeight}
-            onChange={v => this.setState({ lineHeight: +v })}
-            className='md-cell'
+          <BackgroundColorExample
+            styles={this.state}
+            backgroundColor={this.state.annotationColor}
           />
-
-          <div style={{lineHeight: this.state.lineHeight}}>
-            Line 1<br />Line 2<br />Line 3
-          </div>
 
           <br />
 
