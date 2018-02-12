@@ -6,7 +6,7 @@ import { setGeneral, setReader } from 'actions/settings';
 import { save } from 'actions/app';
 
 // Constants
-import * as themes from 'constants/reader-themes';
+import * as themes from 'constants/reader/themes';
 
 export default class GeneralSettings extends React.Component {
 
