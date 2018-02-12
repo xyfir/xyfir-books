@@ -73,75 +73,65 @@ export default class BookStyling extends React.Component {
     if (this.state.loading) return null;
 
     return (
-      <table className='book-styling'>
-      <tbody>
-        <tr>
-          <th><FontIcon>format_size</FontIcon>Text Size</th>
-          <td>
-            <Button
-              icon primary
-              onClick={() => this.onUpdate('fontSize', '+')}
-              iconChildren='add'
-            />
-            <Button
-              icon secondary
-              onClick={() => this.onUpdate('fontSize', '-')}
-              iconChildren='remove'
-            />
-          </td>
-        </tr>
+      <section className='book-styling'>
+        <div>
+          <span><FontIcon>format_size</FontIcon>Text Size</span>
+          <Button
+            icon primary
+            onClick={() => this.onUpdate('fontSize', '+')}
+            iconChildren='add'
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onUpdate('fontSize', '-')}
+            iconChildren='remove'
+          />
+        </div>
 
-        <tr>
-          <th><FontIcon>format_line_spacing</FontIcon>Line Spacing</th>
-          <td>
-            <Button
-              icon primary
-              onClick={() => this.onUpdate('lineHeight', '+')}
-              iconChildren='add'
-            />
-            <Button
-              icon secondary
-              onClick={() => this.onUpdate('lineHeight', '-')}
-              iconChildren='remove'
-            />
-          </td>
-        </tr>
+        <div>
+          <span><FontIcon>format_line_spacing</FontIcon>Line Spacing</span>
+          <Button
+            icon primary
+            onClick={() => this.onUpdate('lineHeight', '+')}
+            iconChildren='add'
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onUpdate('lineHeight', '-')}
+            iconChildren='remove'
+          />
+        </div>
 
-        <tr>
-          <th><FontIcon>format_paint</FontIcon>Theme</th>
-          <td>
-            <Button
-              icon primary
-              onClick={() => this.onUpdateTheme('LIGHT')}
-              iconChildren='brightness_7'
-            />
-            <Button
-              icon secondary
-              onClick={() => this.onUpdateTheme('DARK')}
-              iconChildren='brightness_2'
-            />
-          </td>
-        </tr>
+        <div>
+          <span><FontIcon>format_paint</FontIcon>Theme</span>
+          <Button
+            icon primary
+            onClick={() => this.onUpdateTheme('LIGHT')}
+            iconChildren='brightness_7'
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onUpdateTheme('DARK')}
+            iconChildren='brightness_2'
+          />
+        </div>
 
-        <tr>
-          <th>
+        <div>
+          <span>
             <FontIcon>font_download</FontIcon>Font ({this.state.fontFamily})
-          </th>
-          <td>
-            <Button
-              icon primary
-              onClick={() => this.onChangeFont()}
-              iconChildren='keyboard_arrow_left'
-            />
-            <Button
-              icon secondary
-              onClick={() => this.onChangeFont(true)}
-              iconChildren='keyboard_arrow_right'
-            />
-          </td>
-        </tr>
-      </tbody>
-      </table>
+          </span>
+          <Button
+            icon primary
+            onClick={() => this.onChangeFont()}
+            iconChildren='keyboard_arrow_left'
+          />
+          <Button
+            icon secondary
+            onClick={() => this.onChangeFont(true)}
+            iconChildren='keyboard_arrow_right'
+          />
+        </div>
+      </section>
     )
   }
 

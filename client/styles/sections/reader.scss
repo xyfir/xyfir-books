@@ -211,23 +211,30 @@ span.reader-dialog.container {
     }
   }
 
-  table.book-styling {
-    width: calc(100% - 5em);
-    margin: 1em auto;
+  section.book-styling {
+    text-align: right;
+    padding: 0.5em 1em;
+    display: table;
+    margin: auto;
 
-    th {
-      font-weight: normal;
-      text-align: left;
+    >div {
+      display: table-row;
 
-      >i.md-icon {
+      >span {
+        display: table-cell;
+        min-width: 10em;
+        text-align: left;
         vertical-align: middle;
-        margin-right: 0.2em;
-      }
-    }
 
-    td {
-      text-align: center;
-      max-width: 1em;
+        >i.md-icon {
+          vertical-align: middle;
+          margin-right: 0.2em;
+        }
+      }
+
+      >button {
+        display: table-cell;
+      }
     }
   }
 
