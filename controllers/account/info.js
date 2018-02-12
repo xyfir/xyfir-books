@@ -28,7 +28,7 @@ module.exports = async function(req, res) {
   const db = new mysql;
 
   try {
-    let sql, vars, rows, uid;
+    let uid;
 
     await db.getConnection();
 
@@ -43,27 +43,24 @@ module.exports = async function(req, res) {
       if (!token[0] || !token[1]) throw 'Invalid access token';
 
       // Get user's Xyfir ID
-      sql = `
-        SELECT xyfir_id FROM users WHERE user_id = ?
-      `,
-      vars = [
-        token[0]
-      ],
-      rows = await db.query(sql, vars);
+      const [row] = await db.query(
+        'SELECT xyfir_id FROM users WHERE user_id = ?',
+        [token[0]]
+      );
 
-      if (!rows.length) throw 'User does not exist';
+      if (!row) throw 'User does not exist';
 
       // Validate access token with Xyfir Accounts
       const xyAccRes = await request
         .get(config.addresses.xyAccounts + 'api/service/14/user')
         .query({
-          key: config.keys.xyAccounts, xid: rows[0].xyfir_id, token: token[1]
+          key: config.keys.xyAccounts, xid: row.xyfir_id, token: token[1]
         });
 
       if (xyAccRes.body.error)
         throw 'xyAccounts error: ' + xyAccRes.body.message;
-        
-      uid = token[0];
+
+      uid = +token[0];
     }
     // Get info for dev user
     else if (config.environment.type == 'dev') {
@@ -74,37 +71,38 @@ module.exports = async function(req, res) {
       throw 'Access token required';
     }
 
-    sql = `
+    const [row] = await db.query(`
       SELECT
         library_size_limit AS librarySizeLimit, subscription, email,
         user_id AS uid, xyannotations_key AS xyAnnotationsKey,
         library_id AS library, referral
       FROM users WHERE user_id = ?
-    `,
-    vars = [
+    `, [
       uid
-    ],
-    rows = await db.query(sql, vars);
+    ]);
 
+    if (!row) throw 'User does not exist';
+
+    await db.query(
+      'UPDATE users SET last_active = NOW() WHERE user_id = ?', [uid]
+    );
     db.release();
 
-    if (!rows.length) throw 'User does not exist';
-
-    rows[0].referral = JSON.parse(rows[0].referral);
+    row.referral = JSON.parse(row.referral);
 
     // Set session, return account info
-    rows[0].error = false,
+    row.error = false,
     req.session.uid = uid,
-    req.session.library = rows[0].library,
-    req.session.subscription = rows[0].subscription;
-    
-    res.json(rows[0]);
+    req.session.library = row.library,
+    req.session.subscription = row.subscription;
+
+    res.json(row);
   }
   catch (err) {
     db.release();
-    req.session.destroy(e => 
+    req.session.destroy(e =>
       res.json({ error: true, message: err, library: '' })
     );
   }
-  
+
 };
