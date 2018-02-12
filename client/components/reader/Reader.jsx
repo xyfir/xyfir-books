@@ -16,6 +16,7 @@ import highlightSearch from 'lib/reader/highlight/search';
 import highlightNotes from 'lib/reader/highlight/notes';
 import swipeListener from 'lib/reader/listeners/swipe';
 import clickListener from 'lib/reader/listeners/click';
+import openWindow from 'lib/util/open-window';
 import loadBook from 'lib/books/load';
 import unwrap from 'lib/reader/matches/unwrap';
 
@@ -338,6 +339,17 @@ export default class Reader extends React.Component {
   }
 
   /**
+   * Listens for clicks on `<a>` elements that point to outbound links.
+   * @param {MouseEvent} e
+   */
+  onAnchorClick(e) {
+    if (e.target.nodeName == 'A' && /^https?:\/\//.test(e.target.href)) {
+      e.preventDefault();
+      openWindow(e.target.href);
+    }
+  }
+
+  /**
    * Triggered when highlighted text within the book's content is clicked.
    * @param {MessageEvent} event
    * @param {object} event.data
@@ -476,6 +488,8 @@ export default class Reader extends React.Component {
 
       swipeListener(document, this.book, this.onSwipe);
       clickListener(document, this.book, this.onClick);
+
+      document.addEventListener('click', this.onAnchorClick);
     });
 
     window.addEventListener('message', this.onHighlightClicked);
