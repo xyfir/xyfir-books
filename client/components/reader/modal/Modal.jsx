@@ -1,4 +1,4 @@
-import { Button, DialogContainer } from 'react-md';
+import { DialogContainer } from 'react-md';
 import React from 'react';
 
 // Components
@@ -49,13 +49,16 @@ export default class ReaderModal extends React.Component {
         case 'toc':
           return <TableOfContents {...props} />
         default:
-          return null;
+          return {
+            ignore: true,
+            type: {
+              forceFullscreen: false, noFullscreen: false
+            }
+          };
       }
     })();
 
-    if (!view) return null;
-
-    const { forceFullscreen, noFullscreen } = view.type;
+    const {forceFullscreen, noFullscreen} = view.type;
 
     const fullscreen = noFullscreen ?
       false :
@@ -65,7 +68,7 @@ export default class ReaderModal extends React.Component {
       <DialogContainer
         id='reader-dialog'
         onHide={() => this.props.Reader.onCloseModal()}
-        visible={true}
+        visible={!!show}
         fullPage={fullscreen}
         className={
           'reader-dialog container' +
@@ -75,7 +78,7 @@ export default class ReaderModal extends React.Component {
         focusOnMount={false}
         autopadContent={false}
         contentClassName='reader-dialog content'
-      >{view}</DialogContainer>
+      >{view.ignore ? null : view}</DialogContainer>
     );
   }
 
