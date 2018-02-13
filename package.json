@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "5.4.1",
+  "version": "5.5.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -51,6 +51,6 @@
     "gulp-fontello": "^0.4.6",
     "gulp-sass": "^3.1.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
-    "webpack": "^3.10.0"
+    "webpack": "^3.11.0"
   }
 }
