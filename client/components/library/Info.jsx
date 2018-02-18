@@ -56,7 +56,8 @@ export default class LibraryInfo extends React.Component {
   }
 
   render() {
-    const {App} = this.props;
+    const {account, books} = this.props.App.state;
+    const {size} = this.state;
 
     return (
       <section className='library-info'>
@@ -71,22 +72,31 @@ export default class LibraryInfo extends React.Component {
             <td>
               <input
                 type='text'
-                value={App.state.account.library}
+                value={account.library}
                 onFocus={e => e.target.select()}
               />
             </td>
           </tr>
           <tr>
             <th>Books</th>
-            <td>{App.state.books.length}</td>
+            <td>{books.length}</td>
           </tr>
           <tr>
             <th>Size</th>
-            <td>{
-              this.state.size == -1
-                ? `Could not calculate size`
-                : `${(this.state.size * 0.000001).toFixed(2)} MB`
-            }</td>
+            {this.state.size == -1 ? (
+              <td>Could not calculate size</td>
+            ) : (
+              <td className='size'>
+                <span className='current'>{
+                  (size * 0.000001).toFixed(2)
+                }MB</span> of <span className='total'>{
+                  account.librarySizeLimit
+                }GB</span> <span className='percent'>({
+                  ((size / (account.librarySizeLimit * 1000000000)) + '')
+                  .substr(2, 2)
+                }%)</span>
+              </td>
+            )}
           </tr>
         </tbody>
         </Paper>
