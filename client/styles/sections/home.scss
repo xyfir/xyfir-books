@@ -127,6 +127,8 @@
         width: 20em;
         margin: 1em;
         padding: 0.5em;
+        position: relative;
+        padding-bottom: 2.5em;
 
         >header {
           >span.title {
@@ -162,6 +164,10 @@
           display: block;
           border: solid;
           border-radius: 0.2em;
+          position: absolute;
+          bottom: 0.5em;
+          left: 0.5em;
+          right: 0.5em;
         }
 
         &.free {
