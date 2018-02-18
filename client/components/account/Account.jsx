@@ -70,21 +70,6 @@ export default class Account extends React.Component {
             <React.Fragment>
               <p>You do not have a Xyfir Books subscription.</p>
 
-                {account.subscription ? (
-                  <React.Fragment>
-                    <p>
-                      Your library will be deleted after {
-                        moment(account.subscription)
-                          .add(7, 'days')
-                          .format('YYYY-MM-DD')
-                      }.
-                    </p>
-                    <p>
-                      Purchase a subscription to prevent your library from being deleted.
-                    </p>
-                  </React.Fragment>
-                ) : null}
-
               <PurchaseButton />
             </React.Fragment>
           )}
