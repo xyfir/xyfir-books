@@ -50,10 +50,10 @@ module.exports = async function(req, res) {
 
     const ref = JSON.parse(user.referral);
 
-    // Discount 10% off of first purchase
+    // Discount 5% off of first purchase
     if ((ref.user || ref.affiliate) && !ref.hasMadePurchase) {
       ref.hasMadePurchase = true;
-      tier.price -= tier.price * 0.10;
+      tier.price -= tier.price * 0.05;
     }
 
     await stripe(config.keys.stripe).charges.create({

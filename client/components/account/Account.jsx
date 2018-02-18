@@ -33,7 +33,7 @@ export default class Account extends React.Component {
         >
           <h3>Referral Program</h3>
           <p>
-            Refer new users to Xyfir Books and they'll receive 10% off of their first purchase.
+            Refer new users to Xyfir Books and they'll receive 5% off of their first purchase.
             <br />
             You'll receive one month of subscription time whenever they purchase a year subscription.
           </p>

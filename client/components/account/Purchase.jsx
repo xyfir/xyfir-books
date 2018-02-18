@@ -118,7 +118,7 @@ export default class Purchase extends React.Component {
           step={1}
           label={
             `Premium Subscription (${gb}GB, $${
-              discount ? price - (price * 0.10) : price
+              discount ? price - (price * 0.05) : price
             }/yr)`
           }
           value={this.state.tier}
@@ -131,7 +131,7 @@ export default class Purchase extends React.Component {
           name='xyBooks // Xyfir, LLC'
           token={t => this.onStripePurchase(t)}
           image='https://books.xyfir.com/static/icons/android-chrome-192x192.png'
-          amount={(discount ? price - (price * 0.10) : price) * 100}
+          amount={(discount ? price - (price * 0.05) : price) * 100}
           stripeKey={STRIPE_KEY_PUB}
           description='365 Days'
         />
