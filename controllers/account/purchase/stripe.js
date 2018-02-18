@@ -5,12 +5,12 @@ const rstring = require('randomstring');
 const request = require('superagent');
 const config = require('config');
 const stripe = require('stripe');
-const mysql = require('lib/mysql');
+const MySQL = require('lib/mysql');
 
 /*
   POST api/account/purchase/stripe
   REQUIRED
-    token: string
+    token: string, tier: number
   RETURN
     { error: boolean, message: string }
   DESCRIPTION
@@ -18,7 +18,7 @@ const mysql = require('lib/mysql');
 */
 module.exports = async function(req, res) {
 
-  const db = new mysql;
+  const db = new MySQL;
 
   try {
     await db.getConnection();
@@ -36,19 +36,29 @@ module.exports = async function(req, res) {
       library = req.session.uid + '-' + rstring.generate(64);
     }
 
-    let amount = 2500;
+    let tier = +req.body.tier || 1;
+    tier = (() => {
+      switch (+req.body.tier) {
+        case 1: return { gb: 1, price: 500 };
+        case 2: return { gb: 10, price: 1500 };
+        case 3: return { gb: 15, price: 2000 };
+        default: return {
+          gb: tier * 5, price: (20 + ((tier - 3) * 7)) * 100
+        };
+      }
+    })();
 
     const ref = JSON.parse(user.referral);
 
     // Discount 10% off of first purchase
-    if ((ref.referral || ref.affiliate) && !ref.hasMadePurchase) {
+    if ((ref.user || ref.affiliate) && !ref.hasMadePurchase) {
       ref.hasMadePurchase = true;
-      amount -= amount * 0.10;
+      tier.price -= tier.price * 0.10;
     }
 
     await stripe(config.keys.stripe).charges.create({
-      amount, source: req.body.token, currency: 'usd',
-      description: 'Xyfir Books Subscription'
+      amount: tier.price, source: req.body.token, currency: 'usd',
+      description: 'xyBooks Premium Subscription'
     });
 
     const subscription = setSubscription(user.subscription, 365);
@@ -60,20 +70,19 @@ module.exports = async function(req, res) {
       WHERE user_id = ?
     `, [
       subscription, JSON.stringify(ref),
-      library, 15,
+      library, tier.gb,
       req.session.uid
     ]);
 
-    if (ref.referral)
-      await rewardReferrer(db, ref.referral);
+    if (ref.user)
+      await rewardReferrer(db, ref.user);
     else if (ref.affiliate)
-      rewardAffiliate(ref.affiliate, amount);
+      rewardAffiliate(ref.affiliate, tier.price);
 
     db.release();
 
     if (create) {
-      const xyLibRes = await request
-        .post(config.addresses.library + 'libraries/' + library);
+      await request.post(`${config.addresses.library}libraries/${library}`);
     }
 
     req.session.library = library,
