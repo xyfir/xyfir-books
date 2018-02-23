@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -20,9 +20,9 @@
     "express-session": "^1.15.6",
     "github-markdown-css": "^2.10.0",
     "jszip": "^3.1.5",
-    "localforage": "^1.5.6",
+    "localforage": "^1.5.7",
     "mailgun-js": "^0.16.0",
-    "marked": "^0.3.14",
+    "marked": "^0.3.16",
     "moment": "^2.20.1",
     "mysql": "^2.15.0",
     "prop-types": "^15.6.0",
@@ -33,7 +33,7 @@
     "react-md": "^1.2.11",
     "react-stripe-checkout": "^2.6.3",
     "redux": "^3.7.2",
-    "stripe": "^5.4.0",
+    "stripe": "^5.5.0",
     "superagent": "^3.8.2",
     "sweetalert": "^2.1.0",
     "titlecase": "^1.1.2",
@@ -45,12 +45,12 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "compression-webpack-plugin": "^1.1.7",
+    "compression-webpack-plugin": "^1.1.8",
     "gulp": "^3.9.1",
     "gulp-favicons": "^2.2.7",
     "gulp-fontello": "^0.4.6",
     "gulp-sass": "^3.1.0",
-    "uglifyjs-webpack-plugin": "^1.2.0",
+    "uglifyjs-webpack-plugin": "^1.2.1",
     "webpack": "^3.11.0"
   }
 }
