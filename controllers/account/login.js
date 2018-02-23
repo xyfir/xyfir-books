@@ -28,7 +28,7 @@ module.exports = async function(req, res) {
       .query({
         key: config.keys.xyAccounts, xid: req.body.xid, token: req.body.auth
       });
-    
+
     if (xyAccRes.body.error)
       throw 'xyAccounts error: ' + xyAccRes.body.message;
 
@@ -51,16 +51,16 @@ module.exports = async function(req, res) {
       );
 
       if (!result.insertId) throw 'Could not create account';
-      
+
       req.session.uid = result.insertId;
-        
+
       // Generate user's library id
       const library = result.insertId + '-' + rstring.generate(64);
-      
+
       // Create library on xyLibrary
       const xyLibRes = await request
         .post(config.addresses.library + 'libraries/' + library);
-      
+
       if (xyLibRes.body.error) throw 'Could not create new library';
 
       let subscription = 0, xyAnnotationsKey = '';
@@ -80,7 +80,7 @@ module.exports = async function(req, res) {
               service: 14, serviceKey: config.keys.xyAccounts,
               promoCode: referral.promo
             });
-          
+
           if (!xyAccAffRes.body.error && xyAccAffRes.body.promo == 5) {
             subscription = +moment().add(7, 'days').format('x');
           }
@@ -90,9 +90,10 @@ module.exports = async function(req, res) {
         const xyAnnotationsRes = await request
           .post(config.addresses.xyAnnotations + 'api/affiliate/subscriptions')
           .send({
+            days: 30,
+            subscription: 1,
             affiliateId: config.ids.xyAnnotations,
-            affiliateKey: config.keys.xyAnnotations,
-            subscription: 1 // 30 days
+            affiliateKey: config.keys.xyAnnotations
           });
         xyAnnotationsKey = xyAnnotationsRes.body.key || '';
       }
@@ -120,7 +121,7 @@ module.exports = async function(req, res) {
           config.keys.accessToken
         )
       });
-        
+
       req.session.subscription = 0,
       req.session.library = library;
     }
