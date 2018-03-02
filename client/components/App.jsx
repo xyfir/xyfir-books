@@ -244,4 +244,4 @@ if (!window.cordova) {
   }, false);
 }
 
-render(<App />, window.content);
+render(<App />, document.getElementById('content'));
