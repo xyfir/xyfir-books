@@ -56,7 +56,7 @@ export default class ReaderSettings extends React.Component {
       return this.props.App._alert('Internet connectivity required');
 
     location.href =
-      `${XYANNOTATIONS_URL}/#/account/subscription/request?redirect=` +
+      `${XYANNOTATIONS_URL}/account/subscription/request?redirect=` +
       encodeURIComponent(
         `${XYBOOKS_URL}/app/#/settings/reader?subscriptionKey=SUBSCRIPTION_KEY`
       );

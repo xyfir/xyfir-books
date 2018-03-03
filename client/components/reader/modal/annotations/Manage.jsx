@@ -28,9 +28,9 @@ export default class ManageAnnotations extends React.Component {
       .get(`${XYANNOTATIONS_URL}/api/sets`)
       .query({
         sort: 'top',
-        title: '',
         bookTitle: Reader.state.book.title,
         direction: 'desc',
+        bookSeries: '',
         bookAuthors: Reader.state.book.authors
       })
       .end((err, res) => !err && this.setState(res.body));
@@ -133,9 +133,9 @@ export default class ManageAnnotations extends React.Component {
 
         <h3 className='title'>{set.title}</h3>
 
-        <span className='book'>
-          {set.book_title} by {set.book_authors}
-        </span>
+        {set.media.books.map(b =>
+          <span className='book'>{b.title} by {b.authors}</span>
+        )}
 
         <div
           className='markdown-body description'
@@ -165,16 +165,18 @@ export default class ManageAnnotations extends React.Component {
         />
 
         <List>{
-          this.state.sets.map(a =>
+          this.state.sets.map(s =>
             <ListItem
               threeLines
-              key={a.id}
-              onClick={() => this.setState({ set: a.id })}
-              primaryText={a.title}
+              key={s.id}
+              onClick={() => this.setState({ set: s.id })}
+              primaryText={s.title}
               secondaryText={
-                `${a.book_title} by ${a.book_authors}` +
+                (s.media.books.length
+                  ? `${s.media.books[0].title} by ${s.media.books[0].authors}`
+                  : '') +
                 '\n' +
-                a.description.split('\n')[0]
+                s.description.split('\n')[0]
               }
             />
           )
