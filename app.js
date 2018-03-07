@@ -57,7 +57,7 @@ app.use('/static', express.static(__dirname + '/static'));
 app.use('/api', require('controllers/'));
 
 app.get('/', (req, res) => {
-  if (config.environment.type == 'dev') {
+  if (config.environment.type == 'development') {
     req.session.uid = 1,
     req.session.library = '1-testtesttesttesttesttesttesttesttesttest',
     req.session.subscription = moment().add(30, 'days').unix() * 1000;

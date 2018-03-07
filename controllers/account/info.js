@@ -63,7 +63,7 @@ module.exports = async function(req, res) {
       uid = +token[0];
     }
     // Get info for dev user
-    else if (config.environment.type == 'dev') {
+    else if (config.environment.type == 'development') {
       uid = 1;
     }
     // Force login
