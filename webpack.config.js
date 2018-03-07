@@ -1,12 +1,10 @@
 const CompressionPlugin = require('compression-webpack-plugin');
-// ** Remove after Webpack v4 is released
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 const config = require('./config');
 const path = require('path');
 
 const plugins = [];
-const isProd = config.environment.type == 'prod';
+const isProd = config.environment.type == 'production';
 
 if (isProd) {
   plugins.push(
@@ -15,7 +13,6 @@ if (isProd) {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new UglifyJsPlugin({}),
     new CompressionPlugin({
       asset: '[path].gz'
     })
@@ -23,6 +20,8 @@ if (isProd) {
 }
 
 module.exports = {
+
+  mode: config.environment.type,
 
   entry: {
     Admin: './client/components/Admin.jsx',
