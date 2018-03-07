@@ -51,5 +51,9 @@ body.theme-dark {
     section.book-content-search >ul.matches >li.match:hover {
       background-color: $md-grey-700;
     }
+
+    section.manage-annotations.find div.discover li.set:hover {
+      background-color: $md-grey-700;
+    }
   }
 }

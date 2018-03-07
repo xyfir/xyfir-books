@@ -104,13 +104,45 @@ span.reader-dialog.container {
   }
 
   section.manage-annotations.find {
-    >ul {
-      padding: 0.5em 0em;
-    }
-
     div.discover {
       >div.md-text-field-container {
         width: 100%;
+      }
+
+      >ul.sets {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+
+        >li.set {
+          display: table;
+          margin: 1em 0;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $md-grey-50;
+          }
+
+          >* {
+            display: table-row;
+          }
+
+          >span.title {
+            font-weight: bold;
+            font-size: 125%;
+            color: $md-primary-color;
+          }
+
+          >span.book >span {
+            font-weight: bold;
+            color: $md-secondary-color;
+          }
+
+          >span.description {
+            font-size: 85%;
+          }
+        }
       }
     }
   }
@@ -118,14 +150,17 @@ span.reader-dialog.container {
   section.manage-annotations.view-set {
     text-align: left;
 
-    >h3, >span, >div {
-      margin: 0.5em 1em;
-    }
+    >div.set {
+      padding: 0.5em;
 
-    >span.book {
-      display: block;
-      margin-top: -0.5em;
-      margin-bottom: 0.5em;
+      >h2.title {
+        color: $md-primary-color;
+      }
+
+      li.book >span {
+        color: $md-secondary-color;
+        font-weight: bold;
+      }
     }
   }
 
