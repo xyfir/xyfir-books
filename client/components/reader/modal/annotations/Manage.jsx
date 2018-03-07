@@ -131,18 +131,28 @@ export default class ManageAnnotations extends React.Component {
           ]}
         />
 
-        <h3 className='title'>{set.title}</h3>
+        <div className='set'>
+          <h2 className='title'>{set.title}</h2>
 
-        {set.media.books.map(b =>
-          <span className='book'>{b.title} by {b.authors}</span>
-        )}
+          <ul className='books'>{
+            set.media.books.map(b =>
+              <li className='book' key={b.id}>
+                <span className='title'>{
+                  b.title
+                }</span> by <span className='authors'>{
+                  b.authors
+                }</span>
+              </li>
+            )}
+          </ul>
 
-        <div
-          className='markdown-body description'
-          dangerouslySetInnerHTML={{ __html:
-            marked(set.description, { sanitize: true })
-          }}
-        />
+          <div
+            className='markdown-body description'
+            dangerouslySetInnerHTML={{ __html:
+              marked(set.description, { sanitize: true })
+            }}
+          />
+        </div>
       </section>
     );
   }
@@ -164,23 +174,34 @@ export default class ManageAnnotations extends React.Component {
           className='md-cell'
         />
 
-        <List>{
+        <ul className='sets'>{
           this.state.sets.map(s =>
-            <ListItem
-              threeLines
+            <li
               key={s.id}
               onClick={() => this.setState({ set: s.id })}
-              primaryText={s.title}
-              secondaryText={
-                (s.media.books.length
-                  ? `${s.media.books[0].title} by ${s.media.books[0].authors}`
-                  : '') +
-                '\n' +
+              className='set'
+            >
+              <span className='title'>{s.title}</span>
+
+              {s.media.books.length ? (
+                <span className='book'>
+                  Linked to <span className='title'>{
+                    s.media.books[0].title
+                  }</span> by <span className='authors'>{
+                    s.media.books[0].authors
+                  }</span>
+                  {s.media.books.length > 1
+                    ? ` and ${s.media.books.length - 1} more`
+                    : ''}
+                </span>
+              ) : null}
+
+              <span className='description'>{
                 s.description.split('\n')[0]
-              }
-            />
+              }</span>
+            </li>
           )
-        }</List>
+        }</ul>
       </div>
     );
   }
