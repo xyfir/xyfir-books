@@ -16,22 +16,18 @@ export default async function(sets, key) {
   try {
     if (!sets || !sets.length || !key || !navigator.onLine) throw 'Skip';
 
-    const res = await request
-      .get(`${XYANNOTATIONS_URL}/api/annotations`)
-      .query({
-        subscriptionKey: key,
-        sets: JSON.stringify(sets.map(s => ({id: s.id, version: s.version})))
-      });
+    for (let set of sets) {
+      const res = await request
+        .get(`${XYANNOTATIONS_URL}/api/sets/${set.id}/download`)
+        .query({
+          subscriptionKey: key,
+          version: set.version
+        });
 
-    if (res.body.error) throw 'Received xyAnnotations error';
-
-    // Check if new version has been received
-    sets.forEach((set, i) => {
-      if (res.body[set.id] && res.body[set.id].version != set.version) {
-        // Update version / items
-        Object.assign(sets[i], res.body[set.id]);
-      }
-    });
+      // Check if new version has been received
+      if (set.version != res.body.set.version)
+        Object.assign(set, res.body.set);
+    }
 
     return sets;
   }
