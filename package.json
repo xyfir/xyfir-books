@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "5.6.3",
+  "version": "5.6.4",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "copyr": "^1.0.5",
     "epubjs": "^0.3.58",
     "escape-string-regexp": "^1.0.5",
-    "express": "^4.16.2",
+    "express": "^4.16.3",
     "express-mysql-session": "^1.2.3",
     "express-session": "^1.15.6",
     "github-markdown-css": "^2.10.0",
