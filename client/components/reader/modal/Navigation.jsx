@@ -73,6 +73,7 @@ export default class ReaderModalNavigation extends React.Component {
             position='right'
             navItems={drawerItems}
             visible={this.state.drawer}
+            overlay={false}
             header={
               <Toolbar
                 colored
