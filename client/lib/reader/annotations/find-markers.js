@@ -36,7 +36,13 @@ export default async function(book, items) {
     if (!/html$/.test(spineItem.href.split('.').slice(-1)[0])) continue;
 
     /** @type {string} - The file's HTML */
-    let file = await book.archive.zip.files[spineItem.href].async('string');
+    let file =
+      book.archive.zip.files[spineItem.href] ||
+      book.archive.zip.files[`OEBPS/${spineItem.href}`];
+
+    if (!file) continue;
+
+    file = await file.async('string');
 
     // Convert file content into html string
     iframe.contentDocument.documentElement.innerHTML = file,
