@@ -410,14 +410,17 @@ export default class Reader extends React.Component {
       },
       'span.annotation': {
         'background-color': styles.annotationColor,
+        'font-size': 'inherit !important',
         'cursor': 'pointer'
       },
       'span.search': {
         'background-color': styles.searchMatchColor,
+        'font-size': 'inherit !important',
         'cursor': 'pointer'
       },
       'span.note': {
         'background-color': styles.highlightColor,
+        'font-size': 'inherit !important',
         'cursor': 'pointer'
       }
     });
