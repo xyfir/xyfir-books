@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "5.6.4",
+  "version": "5.6.5",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-dropzone": "^4.2.9",
-    "react-md": "^1.2.11",
+    "react-md": "^1.2.12",
     "react-stripe-checkout": "^2.6.3",
     "redux": "^3.7.2",
     "stripe": "^5.5.0",
