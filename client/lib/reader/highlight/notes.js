@@ -1,8 +1,6 @@
+import AnnotateEPUBJS from '@xyfir/annotate-epubjs';
+import escapeRegex from 'escape-string-regexp';
 import EPUB from 'epubjs';
-
-// Modules
-import getMatchIndexes from 'lib/reader/matches/find-indexes';
-import wrapMatches from 'lib/reader/matches/wrap';
 
 /**
  * Highlights notes within the current epub document.
@@ -24,8 +22,17 @@ export default function(book, notes) {
     .forEach((note, i) =>
       // Loop through the note's highlights
       note.highlights.forEach(hl => {
-        const matches = getMatchIndexes(hl, html);
-        html = wrapMatches(matches, html, 'note', i).html;
+        const needle = new RegExp(escapeRegex(hl), 'g');
+
+        html = AnnotateEPUBJS.wrapMatches({
+          key: i,
+          html,
+          type: 'note',
+          matches: AnnotateEPUBJS.findMatchIndexes(needle, html),
+          onclick: (t, k) =>
+            `!event.stopPropagation() && ` +
+            `parent.postMessage({type: '${t}', key: '${k}', epubjs: true}, '*')`
+        }).html;
       })
     );
 
