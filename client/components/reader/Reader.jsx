@@ -1,3 +1,4 @@
+import AnnotateEPUBJS from '@xyfir/annotate-epubjs';
 import request from 'superagent';
 import EPUB from 'epubjs';
 import React from 'react';
@@ -10,7 +11,6 @@ import Overlay from 'components/reader/overlay/Overlay';
 import Modal from 'components/reader/modal/Modal';
 
 // Modules
-import insertAnnotations from 'lib/reader/annotations/insert';
 import updateAnnotations from 'lib/reader/annotations/update';
 import highlightSearch from 'lib/reader/highlight/search';
 import highlightNotes from 'lib/reader/highlight/notes';
@@ -18,7 +18,6 @@ import swipeListener from 'lib/reader/listeners/swipe';
 import clickListener from 'lib/reader/listeners/click';
 import openWindow from 'lib/util/open-window';
 import loadBook from 'lib/books/load';
-import unwrap from 'lib/reader/matches/unwrap';
 
 // Constants
 import { XYLIBRARY_URL } from 'constants/config';
@@ -505,17 +504,15 @@ export default class Reader extends React.Component {
     const {notes, annotations} = this.state.book;
     const [{document}] = this.book.rendition.getContents();
 
-    // Unwrap if needed
+    // Reset HTML if needed
     switch (highlight.previousMode) {
       case 'notes':
-        unwrap(document, 'note');
-        break;
       case 'search':
-        unwrap(document, 'search');
-        break;
       case 'annotations':
-        unwrap(document, 'annotation');
+        document.body.innerHTML = this.oghtml;
     }
+
+    this.oghtml = document.body.innerHTML;
 
     // Apply appropriate highlights
     if (highlight.mode == 'notes') {
@@ -528,7 +525,7 @@ export default class Reader extends React.Component {
       highlight.mode == 'annotations' &&
       annotations && annotations[highlight.index]
     ) {
-      insertAnnotations(this.book, annotations[highlight.index]);
+      AnnotateEPUBJS.insertAnnotations(this.book, annotations[highlight.index]);
     }
   }
 
