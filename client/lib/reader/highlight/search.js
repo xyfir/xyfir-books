@@ -1,6 +1,5 @@
-// Modules
-import getMatchIndexes from 'lib/reader/matches/find-indexes';
-import wrapMatches from 'lib/reader/matches/wrap';
+import AnnotateEPUBJS from '@xyfir/annotate-epubjs';
+import escapeRegex from 'escape-string-regexp';
 
 /**
  * Highlights search matches within the current epub document.
@@ -10,10 +9,18 @@ import wrapMatches from 'lib/reader/matches/wrap';
 export default function(book, search) {
 
   const [{document}] = book.rendition.getContents();
+  const needle = new RegExp(escapeRegex(search), 'g');
   let html = document.body.innerHTML;
 
-  const matches = getMatchIndexes(search, html);
-  html = wrapMatches(matches, html, 'search', '').html;
+  html = AnnotateEPUBJS.wrapMatches({
+    key: '',
+    html,
+    type: 'search',
+    matches: AnnotateEPUBJS.findMatchIndexes(needle, html),
+    onclick: (t, k) =>
+      `!event.stopPropagation() && ` +
+      `parent.postMessage({type: '${t}', key: '${k}', epubjs: true}, '*')`
+  }).html;
 
   document.body.innerHTML = html;
 
