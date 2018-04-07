@@ -1,6 +1,6 @@
 {
   "name": "xyfir-books",
-  "version": "5.6.5",
+  "version": "5.6.6",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -9,6 +9,7 @@
   "author": "Xyfir",
   "license": "ISC",
   "dependencies": {
+    "@xyfir/annotate-epubjs": "^1.0.0",
     "admyn": "^1.2.0",
     "app-module-path": "^2.2.0",
     "body-parser": "^1.18.2",
@@ -20,20 +21,18 @@
     "express-session": "^1.15.6",
     "github-markdown-css": "^2.10.0",
     "jszip": "^3.1.5",
-    "localforage": "^1.6.0",
+    "localforage": "^1.7.1",
     "mailgun-js": "^0.16.0",
-    "marked": "^0.3.17",
-    "moment": "^2.21.0",
+    "marked": "^0.3.19",
+    "moment": "^2.22.0",
     "mysql": "^2.15.0",
     "prop-types": "^15.6.1",
     "randomstring": "^1.1.5",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
     "react-dropzone": "^4.2.9",
-    "react-md": "^1.2.12",
-    "react-stripe-checkout": "^2.6.3",
+    "react-md": "^1.2.13",
     "redux": "^3.7.2",
-    "stripe": "^5.5.0",
     "superagent": "^3.8.2",
     "sweetalert": "^2.1.0",
     "titlecase": "^1.1.2",
@@ -49,7 +48,7 @@
     "gulp": "^3.9.1",
     "gulp-favicons": "^2.2.7",
     "gulp-fontello": "^0.4.6",
-    "gulp-sass": "^3.1.0",
-    "webpack": "^4.1.1"
+    "gulp-sass": "^4.0.0",
+    "webpack": "^4.5.0"
   }
 }
