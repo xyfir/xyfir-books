@@ -23,12 +23,12 @@ router.get('/ad', require('./get-ad'));
 
 /* Account - Purchase */
 router.post(
-  '/account/purchase/stripe',
-  require('./account/purchase/stripe')
+  '/account/purchase',
+  require('./account/purchase/start')
 );
-router.post(
-  '/account/purchase/swiftdemand',
-  require('./account/purchase/swiftdemand')
+router.get(
+  '/account/purchase',
+  require('./account/purchase/finish')
 );
 
 /* Books */
