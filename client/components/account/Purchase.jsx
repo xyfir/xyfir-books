@@ -1,11 +1,10 @@
-import { TextField, Slider, Button, Paper } from 'react-md';
-import StripeCheckout from 'react-stripe-checkout';
+import { Slider, Button, Paper } from 'react-md';
 import request from 'superagent';
 import React from 'react';
 import swal from 'sweetalert';
 
 // Constants
-import { STRIPE_KEY_PUB, XYBOOKS_URL } from 'constants/config';
+import { XYBOOKS_URL } from 'constants/config';
 
 export default class Purchase extends React.Component {
 
@@ -35,37 +34,17 @@ export default class Purchase extends React.Component {
     this.setState(state);
   }
 
-  /** @param {object} token */
-  onStripePurchase(token) {
+  /** @param {string} type - `'iap|normal|swiftdemand'` */
+  onPurchase(type) {
     request
-      .post(`${XYBOOKS_URL}/api/account/purchase/stripe`)
+      .post(`${XYBOOKS_URL}/api/account/purchase`)
       .send({
-        token: token.id, tier: this.state.tier
+        type, tier: this.state.tier
       })
       .end((err, res) => {
-          if (err || res.body.error) {
-            swal('Error', res.body.message, 'error');
-          }
-          else {
-            location.hash = '#/account';
-            location.reload();
-          }
-      });
-  }
-
-  onSwiftDemandPurchase() {
-    const swiftId = this._swiftId.value;
-
-    if (!swiftId) return;
-
-    request
-      .post(`${XYBOOKS_URL}/api/account/purchase/swiftdemand`)
-      .send({ swiftId })
-      .end((err, res) => {
-        if (err || !res.body.redirect)
-          swal('Error', res.body.message, 'error');
-        else
-          location.href = res.body.redirect;
+        if (err || res.body.error)
+          return swal('Error', res.body.message, 'error');
+        location.href = res.body.url;
       });
   }
 
@@ -90,17 +69,9 @@ export default class Purchase extends React.Component {
           You can purchase a one-time, three month, 1GB subscription using SwiftDemand.
         </p>
 
-        <TextField
-          id='text--swift'
-          ref={i => this._swiftId = i}
-          type='text'
-          label='Your Swift ID'
-          className='md-cell'
-        />
-
         <Button
           primary raised
-          onClick={() => this.onSwiftDemandPurchase()}
+          onClick={() => this.onPurchase('swiftdemand')}
         >Purchase</Button>
       </Paper>
     )
@@ -108,13 +79,13 @@ export default class Purchase extends React.Component {
       <Paper
         zDepth={1}
         component='section'
-        className='purchase-subscription stripe section flex'
+        className='purchase-subscription section flex'
       >
         <Slider
           discrete
           id='subscription-tier-slider'
           min={1}
-          max={10}
+          max={window.cordova ? 3 : 10}
           step={1}
           label={
             `Premium Subscription (${gb}GB, $${
@@ -126,21 +97,9 @@ export default class Purchase extends React.Component {
           discreteTicks={1}
         />
 
-        <StripeCheckout
-          bitcoin zipCode
-          name='xyBooks // Xyfir, LLC'
-          token={t => this.onStripePurchase(t)}
-          image='https://books.xyfir.com/static/icons/android-chrome-192x192.png'
-          amount={(discount ? price - (price * 0.05) : price) * 100}
-          stripeKey={STRIPE_KEY_PUB}
-          description='365 Days'
-        />
-
         <Button
           raised primary
-          onClick={() =>
-            document.querySelector('.StripeCheckout').click()
-          }
+          onClick={() => this.onPurchase(window.cordova ? 'iap' : 'normal')}
         >Purchase</Button>
       </Paper>
     )
