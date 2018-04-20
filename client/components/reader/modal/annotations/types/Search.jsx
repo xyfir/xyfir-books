@@ -1,37 +1,41 @@
+import { Button } from 'react-md';
+import Annotate from '@xyfir/annotate-epubjs';
 import React from 'react';
-
-// react-md
-import Button from 'react-md/lib/Buttons/Button';
 
 export default class WebSearchAnnotation extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { context: false };
+    this.state = { useContext: false };
   }
 
   render() {
-    const { annotation } = this.props;
+    const { annotation, book } = this.props;
+    const { useContext } = this.state;
+    const contextValue =
+      book && !annotation.context
+        ? Annotate.generateWebSearchContext(book.title, book.authors)
+        : annotation.context;
 
     return (
       <div className="search">
-        {annotation.context ? (
+        {contextValue ? (
           <Button
             floating
             fixed
             secondary
             tooltipPosition="right"
             fixedPosition="bl"
+            tooltipLabel={(useContext ? 'Remove' : 'Add') + ' context'}
             iconChildren="search"
-            tooltipLabel={(this.state.context ? 'Remove' : 'Add') + ' context'}
-            onClick={() => this.setState({ context: !this.state.context })}
+            onClick={() => this.setState({ useContext: !useContext })}
           />
         ) : null}
 
         <iframe
           src={
             '//www.bing.com/search?q=' +
-            (this.state.context ? annotation.context + ' ' : '') +
+            (useContext ? contextValue + ' ' : '') +
             annotation.value
           }
           className="search"

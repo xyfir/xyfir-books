@@ -20,16 +20,17 @@ export default class ViewAnnotations extends React.Component {
     super(props);
 
     const [setId, itemId] = props.Reader.state.modal.target.split('-');
-
     const annotations = props.Reader.state.book.annotations
       .find(set => set.id == setId)
       .items.find(item => item.id == itemId).annotations;
 
-    this.state = { annotations, index: 0, drawer: false };
+    this.state = { annotations, index: 0 };
   }
 
   render() {
-    const annotation = this.state.annotations[this.state.index];
+    const { annotations, index } = this.state;
+    const annotation = annotations[index];
+    const { Reader } = this.props;
 
     const view = (() => {
       switch (annotation.type) {
@@ -38,7 +39,7 @@ export default class ViewAnnotations extends React.Component {
         case 2:
           return <Link annotation={annotation} />;
         case 3:
-          return <Search annotation={annotation} />;
+          return <Search annotation={annotation} book={Reader.state.book} />;
         case 4:
           return <Image annotation={annotation} />;
         case 5:
@@ -59,23 +60,21 @@ export default class ViewAnnotations extends React.Component {
       }
     })();
 
-    const drawerItems = this.state.annotations.map((a, index) => (
-      <ListItem
-        key={a.id}
-        onClick={() => this.setState({ index })}
-        leftIcon={<FontIcon>{annotationTypes[a.type].icon}</FontIcon>}
-        primaryText={a.name}
-        secondaryText={annotationTypes[a.type].name}
-      />
-    ));
-
     return (
       <div className="annotation">
         <Navigation
           {...this.props}
           title={annotationTypes[annotation.type].name}
           noSizing={true}
-          drawerItems={drawerItems}
+          drawerItems={annotations.map((a, index) => (
+            <ListItem
+              key={a.id}
+              onClick={() => this.setState({ index })}
+              leftIcon={<FontIcon>{annotationTypes[a.type].icon}</FontIcon>}
+              primaryText={a.name}
+              secondaryText={annotationTypes[a.type].name}
+            />
+          ))}
         />
 
         <div className="content">{view}</div>
