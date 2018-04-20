@@ -20,7 +20,11 @@ export default async function(sets, key) {
         .get(`${XYANNOTATIONS_URL}/api/sets/${set.id}/download`)
         .query({
           subscriptionKey: key,
-          version: set.version
+          version: set.version,
+          minify: {
+            numberedBooleans: true,
+            removeFalsy: true
+          }
         });
 
       // Check if new version has been received

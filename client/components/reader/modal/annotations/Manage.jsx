@@ -70,14 +70,18 @@ export default class ManageAnnotations extends React.Component {
     request
       .get(`${XYANNOTATIONS_URL}/api/sets/${set.id}/download`)
       .query({
-        subscriptionKey: this.state.key
+        subscriptionKey: this.state.key,
+        minify: {
+          numberedBooleans: true,
+          removeFalsy: true
+        }
       })
       .end((err, res) => {
-        if (err || !res.body.set || !res.body.set.items) {
+        if (err || !res.body.set || !res.body.set.items)
           return Reader.props.alert('Could not download set');
-        }
 
-        (set.items = res.body.set.items), (set.version = res.body.set.version);
+        set.items = res.body.set.items;
+        set.version = res.body.set.version;
 
         const index = annotations.push(set) - 1;
         Reader._updateBook({ annotations });
