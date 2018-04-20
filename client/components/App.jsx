@@ -25,7 +25,11 @@ import updateView from 'lib/url/update-view';
 
 // Constants
 import {
-  XYACCOUNTS_URL, LOG_STATE, ENVIRONMENT, XYBOOKS_URL
+  XYACCOUNTS_URL,
+  LOG_STATE,
+  ENVIRONMENT,
+  XYBOOKS_URL,
+  XYFIR_URL
 } from 'constants/config';
 import { INITIALIZE_STATE } from 'constants/actions/app';
 import { READ_BOOK } from 'constants/views';
@@ -43,7 +47,6 @@ localforage.config({
 });
 
 class App extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -70,7 +73,7 @@ class App extends React.Component {
       // Force old hash route format to new one
       // `#${route}` -> `#/${route}`
       if (location.hash.indexOf('#/') != 0)
-        return location.hash = '#/' + location.hash.substr(1);
+        return (location.hash = '#/' + location.hash.substr(1));
       updateView(this.store);
     };
 
@@ -94,7 +97,9 @@ class App extends React.Component {
       if (_q.r) {
         const [type, value] = _q.r.split('~');
         const referral = {
-          type, [type]: value, data: _q
+          type,
+          [type]: value,
+          data: _q
         };
 
         delete referral.data.r, delete localStorage.url;
@@ -109,10 +114,9 @@ class App extends React.Component {
 
         if (res.body.error) throw res.body;
 
-        token = localStorage.accessToken = res.body.accessToken,
-        window.LOGGED_IN = true;
-      }
-      catch (err) {
+        (token = localStorage.accessToken = res.body.accessToken),
+          (window.LOGGED_IN = true);
+      } catch (err) {
         return location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
       }
     }
@@ -124,10 +128,10 @@ class App extends React.Component {
     const state = Object.assign({}, initialState);
 
     // Pull data from local storage
-    state.loading = false,
-    state.account = await localforage.getItem('account') || state.account,
-    state.config = await localforage.getItem('config') || state.config,
-    state.books = await localforage.getItem('books') || state.books;
+    state.loading = false;
+    state.account = (await localforage.getItem('account')) || state.account;
+    state.config = (await localforage.getItem('config')) || state.config;
+    state.books = (await localforage.getItem('books')) || state.books;
 
     // Set theme
     document.body.className = 'theme-' + state.config.general.theme;
@@ -180,68 +184,83 @@ class App extends React.Component {
     if (this.state.account.subscription > Date.now()) return;
 
     request
-      .get(`${XYBOOKS_URL}/api/ad`)
+      .get(`${XYFIR_URL}/api/ads`)
+      .query({ blacklist: 'xyBooks' })
       .end((err, res) => {
         if (err || res.body.error) return;
 
-        const {ad} = res.body;
+        const { ad } = res.body;
 
         this._alert(
           `(Ad) ${ad.normalText.title}: ${ad.normalText.description}`,
-          'close', false
+          'close',
+          false
         );
         setTimeout(() => this._loadAd(), 1800000);
       });
   }
 
   render() {
-    if (!this.state || this.state.loading) return <Loading />
+    if (!this.state || this.state.loading) return <Loading />;
 
     const view = (() => {
       const props = {
         App: this, // eventually replace other props with this
-        data: this.state, dispatch: this.store.dispatch, alert: this._alert
+        data: this.state,
+        dispatch: this.store.dispatch,
+        alert: this._alert
       };
 
       switch (this.state.view.split('/')[0]) {
-        case 'SETTINGS': return <Settings {...props} />
-        case 'ACCOUNT': return <Account {...props} />
-        case 'LIBRARY': return <Library {...props} />
-        case 'BOOKS': return <Books {...props} />
+        case 'SETTINGS':
+          return <Settings {...props} />;
+        case 'ACCOUNT':
+          return <Account {...props} />;
+        case 'LIBRARY':
+          return <Library {...props} />;
+        case 'BOOKS':
+          return <Books {...props} />;
       }
     })();
 
     return (
-      <div className='xyfir-books'>
+      <div className="xyfir-books">
         <Navigation App={this} />
 
-        <div className={
-          `main ${this.state.view != READ_BOOK ? 'md-toolbar-relative' : ''}`
-        }>{view}</div>
+        <div
+          className={`main ${
+            this.state.view != READ_BOOK ? 'md-toolbar-relative' : ''
+          }`}
+        >
+          {view}
+        </div>
 
-        <Alert ref={i => this._Alert = i} />
+        <Alert ref={i => (this._Alert = i)} />
       </div>
     );
   }
-
 }
 
 // Redirect Cordova users going through login process back to local file with
 // access token
 if (!window.cordova) {
-  document.addEventListener('deviceready', () => {
-    const interval = setInterval(() => {
-      if (!window.LOGGED_IN) return;
+  document.addEventListener(
+    'deviceready',
+    () => {
+      const interval = setInterval(() => {
+        if (!window.LOGGED_IN) return;
 
-      clearInterval(interval);
+        clearInterval(interval);
 
-      // !! Must be window.open, location.* doesn't work
-      window.open(
-        `${window.cordova.file.applicationDirectory}www/index.html` +
-        `#/?accessToken=${localStorage.accessToken}`
-      );
-    }, 25);
-  }, false);
+        // !! Must be window.open, location.* doesn't work
+        window.open(
+          `${window.cordova.file.applicationDirectory}www/index.html` +
+            `#/?accessToken=${localStorage.accessToken}`
+        );
+      }, 25);
+    },
+    false
+  );
 }
 
 render(<App />, document.getElementById('content'));
