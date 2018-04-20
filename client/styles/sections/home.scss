@@ -10,7 +10,10 @@
     margin-bottom: 0.2em;
   }
 
-  section.free, section.main, nav, footer {
+  section.free,
+  section.main,
+  nav,
+  footer {
     text-align: center;
   }
 
@@ -19,7 +22,7 @@
     padding: 1em;
     display: flex;
 
-    >a {
+    > a {
       flex: 1;
       color: white;
 
@@ -33,7 +36,9 @@
     background-color: $md-primary-color;
     color: white;
 
-    h1, h2, p {
+    h1,
+    h2,
+    p {
       color: white;
     }
 
@@ -49,7 +54,8 @@
   section:nth-child(odd) {
     background-color: white;
 
-    h1, h2 {
+    h1,
+    h2 {
       color: $md-primary-color;
     }
   }
@@ -59,7 +65,7 @@
     align-items: center;
     flex-direction: column;
 
-    >img {
+    > img {
       height: 30em;
       margin-top: -2em;
       margin-bottom: -1.5em;
@@ -67,11 +73,11 @@
   }
 
   section.free {
-    >span.note {
+    > span.note {
       display: block;
     }
 
-    >button {
+    > button {
       margin-bottom: 0.5em;
       margin-top: 0;
       font-size: 2.5em;
@@ -99,14 +105,14 @@
     div.platforms {
       font-size: 60%;
 
-      >a.platform {
+      > a.platform {
         margin: 0.3em;
 
         &:hover {
           border-bottom: solid 0.1em;
         }
 
-        >i.md-icon {
+        > i.md-icon {
           color: inherit;
           vertical-align: sub;
         }
@@ -117,26 +123,26 @@
   section.premium {
     padding: 0.5em;
 
-    >div.comparison {
+    > div.comparison {
       display: flex;
       flex-wrap: wrap;
       text-align: center;
       justify-content: center;
 
-      >div.package {
+      > div.package {
         width: 20em;
         margin: 1em;
         padding: 0.5em;
         position: relative;
         padding-bottom: 2.5em;
 
-        >header {
-          >span.title {
+        > header {
+          > span.title {
             text-transform: uppercase;
             font-size: 200%;
           }
 
-          >span.price {
+          > span.price {
             font-size: 300%;
             display: block;
 
@@ -153,12 +159,12 @@
           }
         }
 
-        >span {
+        > span {
           display: block;
           margin: 1em 0;
         }
 
-        >a.button {
+        > a.button {
           font-size: 125%;
           text-transform: uppercase;
           display: block;
@@ -171,23 +177,25 @@
         }
 
         &.free {
-          >header>span, a.button {
+          > header > span,
+          a.button {
             color: $md-secondary-color;
           }
-          >a.button:hover,
-          >header>span.price:after,
-          >header>span.price:before {
+          > a.button:hover,
+          > header > span.price:after,
+          > header > span.price:before {
             color: $md-primary-color;
           }
         }
 
         &.premium {
-          >header>span, a.button {
+          > header > span,
+          a.button {
             color: $md-primary-color;
           }
-          >a.button:hover,
-          >header>span.price:after,
-          >header>span.price:before {
+          > a.button:hover,
+          > header > span.price:after,
+          > header > span.price:before {
             color: $md-secondary-color;
           }
         }
@@ -201,13 +209,15 @@
     }
 
     section.with-screenshot {
-      >img {
+      > img {
         height: 24em;
       }
     }
 
     a.platform {
-      &.mac, &.windows, &.linux {
+      &.mac,
+      &.windows,
+      &.linux {
         display: none;
       }
     }

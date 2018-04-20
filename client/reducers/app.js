@@ -5,8 +5,7 @@ import books from 'reducers/books';
 
 import * as types from 'constants/actions/app';
 
-export default function (state, action) {
-
+export default function(state, action) {
   switch (action.type) {
     case types.INITIALIZE_STATE:
       return action.state;
@@ -37,8 +36,7 @@ export default function (state, action) {
     default:
       if (state === undefined) {
         return {};
-      }
-      else {
+      } else {
         return {
           account: account(state.account, action),
           config: settings(state.config, action),
@@ -49,5 +47,4 @@ export default function (state, action) {
         };
       }
   }
-
 }

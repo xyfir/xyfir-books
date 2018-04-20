@@ -12,7 +12,6 @@ import { XYANNOTATIONS_URL } from 'constants/config';
  *  on error.
  */
 export default async function(sets, key) {
-
   try {
     if (!sets || !sets.length || !key || !navigator.onLine) throw 'Skip';
 
@@ -25,15 +24,12 @@ export default async function(sets, key) {
         });
 
       // Check if new version has been received
-      if (set.version != res.body.set.version)
-        Object.assign(set, res.body.set);
+      if (set.version != res.body.set.version) Object.assign(set, res.body.set);
     }
 
     return sets;
-  }
-  catch (err) {
+  } catch (err) {
     console.warn('lib/reader/annotations/update', err);
     return sets || [];
   }
-
 }

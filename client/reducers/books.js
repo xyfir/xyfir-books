@@ -60,9 +60,7 @@ export default function(state, action) {
 
         temp.forEach((book, i) => {
           if (action.id == book.id) {
-            temp[i] = Object.assign(
-              {}, book, action.obj
-            );
+            temp[i] = Object.assign({}, book, action.obj);
           }
         });
 

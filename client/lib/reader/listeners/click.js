@@ -6,41 +6,36 @@
  * @param {function} fn - The listener function.
  */
 export default function(el, book, fn) {
+  el.addEventListener(
+    'click',
+    event => {
+      if (event.ignore) return;
+      event.ignore = true;
 
-  el.addEventListener('click', event => {
+      const [{ document }] = book.rendition.getContents();
 
-    if (event.ignore) return;
-    event.ignore = true;
+      // User selected text
+      if (!!document.getSelection().toString()) return;
 
-    const [{document}] = book.rendition.getContents();
+      // Get book iframe window's size
+      const wX = window.bookView.clientWidth;
+      const wY = window.bookView.clientHeight;
 
-    // User selected text
-    if (!!document.getSelection().toString()) return;
+      // Get click location
+      const cX = event.clientX - (book.rendition.manager.scrollLeft || 0);
+      const cY = event.clientY;
 
-    // Get book iframe window's size
-    const wX = window.bookView.clientWidth;
-    const wY = window.bookView.clientHeight;
-
-    // Get click location
-    const cX = event.clientX - (book.rendition.manager.scrollLeft || 0);
-    const cY = event.clientY;
-
-    // Click was in left 10% of page
-    if (cX < wX * 0.10)
-      fn('previous page');
-    // Click was in right 10% of page
-    else if (cX > wX - (wX * 0.10))
-      fn('next page');
-    // Click was in top 5% of page
-    else if (cY < wY * 0.05)
-      fn('show book info');
-    // Click was in bottom 5% of page
-    else if (cY > wY - (wY * 0.05))
-      fn('cycle highlights');
-    // Click was somewhere in middle
-    else
-      fn('toggle navbar');
-
-  }, false);
-
+      // Click was in left 10% of page
+      if (cX < wX * 0.1) fn('previous page');
+      // Click was in right 10% of page
+      else if (cX > wX - wX * 0.1) fn('next page');
+      // Click was in top 5% of page
+      else if (cY < wY * 0.05) fn('show book info');
+      // Click was in bottom 5% of page
+      else if (cY > wY - wY * 0.05) fn('cycle highlights');
+      // Click was somewhere in middle
+      else fn('toggle navbar');
+    },
+    false
+  );
 }

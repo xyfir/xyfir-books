@@ -15,7 +15,6 @@ import { setListView } from 'actions/settings';
 import { save } from 'actions/app';
 
 export default class ListAllBooks extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -49,34 +48,37 @@ export default class ListAllBooks extends React.Component {
       const value = `"${qa[0]}:${qo[qa[0]]}"`;
 
       // Only set if value is different
-      if (this.props.data.search.query != value)
-        this._search.setValue(value);
+      if (this.props.data.search.query != value) this._search.setValue(value);
     }
   }
 
   render() {
     const view = (() => {
       switch (this.props.App.state.config.bookList.view) {
-        case 'compact': return <Compact {...this.props} />
-        case 'table': return <Table {...this.props} />
-        case 'grid': return <Grid {...this.props} />
+        case 'compact':
+          return <Compact {...this.props} />;
+        case 'table':
+          return <Table {...this.props} />;
+        case 'grid':
+          return <Grid {...this.props} />;
       }
     })();
 
     return (
-      <div className='book-list container'>
-        <section className='controls'>
-          <Search ref={i => this._search = i} {...this.props} />
+      <div className="book-list container">
+        <section className="controls">
+          <Search ref={i => (this._search = i)} {...this.props} />
 
           <MenuButton
-            icon secondary
-            id='menu--set-list-view'
+            icon
+            secondary
+            id="menu--set-list-view"
             menuItems={[
               window.innerWidth > 950 ? (
                 <ListItem
                   onClick={() => this.onSetListView('table')}
                   leftIcon={<FontIcon>view_headline</FontIcon>}
-                  primaryText='Table'
+                  primaryText="Table"
                 />
               ) : (
                 <span />
@@ -84,15 +86,15 @@ export default class ListAllBooks extends React.Component {
               <ListItem
                 onClick={() => this.onSetListView('grid')}
                 leftIcon={<FontIcon>view_module</FontIcon>}
-                primaryText='Grid'
+                primaryText="Grid"
               />,
               <ListItem
                 onClick={() => this.onSetListView('compact')}
                 leftIcon={<FontIcon>view_list</FontIcon>}
-                primaryText='Compact'
+                primaryText="Compact"
               />
             ]}
-            iconChildren='list'
+            iconChildren="list"
           />
         </section>
 
@@ -100,5 +102,4 @@ export default class ListAllBooks extends React.Component {
       </div>
     );
   }
-
 }

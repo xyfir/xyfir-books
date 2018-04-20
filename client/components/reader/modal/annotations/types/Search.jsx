@@ -4,7 +4,6 @@ import React from 'react';
 import Button from 'react-md/lib/Buttons/Button';
 
 export default class WebSearchAnnotation extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -13,15 +12,17 @@ export default class WebSearchAnnotation extends React.Component {
 
   render() {
     const { annotation } = this.props;
-    
+
     return (
-      <div className='search'>
+      <div className="search">
         {annotation.context ? (
           <Button
-            floating fixed secondary
-            tooltipPosition='right'
-            fixedPosition='bl'
-            iconChildren='search'
+            floating
+            fixed
+            secondary
+            tooltipPosition="right"
+            fixedPosition="bl"
+            iconChildren="search"
             tooltipLabel={(this.state.context ? 'Remove' : 'Add') + ' context'}
             onClick={() => this.setState({ context: !this.state.context })}
           />
@@ -33,10 +34,9 @@ export default class WebSearchAnnotation extends React.Component {
             (this.state.context ? annotation.context + ' ' : '') +
             annotation.value
           }
-          className='search'
+          className="search"
         />
       </div>
     );
   }
-
 }

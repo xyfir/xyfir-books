@@ -2,14 +2,15 @@ import { Slider, Button } from 'react-md';
 import React from 'react';
 
 export default class HighlightText extends React.Component {
-
   constructor(props) {
     super(props);
 
-    this.state = {
-      visibleText: this._getVisibleText(), start: 0, end: 0
-    },
-    this.state.end = this.state.visibleText.indexOf('\n');
+    (this.state = {
+      visibleText: this._getVisibleText(),
+      start: 0,
+      end: 0
+    }),
+      (this.state.end = this.state.visibleText.indexOf('\n'));
   }
 
   /**
@@ -21,19 +22,17 @@ export default class HighlightText extends React.Component {
     const limit = this.state.visibleText.length;
     let percent;
 
-    start = start < 0 ? 0 : start,
-    end = end < 0 ? 0 : end,
-    end = end > limit ? limit : end;
+    (start = start < 0 ? 0 : start),
+      (end = end < 0 ? 0 : end),
+      (end = end > limit ? limit : end);
 
     switch (change) {
       case 'start':
-        end = start > end ? start : end,
-        percent = (end / limit) * 100;
+        (end = start > end ? start : end), (percent = end / limit * 100);
         break;
 
       case 'end':
-        start = start > end ? end : start,
-        percent = (start / limit) * 100;
+        (start = start > end ? end : start), (percent = start / limit * 100);
     }
 
     this.setState({ start, end });
@@ -43,8 +42,7 @@ export default class HighlightText extends React.Component {
   _getHighlights() {
     if (this.state.start == this.state.end) {
       return [];
-    }
-    else {
+    } else {
       return this.state.visibleText
         .substring(this.state.start, this.state.end)
         .split('\n');
@@ -57,7 +55,7 @@ export default class HighlightText extends React.Component {
    * @return {string}
    */
   _getVisibleText() {
-    const {rendition} = this.props.Reader.book;
+    const { rendition } = this.props.Reader.book;
 
     // Create ranges for start and end of visible page
     const startRange = rendition.getRange(rendition.location.start.cfi);
@@ -80,67 +78,70 @@ export default class HighlightText extends React.Component {
   }
 
   render() {
-    const {visibleText, start, end} = this.state;
+    const { visibleText, start, end } = this.state;
 
     const _visibleText = (
       visibleText.substring(0, start) +
-        `<span style='background-color: yellow;'>${
-          visibleText.substring(start, end)
-        }</span>` +
+      `<span style='background-color: yellow;'>${visibleText.substring(
+        start,
+        end
+      )}</span>` +
       visibleText.substring(end)
-    )
-    .replace(/\n/g, '<br /><br />')
+    ).replace(/\n/g, '<br /><br />');
 
     return (
-      <div className='highlight'>
+      <div className="highlight">
         <div
-          className='visible-text'
+          className="visible-text"
           dangerouslySetInnerHTML={{ __html: _visibleText }}
         />
 
-        <div className='control-container'>
+        <div className="control-container">
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onChange(start - 1, end, 'start')}
-            iconChildren='keyboard_arrow_left'
+            iconChildren="keyboard_arrow_left"
           />
           <Slider
-            id='slider--highlight-start'
+            id="slider--highlight-start"
             min={0}
             max={visibleText.length}
-            label='Highlight Start'
+            label="Highlight Start"
             value={start}
             onChange={v => this.onChange(v, end, 'start')}
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onChange(start + 1, end, 'start')}
-            iconChildren='keyboard_arrow_right'
+            iconChildren="keyboard_arrow_right"
           />
         </div>
 
-        <div className='control-container'>
+        <div className="control-container">
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onChange(start, end - 1, 'end')}
-            iconChildren='keyboard_arrow_left'
+            iconChildren="keyboard_arrow_left"
           />
           <Slider
-            id='slider--highlight-end'
+            id="slider--highlight-end"
             min={0}
             max={visibleText.length}
-            label='Highlight End'
+            label="Highlight End"
             value={end}
             onChange={v => this.onChange(start, v, 'end')}
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onChange(start, end + 1, 'end')}
-            iconChildren='keyboard_arrow_right'
+            iconChildren="keyboard_arrow_right"
           />
         </div>
       </div>
     );
   }
-
 }

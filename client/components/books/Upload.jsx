@@ -10,7 +10,6 @@ import loadBooksFromApi from 'lib/books/load-from-api';
 import { XYLIBRARY_URL } from 'constants/config';
 
 export default class UploadBooks extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -22,16 +21,13 @@ export default class UploadBooks extends React.Component {
    * @param {File[]} files
    */
   onUpload(files) {
-    const {App} = this.props;
+    const { App } = this.props;
 
     try {
-      if (!navigator.onLine)
-        throw 'This action requires internet connectivity';
+      if (!navigator.onLine) throw 'This action requires internet connectivity';
 
-      if (this.state.uploading)
-        return;
-      else
-        this.setState({ uploading: true });
+      if (this.state.uploading) return;
+      else this.setState({ uploading: true });
 
       // Determine space needed on storage server
       const bytes = files.reduce((a, f) => a + f.size);
@@ -59,8 +55,7 @@ export default class UploadBooks extends React.Component {
         // Reload state.books from API
         loadBooksFromApi(App.state.account.library, App.store.dispatch);
       });
-    }
-    catch (err) {
+    } catch (err) {
       App._alert(err.toString());
       this.setState({ uploading: false });
     }
@@ -69,35 +64,41 @@ export default class UploadBooks extends React.Component {
   render() {
     return (
       <Dropzone
-        ref={i => this._dropzone = i}
+        ref={i => (this._dropzone = i)}
         onDrop={f => this.onUpload(f)}
         disabled={this.state.uploading}
-        className='dropzone upload-books'
+        className="dropzone upload-books"
         disableClick={true}
       >
-        <p className='status'>{
-          this.state.uploading
+        <p className="status">
+          {this.state.uploading
             ? 'Uploading file(s), please wait...'
-            : 'Drag and drop ebooks or use button to select files for upload'
-        }</p>
+            : 'Drag and drop ebooks or use button to select files for upload'}
+        </p>
 
         <p>
-          Upload ebooks to your library. Metadata (title, authors, etc) will automatically be extracted from the ebook files. Each book's metadata can be viewed and modified after upload.
+          Upload ebooks to your library. Metadata (title, authors, etc) will
+          automatically be extracted from the ebook files. Each book's metadata
+          can be viewed and modified after upload.
         </p>
+        <p>Any format can be uploaded and managed. Only EPUB can be read.</p>
         <p>
-          Any format can be uploaded and managed. Only EPUB can be read.
-        </p>
-        <p>
-          You can also upload books by sending emails to <a href='mailto:upload-books@xyfir.com'>upload-books@xyfir.com</a> with ebook files attached. Books will only be uploaded to your account if the email is sent from the email address that is linked to your xyBooks account. You may upload up to 25MB worth of ebooks per email.
+          You can also upload books by sending emails to{' '}
+          <a href="mailto:upload-books@xyfir.com">upload-books@xyfir.com</a>{' '}
+          with ebook files attached. Books will only be uploaded to your account
+          if the email is sent from the email address that is linked to your
+          xyBooks account. You may upload up to 25MB worth of ebooks per email.
         </p>
 
         <Button
-          primary raised
-          iconChildren='file_upload'
+          primary
+          raised
+          iconChildren="file_upload"
           onClick={() => this._dropzone.open()}
-        >Select Files</Button>
+        >
+          Select Files
+        </Button>
       </Dropzone>
     );
   }
-
 }

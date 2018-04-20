@@ -5,7 +5,6 @@
  * @return {object[]}
  */
 export default function(books, query) {
-
   if (query == '') return books;
 
   const fieldSearch = /\b(\w+:\w+)\b/.test(query);
@@ -33,23 +32,22 @@ export default function(books, query) {
           if (value == 'unrated') {
             if (book.rating === undefined || book.rating == 0)
               matches.push(true);
-            else
-              matches.push(false);
-          }
-          else if (book.rating == value.split(' ')[0]) {
+            else matches.push(false);
+          } else if (book.rating == value.split(' ')[0]) {
             matches.push(true);
-          }
-          else {
+          } else {
             matches.push(false);
           }
-        }
-        else if (field == 'tag') {
+        } else if (field == 'tag') {
           matches.push(!!book.tags.find(t => t.toLowerCase() == value));
-        }
-        else if (book[field] === undefined) {
+        } else if (book[field] === undefined) {
           matches.push(false);
-        }
-        else if (book[field].toString().toLowerCase().indexOf(value) > -1) {
+        } else if (
+          book[field]
+            .toString()
+            .toLowerCase()
+            .indexOf(value) > -1
+        ) {
           matches.push(true);
         }
       });
@@ -58,16 +56,12 @@ export default function(books, query) {
     // Only match if each word has a match either in title or authors
     else {
       query.forEach(s => {
-        if (book.title.toLowerCase().indexOf(s) > -1)
-          matches.push(true);
-        else if (book.authors.toLowerCase().indexOf(s) > -1)
-          matches.push(true);
-        else
-          matches.push(false);
+        if (book.title.toLowerCase().indexOf(s) > -1) matches.push(true);
+        else if (book.authors.toLowerCase().indexOf(s) > -1) matches.push(true);
+        else matches.push(false);
       });
     }
 
     return query.length == matches.length && matches.findIndex(m => !m) == -1;
   });
-
 }

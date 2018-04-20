@@ -2,7 +2,6 @@ import { Slider, FontIcon } from 'react-md';
 import React from 'react';
 
 export default class Filters extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -37,40 +36,39 @@ export default class Filters extends React.Component {
     if (this.state.loading) return null;
 
     return (
-      <div className='filters'>
+      <div className="filters">
         <Slider
-          id='slider--brightness'
+          id="slider--brightness"
           min={50}
           max={100}
-          label='Brightness'
+          label="Brightness"
           leftIcon={<FontIcon>brightness_medium</FontIcon>}
           onChange={v => this.onUpdate('brightness', v)}
           defaultValue={this.state.brightness}
         />
 
         <Slider
-          id='slider--warmth'
+          id="slider--warmth"
           min={0}
           max={50}
-          label='Warmth'
+          label="Warmth"
           leftIcon={<FontIcon>wb_sunny</FontIcon>}
           onChange={v => this.onUpdate('warmth', v)}
           defaultValue={this.state.warmth}
         />
 
         <Slider
-          id='slider--contrast'
+          id="slider--contrast"
           min={50}
           max={150}
-          label='Contrast'
+          label="Contrast"
           leftIcon={<FontIcon>tonality</FontIcon>}
           onChange={v => this.onUpdate('contrast', v)}
           defaultValue={this.state.contrast}
         />
       </div>
-    )
+    );
   }
-
 }
 
 Filters.noFullscreen = true;

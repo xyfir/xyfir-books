@@ -11,12 +11,14 @@ import loadBooks from 'lib/books/load-from-api';
 import { XYLIBRARY_URL } from 'constants/config';
 
 export default class EditBooks extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      ids: location.hash.split('/')[3].split(',').map(Number),
+      ids: location.hash
+        .split('/')[3]
+        .split(',')
+        .map(Number),
       status: ''
     };
   }
@@ -68,7 +70,7 @@ export default class EditBooks extends React.Component {
       }
       // Published
       if (this._published.value != '') {
-        data.pubdate = (new Date(this._published.value)).toISOString();
+        data.pubdate = new Date(this._published.value).toISOString();
       }
       // Set data.tags
       if (this._addTags.value != '' || this._remTags.value != '') {
@@ -82,8 +84,8 @@ export default class EditBooks extends React.Component {
         if (this._remTags.value != '') {
           const remove = this._remTags.value.toLowerCase().split(', ');
 
-          data.tags = data.tags.filter(t1 =>
-            remove.indexOf(t1.toLowerCase()) == -1
+          data.tags = data.tags.filter(
+            t1 => remove.indexOf(t1.toLowerCase()) == -1
           );
         }
 
@@ -103,7 +105,7 @@ export default class EditBooks extends React.Component {
       }
       // Date added
       if (this._timestamp.value != '') {
-        data.timestamp = (new Date(this._timestamp.value)).toISOString();
+        data.timestamp = new Date(this._timestamp.value).toISOString();
       }
       // Comments
       if (this._comments.value != '') {
@@ -117,21 +119,19 @@ export default class EditBooks extends React.Component {
         const res = await request
           .put(
             `${XYLIBRARY_URL}/libraries/${this.props.data.account.library}` +
-            `/books/${id}/metadata`
+              `/books/${id}/metadata`
           )
           .send({
             normal: data
           });
 
         if (res.body.error) throw res.body.error;
-      }
-      catch (err) {
+      } catch (err) {
         if (window['checkbox--stop-on-error'].checked) {
           return this.setState({
             status: `Error updating '${data.title || book.title || id}'.`
           });
-        }
-        else {
+        } else {
           this.setState({
             status: `Error updating '${data.title || book.title || id}'.`
           });
@@ -144,165 +144,144 @@ export default class EditBooks extends React.Component {
     swal('Action Complete', '', 'success');
 
     // Update state.books and local storage
-    loadBooks(
-      this.props.data.account.library,
-      this.props.dispatch
-    );
+    loadBooks(this.props.data.account.library, this.props.dispatch);
   }
 
   render() {
     return (
-      <div className='edit-books'>
-        <Paper
-          zDepth={1}
-          component='section'
-          className='authors section flex'
-        >
+      <div className="edit-books">
+        <Paper zDepth={1} component="section" className="authors section flex">
           <TextField
-            id='text--authors'
-            ref={i => this._authors = i}
-            type='text'
-            label='Authors'
-            className='md-cell'
+            id="text--authors"
+            ref={i => (this._authors = i)}
+            type="text"
+            label="Authors"
+            className="md-cell"
           />
 
           <TextField
-            id='text--author-sort'
-            ref={i => this._authorSort = i}
-            type='text'
-            label='Author Sort'
-            className='md-cell'
+            id="text--author-sort"
+            ref={i => (this._authorSort = i)}
+            type="text"
+            label="Author Sort"
+            className="md-cell"
           />
 
           <Checkbox
-            id='checkbox--author-title-swap'
-            label='Swap Title / Authors'
+            id="checkbox--author-title-swap"
+            label="Swap Title / Authors"
           />
         </Paper>
 
-        <Paper
-          zDepth={1}
-          component='section'
-          className='publish section flex'
-        >
+        <Paper zDepth={1} component="section" className="publish section flex">
           <TextField
-            id='text--publisher'
-            ref={i => this._publisher = i}
-            type='text'
-            label='Publisher'
-            className='md-cell'
+            id="text--publisher"
+            ref={i => (this._publisher = i)}
+            type="text"
+            label="Publisher"
+            className="md-cell"
           />
 
           <TextField
-            id='text--published'
-            ref={i => this._published = i}
-            type='text'
-            label='Published (Date)'
-            className='md-cell'
-            placeholder='YYYY-MM-DD'
+            id="text--published"
+            ref={i => (this._published = i)}
+            type="text"
+            label="Published (Date)"
+            className="md-cell"
+            placeholder="YYYY-MM-DD"
           />
         </Paper>
 
-        <Paper
-          zDepth={1}
-          component='section'
-          className='tags section flex'
-        >
+        <Paper zDepth={1} component="section" className="tags section flex">
           <TextField
-            id='text--add-tags'
-            ref={i => this._addTags = i}
-            type='text'
-            label='Add Tags'
-            className='md-cell'
+            id="text--add-tags"
+            ref={i => (this._addTags = i)}
+            type="text"
+            label="Add Tags"
+            className="md-cell"
           />
 
           <TextField
-            id='text--remove-tags'
-            ref={i => this._remTags = i}
-            type='text'
-            label='Remove Tags'
-            className='md-cell'
+            id="text--remove-tags"
+            ref={i => (this._remTags = i)}
+            type="text"
+            label="Remove Tags"
+            className="md-cell"
           />
 
-          <Checkbox
-            id='checkbox--clear-tags'
-            label='Clear Tags'
-          />
+          <Checkbox id="checkbox--clear-tags" label="Clear Tags" />
         </Paper>
 
-        <Paper
-          zDepth={1}
-          component='section'
-          className='misc section flex'
-        >
+        <Paper zDepth={1} component="section" className="misc section flex">
           <TextField
-            id='number--rating'
+            id="number--rating"
             max={5}
-            ref={i => this._rating = i}
+            ref={i => (this._rating = i)}
             step={0.5}
-            type='number'
-            label='Rating'
-            className='md-cell'
+            type="number"
+            label="Rating"
+            className="md-cell"
           />
 
           <TextField
-            id='text--series'
-            ref={i => this._series = i}
-            type='text'
-            label='Series'
-            className='md-cell'
+            id="text--series"
+            ref={i => (this._series = i)}
+            type="text"
+            label="Series"
+            className="md-cell"
           />
 
-          <Checkbox
-            id='checkbox--clear-series'
-            label='Clear Series'
+          <Checkbox id="checkbox--clear-series" label="Clear Series" />
+
+          <TextField
+            id="text--timestamp"
+            ref={i => (this._timestamp = i)}
+            type="text"
+            label="Date Added"
+            className="md-cell"
+            placeholder="YYYY-MM-DD"
           />
 
           <TextField
-            id='text--timestamp'
-            ref={i => this._timestamp = i}
-            type='text'
-            label='Date Added'
-            className='md-cell'
-            placeholder='YYYY-MM-DD'
-          />
-
-          <TextField
-            id='text--comments'
-            ref={i => this._comments = i}
+            id="text--comments"
+            ref={i => (this._comments = i)}
             rows={2}
-            type='text'
-            label='Comments'
-            className='md-cell'
+            type="text"
+            label="Comments"
+            className="md-cell"
           />
 
           <Checkbox
-            id='checkbox--format-title'
-            label='Convert Title to Title Case'
+            id="checkbox--format-title"
+            label="Convert Title to Title Case"
           />
 
           <Checkbox
-            id='checkbox--stop-on-error'
-            label='Stop Editing on Error'
+            id="checkbox--stop-on-error"
+            label="Stop Editing on Error"
             defaultChecked={true}
           />
         </Paper>
 
-        <p><strong>Note:</strong> Fields left blank will not be changed</p>
+        <p>
+          <strong>Note:</strong> Fields left blank will not be changed
+        </p>
 
         {this.state.status ? (
-          <p className='status'>
+          <p className="status">
             <strong>Status:</strong> {this.state.status}
           </p>
         ) : null}
 
         <Button
-          primary raised
-          iconChildren='save'
+          primary
+          raised
+          iconChildren="save"
           onClick={() => this.onSaveChanges()}
-        >Save Changes</Button>
+        >
+          Save Changes
+        </Button>
       </div>
     );
   }
-
 }

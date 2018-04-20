@@ -10,7 +10,6 @@ import Reader from 'components/reader/Reader';
 import List from 'components/books/list/List';
 
 export default class Books extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -33,5 +32,4 @@ export default class Books extends React.Component {
         return <Reader {...this.props} />;
     }
   }
-
 }

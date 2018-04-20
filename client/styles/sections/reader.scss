@@ -1,9 +1,9 @@
 div.reader {
-  >div.overlay {
-    >div.toolbar {
+  > div.overlay {
+    > div.toolbar {
       opacity: 0.97;
 
-      >header {
+      > header {
         transition: 0.3s;
 
         &.hide {
@@ -12,7 +12,7 @@ div.reader {
       }
     }
 
-    >span.status {
+    > span.status {
       position: fixed;
       font-size: 70%;
       bottom: 0%;
@@ -21,7 +21,7 @@ div.reader {
       color: $gray;
     }
 
-    >div.progress-slider {
+    > div.progress-slider {
       left: 0;
       right: 0;
       bottom: 0;
@@ -31,7 +31,7 @@ div.reader {
       transition: 0.3s;
 
       &.hide {
-        transform: translate(0, 100%)
+        transform: translate(0, 100%);
       }
 
       .md-slider-track-fill {
@@ -46,7 +46,7 @@ div.reader {
 }
 
 span.reader-dialog.container {
-  &.no-fullscreen >div.md-dialog--centered {
+  &.no-fullscreen > div.md-dialog--centered {
     max-width: 100%;
     width: 100%;
   }
@@ -54,24 +54,24 @@ span.reader-dialog.container {
   div.create-note.form {
     margin: 0.5em 1em;
 
-    >div.highlight {
-      >div.visible-text {
+    > div.highlight {
+      > div.visible-text {
         max-height: 12em;
         overflow: auto;
       }
 
-      >div.control-container {
+      > div.control-container {
         display: flex;
         align-items: center;
 
-        >div.md-slider-container {
+        > div.md-slider-container {
           flex: 1;
           margin: 0 0.2em;
         }
       }
     }
 
-    >div.md-text-field-container {
+    > div.md-text-field-container {
       width: 100%;
     }
   }
@@ -79,18 +79,19 @@ span.reader-dialog.container {
   section.note {
     text-align: left;
 
-    >div {
+    > div {
       margin: 0.5em 1em;
     }
 
-    >div.highlights {
-      >span {
+    > div.highlights {
+      > span {
         font-style: italic;
         font-size: 90%;
         display: block;
         color: #666;
 
-        &:before, &:after {
+        &:before,
+        &:after {
           font-style: normal;
           content: '"';
           color: black;
@@ -105,17 +106,17 @@ span.reader-dialog.container {
 
   section.manage-annotations.find {
     div.discover {
-      >div.md-text-field-container {
+      > div.md-text-field-container {
         width: 100%;
       }
 
-      >ul.sets {
+      > ul.sets {
         list-style: none;
         padding: 0;
         margin: 0;
         width: 100%;
 
-        >li.set {
+        > li.set {
           display: table;
           margin: 1em 0;
           cursor: pointer;
@@ -124,22 +125,22 @@ span.reader-dialog.container {
             background-color: $md-grey-50;
           }
 
-          >* {
+          > * {
             display: table-row;
           }
 
-          >span.title {
+          > span.title {
             font-weight: bold;
             font-size: 125%;
             color: $md-primary-color;
           }
 
-          >span.book >span {
+          > span.book > span {
             font-weight: bold;
             color: $md-secondary-color;
           }
 
-          >span.description {
+          > span.description {
             font-size: 85%;
           }
         }
@@ -150,14 +151,14 @@ span.reader-dialog.container {
   section.manage-annotations.view-set {
     text-align: left;
 
-    >div.set {
+    > div.set {
       padding: 0.5em;
 
-      >h2.title {
+      > h2.title {
         color: $md-primary-color;
       }
 
-      li.book >span {
+      li.book > span {
         color: $md-secondary-color;
         font-weight: bold;
       }
@@ -170,23 +171,24 @@ span.reader-dialog.container {
     overflow: hidden;
     flex-direction: column;
 
-    >div.content, >div.content > div {
+    > div.content,
+    > div.content > div {
       flex-flow: column;
       display: flex;
       height: 100%;
 
       /* allow scrolling on iOS */
       -webkit-overflow-scrolling: touch;
-  	  overflow-y: auto;
+      overflow-y: auto;
 
-      >iframe {
+      > iframe {
         flex: 1 1 auto;
         border: none;
       }
     }
 
-    >div.content {
-      >div.document {
+    > div.content {
+      > div.document {
         padding: 1em;
 
         p {
@@ -194,14 +196,14 @@ span.reader-dialog.container {
         }
       }
 
-      >div.audio > audio {
+      > div.audio > audio {
         width: 100%;
       }
 
-      >div.image > a {
+      > div.image > a {
         padding: 1em;
 
-        >img {
+        > img {
           max-height: 100%;
           max-width: 100%;
         }
@@ -210,11 +212,12 @@ span.reader-dialog.container {
   }
 
   section.book-info {
-    >table {
+    > table {
       margin: 0.5em 1em;
       width: calc(100% - 2em);
 
-      th, td {
+      th,
+      td {
         border-bottom: solid 0.1em $llgray;
         text-align: left;
       }
@@ -229,18 +232,18 @@ span.reader-dialog.container {
       }
     }
 
-    >div.comments {
+    > div.comments {
       margin: 0 1em;
       text-align: left;
     }
   }
 
   section.list-container {
-    >ul.md-list {
+    > ul.md-list {
       padding-bottom: 0;
     }
 
-    >p {
+    > p {
       margin: 1em;
       font-size: 100%;
     }
@@ -252,22 +255,22 @@ span.reader-dialog.container {
     display: table;
     margin: auto;
 
-    >div {
+    > div {
       display: table-row;
 
-      >span {
+      > span {
         display: table-cell;
         min-width: 10em;
         text-align: left;
         vertical-align: middle;
 
-        >i.md-icon {
+        > i.md-icon {
           vertical-align: middle;
           margin-right: 0.2em;
         }
       }
 
-      >button {
+      > button {
         display: table-cell;
       }
     }
@@ -281,20 +284,20 @@ span.reader-dialog.container {
   section.book-content-search {
     text-align: left;
 
-    >div.search {
+    > div.search {
       display: flex;
 
-      >button {
+      > button {
         margin: 0.2em;
       }
     }
 
-    >ul.matches {
+    > ul.matches {
       list-style: none;
       padding: 0;
       margin: 0.5em;
 
-      >li.match {
+      > li.match {
         border-bottom: solid $md-grey-200;
         padding: 0.5em 0;
         cursor: pointer;
@@ -307,7 +310,7 @@ span.reader-dialog.container {
           background-color: $md-grey-50;
         }
 
-        >span.match {
+        > span.match {
           font-weight: bold;
         }
       }

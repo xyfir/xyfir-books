@@ -11,8 +11,7 @@ const mysql = require('lib/mysql');
     Currently only updates xyAnnotationsKey
 */
 module.exports = async function(req, res) {
-
-  const db = new mysql;
+  const db = new mysql();
 
   try {
     await db.getConnection();
@@ -21,20 +20,15 @@ module.exports = async function(req, res) {
       UPDATE users SET xyannotations_key = ?
       WHERE user_id = ?
     `,
-    vars = [
-      req.body.xyAnnotationsKey,
-      req.session.uid
-    ],
-    result = await db.query(sql, vars);
+      vars = [req.body.xyAnnotationsKey, req.session.uid],
+      result = await db.query(sql, vars);
 
     if (!result.affectedRows) throw 'Could not update';
 
     db.release();
     res.json({ error: false });
-  }
-  catch (err) {
+  } catch (err) {
     db.release();
     res.json({ error: true, message: err });
   }
-  
 };

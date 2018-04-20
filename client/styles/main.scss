@@ -5,7 +5,7 @@ body {
   text-align: center;
   font-family: 'Roboto', sans-serif;
   flex-direction: column;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 main#content {
@@ -16,7 +16,7 @@ main#content {
 footer {
   padding: 0.2em;
 
-  >a {
+  > a {
     display: inline-block;
     margin: 0em 0.5em;
   }
@@ -51,12 +51,12 @@ div.dropzone {
     background-color: $md-grey-50;
   }
 
-  >p.status {
+  > p.status {
     font-size: 100%;
     font-weight: bold;
   }
 
-  >button {
+  > button {
     margin: 0;
   }
 }
@@ -72,7 +72,7 @@ div.loading {
   left: 0%;
   top: 0%;
 
-  >div.spinner {
+  > div.spinner {
     border: 0.3em solid #f3f3f3;
     border-radius: 50%;
     border-top: 0.3em solid $md-primary-color;
@@ -83,8 +83,12 @@ div.loading {
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }
 
@@ -96,5 +100,5 @@ section.pagination {
   width: 100%;
   display: flex;
   margin-top: 1em;
-  justify-content:  center;
+  justify-content: center;
 }

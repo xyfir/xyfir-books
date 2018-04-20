@@ -6,21 +6,25 @@ import * as types from 'constants/actions/books';
  */
 export function addFormat(id, format) {
   return {
-    type: types.ADD_FORMAT, id, format
+    type: types.ADD_FORMAT,
+    id,
+    format
   };
 }
 
 /** @param {number[]} ids */
 export function deleteBooks(ids) {
   return {
-    type: types.DELETE_BOOKS, ids
+    type: types.DELETE_BOOKS,
+    ids
   };
 }
 
 /** @param {object[]} books */
 export function loadBooks(books) {
   return {
-    type: types.LOAD_BOOKS, books
+    type: types.LOAD_BOOKS,
+    books
   };
 }
 
@@ -30,7 +34,9 @@ export function loadBooks(books) {
  */
 export function deleteFormat(id, format) {
   return {
-    type: types.DELETE_FORMAT, id, format
+    type: types.DELETE_FORMAT,
+    id,
+    format
   };
 }
 
@@ -40,6 +46,8 @@ export function deleteFormat(id, format) {
  */
 export function updateBook(id, obj) {
   return {
-    type: types.UPDATE_BOOK, id, obj
+    type: types.UPDATE_BOOK,
+    id,
+    obj
   };
 }

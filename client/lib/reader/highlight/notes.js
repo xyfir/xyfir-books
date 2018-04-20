@@ -8,16 +8,13 @@ import EPUB from 'epubjs';
  * @param {object[]} notes
  */
 export default function(book, notes) {
-
   const currentCfi = new EPUB.CFI(book.rendition.location.start.cfi);
-  const [{document}] = book.rendition.getContents();
+  const [{ document }] = book.rendition.getContents();
   let html = document.body.innerHTML;
 
   notes
     // Remove notes not in current chapter
-    .filter(note =>
-      currentCfi.spinePos == (new EPUB.CFI(note.cfi)).spinePos
-    )
+    .filter(note => currentCfi.spinePos == new EPUB.CFI(note.cfi).spinePos)
     // Highlight notes that are currently viewable
     .forEach((note, i) =>
       // Loop through the note's highlights
@@ -37,5 +34,4 @@ export default function(book, notes) {
     );
 
   document.body.innerHTML = html;
-
 }

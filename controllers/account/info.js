@@ -24,8 +24,7 @@ const config = require('config');
     Return account info
 */
 module.exports = async function(req, res) {
-
-  const db = new mysql;
+  const db = new mysql();
 
   try {
     let uid;
@@ -35,9 +34,9 @@ module.exports = async function(req, res) {
     // Validate access token
     if (req.query.token) {
       // [user_id, access_token]
-      const token = crypto.decrypt(
-        req.query.token, config.keys.accessToken
-      ).split('-');
+      const token = crypto
+        .decrypt(req.query.token, config.keys.accessToken)
+        .split('-');
 
       // Invalid token
       if (!token[0] || !token[1]) throw 'Invalid access token';
@@ -54,7 +53,9 @@ module.exports = async function(req, res) {
       const xyAccRes = await request
         .get(config.addresses.xyAccounts + 'api/service/14/user')
         .query({
-          key: config.keys.xyAccounts, xid: row.xyfir_id, token: token[1]
+          key: config.keys.xyAccounts,
+          xid: row.xyfir_id,
+          token: token[1]
         });
 
       if (xyAccRes.body.error)
@@ -71,41 +72,41 @@ module.exports = async function(req, res) {
       throw 'Access token required';
     }
 
-    const [row] = await db.query(`
+    const [row] = await db.query(
+      `
       SELECT
         library_size_limit AS librarySizeLimit, subscription, email,
         user_id AS uid, xyannotations_key AS xyAnnotationsKey,
         library_id AS library, referral
       FROM users WHERE user_id = ?
-    `, [
-      uid
-    ]);
+    `,
+      [uid]
+    );
 
     if (!row) throw 'User does not exist';
 
-    await db.query(`
+    await db.query(
+      `
       UPDATE users SET last_active = NOW(), library_wiped = 0
       WHERE user_id = ?
-    `, [
-      uid
-    ]);
+    `,
+      [uid]
+    );
     db.release();
 
     row.referral = JSON.parse(row.referral);
 
     // Set session, return account info
-    row.error = false,
-    req.session.uid = uid,
-    req.session.library = row.library,
-    req.session.subscription = row.subscription;
+    (row.error = false),
+      (req.session.uid = uid),
+      (req.session.library = row.library),
+      (req.session.subscription = row.subscription);
 
     res.json(row);
-  }
-  catch (err) {
+  } catch (err) {
     db.release();
     req.session.destroy(e =>
       res.json({ error: true, message: err, library: '' })
     );
   }
-
 };

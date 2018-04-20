@@ -14,7 +14,6 @@ import { save } from 'actions/app';
  * @return {object[]}
  */
 async function mergeAnnotations(books) {
-
   try {
     const storedBooks = await localforage.getItem('books');
 
@@ -31,12 +30,10 @@ async function mergeAnnotations(books) {
     });
 
     return books;
-  }
-  catch (err) {
+  } catch (err) {
     console.error('lib/books/load-from-api mergeAnnotations', err);
     return books;
   }
-
 }
 
 /**
@@ -47,7 +44,6 @@ async function mergeAnnotations(books) {
  * @return {object[]}
  */
 export default async function(library, dispatch) {
-
   try {
     let res = await request.get(`${XYLIBRARY_URL}/libraries/${library}/books`);
     let books = Array.isArray(res.body) ? res.body : res.body.books;
@@ -65,10 +61,8 @@ export default async function(library, dispatch) {
     }
 
     return books;
-  }
-  catch (err) {
+  } catch (err) {
     console.error('lib/books/load-from-api', err);
     return [];
   }
-
 }

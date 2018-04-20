@@ -1,7 +1,3 @@
-export const FONTS = [
-  'Serif', 'Sans-Serif', 'Monospace', 'Cursive', 'Fantasy'
-];
+export const FONTS = ['Serif', 'Sans-Serif', 'Monospace', 'Cursive', 'Fantasy'];
 
-export const ALIGNMENTS = [
-  'Left', 'Justify', 'Center', 'Right'
-];
+export const ALIGNMENTS = ['Left', 'Justify', 'Center', 'Right'];

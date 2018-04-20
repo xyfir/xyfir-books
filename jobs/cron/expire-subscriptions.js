@@ -3,10 +3,9 @@ const MySQL = require('lib/mysql');
 /**
  * Reset size limit and subscription expiration for users whose subscriptions
  *  have expired.
-*/
+ */
 module.exports = async function() {
-
-  const db = new MySQL;
+  const db = new MySQL();
 
   try {
     await db.getConnection();
@@ -18,10 +17,8 @@ module.exports = async function() {
         UNIX_TIMESTAMP() * 1000 > subscription
     `);
     db.release();
-  }
-  catch (err) {
+  } catch (err) {
     db.release();
     console.error('jobs/cron/expire-subscriptions', err);
   }
-
 };

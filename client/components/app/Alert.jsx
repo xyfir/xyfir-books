@@ -2,7 +2,6 @@ import { Snackbar } from 'react-md';
 import React from 'react';
 
 export default class AppAlert extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -30,7 +29,7 @@ export default class AppAlert extends React.Component {
   }
 
   render() {
-    const {toasts} = this.state;
+    const { toasts } = this.state;
 
     return (
       <Snackbar
@@ -40,5 +39,4 @@ export default class AppAlert extends React.Component {
       />
     );
   }
-
 }

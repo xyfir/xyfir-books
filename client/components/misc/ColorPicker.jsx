@@ -16,17 +16,16 @@ export default class ColorPicker extends React.Component {
   onChange(r = this.state.r, g = this.state.g, b = this.state.b) {
     this.setState({ r, g, b });
 
-    this.props.onChange &&
-    this.props.onChange(this._rgbToHex(r, g, b));
+    this.props.onChange && this.props.onChange(this._rgbToHex(r, g, b));
   }
 
   _rgbToHex(r, g, b) {
     return '#' + this._toHex(r) + this._toHex(g) + this._toHex(b);
   }
-  
+
   _toHex(n) {
     n = parseInt(n, 10);
-    
+
     if (isNaN(n)) return '00';
 
     n = Math.max(0, Math.min(n, 255));
@@ -45,47 +44,47 @@ export default class ColorPicker extends React.Component {
     const { r, g, b, visible } = this.state;
 
     return (
-      <div className='color-picker'>
+      <div className="color-picker">
         <TextField
           id={'color--' + this.props.id}
-          type='text'
+          type="text"
           label={this.props.label}
           value={this.props.value}
           onChange={v => this.props.onChange(v)}
-          className='md-cell'
+          className="md-cell"
         />
         <Button
           icon
           onClick={() => this.setState({ visible: true })}
-          iconChildren='colorize'
+          iconChildren="colorize"
         />
 
         <Dialog
-          id='color-picker'
+          id="color-picker"
           onHide={() => this.setState({ visible: false })}
           visible={visible}
-          aria-label='Color Picker'
-          dialogClassName='color-picker-dialog'
+          aria-label="Color Picker"
+          dialogClassName="color-picker-dialog"
         >
           <header
-            className='color'
+            className="color"
             style={{ background: `rgb(${r}, ${g}, ${b})` }}
           />
 
           <Slider
-            leftIcon={<span className='md-slider-ind'>R</span>}
+            leftIcon={<span className="md-slider-ind">R</span>}
             onChange={r => this.onChange(r)}
             value={r}
             max={255}
           />
           <Slider
-            leftIcon={<span className='md-slider-ind'>G</span>}
+            leftIcon={<span className="md-slider-ind">G</span>}
             onChange={g => this.onChange(undefined, g)}
             value={g}
             max={255}
           />
           <Slider
-            leftIcon={<span className='md-slider-ind'>B</span>}
+            leftIcon={<span className="md-slider-ind">B</span>}
             onChange={b => this.onChange(undefined, undefined, b)}
             value={b}
             max={255}

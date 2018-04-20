@@ -12,8 +12,7 @@ const MySQL = require('lib/mysql');
     Update book's word count
 */
 module.exports = async function(req, res) {
-
-  const db = new MySQL;
+  const db = new MySQL();
 
   try {
     await db.getConnection();
@@ -42,15 +41,12 @@ module.exports = async function(req, res) {
         await request
           .post(`${config.addresses.library}libraries/${library}/books`)
           .attach('book', dl.body, file.name);
-      }
-      catch (err) {}
+      } catch (err) {}
     }
 
     res.status(200).send();
-  }
-  catch (err) {
+  } catch (err) {
     db.release();
     res.status(406).send();
   }
-
 };

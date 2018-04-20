@@ -10,24 +10,25 @@ import Highlight from 'components/reader/modal/notes/Highlight';
 import { XYLIBRARY_URL } from 'constants/config';
 
 export default class CreateNote extends React.Component {
-
   constructor(props) {
     super(props);
   }
 
   onCreate() {
-    const {Reader} = this.props;
-    const {App} = Reader.props;
-    const notes = Reader.state.book.notes.concat([{
-      cfi: Reader.book.rendition.location.start.cfi,
-      range: {
-        start: Reader.book.rendition.location.start.cfi,
-        end: Reader.book.rendition.location.end.cfi
-      },
-      created: Date.now(),
-      content: this._content.value,
-      highlights: this._highlight._getHighlights()
-    }]);
+    const { Reader } = this.props;
+    const { App } = Reader.props;
+    const notes = Reader.state.book.notes.concat([
+      {
+        cfi: Reader.book.rendition.location.start.cfi,
+        range: {
+          start: Reader.book.rendition.location.start.cfi,
+          end: Reader.book.rendition.location.end.cfi
+        },
+        created: Date.now(),
+        content: this._content.value,
+        highlights: this._highlight._getHighlights()
+      }
+    ]);
 
     Reader._updateBook({ notes });
     Reader.onCloseModal();
@@ -36,7 +37,7 @@ export default class CreateNote extends React.Component {
     request
       .put(
         `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
-        `/books/${Reader.state.book.id}/metadata`
+          `/books/${Reader.state.book.id}/metadata`
       )
       .send({
         xyfir: {
@@ -50,39 +51,41 @@ export default class CreateNote extends React.Component {
 
   render() {
     return (
-      <section className='create-note container'>
+      <section className="create-note container">
         <Navigation
           {...this.props}
-          title='Create Note'
+          title="Create Note"
           actions={[
             <Button
               icon
               onClick={() => this.props.Notes.setState({ view: 'list' })}
-              iconChildren='list'
+              iconChildren="list"
             />
           ]}
         />
 
-        <div className='create-note form flex'>
-          <Highlight ref={i => this._highlight = i} {...this.props} />
+        <div className="create-note form flex">
+          <Highlight ref={i => (this._highlight = i)} {...this.props} />
 
           <TextField
-            id='textarea--note'
-            ref={i => this._content = i}
+            id="textarea--note"
+            ref={i => (this._content = i)}
             rows={2}
-            type='text'
-            label='Note'
-            className='md-cell'
+            type="text"
+            label="Note"
+            className="md-cell"
           />
 
           <Button
-            raised primary
+            raised
+            primary
             onClick={() => this.onCreate()}
-            iconChildren='create'
-          >Create</Button>
+            iconChildren="create"
+          >
+            Create
+          </Button>
         </div>
       </section>
     );
   }
-
 }

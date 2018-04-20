@@ -1,6 +1,4 @@
-import {
-  FontIcon, Button, ListItem, DialogContainer, List
-} from 'react-md';
+import { FontIcon, Button, ListItem, DialogContainer, List } from 'react-md';
 import request from 'superagent';
 import React from 'react';
 
@@ -11,7 +9,6 @@ import OpenWindow from 'components/misc/OpenWindow';
 import { XYLIBRARY_URL } from 'constants/config';
 
 export default class NoBooks extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -21,7 +18,7 @@ export default class NoBooks extends React.Component {
   async onLoadSampleLibrary() {
     if (!navigator.onLine) return App._alert('Internet connection required');
 
-    const {App} = this.props;
+    const { App } = this.props;
 
     const confirm = await swal({
       title: 'Are you sure?',
@@ -39,7 +36,8 @@ export default class NoBooks extends React.Component {
           return App._alert('Could not update library');
 
         App._alert('Library updated. Reloading library...');
-        localforage.clear()
+        localforage
+          .clear()
           .then(() => location.reload())
           .catch(() => location.reload());
       });
@@ -47,63 +45,65 @@ export default class NoBooks extends React.Component {
 
   render() {
     return (
-      <section className='no-books container'>
+      <section className="no-books container">
         <h1>You don't have any books in your library!</h1>
         <Button
-          raised primary
-          iconChildren='book'
+          raised
+          primary
+          iconChildren="book"
           onClick={() => this.setState({ dialog: true })}
-        >Get Books</Button>
+        >
+          Get Books
+        </Button>
 
         <DialogContainer
-          id='book-sources'
+          id="book-sources"
           onHide={() => this.setState({ dialog: false })}
           visible={this.state.dialog}
-          aria-label='book sources'
-          dialogClassName='no-books book-sources'
+          aria-label="book sources"
+          dialogClassName="no-books book-sources"
         >
           <List>
             <ListItem
               onClick={() => this.onLoadSampleLibrary()}
               leftIcon={<FontIcon>find_replace</FontIcon>}
-              primaryText='Load free sample books'
+              primaryText="Load free sample books"
               secondaryText={
                 'Your library will be replaced with some popular books ' +
                 'from Project Gutenberg'
               }
             />
-            <OpenWindow href='http://www.gutenberg.org'>
+            <OpenWindow href="http://www.gutenberg.org">
               <ListItem
                 leftIcon={<FontIcon>search</FontIcon>}
-                primaryText='Find free books online'
-                secondaryText='Search free books on Project Gutenberg'
+                primaryText="Find free books online"
+                secondaryText="Search free books on Project Gutenberg"
               />
             </OpenWindow>
-            <a href='#/library/upload'>
+            <a href="#/library/upload">
               <ListItem
                 leftIcon={<FontIcon>library_add</FontIcon>}
-                primaryText='Upload an entire library'
-                secondaryText='Upload a zipped, Calibre-compatible library'
+                primaryText="Upload an entire library"
+                secondaryText="Upload a zipped, Calibre-compatible library"
               />
             </a>
-            <a href='#/books/upload'>
+            <a href="#/books/upload">
               <ListItem
                 leftIcon={<FontIcon>file_upload</FontIcon>}
-                primaryText='Upload books via app'
-                secondaryText='Upload ebook files directly in xyBooks'
+                primaryText="Upload books via app"
+                secondaryText="Upload ebook files directly in xyBooks"
               />
             </a>
-            <a href='#/books/upload?email=1'>
+            <a href="#/books/upload?email=1">
               <ListItem
                 leftIcon={<FontIcon>email</FontIcon>}
-                primaryText='Upload books via email'
-                secondaryText='Send ebook files from any device via email'
+                primaryText="Upload books via email"
+                secondaryText="Send ebook files from any device via email"
               />
             </a>
           </List>
         </DialogContainer>
       </section>
-    )
+    );
   }
-
 }

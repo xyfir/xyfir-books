@@ -5,7 +5,6 @@ import React from 'react';
 import openWindow from 'lib/util/open-window';
 
 export default class OpenWindow extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -18,11 +17,12 @@ export default class OpenWindow extends React.Component {
   render() {
     return (
       <a
-        className='open-window'
+        className="open-window"
         onClick={e => this.onClick(e)}
         href={this.props.href}
-      >{this.props.children}</a>
+      >
+        {this.props.children}
+      </a>
     );
   }
-
 }

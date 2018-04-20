@@ -1,5 +1,11 @@
 import {
-  ListItem, Toolbar, Divider, Drawer, Button, List, FontIcon
+  ListItem,
+  Toolbar,
+  Divider,
+  Drawer,
+  Button,
+  List,
+  FontIcon
 } from 'react-md';
 import React from 'react';
 
@@ -11,12 +17,12 @@ import { XYBOOKS_URL, XYDOCUMENTATION_URL } from 'constants/config';
 import OpenWindow from 'components/misc/OpenWindow';
 
 export default class AppNavigation extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      drawer: false, bookList: false
+      drawer: false,
+      bookList: false
     };
   }
 
@@ -34,10 +40,8 @@ export default class AppNavigation extends React.Component {
    * Handle the back button within the Drawer's Toolbar being clicked.
    */
   onDrawerBack() {
-    if (this.state.bookList)
-      this.setState({ bookList: false });
-    else
-      this.setState({ drawer: false });
+    if (this.state.bookList) this.setState({ bookList: false });
+    else this.setState({ drawer: false });
   }
 
   /**
@@ -53,66 +57,68 @@ export default class AppNavigation extends React.Component {
    * @return {JSX.Element[]}
    */
   _renderBookListDrawerNavItems() {
-    const {App} = this.props;
+    const { App } = this.props;
 
-    return Array(
-      'All', 'Authors', 'Ratings', 'Series', 'Tags'
-    )
-    // Convert to array of objects
-    // Count unique instances within each list group
-    .map((_group, i) => {
-      const group = {
-        name: _group, property: _group.toLowerCase(), arr: [], length: 0
-      };
+    return (
+      Array('All', 'Authors', 'Ratings', 'Series', 'Tags')
+        // Convert to array of objects
+        // Count unique instances within each list group
+        .map((_group, i) => {
+          const group = {
+            name: _group,
+            property: _group.toLowerCase(),
+            arr: [],
+            length: 0
+          };
 
-      // Count books for all
-      if (i == 0) {
-        group.length = App.state.books.length;
-        return group;
-      }
-
-      App.state.books.forEach(book => {
-        // Tags group
-        if (group.property == 'tags') {
-          return App.state.books.forEach(book =>
-            book.tags.forEach(tag => {
-              if (group.arr.indexOf(tag) == -1) group.arr.push(tag);
-            })
-          );
-        }
-
-        const value = (() => {
-          switch (group.property) {
-            case 'rating':
-              return book.rating === undefined
-                ? 0
-                : Math.floor(book.rating);
-            case 'series':
-              if (!book.series) return;
-              else return book.series;
-            default:
-              return book[group.property];
+          // Count books for all
+          if (i == 0) {
+            group.length = App.state.books.length;
+            return group;
           }
-        })();
 
-        if (group.arr.indexOf(value) == -1)
-          group.arr.push(value);
-      });
+          App.state.books.forEach(book => {
+            // Tags group
+            if (group.property == 'tags') {
+              return App.state.books.forEach(book =>
+                book.tags.forEach(tag => {
+                  if (group.arr.indexOf(tag) == -1) group.arr.push(tag);
+                })
+              );
+            }
 
-      group.length = group.arr.length, delete group.arr;
+            const value = (() => {
+              switch (group.property) {
+                case 'rating':
+                  return book.rating === undefined
+                    ? 0
+                    : Math.floor(book.rating);
+                case 'series':
+                  if (!book.series) return;
+                  else return book.series;
+                default:
+                  return book[group.property];
+              }
+            })();
 
-      // authors -> author-sort
-      if (i == 1) group.property = 'author-sort';
+            if (group.arr.indexOf(value) == -1) group.arr.push(value);
+          });
 
-      return group;
-    })
-    // Only list groups (other than All) that have more than one subgroup
-    .filter(group => group.name == 'All' || group.length > 1)
-    // Return JSX elements
-    .map(group =>
-      <a href={'#/books/list/' + group.property} key={group.property}>
-        <ListItem primaryText={`${group.name} (${group.length})`} />
-      </a>
+          (group.length = group.arr.length), delete group.arr;
+
+          // authors -> author-sort
+          if (i == 1) group.property = 'author-sort';
+
+          return group;
+        })
+        // Only list groups (other than All) that have more than one subgroup
+        .filter(group => group.name == 'All' || group.length > 1)
+        // Return JSX elements
+        .map(group => (
+          <a href={'#/books/list/' + group.property} key={group.property}>
+            <ListItem primaryText={`${group.name} (${group.length})`} />
+          </a>
+        ))
     );
   }
 
@@ -122,18 +128,18 @@ export default class AppNavigation extends React.Component {
       <ListItem
         onClick={e => this.onOpenBookList(e)}
         leftIcon={<FontIcon>book</FontIcon>}
-        primaryText='Book List'
+        primaryText="Book List"
       />,
-      <a href='#/books/upload'>
+      <a href="#/books/upload">
         <ListItem
           leftIcon={<FontIcon>file_upload</FontIcon>}
-          primaryText='Upload Books'
+          primaryText="Upload Books"
         />
       </a>,
-      <a href='#/books/recently-opened'>
+      <a href="#/books/recently-opened">
         <ListItem
           leftIcon={<FontIcon>access_time</FontIcon>}
-          primaryText='Recently Opened'
+          primaryText="Recently Opened"
         />
       </a>,
 
@@ -141,24 +147,24 @@ export default class AppNavigation extends React.Component {
 
       <ListItem
         leftIcon={<FontIcon>settings</FontIcon>}
-        primaryText='Settings'
+        primaryText="Settings"
         nestedItems={[
-          <a href='#/settings/general'>
+          <a href="#/settings/general">
             <ListItem
               leftIcon={<FontIcon>settings_applications</FontIcon>}
-              primaryText='General'
+              primaryText="General"
             />
           </a>,
-          <a href='#/settings/reader'>
+          <a href="#/settings/reader">
             <ListItem
               leftIcon={<FontIcon>book</FontIcon>}
-              primaryText='Reader'
+              primaryText="Reader"
             />
           </a>,
-          <a href='#/settings/book-list'>
+          <a href="#/settings/book-list">
             <ListItem
               leftIcon={<FontIcon>list</FontIcon>}
-              primaryText='Book List'
+              primaryText="Book List"
             />
           </a>
         ]}
@@ -166,19 +172,19 @@ export default class AppNavigation extends React.Component {
 
       <ListItem
         leftIcon={<FontIcon>account_circle</FontIcon>}
-        primaryText='Account'
+        primaryText="Account"
         nestedItems={[
-          <a href='#/library/info'>
+          <a href="#/library/info">
             <ListItem
               leftIcon={<FontIcon>library_books</FontIcon>}
-              primaryText='Manage Library'
+              primaryText="Manage Library"
             />
           </a>,
           !window.cordova ? (
-            <a href='#/account'>
+            <a href="#/account">
               <ListItem
                 leftIcon={<FontIcon>account_box</FontIcon>}
-                primaryText='My Account'
+                primaryText="My Account"
               />
             </a>
           ) : (
@@ -187,7 +193,7 @@ export default class AppNavigation extends React.Component {
           <a onClick={() => this.onLogout()}>
             <ListItem
               leftIcon={<FontIcon>close</FontIcon>}
-              primaryText='Logout'
+              primaryText="Logout"
             />
           </a>
         ]}
@@ -195,24 +201,24 @@ export default class AppNavigation extends React.Component {
 
       <ListItem
         leftIcon={<FontIcon>info</FontIcon>}
-        primaryText='Documentation'
+        primaryText="Documentation"
         nestedItems={[
           <OpenWindow href={`${XYDOCUMENTATION_URL}/xyfir-books/help`}>
             <ListItem
               leftIcon={<FontIcon>help</FontIcon>}
-              primaryText='Help Docs'
+              primaryText="Help Docs"
             />
           </OpenWindow>,
           <OpenWindow href={`${XYDOCUMENTATION_URL}/xyfir-books/privacy`}>
             <ListItem
               leftIcon={<FontIcon>security</FontIcon>}
-              primaryText='Privacy Policy'
+              primaryText="Privacy Policy"
             />
           </OpenWindow>,
           <OpenWindow href={`${XYDOCUMENTATION_URL}/xyfir-books/tos`}>
             <ListItem
               leftIcon={<FontIcon>gavel</FontIcon>}
-              primaryText='Terms of Service'
+              primaryText="Terms of Service"
             />
           </OpenWindow>
         ]}
@@ -221,35 +227,37 @@ export default class AppNavigation extends React.Component {
   }
 
   render() {
-    const {App} = this.props;
+    const { App } = this.props;
 
     return (
       <React.Fragment>
         <Toolbar
-          colored fixed
+          colored
+          fixed
           className={App.state.view == READ_BOOK ? 'hidden' : ''}
           actions={[
             <Button
               icon
-              key='search'
-              onClick={() => location.hash = '#/books/list/all'}
-              iconChildren='search'
+              key="search"
+              onClick={() => (location.hash = '#/books/list/all')}
+              iconChildren="search"
             />,
             <Button
               icon
-              key='home'
-              onClick={() => location.hash = '#/books/recently-opened'}
-              iconChildren='home'
+              key="home"
+              onClick={() => (location.hash = '#/books/recently-opened')}
+              iconChildren="home"
             />
           ]}
-          title={'xyBooks' + (
-            Date.now() > App.state.account.subscription ? ' (free)' : ''
-          )}
+          title={
+            'xyBooks' +
+            (Date.now() > App.state.account.subscription ? ' (free)' : '')
+          }
           nav={
             <Button
               icon
               onClick={() => this.setState({ drawer: true })}
-              iconChildren='menu'
+              iconChildren="menu"
             />
           }
         />
@@ -270,7 +278,7 @@ export default class AppNavigation extends React.Component {
                 <Button
                   icon
                   onClick={() => this.onDrawerBack()}
-                  iconChildren='arrow_back'
+                  iconChildren="arrow_back"
                 />
               }
             />
@@ -278,7 +286,6 @@ export default class AppNavigation extends React.Component {
           type={Drawer.DrawerTypes.TEMPORARY}
         />
       </React.Fragment>
-    )
+    );
   }
-
 }

@@ -19,11 +19,10 @@ import { save } from 'actions/app';
  * @return {number}
  */
 export default async function(App, book) {
-
   let count = 0;
 
   // Load / read contents of file
-  const zip = new JSZip;
+  const zip = new JSZip();
   await zip.loadAsync(await loadBook(App, book));
 
   // Used to render each chapter
@@ -37,8 +36,9 @@ export default async function(App, book) {
     if (!/html$/.test(file.split('.').slice(-1)[0])) continue;
 
     // Set HTML to frame
-    iframe.contentDocument.documentElement.innerHTML =
-      await zip.files[file].async('string');
+    iframe.contentDocument.documentElement.innerHTML = await zip.files[
+      file
+    ].async('string');
 
     // Count text, not HTML
     count += iframe.contentDocument.body.innerText.split(/\s+/).length;
@@ -47,15 +47,16 @@ export default async function(App, book) {
   iframe.remove();
 
   // Update `words` in remote library
-  navigator.onLine && request
-    .put(
-      `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
-      `/books/${book.id}/metadata`
-    )
-    .send({
-      xyfir: { words: count }
-    })
-    .end((err, res) => 1);
+  navigator.onLine &&
+    request
+      .put(
+        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+          `/books/${book.id}/metadata`
+      )
+      .send({
+        xyfir: { words: count }
+      })
+      .end((err, res) => 1);
 
   // Update `words` in local library
   App.store.dispatch(updateBook(book.id, { words: count }));
@@ -63,5 +64,4 @@ export default async function(App, book) {
 
   App._alert(`${count} words counted`);
   return count;
-
 }

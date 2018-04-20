@@ -17,7 +17,6 @@ import { XYLIBRARY_URL } from 'constants/config';
  * @return {boolean} True if the books were deleted.
  */
 export default async function(books, App) {
-
   if (!navigator.onLine) {
     swal(
       'No Internet Connection',
@@ -46,7 +45,7 @@ export default async function(books, App) {
     App.store.dispatch(deleteBooks(books));
     App.store.dispatch(save('books'));
 
-    try{
+    try {
       for (let book of books) {
         await Promise.all(
           ['cover', 'styling', 'epub', 'locations'].map(k =>
@@ -54,15 +53,12 @@ export default async function(books, App) {
           )
         );
       }
-    }
-    catch (err) {}
+    } catch (err) {}
 
     return true;
-  }
-  catch (err) {
+  } catch (err) {
     swal('Error', 'Could not delete book(s)', 'error');
     console.error('lib/books/delete', err);
     return false;
   }
-
 }

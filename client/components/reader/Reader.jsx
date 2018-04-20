@@ -27,21 +27,24 @@ import { updateBook } from 'actions/books';
 import { save } from 'actions/app';
 
 export default class Reader extends React.Component {
-
   constructor(props) {
     super(props);
 
-    const {App} = this.props;
+    const { App } = this.props;
     const id = window.location.hash.split('/')[3];
 
     this.state = {
       book: App.state.books.find(b => id == b.id),
-      pagesLeft: 0, percent: 0, loading: true,
+      pagesLeft: 0,
+      percent: 0,
+      loading: true,
       history: {
-        items: [], index: -1
+        items: [],
+        index: -1
       },
       modal: {
-        target: '', show: ''
+        target: '',
+        show: ''
       },
       highlight: {
         mode: App.state.config.reader.defaultHighlightMode,
@@ -72,7 +75,7 @@ export default class Reader extends React.Component {
    * Load / initialize book.
    */
   componentWillMount() {
-    const {App} = this.props;
+    const { App } = this.props;
 
     loadBook(App, this.state.book)
       .then(blob => {
@@ -95,7 +98,7 @@ export default class Reader extends React.Component {
       .then(locations => {
         return locations == null
           ? this.book.locations.generate(1000)
-          : Promise.resolve(locations)
+          : Promise.resolve(locations);
       })
       .then(locations => {
         if (!this.book.locations._locations.length)
@@ -108,9 +111,7 @@ export default class Reader extends React.Component {
         // Set initial location to percentage
         else {
           this.book.rendition.display(
-            this.book.locations.cfiFromPercentage(
-              this.state.book.percent / 100
-            )
+            this.book.locations.cfiFromPercentage(this.state.book.percent / 100)
           );
         }
 
@@ -169,24 +170,25 @@ export default class Reader extends React.Component {
       last_read: Date.now()
     };
 
-    const {App} = this.props;
+    const { App } = this.props;
     App.store.dispatch(updateBook(this.state.book.id, data));
     App.store.dispatch(save('books'));
 
     localforage.removeItem(`search-${this.state.book.id}`);
 
-    navigator.onLine && request
-      .put(
-        `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
-        `/books/${this.state.book.id}/metadata`
-      )
-      .send({
-        xyfir: data
-      })
-      .end((err, res) => {
-        if (err || res.body.error)
-          console.error('Reader.componentWillUnmount()', err, res);
-      });
+    navigator.onLine &&
+      request
+        .put(
+          `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
+            `/books/${this.state.book.id}/metadata`
+        )
+        .send({
+          xyfir: data
+        })
+        .end((err, res) => {
+          if (err || res.body.error)
+            console.error('Reader.componentWillUnmount()', err, res);
+        });
   }
 
   /**
@@ -204,37 +206,37 @@ export default class Reader extends React.Component {
    * @return {HighlightMode}
    */
   onSetHighlightMode(highlight) {
-    highlight = highlight || (() => {
-      switch (this.state.highlight.mode) {
-        // none -> notes
-        case 'none':
-          return { mode: 'notes' };
+    highlight =
+      highlight ||
+      (() => {
+        switch (this.state.highlight.mode) {
+          // none -> notes
+          case 'none':
+            return { mode: 'notes' };
 
-        // notes -> first annotation set OR none
-        case 'notes':
-          if (
-            !this.state.book.annotations ||
-            !this.state.book.annotations.length
-          )
-            return { mode: 'none' };
-          else
-            return { mode: 'annotations', index: 0 };
+          // notes -> first annotation set OR none
+          case 'notes':
+            if (
+              !this.state.book.annotations ||
+              !this.state.book.annotations.length
+            )
+              return { mode: 'none' };
+            else return { mode: 'annotations', index: 0 };
 
-        // annotations -> next set OR none
-        case 'annotations':
-          if (this.state.book.annotations[this.state.highlight.index + 1]) {
-            return {
-              mode: 'annotations',
-              index: this.state.highlight.index + 1
-            };
-          }
-          else {
-            return { mode: 'none' };
-          }
-      }
-    })();
+          // annotations -> next set OR none
+          case 'annotations':
+            if (this.state.book.annotations[this.state.highlight.index + 1]) {
+              return {
+                mode: 'annotations',
+                index: this.state.highlight.index + 1
+              };
+            } else {
+              return { mode: 'none' };
+            }
+        }
+      })();
 
-    highlight.message = (() => {
+    (highlight.message = (() => {
       switch (highlight.mode) {
         case 'none':
           return 'Highlights turned off';
@@ -243,11 +245,13 @@ export default class Reader extends React.Component {
         case 'search':
           return 'Highlighting search matches';
         case 'annotations':
-          return 'Highlighting annotations from ' +
+          return (
+            'Highlighting annotations from ' +
             this.state.book.annotations[highlight.index].title
+          );
       }
-    })(),
-    highlight.previousMode = this.state.highlight.mode;
+    })()),
+      (highlight.previousMode = this.state.highlight.mode);
 
     this._applyHighlights(highlight);
     this.setState({ highlight });
@@ -260,10 +264,8 @@ export default class Reader extends React.Component {
    * @param {string} show
    */
   onToggleShow(show) {
-    if (!!this.state.show)
-      this.setState({ modal: { show: '', target: '' } });
-    else
-      this.setState({ modal: { show, target: '' } });
+    if (!!this.state.show) this.setState({ modal: { show: '', target: '' } });
+    else this.setState({ modal: { show, target: '' } });
 
     this._overlay.show = false;
   }
@@ -295,8 +297,7 @@ export default class Reader extends React.Component {
    */
   onClick(action) {
     if (this.state.modal.show) {
-      if (Date.now() > this.state.modal.closeWait)
-        this.onCloseModal();
+      if (Date.now() > this.state.modal.closeWait) this.onCloseModal();
       return;
     }
 
@@ -306,13 +307,11 @@ export default class Reader extends React.Component {
       case 'next page':
         return this.book.rendition.next();
       case 'cycle highlights':
-        return this._overlay._status._setStatus(
-          this.onSetHighlightMode()
-        );
+        return this._overlay._status._setStatus(this.onSetHighlightMode());
       case 'show book info':
         return this.onToggleShow('bookInfo');
       case 'toggle navbar':
-        return this._overlay.show = !this._overlay.show;
+        return (this._overlay.show = !this._overlay.show);
     }
   }
 
@@ -360,7 +359,9 @@ export default class Reader extends React.Component {
         closeWait: Date.now() + 100,
         target: event.data.key,
         show: {
-          note: 'notes', search: 'search', annotation: 'viewAnnotations'
+          note: 'notes',
+          search: 'search',
+          annotation: 'viewAnnotations'
         }[event.data.type]
       }
     });
@@ -377,8 +378,7 @@ export default class Reader extends React.Component {
     try {
       const s2 = await localforage.getItem(`styling-${this.state.book.id}`);
       return s2 ? Object.assign({}, s1, s2) : s1;
-    }
-    catch (err) {
+    } catch (err) {
       return s1;
     }
   }
@@ -393,10 +393,10 @@ export default class Reader extends React.Component {
     // Unfortunately, !important is needed to fight the publisher's styling
     this.book.rendition.themes.default({
       '*': {
-        'color': `${styles.color} !important`,
+        color: `${styles.color} !important`,
         'font-family': `${styles.fontFamily} !important`
       },
-      'p': {
+      p: {
         'text-align': `${styles.textAlign} !important`,
         'text-indent': `${styles.textIndent}em !important`
       },
@@ -410,17 +410,17 @@ export default class Reader extends React.Component {
       'span.annotation': {
         'background-color': styles.annotationColor,
         'font-size': 'inherit !important',
-        'cursor': 'pointer'
+        cursor: 'pointer'
       },
       'span.search': {
         'background-color': styles.searchMatchColor,
         'font-size': 'inherit !important',
-        'cursor': 'pointer'
+        cursor: 'pointer'
       },
       'span.note': {
         'background-color': styles.highlightColor,
         'font-size': 'inherit !important',
-        'cursor': 'pointer'
+        cursor: 'pointer'
       }
     });
     this.book.rendition.themes.update('default');
@@ -444,14 +444,15 @@ export default class Reader extends React.Component {
    */
   async _getFilters() {
     const f1 = {
-      brightness: 100, warmth: 0, contrast: 100
+      brightness: 100,
+      warmth: 0,
+      contrast: 100
     };
 
     try {
       const f2 = await localforage.getItem(`filters-${this.state.book.id}`);
       return f2 ? Object.assign({}, f1, f2) : f1;
-    }
-    catch (err) {
+    } catch (err) {
       return f1;
     }
   }
@@ -466,9 +467,9 @@ export default class Reader extends React.Component {
       let pagesLeft =
         this.book.rendition.manager.location[0].totalPages -
         this.book.rendition.manager.location[0].pages[0];
-      pagesLeft =
-        this.book.rendition.manager.location[0].pages[1]
-          ? Math.floor(pagesLeft / 2) : pagesLeft;
+      pagesLeft = this.book.rendition.manager.location[0].pages[1]
+        ? Math.floor(pagesLeft / 2)
+        : pagesLeft;
 
       this.setState({
         pagesLeft,
@@ -483,7 +484,7 @@ export default class Reader extends React.Component {
       this._applyStyles();
       this._applyHighlights(this.state.highlight);
 
-      const [{document}] = this.book.rendition.getContents();
+      const [{ document }] = this.book.rendition.getContents();
 
       swipeListener(document, this.book, this.onSwipe);
       clickListener(document, this.book, this.onClick);
@@ -501,8 +502,8 @@ export default class Reader extends React.Component {
    * @param {HighlightMode} highlight
    */
   _applyHighlights(highlight) {
-    const {notes, annotations} = this.state.book;
-    const [{document}] = this.book.rendition.getContents();
+    const { notes, annotations } = this.state.book;
+    const [{ document }] = this.book.rendition.getContents();
 
     // Reset HTML if needed
     switch (highlight.previousMode) {
@@ -517,13 +518,12 @@ export default class Reader extends React.Component {
     // Apply appropriate highlights
     if (highlight.mode == 'notes') {
       highlightNotes(this.book, notes);
-    }
-    else if (highlight.mode == 'search') {
+    } else if (highlight.mode == 'search') {
       highlightSearch(this.book, highlight.search);
-    }
-    else if (
+    } else if (
       highlight.mode == 'annotations' &&
-      annotations && annotations[highlight.index]
+      annotations &&
+      annotations[highlight.index]
     ) {
       AnnotateEPUBJS.insertAnnotations(this.book, annotations[highlight.index]);
     }
@@ -542,17 +542,13 @@ export default class Reader extends React.Component {
 
   render() {
     return (
-      <div className='reader'>
-        <div id='bookView' />
+      <div className="reader">
+        <div id="bookView" />
 
-        <Overlay
-          ref={i => this._overlay = i}
-          Reader={this}
-        />
+        <Overlay ref={i => (this._overlay = i)} Reader={this} />
 
         <Modal Reader={this} />
       </div>
     );
   }
-
 }

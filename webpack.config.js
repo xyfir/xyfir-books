@@ -20,7 +20,6 @@ if (isProd) {
 }
 
 module.exports = {
-
   mode: config.environment.type,
 
   entry: {
@@ -34,31 +33,29 @@ module.exports = {
   },
 
   resolve: {
-    modules: [
-      path.resolve(__dirname, 'client'),
-      'node_modules'
-    ],
+    modules: [path.resolve(__dirname, 'client'), 'node_modules'],
     extensions: ['.js', '.jsx']
   },
 
   module: {
-    rules: [{
-      test: /\.jsx?$/,
-      loader: 'babel-loader',
-      include: [
-        path.resolve(__dirname, 'client/actions'),
-        path.resolve(__dirname, 'client/components'),
-        path.resolve(__dirname, 'client/constants'),
-        path.resolve(__dirname, 'client/lib'),
-        path.resolve(__dirname, 'client/reducers')
-      ],
-      exclude: /node_modules/,
-      options: {
-        presets: ['env', 'react']
+    rules: [
+      {
+        test: /\.jsx?$/,
+        loader: 'babel-loader',
+        include: [
+          path.resolve(__dirname, 'client/actions'),
+          path.resolve(__dirname, 'client/components'),
+          path.resolve(__dirname, 'client/constants'),
+          path.resolve(__dirname, 'client/lib'),
+          path.resolve(__dirname, 'client/reducers')
+        ],
+        exclude: /node_modules/,
+        options: {
+          presets: ['env', 'react']
+        }
       }
-    }]
+    ]
   },
 
   plugins
-
 };

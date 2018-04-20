@@ -17,18 +17,17 @@
  * @return {WrapInfo}
  */
 export default function(matches, html, type, key) {
-
   const wrap = [
-    `<span ` +
-      `class="${type}" ` +
-      `onclick="!event.stopPropagation() && parent.postMessage(` +
+      `<span ` +
+        `class="${type}" ` +
+        `onclick="!event.stopPropagation() && parent.postMessage(` +
         `{type: '${type}', key: '${key}', epubjs: true}, '*'` +
-      `)"` +
-    `>`,
-    `</span>`
-  ],
-  wrapLength = wrap[0].length + wrap[1].length,
-  inserts = [];
+        `)"` +
+        `>`,
+      `</span>`
+    ],
+    wrapLength = wrap[0].length + wrap[1].length,
+    inserts = [];
 
   // Offset required since we're manipulating the HTML and therefore
   // changing the length / indexes
@@ -40,9 +39,9 @@ export default function(matches, html, type, key) {
 
     html =
       html.substring(0, start) +
-        wrap[0] +
-          html.substring(start, end) +
-        wrap[1] +
+      wrap[0] +
+      html.substring(start, end) +
+      wrap[1] +
       html.substring(end);
 
     offset += wrapLength;
@@ -50,5 +49,4 @@ export default function(matches, html, type, key) {
   });
 
   return { html, wrapLength, inserts };
-
 }

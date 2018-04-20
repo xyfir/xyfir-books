@@ -1,9 +1,9 @@
 section.purchase-subscription {
-  >div.md-slider-container {
+  > div.md-slider-container {
     width: 98%;
   }
 
-	>button.StripeCheckout {
+  > button.StripeCheckout {
     display: none !important;
   }
 }

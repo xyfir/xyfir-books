@@ -5,7 +5,6 @@ import React from 'react';
 import Navigation from 'components/reader/modal/Navigation';
 
 export default class TableOfContents extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -21,20 +20,19 @@ export default class TableOfContents extends React.Component {
 
   render() {
     return (
-      <section className='table-of-contents list-container'>
-        <Navigation {...this.props} title='Table of Contents' />
+      <section className="table-of-contents list-container">
+        <Navigation {...this.props} title="Table of Contents" />
 
-        <List>{
-          this.props.Reader.book.navigation.toc.map(chapter =>
+        <List>
+          {this.props.Reader.book.navigation.toc.map(chapter => (
             <ListItem
               key={chapter.id}
               onClick={() => this.onGoToChapter(chapter.href)}
               primaryText={chapter.label.trim()}
             />
-          )
-        }</List>
+          ))}
+        </List>
       </section>
     );
   }
-
 }

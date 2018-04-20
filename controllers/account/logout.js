@@ -6,7 +6,5 @@ const config = require('config');
     Destroy user's session
 */
 module.exports = function(req, res) {
-
   req.session.destroy(err => res.redirect(config.addresses.xyBooks.root));
-
-}
+};

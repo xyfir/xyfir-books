@@ -10,7 +10,6 @@ import * as VIEWS from 'constants/views';
  * @return {string} The new value for `App.state.view`
  */
 export default function(store) {
-
   const state = store.getState();
   const hash = location.hash
     .substr(2)
@@ -31,12 +30,10 @@ export default function(store) {
           case 'increase-size-limit':
             return VIEWS.INCREASE_SIZE_LIMIT;
         }
-      }
-      else {
+      } else {
         return VIEWS.ACCOUNT;
       }
-    }
-    else if (hash[0] == 'library') {
+    } else if (hash[0] == 'library') {
       switch (hash[1]) {
         case 'download':
           return VIEWS.LIBRARY_DOWNLOAD;
@@ -45,8 +42,7 @@ export default function(store) {
         case 'info':
           return VIEWS.LIBRARY_INFO;
       }
-    }
-    else if (hash[0] == 'books') {
+    } else if (hash[0] == 'books') {
       if (hash[1] == 'list') {
         switch (hash[2]) {
           case 'tags':
@@ -62,8 +58,7 @@ export default function(store) {
           default:
             return VIEWS.LIST_BOOKS;
         }
-      }
-      else {
+      } else {
         switch (hash[1]) {
           case 'recently-opened':
             return VIEWS.RECENTLY_OPENED;
@@ -79,8 +74,7 @@ export default function(store) {
             return VIEWS.UPLOAD_BOOKS;
         }
       }
-    }
-    else if (hash[0] == 'settings') {
+    } else if (hash[0] == 'settings') {
       switch (hash[1]) {
         case 'book-list':
           return VIEWS.BOOK_LIST_SETTINGS;
@@ -96,5 +90,4 @@ export default function(store) {
 
   store.dispatch(changeView(view));
   return view;
-
 }

@@ -10,7 +10,6 @@ import Button from 'react-md/lib/Buttons/Button';
 import Paper from 'react-md/lib/Papers';
 
 export default class LibraryInfo extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -19,15 +18,13 @@ export default class LibraryInfo extends React.Component {
     request
       .get(`${XYLIBRARY_URL}/libraries/${props.App.state.account.library}`)
       .end((err, res) => {
-        if (err || res.body.error)
-          this.setState({ size: -1 });
-        else
-          this.setState({ size: res.body.size });
+        if (err || res.body.error) this.setState({ size: -1 });
+        else this.setState({ size: res.body.size });
       });
   }
 
   onDownload() {
-    const {App} = this.props;
+    const { App } = this.props;
 
     swal({
       title: 'Download Library',
@@ -37,83 +34,89 @@ export default class LibraryInfo extends React.Component {
       icon: 'warning',
       buttons: true
     })
-    .then(confirm => confirm && request
-      .post(
-        `${XYLIBRARY_URL}/libraries/${App.state.account.library}/zip`
+      .then(
+        confirm =>
+          confirm &&
+          request
+            .post(`${XYLIBRARY_URL}/libraries/${App.state.account.library}/zip`)
+            .send({
+              email: App.state.account.email
+            })
       )
-      .send({
-        email: App.state.account.email
-      })
-    )
-    .then(res => {
-      if (!res)
-        return;
-      else if (res.body.error)
-        App._alert('Something went wrong...');
-      else
-        App._alert('A download link will be sent to your email once ready.');
-    });
+      .then(res => {
+        if (!res) return;
+        else if (res.body.error) App._alert('Something went wrong...');
+        else
+          App._alert('A download link will be sent to your email once ready.');
+      });
   }
 
   render() {
-    const {account, books} = this.props.App.state;
-    const {size} = this.state;
+    const { account, books } = this.props.App.state;
+    const { size } = this.state;
 
     return (
-      <section className='library-info'>
+      <section className="library-info">
         <Paper
           zDepth={1}
-          component='table'
-          className='library-info section flex'
+          component="table"
+          className="library-info section flex"
         >
-        <tbody>
-          <tr>
-            <th>Identifier</th>
-            <td>
-              <input
-                type='text'
-                value={account.library}
-                onFocus={e => e.target.select()}
-              />
-            </td>
-          </tr>
-          <tr>
-            <th>Books</th>
-            <td>{books.length}</td>
-          </tr>
-          <tr>
-            <th>Size</th>
-            {this.state.size == -1 ? (
-              <td>Could not calculate size</td>
-            ) : (
-              <td className='size'>
-                <span className='current'>{
-                  (size * 0.000001).toFixed(2)
-                }MB</span> of <span className='total'>{
-                  account.librarySizeLimit
-                }GB</span> <span className='percent'>({
-                  ((size / (account.librarySizeLimit * 1000000000)) + '')
-                  .substr(2, 2)
-                }%)</span>
+          <tbody>
+            <tr>
+              <th>Identifier</th>
+              <td>
+                <input
+                  type="text"
+                  value={account.library}
+                  onFocus={e => e.target.select()}
+                />
               </td>
-            )}
-          </tr>
-        </tbody>
+            </tr>
+            <tr>
+              <th>Books</th>
+              <td>{books.length}</td>
+            </tr>
+            <tr>
+              <th>Size</th>
+              {this.state.size == -1 ? (
+                <td>Could not calculate size</td>
+              ) : (
+                <td className="size">
+                  <span className="current">
+                    {(size * 0.000001).toFixed(2)}MB
+                  </span>{' '}
+                  of <span className="total">{account.librarySizeLimit}GB</span>{' '}
+                  <span className="percent">
+                    ({(
+                      size / (account.librarySizeLimit * 1000000000) +
+                      ''
+                    ).substr(2, 2)}%)
+                  </span>
+                </td>
+              )}
+            </tr>
+          </tbody>
         </Paper>
 
         <Button
-          raised primary
-          iconChildren='cloud_upload'
-          onClick={() => location.hash = '#/library/upload'}
-        >Upload</Button>
+          raised
+          primary
+          iconChildren="cloud_upload"
+          onClick={() => (location.hash = '#/library/upload')}
+        >
+          Upload
+        </Button>
 
         <Button
-          raised primary
-          iconChildren='cloud_download'
+          raised
+          primary
+          iconChildren="cloud_download"
           onClick={() => this.onDownload()}
-        >Download</Button>
+        >
+          Download
+        </Button>
       </section>
     );
   }
-
 }

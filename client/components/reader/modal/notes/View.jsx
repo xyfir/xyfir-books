@@ -10,13 +10,12 @@ import { XYLIBRARY_URL } from 'constants/config';
 import Navigation from 'components/reader/modal/Navigation';
 
 export default class ViewNote extends React.Component {
-
   constructor(props) {
     super(props);
   }
 
   onGoTo() {
-    const {Reader, Notes} = this.props;
+    const { Reader, Notes } = this.props;
 
     Reader.book.rendition.display(
       Reader.state.book.notes[Notes.state.note].cfi
@@ -24,9 +23,9 @@ export default class ViewNote extends React.Component {
   }
 
   onDelete() {
-    const {Reader, Notes} = this.props;
-    const {created} = Reader.state.book.notes[Notes.state.note];
-    const {App} = Reader.props;
+    const { Reader, Notes } = this.props;
+    const { created } = Reader.state.book.notes[Notes.state.note];
+    const { App } = Reader.props;
     const notes = Reader.state.book.notes.filter(n => created != n.created);
 
     Notes.setState({ view: 'list' });
@@ -36,7 +35,7 @@ export default class ViewNote extends React.Component {
     request
       .put(
         `${XYLIBRARY_URL}/libraries/${App.state.account.library}` +
-        `/books/${Reader.state.book.id}/metadata`
+          `/books/${Reader.state.book.id}/metadata`
       )
       .send({
         xyfir: {
@@ -49,44 +48,44 @@ export default class ViewNote extends React.Component {
   }
 
   render() {
-    const {Reader, Notes} = this.props;
+    const { Reader, Notes } = this.props;
     const note = Reader.state.book.notes[Notes.state.note];
 
     return (
-      <section className='note'>
+      <section className="note">
         <Navigation
           {...this.props}
-          title='Note'
+          title="Note"
           actions={[
             <Button
               icon
               onClick={() => this.onGoTo()}
-              iconChildren='navigation'
+              iconChildren="navigation"
             />,
             <Button
               icon
               onClick={() => this.onDelete()}
-              iconChildren='delete'
+              iconChildren="delete"
             />,
             <Button
               icon
               onClick={() => Notes.setState({ view: 'create' })}
-              iconChildren='create'
+              iconChildren="create"
             />,
             <Button
               icon
               onClick={() => this.props.Notes.setState({ view: 'list' })}
-              iconChildren='list'
+              iconChildren="list"
             />
           ]}
         />
 
-        <div className='highlights'>{
-          note.highlights.map((hl, i) => <span key={i}>{hl}</span>)
-        }</div>
+        <div className="highlights">
+          {note.highlights.map((hl, i) => <span key={i}>{hl}</span>)}
+        </div>
 
         <div
-          className='content markdown-body'
+          className="content markdown-body"
           dangerouslySetInnerHTML={{
             __html: marked(note.content, { sanitize: true })
           }}
@@ -94,5 +93,4 @@ export default class ViewNote extends React.Component {
       </section>
     );
   }
-
 }

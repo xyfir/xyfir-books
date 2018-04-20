@@ -6,7 +6,6 @@ import * as themes from 'constants/reader/themes';
 import { FONTS, ALIGNMENTS } from 'constants/reader/styles';
 
 export default class BookStyling extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -21,31 +20,27 @@ export default class BookStyling extends React.Component {
 
   /** @param {boolean} next */
   onChangeFont(next) {
-    let {fontFamily} = this.state;
+    let { fontFamily } = this.state;
     const index = FONTS.indexOf(fontFamily);
 
     if (next)
       fontFamily = index == FONTS.length - 1 ? FONTS[0] : FONTS[index + 1];
-    else
-      fontFamily = index == 0 ? FONTS[FONTS.length - 1] : FONTS[index - 1];
+    else fontFamily = index == 0 ? FONTS[FONTS.length - 1] : FONTS[index - 1];
 
     this._update({ fontFamily });
   }
 
   /** @param {boolean} next */
   onChangeTextAlign(next) {
-    let {textAlign} = this.state;
+    let { textAlign } = this.state;
     const index = ALIGNMENTS.indexOf(textAlign);
 
     if (next) {
-      textAlign = index == ALIGNMENTS.length - 1
-        ? ALIGNMENTS[0]
-        : ALIGNMENTS[index + 1];
-    }
-    else {
-      textAlign = index == 0
-        ? ALIGNMENTS[ALIGNMENTS.length - 1]
-        : ALIGNMENTS[index - 1];
+      textAlign =
+        index == ALIGNMENTS.length - 1 ? ALIGNMENTS[0] : ALIGNMENTS[index + 1];
+    } else {
+      textAlign =
+        index == 0 ? ALIGNMENTS[ALIGNMENTS.length - 1] : ALIGNMENTS[index - 1];
     }
 
     this._update({ textAlign });
@@ -77,7 +72,7 @@ export default class BookStyling extends React.Component {
    * @param {object} obj
    */
   async _update(obj) {
-    const {Reader} = this.props;
+    const { Reader } = this.props;
 
     await new Promise(r => this.setState(obj, r));
 
@@ -92,46 +87,58 @@ export default class BookStyling extends React.Component {
     if (this.state.loading) return null;
 
     return (
-      <section className='book-styling'>
+      <section className="book-styling">
         <div>
-          <span><FontIcon>format_size</FontIcon>Text Size</span>
+          <span>
+            <FontIcon>format_size</FontIcon>Text Size
+          </span>
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onUpdate('fontSize', '+')}
-            iconChildren='add'
+            iconChildren="add"
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onUpdate('fontSize', '-')}
-            iconChildren='remove'
+            iconChildren="remove"
           />
         </div>
 
         <div>
-          <span><FontIcon>format_line_spacing</FontIcon>Line Spacing</span>
+          <span>
+            <FontIcon>format_line_spacing</FontIcon>Line Spacing
+          </span>
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onUpdate('lineHeight', '+')}
-            iconChildren='add'
+            iconChildren="add"
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onUpdate('lineHeight', '-')}
-            iconChildren='remove'
+            iconChildren="remove"
           />
         </div>
 
         <div>
-          <span><FontIcon>format_paint</FontIcon>Theme</span>
+          <span>
+            <FontIcon>format_paint</FontIcon>Theme
+          </span>
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onUpdateTheme('LIGHT')}
-            iconChildren='brightness_7'
+            iconChildren="brightness_7"
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onUpdateTheme('DARK')}
-            iconChildren='brightness_2'
+            iconChildren="brightness_2"
           />
         </div>
 
@@ -140,14 +147,16 @@ export default class BookStyling extends React.Component {
             <FontIcon>font_download</FontIcon>Font ({this.state.fontFamily})
           </span>
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onChangeFont()}
-            iconChildren='keyboard_arrow_left'
+            iconChildren="keyboard_arrow_left"
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onChangeFont(true)}
-            iconChildren='keyboard_arrow_right'
+            iconChildren="keyboard_arrow_right"
           />
         </div>
 
@@ -157,14 +166,16 @@ export default class BookStyling extends React.Component {
             Indentation
           </span>
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onUpdate('textIndent', '+')}
-            iconChildren='add'
+            iconChildren="add"
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onUpdate('textIndent', '-')}
-            iconChildren='remove'
+            iconChildren="remove"
           />
         </div>
 
@@ -174,20 +185,21 @@ export default class BookStyling extends React.Component {
             Alignment ({this.state.textAlign})
           </span>
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onChangeTextAlign()}
-            iconChildren='keyboard_arrow_left'
+            iconChildren="keyboard_arrow_left"
           />
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onChangeTextAlign(true)}
-            iconChildren='keyboard_arrow_right'
+            iconChildren="keyboard_arrow_right"
           />
         </div>
       </section>
-    )
+    );
   }
-
 }
 
 BookStyling.noFullscreen = true;

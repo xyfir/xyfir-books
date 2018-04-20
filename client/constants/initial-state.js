@@ -8,30 +8,40 @@ export default {
   books: [],
   config: {
     general: {
-      theme: 'light', matchThemes: true
+      theme: 'light',
+      matchThemes: true
     },
     bookList: {
       view: 'compact',
       table: {
-        columns: [
-          'title', 'authors', 'series', 'added', 'rating'
-        ],
+        columns: ['title', 'authors', 'series', 'added', 'rating'],
         defaultSort: {
-          column: 'title', asc: true
+          column: 'title',
+          asc: true
         }
       }
     },
     reader: Object.assign({}, readerThemes.LIGHT, {
-      fontSize: 1.2, lineHeight: 1.4, fontFamily: 'Serif', textIndent: 2,
-      textAlign: 'Justify', defaultHighlightMode: 'none'
+      fontSize: 1.2,
+      lineHeight: 1.4,
+      fontFamily: 'Serif',
+      textIndent: 2,
+      textAlign: 'Justify',
+      defaultHighlightMode: 'none'
     })
   },
   search: {
-    query: '', page: 1
+    query: '',
+    page: 1
   },
   account: {
-    uid: 0, email: '', subscription: 0, library: '', librarySizeLimit: 1,
-    referral: {}, xyAnnotationsKey: ''
+    uid: 0,
+    email: '',
+    subscription: 0,
+    library: '',
+    librarySizeLimit: 1,
+    referral: {},
+    xyAnnotationsKey: ''
   },
   loading: true
 };

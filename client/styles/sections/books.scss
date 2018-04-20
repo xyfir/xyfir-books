@@ -2,16 +2,16 @@ div.chips {
   display: flex;
   flex-wrap: wrap;
 
-  >span.chip {
+  > span.chip {
     background-color: $lllgray;
     margin-right: 0.3em;
-    align-items:  center;
+    align-items: center;
     font-size: 80%;
     padding: 0em 0.2em;
     display: flex;
     border: solid $llgray 1px;
 
-    >i.md-icon {
+    > i.md-icon {
       font-size: inherit;
     }
   }
@@ -20,37 +20,38 @@ div.chips {
 ul.recently-opened.books {
   padding: 0;
 
-  >li.book {
+  > li.book {
     list-style: none;
     height: 27em;
     margin: auto;
     width: 12.5em;
 
-    >a > img.cover {
+    > a > img.cover {
       box-shadow: $md-grey-800 0.1em 0.1em 0.3em;
       height: 20em;
       width: 12.5em;
     }
 
-    >div.info {
+    > div.info {
       text-align: left;
 
-      >a.title, >a.authors {
+      > a.title,
+      > a.authors {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
         display: block;
       }
 
-      >a.title {
+      > a.title {
         font-weight: bold;
       }
 
-      >span.chip {
+      > span.chip {
         margin: 0em 0.25em 0em 0em;
       }
 
-      >span.last-read {
+      > span.last-read {
         display: block;
         font-size: 80%;
       }
@@ -59,17 +60,17 @@ ul.recently-opened.books {
 }
 
 div.manage-book {
-  >section.cover {
+  > section.cover {
     display: flex;
     align-items: center;
     flex-direction: column;
 
-    >div.dropzone {
+    > div.dropzone {
       width: initial;
       display: inline-block;
       margin-bottom: 0.5em;
 
-      >img.cover {
+      > img.cover {
         height: 19.2em;
         width: 12em;
       }
@@ -82,12 +83,12 @@ div.manage-book {
 }
 
 .edit-books {
-  input[type=text] {
+  input[type='text'] {
     width: 25em;
     max-width: 90%;
   }
 
-  input[type=date] {
+  input[type='date'] {
     font-size: 1em;
     margin: 1em 0em;
   }
@@ -123,7 +124,7 @@ ul.list-compact {
   text-align: left;
   padding: 0;
 
-  >li.book {
+  > li.book {
     border-bottom: solid $llgray 0.1em;
     align-items: center;
     list-style: none;
@@ -136,27 +137,28 @@ ul.list-compact {
       background-color: $llgray;
     }
 
-    >img.cover {
+    > img.cover {
       height: 7em;
       width: 4.5em;
     }
 
-    >div.info {
+    > div.info {
       margin-left: 0.5em;
       flex: 1;
 
       /* needed to prevent text overflow in children elements */
       min-width: 0;
 
-      >div.md-menu-container {
+      > div.md-menu-container {
         float: right;
       }
 
-      >span.title {
+      > span.title {
         font-weight: bold;
       }
 
-      >span.title, >span.authors {
+      > span.title,
+      > span.authors {
         display: block;
         overflow: hidden;
         white-space: nowrap;
@@ -172,7 +174,7 @@ ul.list-grid {
   display: flex;
   padding: 0;
 
-  >li.book {
+  > li.book {
     list-style: none;
     position: relative;
     display: block;
@@ -184,24 +186,25 @@ ul.list-grid {
       background-color: $llgray;
     }
 
-    >img.cover {
+    > img.cover {
       /* height/width 1.6:1 ratio  */
       height: 19.2em;
       width: 12em;
     }
 
-    >span.title {
+    > span.title {
       font-weight: bold;
     }
 
-    >span.authors, >span.title {
+    > span.authors,
+    > span.title {
       display: block;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    >div.overlay {
+    > div.overlay {
       top: 1em;
       left: 1em;
       right: 1em;
@@ -220,57 +223,57 @@ ul.list-grid {
 div.book-list.table {
   text-align: left;
 
-  >section.table-container {
+  > section.table-container {
     margin-left: 1em;
     width: calc(80% - 1em);
     float: left;
 
     td.rating {
       display: flex;
-      align-items:  center;
-      justify-content:  center;
+      align-items: center;
+      justify-content: center;
 
-      >i.md-icon {
+      > i.md-icon {
         margin-left: 0.1em;
       }
     }
   }
 
-  >section.selected-book {
+  > section.selected-book {
     margin-right: 1em;
     margin-left: 0.1em;
     display: inline-block;
     width: calc(20% - 1.1em);
 
-    >img.cover {
+    > img.cover {
       width: 100%;
       display: block;
       margin: auto;
     }
 
-    >div.controls {
-      justify-content:  center;
+    > div.controls {
+      justify-content: center;
       padding: 0.3em;
       display: flex;
     }
 
-    >div.info {
-      >div.chips {
+    > div.info {
+      > div.chips {
         justify-content: center;
       }
 
-      >hr.md-divider {
+      > hr.md-divider {
         margin: 0.5em 0;
       }
 
-      >span.field {
+      > span.field {
         display: block;
 
         &.title {
           font-weight: bold;
         }
 
-        >span.name {
+        > span.name {
           margin-right: 0.3em;
           font-weight: bold;
           color: $md-grey-500;
@@ -280,11 +283,11 @@ div.book-list.table {
           }
         }
 
-        >span.links >a:after {
+        > span.links > a:after {
           content: ', ';
           color: initial;
         }
-        >span.links >a:last-child:after {
+        > span.links > a:last-child:after {
           content: '';
         }
       }
@@ -293,18 +296,18 @@ div.book-list.table {
 }
 
 div.book-list.container {
-  >section.controls {
+  > section.controls {
     display: flex;
     align-items: center;
     margin-bottom: 1em;
 
-    >section.search {
+    > section.search {
       padding: 0;
       margin: 0 1em;
       flex: 1;
     }
 
-    >div.md-menu-container {
+    > div.md-menu-container {
       margin-right: 1em;
     }
   }

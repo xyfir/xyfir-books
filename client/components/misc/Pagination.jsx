@@ -5,7 +5,6 @@ import React from 'react';
 import { setPage } from 'actions/app';
 
 export default class Pagination extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -25,10 +24,8 @@ export default class Pagination extends React.Component {
     };
 
     // Set boolean values
-    if (pagination.pages > pagination.page)
-      pagination.isNextPage = true;
-    if (pagination.page > 1)
-      pagination.isPrevPage = true;
+    if (pagination.pages > pagination.page) pagination.isNextPage = true;
+    if (pagination.page > 1) pagination.isPrevPage = true;
     if (pagination.pages == pagination.page + 1)
       pagination.isNextPageLast = true;
     if (pagination.isPrevPage && pagination.page - 1 == 1)
@@ -41,28 +38,30 @@ export default class Pagination extends React.Component {
     const pagination = this._buildPagination();
 
     return (
-      <section className='pagination'>
+      <section className="pagination">
         {pagination.isPrevPage && !pagination.isPrevPageFirst ? (
           <Button
             icon
             onClick={() => this.onGoTo(1)}
-            iconChildren='first_page'
+            iconChildren="first_page"
           />
         ) : null}
 
         {pagination.isPrevPage ? (
           <Button
-            icon secondary
+            icon
+            secondary
             onClick={() => this.onGoTo(pagination.page - 1)}
-            iconChildren='navigate_before'
+            iconChildren="navigate_before"
           />
         ) : null}
 
         {pagination.isNextPage ? (
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onGoTo(pagination.page + 1)}
-            iconChildren='navigate_next'
+            iconChildren="navigate_next"
           />
         ) : null}
 
@@ -70,11 +69,10 @@ export default class Pagination extends React.Component {
           <Button
             icon
             onClick={() => this.onGoTo(pagination.pages)}
-            iconChildren='last_page'
+            iconChildren="last_page"
           />
         ) : null}
       </section>
     );
   }
-
 }

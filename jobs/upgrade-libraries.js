@@ -11,8 +11,7 @@ const MySQL = require('lib/mysql');
  * 3. Send data stored in xyBooks to their xyLibrary library
  */
 (async function() {
-
-  const db = new MySQL;
+  const db = new MySQL();
 
   try {
     await db.getConnection();
@@ -31,8 +30,7 @@ const MySQL = require('lib/mysql');
         );
 
         if (res.body.error) throw res.body;
-      }
-      catch (err) {
+      } catch (err) {
         console.error(`Could not convert ${user.library}`, err);
         return;
       }
@@ -44,39 +42,38 @@ const MySQL = require('lib/mysql');
         'SELECT * FROM bookmarks WHERE user_id = ?',
         [user.id]
       );
-      const books = await db.query(
-        'SELECT * FROM books WHERE user_id = ?',
-        [user.id]
-      );
-      const notes = await db.query(
-        'SELECT * FROM notes WHERE user_id = ?',
-        [user.id]
-      );
+      const books = await db.query('SELECT * FROM books WHERE user_id = ?', [
+        user.id
+      ]);
+      const notes = await db.query('SELECT * FROM notes WHERE user_id = ?', [
+        user.id
+      ]);
 
       // Loop through books setting notes metadata
       for (let book of books) {
         console.log(`Updating book #${book.book_id}`);
 
-        book.bookmarks = bookmarks
+        (book.bookmarks = bookmarks
           .filter(b => book.book_id == b.book_id)
           .map(b => ({
-            cfi: b.cfi, created: b.created
-          })),
-        book.notes = notes
-          .filter(n => book.book_id = n.book_id)
-          .map(n => ({
-            cfi: n.cfi,
-            created: n.created,
-            content: n.content,
-            cfi_range: JSON.parse(n.cfi_range),
-            highlights: JSON.parse(n.highlights)
-          }));
+            cfi: b.cfi,
+            created: b.created
+          }))),
+          (book.notes = notes
+            .filter(n => (book.book_id = n.book_id))
+            .map(n => ({
+              cfi: n.cfi,
+              created: n.created,
+              content: n.content,
+              cfi_range: JSON.parse(n.cfi_range),
+              highlights: JSON.parse(n.highlights)
+            })));
 
         try {
           res = await request
             .put(
               `${config.addresses.library}libraries/${user.library}` +
-              `/books/${book.book_id}/metadata`
+                `/books/${book.book_id}/metadata`
             )
             .send({
               xyfir: {
@@ -89,8 +86,7 @@ const MySQL = require('lib/mysql');
             });
 
           if (res.body.error) throw res.body;
-        }
-        catch (err) {
+        } catch (err) {
           return console.error(`Could not update book #${book.book_id}`, err);
         }
       }
@@ -98,10 +94,8 @@ const MySQL = require('lib/mysql');
 
     db.release();
     console.log('Job complete');
-  }
-  catch (err) {
+  } catch (err) {
     db.release();
     console.error('jobs/upgrade-libraries', err);
   }
-
-})()
+})();

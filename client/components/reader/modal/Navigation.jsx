@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 export default class ReaderModalNavigation extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -11,23 +10,22 @@ export default class ReaderModalNavigation extends React.Component {
   }
 
   onResize() {
-    const {Modal} = this.props;
+    const { Modal } = this.props;
     Modal.setState({ fullscreen: !Modal.state.fullscreen });
   }
 
   onClose() {
-    const {Modal, Reader} = this.props;
+    const { Modal, Reader } = this.props;
 
     // For some reason if the user closes while in fullscreen and then
     // reopens and clicks the 'shrink' button the Dialog breaks
     if (Modal.state.canResize)
       Modal.setState({ fullscreen: false }, () => Reader.onCloseModal());
-    else
-      Reader.onCloseModal();
+    else Reader.onCloseModal();
   }
 
   render() {
-    const {Modal, title, drawerItems, noSizing} = this.props;
+    const { Modal, title, drawerItems, noSizing } = this.props;
     const actions = this.props.actions.slice();
 
     if (Modal.state.canResize && !noSizing) {
@@ -46,7 +44,7 @@ export default class ReaderModalNavigation extends React.Component {
         <Button
           icon
           onClick={() => this.setState({ drawer: true })}
-          iconChildren='menu'
+          iconChildren="menu"
         />
       );
     }
@@ -58,11 +56,7 @@ export default class ReaderModalNavigation extends React.Component {
           actions={actions}
           title={title}
           nav={
-            <Button
-              icon
-              onClick={() => this.onClose()}
-              iconChildren='close'
-            />
+            <Button icon onClick={() => this.onClose()} iconChildren="close" />
           }
         />
 
@@ -70,7 +64,7 @@ export default class ReaderModalNavigation extends React.Component {
           <Drawer
             onVisibilityChange={v => this.setState({ drawer: v })}
             autoclose={true}
-            position='right'
+            position="right"
             navItems={drawerItems}
             visible={this.state.drawer}
             overlay={false}
@@ -81,7 +75,7 @@ export default class ReaderModalNavigation extends React.Component {
                   <Button
                     icon
                     onClick={() => this.setState({ drawer: false })}
-                    iconChildren='arrow_forward'
+                    iconChildren="arrow_forward"
                   />
                 }
               />
@@ -92,7 +86,6 @@ export default class ReaderModalNavigation extends React.Component {
       </React.Fragment>
     );
   }
-
 }
 
 ReaderModalNavigation.propTypes = {
@@ -108,4 +101,4 @@ ReaderModalNavigation.defaultProps = {
   actions: [],
   noSizing: false,
   drawerItems: []
-}
+};

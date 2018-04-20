@@ -10,7 +10,6 @@ import getMatchIndexes from 'lib/reader/matches/find-indexes';
 import wrapMatches from 'lib/reader/matches/wrap';
 
 export default class BookContentSearch extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -18,7 +17,7 @@ export default class BookContentSearch extends React.Component {
   }
 
   async componentWillMount() {
-    const {Reader} = this.props;
+    const { Reader } = this.props;
 
     // Disable highlights so they don't mess with the search
     Reader.onSetHighlightMode({ mode: 'none' });
@@ -36,8 +35,8 @@ export default class BookContentSearch extends React.Component {
 
   /** @param {string} cfi */
   onGoTo(cfi) {
-    const {Reader} = this.props;
-    const {state} = this;
+    const { Reader } = this.props;
+    const { state } = this;
 
     if (state.searching) return;
 
@@ -53,7 +52,7 @@ export default class BookContentSearch extends React.Component {
 
     if (!this.state.query.length) return this.setState({ searching: false });
 
-    const {Reader} = this.props;
+    const { Reader } = this.props;
     const currentCFI = Reader.book.rendition.location.start.cfi;
     window.bookView.style.display = 'none';
 
@@ -68,9 +67,9 @@ export default class BookContentSearch extends React.Component {
   }
 
   _searchChapter() {
-    const {Reader} = this.props;
+    const { Reader } = this.props;
     const content = Reader.book.rendition.getContents()[0];
-    const {query} = this.state;
+    const { query } = this.state;
 
     const matches = [];
     const search = new RegExp(escapeRegex(query), 'gi');
@@ -82,7 +81,7 @@ export default class BookContentSearch extends React.Component {
       let match;
 
       // Node's text may have multiple matches
-      while (match = search.exec(text)) {
+      while ((match = search.exec(text))) {
         indexes.push(match.index);
       }
 
@@ -97,12 +96,14 @@ export default class BookContentSearch extends React.Component {
         };
 
         // Limit `before` and `after` to 100 characters
-        match.before = match.before.length > 100
-          ? ('...' + match.before.substr(match.before.length - 100))
-          : match.before,
-        match.after = match.after.length > 100
-          ? (match.after.substr(0, 100) + '...')
-          : match.after;
+        (match.before =
+          match.before.length > 100
+            ? '...' + match.before.substr(match.before.length - 100)
+            : match.before),
+          (match.after =
+            match.after.length > 100
+              ? match.after.substr(0, 100) + '...'
+              : match.after);
 
         matches.push(match);
       }
@@ -117,7 +118,7 @@ export default class BookContentSearch extends React.Component {
    * @param {Node} node
    * @param {RegExp} search
    * @return {Node[]}
-  */
+   */
   _findMatchingNodes(node, search) {
     if (!search.test(node.innerText)) return [];
 
@@ -134,47 +135,48 @@ export default class BookContentSearch extends React.Component {
   }
 
   render() {
-    const {matches} = this.state;
-    const {Reader} = this.props;
+    const { matches } = this.state;
+    const { Reader } = this.props;
 
     return (
-      <section className='book-content-search'>
-        <Navigation {...this.props} title='Search' />
+      <section className="book-content-search">
+        <Navigation {...this.props} title="Search" />
 
-        <div className='search'>
+        <div className="search">
           <TextField
-            block paddedBlock
-            id='search--search'
-            ref={i => this._search = i}
-            type='search'
+            block
+            paddedBlock
+            id="search--search"
+            ref={i => (this._search = i)}
+            type="search"
             value={this.state.searching ? 'Searching...' : this.state.query}
             disabled={this.state.searching}
             onChange={v => this.setState({ query: v })}
             onKeyPress={e => e.key == 'Enter' && this.onSearch()}
-            placeholder='Search'
+            placeholder="Search"
           />
           <Button
-            icon primary
+            icon
+            primary
             onClick={() => this.onSearch()}
-            iconChildren='search'
+            iconChildren="search"
           />
         </div>
 
-        <ul className='matches'>{
-          matches.map((match, i) =>
+        <ul className="matches">
+          {matches.map((match, i) => (
             <li
               key={i}
               onClick={() => this.onGoTo(match.cfi)}
-              className='match'
+              className="match"
             >
-              <span className='before'>{match.before}</span>
-              <span className='match'>{match.match}</span>
-              <span className='after'>{match.after}</span>
+              <span className="before">{match.before}</span>
+              <span className="match">{match.match}</span>
+              <span className="after">{match.after}</span>
             </li>
-          )
-        }</ul>
+          ))}
+        </ul>
       </section>
     );
   }
-
 }

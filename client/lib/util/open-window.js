@@ -7,6 +7,5 @@
 export default function(url) {
   if (window.cordova)
     return window.cordova.InAppBrowser.open(encodeURI(url), '_blank');
-  else
-    return window.open(url);
+  else return window.open(url);
 }

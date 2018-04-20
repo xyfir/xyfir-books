@@ -14,18 +14,17 @@ import sortBooks from 'lib/books/sort';
 import buildUrl from 'lib/url/build';
 
 export default class CompactList extends React.Component {
-
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    const {books, account} = this.props.App.state;
+    const { books, account } = this.props.App.state;
     loadCovers(books, account.library);
   }
 
   componentDidUpdate() {
-    const {books, account} = this.props.App.state;
+    const { books, account } = this.props.App.state;
     loadCovers(books, account.library);
   }
 
@@ -40,13 +39,14 @@ export default class CompactList extends React.Component {
   }
 
   render() {
-    const {App} = this.props;
+    const { App } = this.props;
 
-    if (!App.state.books.length) return <NoBooks {...this.props} />
+    if (!App.state.books.length) return <NoBooks {...this.props} />;
 
     let books = sortBooks(
       findMatches(App.state.books, App.state.search.query),
-      'timestamp', false
+      'timestamp',
+      false
     );
     const booksCount = books.length;
 
@@ -54,39 +54,34 @@ export default class CompactList extends React.Component {
 
     return (
       <div>
-        <ul className='list-compact'>{
-          books.map(b =>
+        <ul className="list-compact">
+          {books.map(b => (
             <li
               key={b.id}
-              onClick={() => location.hash = buildUrl(b, 'read')}
-              className='book'
+              onClick={() => (location.hash = buildUrl(b, 'read'))}
+              className="book"
             >
-              <img
-                className='cover'
-                id={`cover-${b.id}`}
-              />
+              <img className="cover" id={`cover-${b.id}`} />
 
-              <div className='info'>
-                <span className='title'>{b.title}</span>
-                <span className='authors'>{b.authors}</span>
+              <div className="info">
+                <span className="title">{b.title}</span>
+                <span className="authors">{b.authors}</span>
 
-                <div className='chips'>
-                  <span className='chip percent-complete'>
-                    {b.percent}%
-                  </span>
+                <div className="chips">
+                  <span className="chip percent-complete">{b.percent}%</span>
 
                   {b.words > 0 ? (
-                    <span className='chip word-count'>
+                    <span className="chip word-count">
                       {Math.round(b.words / 1000)}K
                     </span>
                   ) : null}
 
-                  <span className='chip date-added'>{
-                    (new Date(b.timestamp)).toLocaleDateString()
-                  }</span>
+                  <span className="chip date-added">
+                    {new Date(b.timestamp).toLocaleDateString()}
+                  </span>
 
-                  {!!(+b.rating) ? (
-                    <span className='chip rating'>
+                  {!!+b.rating ? (
+                    <span className="chip rating">
                       <span>{b.rating}</span>
                       <FontIcon>stars</FontIcon>
                     </span>
@@ -94,46 +89,46 @@ export default class CompactList extends React.Component {
                 </div>
 
                 <MenuButton
-                  icon primary
-                  id='menu--set-tools'
+                  icon
+                  primary
+                  id="menu--set-tools"
                   onClick={e => e.stopPropagation()}
                   menuItems={[
                     <ListItem
-                      primaryText='Read'
+                      primaryText="Read"
                       leftIcon={<FontIcon>book</FontIcon>}
                       onClick={e => this.onListItemClick(e, b, 'read')}
                     />,
                     <ListItem
-                      primaryText='Metadata'
+                      primaryText="Metadata"
                       leftIcon={<FontIcon>edit</FontIcon>}
                       onClick={e => this.onListItemClick(e, b, 'manage')}
                     />,
                     <ListItem
-                      primaryText='Search author(s)'
+                      primaryText="Search author(s)"
                       leftIcon={<FontIcon>person</FontIcon>}
                       onClick={e => this.onListItemClick(e, b, 'authors')}
                     />,
                     <ListItem
-                      primaryText='Count words'
+                      primaryText="Count words"
                       leftIcon={<FontIcon>plus_one</FontIcon>}
                       onClick={e => this.onCountWords(e, b)}
                     />,
                     <ListItem
-                      primaryText='Delete'
+                      primaryText="Delete"
                       leftIcon={<FontIcon>delete</FontIcon>}
                       onClick={e =>
-                        !e.stopPropagation() &&
-                        deleteBook([b.id], App)
+                        !e.stopPropagation() && deleteBook([b.id], App)
                       }
                     />
                   ]}
-                  tooltipLabel='Open menu'
-                  iconChildren='more_vert'
+                  tooltipLabel="Open menu"
+                  iconChildren="more_vert"
                 />
               </div>
             </li>
-          )
-        }</ul>
+          ))}
+        </ul>
 
         <Pagination
           itemsPerPage={25}
@@ -144,5 +139,4 @@ export default class CompactList extends React.Component {
       </div>
     );
   }
-
 }

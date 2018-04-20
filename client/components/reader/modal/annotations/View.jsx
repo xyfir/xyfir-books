@@ -16,15 +16,14 @@ import Link from 'components/reader/modal/annotations/types/Link';
 import Map from 'components/reader/modal/annotations/types/Map';
 
 export default class ViewAnnotations extends React.Component {
-
   constructor(props) {
     super(props);
 
     const [setId, itemId] = props.Reader.state.modal.target.split('-');
 
     const annotations = props.Reader.state.book.annotations
-      .find(set => set.id == setId).items
-      .find(item => item.id == itemId).annotations;
+      .find(set => set.id == setId)
+      .items.find(item => item.id == itemId).annotations;
 
     this.state = { annotations, index: 0, drawer: false };
   }
@@ -35,43 +34,43 @@ export default class ViewAnnotations extends React.Component {
     const view = (() => {
       switch (annotation.type) {
         case 1:
-          return <Document annotation={annotation} />
+          return <Document annotation={annotation} />;
         case 2:
-          return <Link annotation={annotation} />
+          return <Link annotation={annotation} />;
         case 3:
-          return <Search annotation={annotation} />
+          return <Search annotation={annotation} />;
         case 4:
-          return <Image annotation={annotation} />
+          return <Image annotation={annotation} />;
         case 5:
           // ** TODO: Support multiple videos
           return (
-            <Video link={
-              Array.isArray(annotation.value)
-                ? annotation.value[0]
-                : annotation.value
-            } />
-          )
+            <Video
+              link={
+                Array.isArray(annotation.value)
+                  ? annotation.value[0]
+                  : annotation.value
+              }
+            />
+          );
         case 6:
-          return <Audio annotation={annotation} />
+          return <Audio annotation={annotation} />;
         case 7:
-          return <Map annotation={annotation} />
+          return <Map annotation={annotation} />;
       }
     })();
 
-    const drawerItems = this.state.annotations.map((a, index) =>
+    const drawerItems = this.state.annotations.map((a, index) => (
       <ListItem
         key={a.id}
         onClick={() => this.setState({ index })}
-        leftIcon={
-          <FontIcon>{annotationTypes[a.type].icon}</FontIcon>
-        }
+        leftIcon={<FontIcon>{annotationTypes[a.type].icon}</FontIcon>}
         primaryText={a.name}
         secondaryText={annotationTypes[a.type].name}
       />
-    );
+    ));
 
     return (
-      <div className='annotation'>
+      <div className="annotation">
         <Navigation
           {...this.props}
           title={annotationTypes[annotation.type].name}
@@ -79,11 +78,10 @@ export default class ViewAnnotations extends React.Component {
           drawerItems={drawerItems}
         />
 
-        <div className='content'>{view}</div>
+        <div className="content">{view}</div>
       </div>
-    )
+    );
   }
-
 }
 
 ViewAnnotations.forceFullscreen = true;

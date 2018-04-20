@@ -13,7 +13,6 @@ import Filters from 'components/reader/modal/Filters';
 import Notes from 'components/reader/modal/notes/Notes';
 
 export default class ReaderModal extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -24,49 +23,50 @@ export default class ReaderModal extends React.Component {
   }
 
   render() {
-    const {show} = this.props.Reader.state.modal;
+    const { show } = this.props.Reader.state.modal;
 
     const view = (() => {
       const props = Object.assign({}, this.props, { Modal: this });
 
       switch (show) {
         case 'manageAnnotations':
-          return <ManageAnnotations {...props} />
+          return <ManageAnnotations {...props} />;
         case 'viewAnnotations':
-          return <ViewAnnotations {...props} />
+          return <ViewAnnotations {...props} />;
         case 'bookStyling':
-          return <BookStyling {...props} />
+          return <BookStyling {...props} />;
         case 'bookmarks':
-          return <Bookmarks {...props} />
+          return <Bookmarks {...props} />;
         case 'bookInfo':
-          return <BookInfo {...props} />
+          return <BookInfo {...props} />;
         case 'filters':
-          return <Filters {...props} />
+          return <Filters {...props} />;
         case 'search':
-          return <SearchBookContent {...props} />
+          return <SearchBookContent {...props} />;
         case 'notes':
-          return <Notes {...props} />
+          return <Notes {...props} />;
         case 'toc':
-          return <TableOfContents {...props} />
+          return <TableOfContents {...props} />;
         default:
           return {
             ignore: true,
             type: {
-              forceFullscreen: false, noFullscreen: false
+              forceFullscreen: false,
+              noFullscreen: false
             }
           };
       }
     })();
 
-    const {forceFullscreen, noFullscreen} = view.type;
+    const { forceFullscreen, noFullscreen } = view.type;
 
-    const fullscreen = noFullscreen ?
-      false :
-      forceFullscreen || this.state.fullscreen;
+    const fullscreen = noFullscreen
+      ? false
+      : forceFullscreen || this.state.fullscreen;
 
     return (
       <DialogContainer
-        id='reader-dialog'
+        id="reader-dialog"
         onHide={() => this.props.Reader.onCloseModal()}
         visible={!!show}
         fullPage={fullscreen}
@@ -74,12 +74,13 @@ export default class ReaderModal extends React.Component {
           'reader-dialog container' +
           (noFullscreen ? ' no-fullscreen transparent' : '')
         }
-        aria-label='reader-modal'
+        aria-label="reader-modal"
         focusOnMount={false}
         autopadContent={false}
-        contentClassName='reader-dialog content'
-      >{view.ignore ? null : view}</DialogContainer>
+        contentClassName="reader-dialog content"
+      >
+        {view.ignore ? null : view}
+      </DialogContainer>
     );
   }
-
 }

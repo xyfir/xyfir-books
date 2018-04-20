@@ -1,16 +1,16 @@
 body.theme-dark {
-  color: #CCC;
+  color: #ccc;
 
   .md-paper.section {
     background-color: $md-grey-800;
   }
 
-  ul >li.book:hover {
-    background-color: #3F3F46;
+  ul > li.book:hover {
+    background-color: #3f3f46;
   }
 
-  ul.list-grid >li.book >div.overlay {
-    background-color: rgba(0,0,0,0.85);
+  ul.list-grid > li.book > div.overlay {
+    background-color: rgba(0, 0, 0, 0.85);
   }
 
   span.chip {
@@ -21,34 +21,36 @@ body.theme-dark {
     background-color: $md-grey-800;
 
     &:hover {
-      background-color: #3F3F46;
+      background-color: #3f3f46;
     }
   }
 
   .edit-books div.comments,
   .manage-book div.comments {
-    background-color: #3F3F46;
+    background-color: #3f3f46;
   }
 
   .markdown-body {
-    color: #DDD;
+    color: #ddd;
 
     code {
-      background-color: rgba(255,255,255,0.1);
-      color: #D7BA7D;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #d7ba7d;
     }
 
-    pre, pre > code {
+    pre,
+    pre > code {
       background-color: #252526;
     }
 
-    td, th {
+    td,
+    th {
       background-color: #252526;
     }
   }
 
   span.reader-dialog.container {
-    section.book-content-search >ul.matches >li.match:hover {
+    section.book-content-search > ul.matches > li.match:hover {
       background-color: $md-grey-700;
     }
 

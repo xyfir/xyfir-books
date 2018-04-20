@@ -7,8 +7,11 @@ import Reader from 'components/settings/Reader';
 
 export default props => {
   switch (props.data.view.split('/')[1]) {
-    case 'BOOK_LIST': return <BookList {...props} />
-    case 'GENERAL': return <General {...props} />
-    case 'READER': return <Reader {...props} />
+    case 'BOOK_LIST':
+      return <BookList {...props} />;
+    case 'GENERAL':
+      return <General {...props} />;
+    case 'READER':
+      return <Reader {...props} />;
   }
-}
+};

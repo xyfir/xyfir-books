@@ -8,58 +8,60 @@ import Purchase from 'components/account/Purchase';
 
 const PurchaseButton = () => (
   <Button
-    raised primary
-    onClick={() => location.hash = '#/account/purchase/subscription'}
-  >Purchase</Button>
+    raised
+    primary
+    onClick={() => (location.hash = '#/account/purchase/subscription')}
+  >
+    Purchase
+  </Button>
 );
 
 export default class Account extends React.Component {
-
   constructor(props) {
     super(props);
   }
 
   render() {
-    const {view, account} = this.props.App.state;
+    const { view, account } = this.props.App.state;
 
-    if (view.split('/')[1] == 'PURCHASE') return <Purchase {...this.props} />
+    if (view.split('/')[1] == 'PURCHASE') return <Purchase {...this.props} />;
 
     return (
-      <div className='account'>
+      <div className="account">
         <Paper
           zDepth={1}
-          component='section'
-          className='referral-link section flex'
+          component="section"
+          className="referral-link section flex"
         >
           <h3>Referral Program</h3>
           <p>
-            Refer new users to Xyfir Books and they'll receive 5% off of their first purchase.
+            Refer new users to Xyfir Books and they'll receive 5% off of their
+            first purchase.
             <br />
-            You'll receive one month of subscription time whenever they purchase a year subscription.
+            You'll receive one month of subscription time whenever they purchase
+            a year subscription.
           </p>
 
           <Button
-            flat primary
-            iconChildren='content_copy'
+            flat
+            primary
+            iconChildren="content_copy"
             onClick={() =>
               copy('https://books.xyfir.com/?r=user~' + account.uid)
             }
-          >Copy Link</Button>
+          >
+            Copy Link
+          </Button>
         </Paper>
 
-        <Paper
-          zDepth={1}
-          component='section'
-          className='subscription section'
-        >
+        <Paper zDepth={1} component="section" className="subscription section">
           <h3>Subscription</h3>
 
           {account.subscription > Date.now() ? (
             <React.Fragment>
               <p>
-                Your subscription will expire on {
-                  moment(account.subscription).format('YYYY-MM-DD')
-                }.
+                Your subscription will expire on{' '}
+                {moment(account.subscription).format('YYYY-MM-DD')}.
               </p>
 
               <p>Your library size limit is {account.librarySizeLimit}GB.</p>
@@ -77,5 +79,4 @@ export default class Account extends React.Component {
       </div>
     );
   }
-
 }

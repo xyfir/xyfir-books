@@ -5,7 +5,6 @@ import React from 'react';
 import Navigation from 'components/reader/modal/Navigation';
 
 export default class Bookmarks extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -20,27 +19,28 @@ export default class Bookmarks extends React.Component {
   }
 
   render() {
-    const {bookmarks} = this.props.Reader.state.book;
+    const { bookmarks } = this.props.Reader.state.book;
 
     return (
-      <section className='bookmarks list-container'>
-        <Navigation {...this.props} title='Bookmarks' />
+      <section className="bookmarks list-container">
+        <Navigation {...this.props} title="Bookmarks" />
 
         {bookmarks.length ? (
-          <List>{
-            bookmarks.reverse().map(bm =>
-              <ListItem
-                key={bm.created}
-                onClick={() => this.onGoToBookmark(bm.cfi)}
-                primaryText={new Date(bm.created).toLocaleString()}
-              />
-            )
-          }</List>
+          <List>
+            {bookmarks
+              .reverse()
+              .map(bm => (
+                <ListItem
+                  key={bm.created}
+                  onClick={() => this.onGoToBookmark(bm.cfi)}
+                  primaryText={new Date(bm.created).toLocaleString()}
+                />
+              ))}
+          </List>
         ) : (
           <p>You don't have any bookmarks!</p>
         )}
       </section>
     );
   }
-
 }

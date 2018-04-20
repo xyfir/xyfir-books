@@ -12,7 +12,6 @@ import { XYLIBRARY_URL } from 'constants/config';
  * @return {Blob}
  */
 export default async function(App, book) {
-
   try {
     // Build url to .epub file to read
     let url = `${XYLIBRARY_URL}/files/${App.state.account.library}/`;
@@ -20,8 +19,7 @@ export default async function(App, book) {
 
     book.formats.forEach(format => {
       if (format.split('.').slice(-1)[0] == 'epub') {
-        hasEpub = true,
-        url += format;
+        (hasEpub = true), (url += format);
       }
     });
 
@@ -34,29 +32,26 @@ export default async function(App, book) {
     try {
       blob = await localforage.getItem(`epub-${book.id}`);
       if (!blob) throw 'Missing file';
-    }
-    catch (err) {
+    } catch (err) {
       if (!navigator.onLine) throw 'Book is not downloaded for offline use';
 
       try {
-        const {body} = await request.get(url).responseType('blob');
+        const { body } = await request.get(url).responseType('blob');
         blob = body;
 
         // Save file, no matter if successful
-        localforage.setItem(`epub-${book.id}`, blob)
+        localforage
+          .setItem(`epub-${book.id}`, blob)
           .then(() => 1)
           .catch(() => 1);
-      }
-      catch (err) {
+      } catch (err) {
         throw 'Could not download ebook file';
       }
     }
 
     return blob;
-  }
-  catch (err) {
+  } catch (err) {
     App._alert(err);
     throw err;
   }
-
 }

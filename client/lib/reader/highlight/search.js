@@ -7,8 +7,7 @@ import escapeRegex from 'escape-string-regexp';
  * @param {string} search
  */
 export default function(book, search) {
-
-  const [{document}] = book.rendition.getContents();
+  const [{ document }] = book.rendition.getContents();
   const needle = new RegExp(escapeRegex(search), 'g');
   let html = document.body.innerHTML;
 
@@ -23,5 +22,4 @@ export default function(book, search) {
   }).html;
 
   document.body.innerHTML = html;
-
 }

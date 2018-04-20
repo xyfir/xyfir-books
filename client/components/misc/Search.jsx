@@ -8,7 +8,6 @@ import { setSearch } from 'actions/app';
 import parseQuery from 'lib/url/parse-query-string';
 
 export default class Search extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -30,22 +29,18 @@ export default class Search extends React.Component {
 
   render() {
     return (
-      <Paper
-        zDepth={1}
-        component='section'
-        className='search section'
-      >
+      <Paper zDepth={1} component="section" className="search section">
         <TextField
-          block paddedBlock
-          id='search'
-          ref='search'
-          type='search'
+          block
+          paddedBlock
+          id="search"
+          ref="search"
+          type="search"
           value={this.props.App.state.search.query}
           onChange={q => this.onSearch(q)}
-          placeholder='Search'
+          placeholder="Search"
         />
       </Paper>
     );
   }
-
 }

@@ -20,7 +20,7 @@ import OpenWindow from 'components/misc/OpenWindow';
 // Modules
 import query from 'lib/url/parse-query-string';
 
-const BackgroundColorExample = ({styles, backgroundColor}) => (
+const BackgroundColorExample = ({ styles, backgroundColor }) => (
   <span
     style={{
       color: styles.color,
@@ -28,14 +28,13 @@ const BackgroundColorExample = ({styles, backgroundColor}) => (
       fontFamily: styles.fontFamily,
       backgroundColor: styles.backgroundColor
     }}
-    className='example background-color'
+    className="example background-color"
   >
-    Example. <span style={{backgroundColor}}>Highlight.</span> Example.
+    Example. <span style={{ backgroundColor }}>Highlight.</span> Example.
   </span>
 );
 
 export default class ReaderSettings extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -69,7 +68,7 @@ export default class ReaderSettings extends React.Component {
   }
 
   onSaveStyles() {
-    const {App} = this.props;
+    const { App } = this.props;
 
     if (Date.now() > App.state.account.subscription) return;
 
@@ -77,9 +76,7 @@ export default class ReaderSettings extends React.Component {
 
     if (App.state.config.general.matchThemes && this._theme) {
       document.body.className = `theme-${this._theme}`;
-      App.store.dispatch(
-        setGeneral({ theme: this._theme, matchThemes: true })
-      );
+      App.store.dispatch(setGeneral({ theme: this._theme, matchThemes: true }));
     }
 
     App.store.dispatch(save(['config']));
@@ -92,14 +89,13 @@ export default class ReaderSettings extends React.Component {
 
   onSaveKey() {
     const xyAnnotationsKey = this._annotationsKey.value;
-    const {App} = this.props;
+    const { App } = this.props;
 
     request
       .put(`${XYBOOKS_URL}/api/account`)
       .send({ xyAnnotationsKey })
       .end((err, res) => {
-        if (err || res.body.error)
-          return App._alert('Could not save changes');
+        if (err || res.body.error) return App._alert('Could not save changes');
 
         App.store.dispatch(setXyAnnotationsKey(xyAnnotationsKey));
         App._alert('xyAnnotations subscription key set');
@@ -108,84 +104,83 @@ export default class ReaderSettings extends React.Component {
   }
 
   render() {
-    const {account} = this.props.App.state;
+    const { account } = this.props.App.state;
 
     return (
-      <div className='reader-settings'>
+      <div className="reader-settings">
         {Date.now() > account.subscription ? (
-          <p>Free users cannot use global reader themes or set custom styling.</p>
+          <p>
+            Free users cannot use global reader themes or set custom styling.
+          </p>
         ) : null}
 
-        <Paper
-          zDepth={1}
-          component='section'
-          className='theme section flex'
-        >
+        <Paper zDepth={1} component="section" className="theme section flex">
           <h3>Styling</h3>
 
           <SelectField
-            id='select--theme'
-            label='Reader Theme'
+            id="select--theme"
+            label="Reader Theme"
             onChange={v => this.onSetTheme(v)}
             menuItems={['Light', 'Dark']}
-            className='md-cell'
+            className="md-cell"
           />
 
-          <br /><br />
+          <br />
+          <br />
 
           <SelectField
-            id='select--font'
-            label='Font'
+            id="select--font"
+            label="Font"
             value={this.state.fontFamily}
             onChange={v => this.setState({ fontFamily: v })}
             menuItems={FONTS}
-            className='md-cell'
+            className="md-cell"
           />
 
           <SelectField
-            id='select--text-align'
-            label='Alignment'
+            id="select--text-align"
+            label="Alignment"
             value={this.state.textAlign}
             onChange={v => this.setState({ textAlign: v })}
             menuItems={ALIGNMENTS}
-            className='md-cell'
+            className="md-cell"
           />
 
           <TextField
-            id='number--font-size'
+            id="number--font-size"
             min={0.1}
             step={0.1}
-            type='number'
-            label='Font Size'
+            type="number"
+            label="Font Size"
             value={this.state.fontSize}
             onChange={v => this.setState({ fontSize: +v })}
-            className='md-cell'
+            className="md-cell"
           />
 
           <TextField
-            id='number--text-indent'
+            id="number--text-indent"
             min={0}
             step={0.1}
-            type='number'
-            label='Indentation'
+            type="number"
+            label="Indentation"
             value={this.state.textIndent}
             onChange={v => this.setState({ textIndent: +v })}
-            className='md-cell'
+            className="md-cell"
           />
 
           <TextField
-            id='number--line-spacing'
+            id="number--line-spacing"
             min={1}
             step={0.1}
-            type='number'
-            label='Line Spacing'
+            type="number"
+            label="Line Spacing"
             value={this.state.lineHeight}
             onChange={v => this.setState({ lineHeight: +v })}
-            className='md-cell'
+            className="md-cell"
           />
 
           <span
-            className='example text'
+            className="example text"
             style={{
               color: this.state.color,
               fontSize: this.state.fontSize + 'em',
@@ -196,30 +191,40 @@ export default class ReaderSettings extends React.Component {
               backgroundColor: this.state.backgroundColor
             }}
           >
-            Example text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam viverra est at lacus convallis, at ullamcorper nisi pretium. Praesent ullamcorper felis eu mi egestas, at gravida nibh cursus. Nunc rutrum, ante eget malesuada efficitur, nisl massa bibendum arcu, ac condimentum urna ex in est. Sed ipsum dolor, pretium eu egestas at, tempor eget dolor. Fusce vehicula, ante quis vestibulum viverra, tellus nisi vestibulum leo, vel lobortis libero purus at ipsum. In id enim vitae felis mollis tempor. Duis egestas vitae arcu vitae egestas. Nunc ultricies felis lacus, ut suscipit mauris iaculis vitae.
+            Example text. Lorem ipsum dolor sit amet, consectetur adipiscing
+            elit. Etiam viverra est at lacus convallis, at ullamcorper nisi
+            pretium. Praesent ullamcorper felis eu mi egestas, at gravida nibh
+            cursus. Nunc rutrum, ante eget malesuada efficitur, nisl massa
+            bibendum arcu, ac condimentum urna ex in est. Sed ipsum dolor,
+            pretium eu egestas at, tempor eget dolor. Fusce vehicula, ante quis
+            vestibulum viverra, tellus nisi vestibulum leo, vel lobortis libero
+            purus at ipsum. In id enim vitae felis mollis tempor. Duis egestas
+            vitae arcu vitae egestas. Nunc ultricies felis lacus, ut suscipit
+            mauris iaculis vitae.
           </span>
 
           <br />
 
           <ColorPicker
-            id='font-color'
-            label='Font Color'
+            id="font-color"
+            label="Font Color"
             value={this.state.color}
             onChange={v => this.setState({ color: v })}
           />
 
           <ColorPicker
-            id='background-color'
-            label='Background Color'
+            id="background-color"
+            label="Background Color"
             value={this.state.backgroundColor}
             onChange={v => this.setState({ backgroundColor: v })}
           />
 
-          <br /><br />
+          <br />
+          <br />
 
           <ColorPicker
-            id='highlight-color'
-            label='Highlight / Notes Color'
+            id="highlight-color"
+            label="Highlight / Notes Color"
             value={this.state.highlightColor}
             onChange={v => this.setState({ highlightColor: v })}
           />
@@ -232,8 +237,8 @@ export default class ReaderSettings extends React.Component {
           <br />
 
           <ColorPicker
-            id='-color'
-            label='Search Match Color'
+            id="-color"
+            label="Search Match Color"
             value={this.state.searchMatchColor}
             onChange={v => this.setState({ searchMatchColor: v })}
           />
@@ -246,8 +251,8 @@ export default class ReaderSettings extends React.Component {
           <br />
 
           <ColorPicker
-            id='annotation-color'
-            label='Annotation Color'
+            id="annotation-color"
+            label="Annotation Color"
             value={this.state.annotationColor}
             onChange={v => this.setState({ annotationColor: v })}
           />
@@ -260,76 +265,96 @@ export default class ReaderSettings extends React.Component {
           <br />
 
           <SelectField
-            id='select--default-highlight-mode'
-            label='Default Highlight Mode'
+            id="select--default-highlight-mode"
+            label="Default Highlight Mode"
             onChange={v => this.setState({ defaultHighlightMode: v })}
             menuItems={[
               { label: 'None', value: 'none' },
               { label: 'Notes', value: 'notes' },
               { label: 'Annotations', value: 'annotations' }
             ]}
-            className='md-cell'
-            defaultValue='none'
+            className="md-cell"
+            defaultValue="none"
           />
 
           <div>
             <Button
-              primary raised
-              iconChildren='save'
+              primary
+              raised
+              iconChildren="save"
               onClick={() => this.onSaveStyles()}
-            >Save</Button>
+            >
+              Save
+            </Button>
 
             <Button
-              secondary raised
-              iconChildren='clear'
+              secondary
+              raised
+              iconChildren="clear"
               onClick={() => this.onResetStyles()}
-            >Reset</Button>
+            >
+              Reset
+            </Button>
           </div>
         </Paper>
 
         <Paper
           zDepth={1}
-          component='section'
-          className='xyfir-annotations section flex'
+          component="section"
+          className="xyfir-annotations section flex"
         >
           <h3>Xyfir Annotations</h3>
           <p>
-            A xyAnnotations subscription allows you to find and download annotations for books that you're reading.
+            A xyAnnotations subscription allows you to find and download
+            annotations for books that you're reading.
             <br />
-            xyAnnotations subscriptions can be purchased directly through <OpenWindow href='https://annotations.xyfir.com/'>xyAnnotations</OpenWindow>, or through certain other reader applications that support xyAnnotations.
+            xyAnnotations subscriptions can be purchased directly through{' '}
+            <OpenWindow href="https://annotations.xyfir.com/">
+              xyAnnotations
+            </OpenWindow>, or through certain other reader applications that
+            support xyAnnotations.
             <br />
-            New xyBooks accounts are automatically given a free one-month subscription.
+            New xyBooks accounts are automatically given a free one-month
+            subscription.
           </p>
 
           <TextField
-            id='text--xyannotations-key'
-            ref={i => this._annotationsKey = i}
-            type='text'
-            label='Subscription Key'
-            className='md-cell'
+            id="text--xyannotations-key"
+            ref={i => (this._annotationsKey = i)}
+            type="text"
+            label="Subscription Key"
+            className="md-cell"
             defaultValue={account.xyAnnotationsKey}
           />
 
           <Button
-            primary raised
-            iconChildren='save'
+            primary
+            raised
+            iconChildren="save"
             onClick={() => this.onSaveKey()}
-          >Save</Button>
+          >
+            Save
+          </Button>
 
           <p>
-            If you have already purchased a subscription through xyAnnotations, you can easily have xyBooks request access to your subscription key using the button below.
+            If you have already purchased a subscription through xyAnnotations,
+            you can easily have xyBooks request access to your subscription key
+            using the button below.
             <br />
-            You will be redirected to xyAnnotations where you'll login, allow the request, and then you'll be brought back here.
+            You will be redirected to xyAnnotations where you'll login, allow
+            the request, and then you'll be brought back here.
           </p>
 
           <Button
-            secondary raised
-            iconChildren='navigate_next'
+            secondary
+            raised
+            iconChildren="navigate_next"
             onClick={() => this.onRequestSubscription()}
-          >Request Access</Button>
+          >
+            Request Access
+          </Button>
         </Paper>
       </div>
     );
   }
-
 }

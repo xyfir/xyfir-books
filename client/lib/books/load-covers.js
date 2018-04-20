@@ -8,33 +8,33 @@ import { XYLIBRARY_URL } from 'constants/config';
  * @param {object[]} books
  */
 function purgeCovers(books) {
-
   const lastPurge = +localStorage.lastCoverPurge || 0;
   delete localStorage.last_cover_purge;
 
   // Only purge covers at most once a day
-  if (!books.length || (Date.now() - lastPurge) < 86400000) return;
+  if (!books.length || Date.now() - lastPurge < 86400000) return;
 
-  setTimeout(() => localforage.keys().then(keys => {
-    keys
-      // Filter out non-cover keys
-      .filter(k => k.indexOf('cover-') == 0)
-      .forEach(k => {
-        const id = k.split('-')[1];
-        const book = books.find(b => id == b.id);
+  setTimeout(
+    () =>
+      localforage.keys().then(keys => {
+        keys
+          // Filter out non-cover keys
+          .filter(k => k.indexOf('cover-') == 0)
+          .forEach(k => {
+            const id = k.split('-')[1];
+            const book = books.find(b => id == b.id);
 
-        // Delete if book id no longer exists in books
-        if (!book)
-          localforage.removeItem(k);
-        // Remove covers with old key format
-        // ** Remove this after next published update
-        else if (/^cover-\d+-\d+$/.test(k))
-          localforage.removeItem(k);
-      });
+            // Delete if book id no longer exists in books
+            if (!book) localforage.removeItem(k);
+            // Remove covers with old key format
+            // ** Remove this after next published update
+            else if (/^cover-\d+-\d+$/.test(k)) localforage.removeItem(k);
+          });
 
-    localStorage.lastCoverPurge = Date.now();
-  }), 30 * 1000);
-
+        localStorage.lastCoverPurge = Date.now();
+      }),
+    30 * 1000
+  );
 }
 
 /**
@@ -43,7 +43,6 @@ function purgeCovers(books) {
  * @param {string} library
  */
 function loadFromApi(book, library) {
-
   if (!navigator.onLine) return;
 
   request
@@ -57,7 +56,6 @@ function loadFromApi(book, library) {
 
       localforage.setItem(`cover-${book.id}`, res.body);
     });
-
 }
 
 /**
@@ -66,26 +64,23 @@ function loadFromApi(book, library) {
  * @param {string} library
  */
 function loadCovers(books, library) {
-
   document.querySelectorAll('img.cover').forEach(img => {
     const id = img.id.split('-')[1];
     const book = books.find(b => id == b.id);
 
     // Determine if we have book's latest cover stored
-    localforage.getItem(`cover-${id}`)
+    localforage
+      .getItem(`cover-${id}`)
       .then(cover => {
         // Cover not saved to localstorage, pull from API
-        if (cover == null)
-          loadFromApi(book, library);
+        if (cover == null) loadFromApi(book, library);
         // Set image source
-        else
-          document.getElementById(img.id).src = URL.createObjectURL(cover);
+        else document.getElementById(img.id).src = URL.createObjectURL(cover);
       })
       .catch(err => loadFromApi(book, library));
   });
 
   purgeCovers(books);
-
 }
 
 export default loadCovers;
