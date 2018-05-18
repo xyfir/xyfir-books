@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import localForage from 'localforage';
 import { render } from 'react-dom';
 import request from 'superagent';
