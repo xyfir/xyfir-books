@@ -95,11 +95,10 @@ module.exports = async function(req, res) {
         // Generate a free one month subscription for xyAnnotations
         const xyAnnotationsRes = await request
           .post(config.addresses.xyAnnotations + 'api/affiliate/subscriptions')
+          .auth('affiliate', config.keys.xyAnnotations)
           .send({
             days: 30,
-            subscription: 1,
-            affiliateId: config.ids.xyAnnotations,
-            affiliateKey: config.keys.xyAnnotations
+            subscription: 1
           });
         xyAnnotationsKey = xyAnnotationsRes.body.key || '';
       } catch (err) {

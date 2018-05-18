@@ -18,13 +18,10 @@ export default async function(sets, key) {
     for (let set of sets) {
       const res = await request
         .get(`${XYANNOTATIONS_URL}/api/sets/${set.id}/download`)
+        .auth('subscription', key)
         .query({
-          subscriptionKey: key,
           version: set.version,
-          minify: {
-            numberedBooleans: true,
-            removeFalsy: true
-          }
+          minify: true
         });
 
       // Check if new version has been received

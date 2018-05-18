@@ -69,13 +69,8 @@ export default class ManageAnnotations extends React.Component {
     // Download set's items
     request
       .get(`${XYANNOTATIONS_URL}/api/sets/${set.id}/download`)
-      .query({
-        subscriptionKey: this.state.key,
-        minify: {
-          numberedBooleans: true,
-          removeFalsy: true
-        }
-      })
+      .auth('subscription', this.state.key)
+      .query({ minify: true })
       .end((err, res) => {
         if (err || !res.body.set || !res.body.set.items)
           return Reader.props.alert('Could not download set');
