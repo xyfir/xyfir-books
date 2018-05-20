@@ -1,19 +1,8 @@
-import { ListItem, FontIcon, Divider, Button } from 'react-md';
-import marked from 'marked';
+import AnnotateReact from '@xyfir/annotate-react';
 import React from 'react';
 
-// Constants
-import annotationTypes from 'constants/annotation-types';
-
-// Components
-import Navigation from 'components/reader/modal/Navigation';
-import Document from 'components/reader/modal/annotations/types/Document';
-import Search from 'components/reader/modal/annotations/types/Search';
-import Image from 'components/reader/modal/annotations/types/Image';
-import Video from 'components/reader/modal/annotations/types/Video';
-import Audio from 'components/reader/modal/annotations/types/Audio';
-import Link from 'components/reader/modal/annotations/types/Link';
-import Map from 'components/reader/modal/annotations/types/Map';
+// Modules
+import openWindow from 'lib/util/open-window';
 
 export default class ViewAnnotations extends React.Component {
   constructor(props) {
@@ -24,61 +13,19 @@ export default class ViewAnnotations extends React.Component {
       .find(set => set.id == setId)
       .items.find(item => item.id == itemId).annotations;
 
-    this.state = { annotations, index: 0 };
+    this.state = { annotations };
   }
 
   render() {
-    const { annotations, index } = this.state;
-    const annotation = annotations[index];
     const { Reader } = this.props;
 
-    const view = (() => {
-      switch (annotation.type) {
-        case 1:
-          return <Document annotation={annotation} />;
-        case 2:
-          return <Link annotation={annotation} />;
-        case 3:
-          return <Search annotation={annotation} book={Reader.state.book} />;
-        case 4:
-          return <Image annotation={annotation} />;
-        case 5:
-          // ** TODO: Support multiple videos
-          return (
-            <Video
-              link={
-                Array.isArray(annotation.value)
-                  ? annotation.value[0]
-                  : annotation.value
-              }
-            />
-          );
-        case 6:
-          return <Audio annotation={annotation} />;
-        case 7:
-          return <Map annotation={annotation} />;
-      }
-    })();
-
     return (
-      <div className="annotation">
-        <Navigation
-          {...this.props}
-          title={annotationTypes[annotation.type].name}
-          noSizing={true}
-          drawerItems={annotations.map((a, index) => (
-            <ListItem
-              key={a.id}
-              onClick={() => this.setState({ index })}
-              leftIcon={<FontIcon>{annotationTypes[a.type].icon}</FontIcon>}
-              primaryText={a.name}
-              secondaryText={annotationTypes[a.type].name}
-            />
-          ))}
-        />
-
-        <div className="content">{view}</div>
-      </div>
+      <AnnotateReact.ViewAnnotations
+        annotations={this.state.annotations}
+        onGoToLink={openWindow}
+        onClose={() => Reader.onCloseModal()}
+        book={Reader.state.book}
+      />
     );
   }
 }
