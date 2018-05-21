@@ -1,14 +1,14 @@
 {
   "name": "xyfir-books",
-  "version": "5.6.8",
+  "version": "5.6.9",
   "description": "",
   "main": "app.js",
   "scripts": {
     "build": "npm run build:css & npm run build:js",
     "build:js": "webpack-cli",
-    "build:css": "npm run build:css-app & npm run build:css-admin",
-    "build:css-app": "node-sass client/styles/app.scss static/css/app.css --output-style compressed",
-    "build:css-admin": "node-sass client/styles/admin.scss static/css/admin.css --output-style compressed"
+    "build:css": "npm run build:css:app & npm run build:css:admin",
+    "build:css:app": "node-sass client/styles/app.scss static/css/app.css --output-style compressed",
+    "build:css:admin": "node-sass client/styles/admin.scss static/css/admin.css --output-style compressed"
   },
   "author": "Xyfir",
   "license": "ISC",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@xyfir/annotate-epubjs": "^1.3.0",
+    "@xyfir/annotate-react": "^1.3.0",
     "admyn": "^1.4.0",
     "app-module-path": "^2.2.0",
     "body-parser": "^1.18.3",
