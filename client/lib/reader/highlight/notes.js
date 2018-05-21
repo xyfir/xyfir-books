@@ -24,11 +24,12 @@ export default function(book, notes) {
         html = AnnotateEPUBJS.wrapMatches({
           key: i,
           html,
+          mode: 'normal',
           type: 'note',
-          matches: AnnotateEPUBJS.findMatchIndexes(needle, html),
-          onclick: (t, k) =>
+          action: (t, k) =>
             `!event.stopPropagation() && ` +
-            `parent.postMessage({type: '${t}', key: '${k}', epubjs: true}, '*')`
+            `parent.postMessage({type: '${t}', key: '${k}', epubjs: true}, '*')`,
+          matches: AnnotateEPUBJS.findMatchIndexes(needle, html)
         }).html;
       })
     );
