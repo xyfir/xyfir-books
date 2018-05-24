@@ -22,8 +22,8 @@ export default class ManageAnnotations extends React.Component {
   constructor(props) {
     super(props);
 
-    const { Reader } = props,
-      { App } = Reader.props;
+    const { Reader } = props;
+    const { App } = Reader.props;
 
     this.state = {
       key: App.state.account.xyAnnotationsKey,
@@ -103,6 +103,19 @@ export default class ManageAnnotations extends React.Component {
     else Reader.onSetHighlightMode({ mode: 'none' });
   }
 
+  onGetSet(id) {
+    request.get(`${XYANNOTATIONS_URL}/api/sets/${id}`).end((err, res) => {
+      if (err) return;
+
+      const sets = this.state.sets.map(set => {
+        if (set.id == id) return Object.assign({}, set, res.body);
+        return set;
+      });
+
+      this.setState({ set: id, sets });
+    });
+  }
+
   _renderView(annotations) {
     const isDownloaded = !!annotations.find(a => a.id == this.state.set);
     const set = isDownloaded
@@ -139,6 +152,8 @@ export default class ManageAnnotations extends React.Component {
         <div className="set">
           <h2 className="title">{set.title}</h2>
 
+          <p className="summary">{set.summary}</p>
+
           <ul className="books">
             {set.media.books.map(b => (
               <li className="book" key={b.id}>
@@ -149,9 +164,9 @@ export default class ManageAnnotations extends React.Component {
           </ul>
 
           <div
-            className="markdown-body description"
+            className="markdown-body summary"
             dangerouslySetInnerHTML={{
-              __html: marked(set.description, { sanitize: true })
+              __html: marked(set.description || '', { sanitize: true })
             }}
           />
         </div>
@@ -187,7 +202,7 @@ export default class ManageAnnotations extends React.Component {
             {this.state.sets.map(s => (
               <li
                 key={s.id}
-                onClick={() => this.setState({ set: s.id })}
+                onClick={() => this.onGetSet(s.id)}
                 className="set"
               >
                 <span className="title">{s.title}</span>
@@ -203,9 +218,7 @@ export default class ManageAnnotations extends React.Component {
                   </span>
                 ) : null}
 
-                <span className="description">
-                  {s.description.split('\n')[0]}
-                </span>
+                <span className="summary">{s.summary}</span>
               </li>
             ))}
           </ul>
@@ -223,9 +236,7 @@ export default class ManageAnnotations extends React.Component {
             onClick={() => this.setState({ set: a.id })}
             primaryText={a.title}
             secondaryText={
-              `Contains ${a.items.length} annotations` +
-              '\n' +
-              a.description.split('\n')[0]
+              `Contains ${a.items.length} annotations` + '\n' + a.summary
             }
           />
         ))}
