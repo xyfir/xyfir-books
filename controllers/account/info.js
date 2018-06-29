@@ -92,7 +92,7 @@ module.exports = async function(req, res) {
     );
     db.release();
 
-    row.referral = JSON.parse(row.referral);
+    row.referral = JSON.parse(row.referral || '{}');
 
     // Set session, return account info
     row.error = false;
