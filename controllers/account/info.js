@@ -1,11 +1,11 @@
 const request = require('superagent');
-const crypto = require('lib/crypto');
-const mysql = require('lib/mysql');
-
+const Cryptr = require('cryptr');
 const config = require('config');
+const cryptr = new Cryptr(config.keys.accessToken);
+const MySQL = require('lib/mysql');
 
 /*
-  GET api/account
+  GET /api/account
   REQUIRED
     token: string
   RETURN
@@ -24,7 +24,7 @@ const config = require('config');
     Return account info
 */
 module.exports = async function(req, res) {
-  const db = new mysql();
+  const db = new MySQL();
 
   try {
     let uid;
@@ -34,9 +34,7 @@ module.exports = async function(req, res) {
     // Validate access token
     if (req.query.token) {
       // [user_id, access_token]
-      const token = crypto
-        .decrypt(req.query.token, config.keys.accessToken)
-        .split('-');
+      const token = cryptr.decrypt(req.query.token).split('-');
 
       // Invalid token
       if (!token[0] || !token[1]) throw 'Invalid access token';
@@ -74,12 +72,12 @@ module.exports = async function(req, res) {
 
     const [row] = await db.query(
       `
-      SELECT
-        library_size_limit AS librarySizeLimit, subscription, email,
-        user_id AS uid, xyannotations_key AS xyAnnotationsKey,
-        library_id AS library, referral
-      FROM users WHERE user_id = ?
-    `,
+        SELECT
+          library_size_limit AS librarySizeLimit, subscription, email,
+          user_id AS uid, xyannotations_key AS xyAnnotationsKey,
+          library_id AS library, referral
+        FROM users WHERE user_id = ?
+      `,
       [uid]
     );
 
@@ -87,9 +85,9 @@ module.exports = async function(req, res) {
 
     await db.query(
       `
-      UPDATE users SET last_active = NOW(), library_wiped = 0
-      WHERE user_id = ?
-    `,
+        UPDATE users SET last_active = NOW(), library_wiped = 0
+        WHERE user_id = ?
+      `,
       [uid]
     );
     db.release();
@@ -97,10 +95,10 @@ module.exports = async function(req, res) {
     row.referral = JSON.parse(row.referral);
 
     // Set session, return account info
-    (row.error = false),
-      (req.session.uid = uid),
-      (req.session.library = row.library),
-      (req.session.subscription = row.subscription);
+    row.error = false;
+    req.session.uid = uid;
+    req.session.library = row.library;
+    req.session.subscription = row.subscription;
 
     res.json(row);
   } catch (err) {

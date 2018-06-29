@@ -1,13 +1,13 @@
 const rstring = require('randomstring');
 const request = require('superagent');
 const moment = require('moment');
-const crypto = require('lib/crypto');
+const Cryptr = require('cryptr');
+const config = require('config');
+const cryptr = new Cryptr(config.keys.accessToken);
 const MySQL = require('lib/mysql');
 
-const config = require('config');
-
 /*
-  POST api/account/login
+  POST /api/account/login
   REQUIRED
     xid: string, auth: string
   OPTIONAL
@@ -36,10 +36,10 @@ module.exports = async function(req, res) {
 
     let result,
       sql = `
-      SELECT user_id, subscription FROM users WHERE xyfir_id = ?
-    `,
-      vars = [req.body.xid],
-      rows = await db.query(sql, vars);
+        SELECT user_id, subscription FROM users WHERE xyfir_id = ?
+      `;
+    vars = [req.body.xid];
+    rows = await db.query(sql, vars);
 
     // Register user
     if (!rows.length) {
@@ -106,50 +106,49 @@ module.exports = async function(req, res) {
       }
 
       // Save data to user's row
-      (sql = `
+      sql = `
         UPDATE users SET
           library_id = ?, referral = ?, xyannotations_key = ?, subscription = ?
         WHERE user_id = ?
-      `),
-        (vars = [
-          library,
-          JSON.stringify(referral),
-          xyAnnotationsKey,
-          subscription,
-          req.session.uid
-        ]),
-        (result = await db.query(sql, vars));
+      `;
+      vars = [
+        library,
+        JSON.stringify(referral),
+        xyAnnotationsKey,
+        subscription,
+        req.session.uid
+      ];
+      result = await db.query(sql, vars);
 
       db.release();
 
       res.json({
         error: false,
-        accessToken: crypto.encrypt(
-          req.session.uid + '-' + xyAccRes.body.accessToken,
-          config.keys.accessToken
+        accessToken: cryptr.encrypt(
+          req.session.uid + '-' + xyAccRes.body.accessToken
         )
       });
 
-      (req.session.subscription = 0), (req.session.library = library);
+      req.session.subscription = 0;
+      req.session.library = library;
     }
     // Update user
     else {
-      (sql = `
+      sql = `
         UPDATE users SET email = ? WHERE user_id = ?
-      `),
-        (vars = [xyAccRes.body.email, rows[0].user_id]),
-        (result = await db.query(sql, vars));
+      `;
+      vars = [xyAccRes.body.email, rows[0].user_id];
+      result = await db.query(sql, vars);
 
       db.release();
 
-      (req.session.uid = rows[0].user_id),
-        (req.session.subscription = rows[0].subscription);
+      req.session.uid = rows[0].user_id;
+      req.session.subscription = rows[0].subscription;
 
       res.json({
         error: false,
-        accessToken: crypto.encrypt(
-          req.session.uid + '-' + xyAccRes.body.accessToken,
-          config.keys.accessToken
+        accessToken: cryptr.encrypt(
+          req.session.uid + '-' + xyAccRes.body.accessToken
         )
       });
     }
