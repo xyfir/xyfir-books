@@ -53,6 +53,12 @@ export default class Reader extends React.Component {
       }
     };
 
+    /**
+     * @type {string[]}
+     * Highlighted items clicked within the book's content.
+     */
+    this.clickedItems = [];
+
     this.onSetHighlightMode = this.onSetHighlightMode.bind(this);
     this.onHighlightClicked = this.onHighlightClicked.bind(this);
     this._addEventListeners = this._addEventListeners.bind(this);
@@ -354,17 +360,35 @@ export default class Reader extends React.Component {
   onHighlightClicked(event) {
     if (!event.data.epubjs) return;
 
-    this.setState({
-      modal: {
-        closeWait: Date.now() + 100,
-        target: event.data.key,
-        show: {
-          note: 'notes',
-          search: 'search',
-          annotation: 'viewAnnotations'
-        }[event.data.type]
-      }
-    });
+    if (event.data.type == 'annotation') {
+      clearTimeout(this.timeout);
+      this.clickedItems.push(event.data.key);
+
+      this.timeout = setTimeout(() => {
+        // Filter out duplicates
+        this.clickedItems = Array.from(new Set(this.clickedItems));
+
+        this.setState({
+          modal: {
+            closeWait: Date.now() + 100,
+            target:
+              this.clickedItems.length == 1
+                ? this.clickedItems[0]
+                : this.clickedItems,
+            show: 'viewAnnotations'
+          }
+        });
+        this.clickedItems = [];
+      }, 10);
+    } else {
+      this.setState({
+        modal: {
+          closeWait: Date.now() + 100,
+          target: event.data.key,
+          show: event.data.type == 'note' ? 'notes' : 'search'
+        }
+      });
+    }
   }
 
   /**

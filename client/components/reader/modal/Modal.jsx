@@ -4,6 +4,7 @@ import React from 'react';
 // Components
 import ManageAnnotations from 'components/reader/modal/annotations/Manage';
 import SearchBookContent from 'components/reader/modal/Search';
+import PickAnnotations from 'components/reader/modal/annotations/Pick';
 import ViewAnnotations from 'components/reader/modal/annotations/View';
 import TableOfContents from 'components/reader/modal/TableOfContents';
 import BookStyling from 'components/reader/modal/BookStyling';
@@ -11,6 +12,14 @@ import Bookmarks from 'components/reader/modal/Bookmarks';
 import BookInfo from 'components/reader/modal/BookInfo';
 import Filters from 'components/reader/modal/Filters';
 import Notes from 'components/reader/modal/notes/Notes';
+
+const IGNORE = {
+  ignore: true,
+  type: {
+    forceFullscreen: false,
+    noFullscreen: false
+  }
+};
 
 export default class ReaderModal extends React.Component {
   constructor(props) {
@@ -23,16 +32,20 @@ export default class ReaderModal extends React.Component {
   }
 
   render() {
-    const { show } = this.props.Reader.state.modal;
+    const { modal } = this.props.Reader.state;
 
     const view = (() => {
       const props = Object.assign({}, this.props, { Modal: this });
 
-      switch (show) {
+      switch (modal.show) {
         case 'manageAnnotations':
           return <ManageAnnotations {...props} />;
         case 'viewAnnotations':
-          return <ViewAnnotations {...props} />;
+          return Array.isArray(modal.target) ? (
+            <PickAnnotations {...props} />
+          ) : (
+            <ViewAnnotations {...props} />
+          );
         case 'bookStyling':
           return <BookStyling {...props} />;
         case 'bookmarks':
@@ -48,13 +61,7 @@ export default class ReaderModal extends React.Component {
         case 'toc':
           return <TableOfContents {...props} />;
         default:
-          return {
-            ignore: true,
-            type: {
-              forceFullscreen: false,
-              noFullscreen: false
-            }
-          };
+          return IGNORE;
       }
     })();
 
@@ -68,7 +75,7 @@ export default class ReaderModal extends React.Component {
       <DialogContainer
         id="reader-dialog"
         onHide={() => this.props.Reader.onCloseModal()}
-        visible={!!show}
+        visible={!!modal.show}
         fullPage={fullscreen}
         className={
           'reader-dialog container' +
