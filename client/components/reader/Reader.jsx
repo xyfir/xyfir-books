@@ -17,6 +17,7 @@ import highlightNotes from 'lib/reader/highlight/notes';
 import swipeListener from 'lib/reader/listeners/swipe';
 import clickListener from 'lib/reader/listeners/click';
 import openWindow from 'lib/util/open-window';
+import hexToRGBA from 'lib/util/hex-to-rgba';
 import loadBook from 'lib/books/load';
 
 // Constants
@@ -432,7 +433,7 @@ export default class Reader extends React.Component {
         'line-height': `${styles.lineHeight}em !important`
       },
       'span.annotation': {
-        'background-color': styles.annotationColor,
+        'background-color': hexToRGBA(styles.annotationColor, 0.5),
         'font-size': 'inherit !important',
         cursor: 'pointer'
       },
