@@ -115,12 +115,12 @@ class App extends React.Component {
         (token = localStorage.accessToken = res.body.accessToken),
           (window.LOGGED_IN = true);
       } catch (err) {
-        return location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
+        return location.replace(`${XYACCOUNTS_URL}/login/service/14`);
       }
     }
     // Access token is required
     else if (navigator.onLine && !token && ENVIRONMENT != 'dev') {
-      return location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
+      return location.replace(`${XYACCOUNTS_URL}/login/service/14`);
     }
 
     const state = Object.assign({}, initialState);
@@ -151,7 +151,7 @@ class App extends React.Component {
       .then(res => {
         // User not logged in
         if (!res.body.library)
-          return location.replace(`${XYACCOUNTS_URL}/#/login/service/14`);
+          return location.replace(`${XYACCOUNTS_URL}/login/service/14`);
 
         account = res.body;
 
@@ -164,7 +164,7 @@ class App extends React.Component {
         location.hash = location.hash.split('?')[0];
       })
       // Only the HTTP request will throw an error
-      .catch(err => location.replace(`${XYACCOUNTS_URL}/#/login/service/14`));
+      .catch(err => location.replace(`${XYACCOUNTS_URL}/login/service/14`));
   }
 
   /**

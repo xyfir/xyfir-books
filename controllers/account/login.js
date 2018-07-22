@@ -75,22 +75,6 @@ module.exports = async function(req, res) {
             .add(7, 'days')
             .format('x');
         }
-        // Validate affiliate promo code
-        else if (referral.promo) {
-          const xyAccAffRes = await request
-            .post(config.address.xyAccounts + 'api/affiliate/signup')
-            .send({
-              service: 14,
-              serviceKey: config.keys.xyAccounts,
-              promoCode: referral.promo
-            });
-
-          if (!xyAccAffRes.body.error && xyAccAffRes.body.promo == 5) {
-            subscription = +moment()
-              .add(7, 'days')
-              .format('x');
-          }
-        }
 
         // Generate a free one month subscription for xyAnnotations
         const xyAnnotationsRes = await request
