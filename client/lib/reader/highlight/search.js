@@ -1,4 +1,4 @@
-import AnnotateEPUBJS from '@xyfir/annotate-epubjs';
+import * as AnnotateEPUBJS from '@xyfir/annotate-epubjs';
 import escapeRegex from 'escape-string-regexp';
 
 /**
@@ -11,14 +11,15 @@ export default function(book, search) {
   const needle = new RegExp(escapeRegex(search), 'g');
   let html = document.body.innerHTML;
 
-  html = AnnotateEPUBJS.wrapMatches({
+  html = AnnotateEPUBJS.insert({
     key: '',
     html,
     type: 'search',
+    mode: AnnotateEPUBJS.INSERT_MODES.WRAP.ONCLICK,
     matches: AnnotateEPUBJS.findMatchIndexes(needle, html),
-    onclick: (t, k) =>
+    onclick: (k, t) =>
       `!event.stopPropagation() && ` +
-      `parent.postMessage({type: '${t}', key: '${k}', epubjs: true}, '*')`
+      `parent.postMessage({type:'${t}',key:'${k}',xy:!0},'*')`
   }).html;
 
   document.body.innerHTML = html;

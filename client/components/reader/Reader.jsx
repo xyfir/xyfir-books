@@ -1,4 +1,4 @@
-import AnnotateEPUBJS from '@xyfir/annotate-epubjs';
+import * as AnnotateEPUBJS from '@xyfir/annotate-epubjs';
 import request from 'superagent';
 import EPUB from 'epubjs';
 import React from 'react';
@@ -354,12 +354,12 @@ export default class Reader extends React.Component {
    * Triggered when highlighted text within the book's content is clicked.
    * @param {MessageEvent} event
    * @param {object} event.data
-   * @param {boolean} event.data.epubjs
+   * @param {boolean} event.data.xy
    * @param {string} event.data.type - `"note|annotation|search"`
    * @param {string} event.data.key
    */
   onHighlightClicked(event) {
-    if (!event.data.epubjs) return;
+    if (!event.data.xy) return;
 
     if (event.data.type == 'annotation') {
       clearTimeout(this.timeout);
@@ -432,17 +432,17 @@ export default class Reader extends React.Component {
         'font-size': `${styles.fontSize}em !important`,
         'line-height': `${styles.lineHeight}em !important`
       },
-      'span.annotation': {
+      'span.xy-annotation': {
         'background-color': hexToRGBA(styles.annotationColor, 0.5),
         'font-size': 'inherit !important',
         cursor: 'pointer'
       },
-      'span.search': {
+      'span.xy-search': {
         'background-color': styles.searchMatchColor,
         'font-size': 'inherit !important',
         cursor: 'pointer'
       },
-      'span.note': {
+      'span.xy-note': {
         'background-color': styles.highlightColor,
         'font-size': 'inherit !important',
         cursor: 'pointer'
