@@ -59,7 +59,7 @@ div.main.md-toolbar-relative {
 
   > section.md-dialog-content {
     overflow-y: auto;
-    max-height: 80vh;
+    max-height: 80vh !important;
   }
 }
 
