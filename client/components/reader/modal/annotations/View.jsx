@@ -1,4 +1,4 @@
-import AnnotateReact from '@xyfir/annotate-react';
+import * as AnnotateReact from '@xyfir/annotate-react';
 import React from 'react';
 
 // Modules
