@@ -5,10 +5,6 @@ import React from 'react';
 // Components
 import Navigation from 'components/reader/modal/Navigation';
 
-// Modules
-import getMatchIndexes from 'lib/reader/matches/find-indexes';
-import wrapMatches from 'lib/reader/matches/wrap';
-
 export default class BookContentSearch extends React.Component {
   constructor(props) {
     super(props);
@@ -54,7 +50,8 @@ export default class BookContentSearch extends React.Component {
 
     const { Reader } = this.props;
     const currentCFI = Reader.book.rendition.location.start.cfi;
-    window.bookView.style.display = 'none';
+    document.getElementById('bookView').style.display = 'none';
+    document.querySelector('div.overlay').style.display = 'none';
 
     for (let item of Reader.book.spine.items) {
       await Reader.book.rendition.display(item.href);
@@ -63,7 +60,8 @@ export default class BookContentSearch extends React.Component {
 
     await Reader.book.rendition.display(currentCFI);
     this.setState({ searching: false });
-    window.bookView.style.display = '';
+    document.getElementById('bookView').style.display = '';
+    document.querySelector('div.overlay').style.display = '';
   }
 
   _searchChapter() {
@@ -96,14 +94,14 @@ export default class BookContentSearch extends React.Component {
         };
 
         // Limit `before` and `after` to 100 characters
-        (match.before =
+        match.before =
           match.before.length > 100
             ? '...' + match.before.substr(match.before.length - 100)
-            : match.before),
-          (match.after =
-            match.after.length > 100
-              ? match.after.substr(0, 100) + '...'
-              : match.after);
+            : match.before;
+        match.after =
+          match.after.length > 100
+            ? match.after.substr(0, 100) + '...'
+            : match.after;
 
         matches.push(match);
       }
@@ -135,8 +133,7 @@ export default class BookContentSearch extends React.Component {
   }
 
   render() {
-    const { matches } = this.state;
-    const { Reader } = this.props;
+    const { query, matches, searching } = this.state;
 
     return (
       <section className="book-content-search">
@@ -149,8 +146,8 @@ export default class BookContentSearch extends React.Component {
             id="search--search"
             ref={i => (this._search = i)}
             type="search"
-            value={this.state.searching ? 'Searching...' : this.state.query}
-            disabled={this.state.searching}
+            value={searching ? 'Searching...' : query}
+            disabled={searching}
             onChange={v => this.setState({ query: v })}
             onKeyPress={e => e.key == 'Enter' && this.onSearch()}
             placeholder="Search"
