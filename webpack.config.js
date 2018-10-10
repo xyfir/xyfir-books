@@ -25,7 +25,6 @@ module.exports = {
   mode: config.environment.type,
 
   entry: {
-    Admin: './client/components/Admin.jsx',
     App: './client/components/App.jsx'
   },
 
