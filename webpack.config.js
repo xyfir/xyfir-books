@@ -1,37 +1,17 @@
 const CompressionPlugin = require('compression-webpack-plugin');
 const webpack = require('webpack');
-const config = require('./config');
+const CONFIG = require('./config');
 const path = require('path');
 
-const plugins = [
-  new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify(config.environment.type)
-    }
-  })
-];
-
-const isProd = config.environment.type == 'production';
-
-if (isProd) {
-  plugins.push(
-    new CompressionPlugin({
-      asset: '[path].gz'
-    })
-  );
-}
+const PROD = CONFIG.environment.type == 'production';
 
 module.exports = {
-  mode: config.environment.type,
+  mode: CONFIG.environment.type,
 
-  entry: {
-    App: './client/components/App.jsx'
-  },
+  entry: './client/components/App.jsx',
 
   output: {
-    chunkFilename: '[name]~[chunkhash]~chunk.js',
-    publicPath: '/static/js/',
-    filename: '[name].js',
+    filename: 'App.js',
     path: path.resolve(__dirname, 'static/js')
   },
 
@@ -59,24 +39,31 @@ module.exports = {
         options: {
           presets: [
             [
-              'env',
+              '@babel/preset-env',
               {
                 targets: {
                   browsers: [
-                    'last 2 Chrome versions'
-                    // 'last 2 Firefox versions',
-                    // 'last 2 iOS versions',
-                    // 'last 2 Android versions'
+                    'last 2 Chrome versions',
+                    'last 2 Firefox versions',
+                    'last 2 iOS versions',
+                    'last 2 Android versions'
                   ]
                 }
               }
             ],
-            'react'
+            '@babel/preset-react'
           ]
         }
       }
     ]
   },
 
-  plugins
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(CONFIG.environment.type)
+      }
+    }),
+    PROD ? new CompressionPlugin({ filename: '[path].gz' }) : null
+  ].filter(p => p !== null)
 };
