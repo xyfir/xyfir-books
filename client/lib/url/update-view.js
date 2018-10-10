@@ -10,7 +10,6 @@ import * as VIEWS from 'constants/views';
  * @return {string} The new value for `App.state.view`
  */
 export default function(store) {
-  const state = store.getState();
   const hash = location.hash
     .substr(2)
     .split('?')[0]

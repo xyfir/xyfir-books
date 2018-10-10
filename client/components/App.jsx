@@ -3,10 +3,6 @@ import { render } from 'react-dom';
 import request from 'superagent';
 import React from 'react';
 
-// Redux store / reducers
-import { createStore } from 'redux';
-import reducers from 'reducers/app';
-
 // Components
 import Navigation from 'components/app/Navigation';
 import Settings from 'components/settings/Settings';
@@ -20,6 +16,7 @@ import Alert from 'components/app/Alert';
 import loadBooksFromApi from 'lib/books/load-from-api';
 import parseQuery from 'lib/url/parse-query-string';
 import updateView from 'lib/url/update-view';
+import store from 'lib/store';
 
 // Constants
 import {
@@ -48,20 +45,16 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.store = createStore(reducers);
-
     this._alert = this._alert.bind(this);
 
-    this.store.subscribe(() => {
-      const state = this.store.getState();
-
+    store.subscribe(state => {
       this.setState(state);
 
       if (LOG_STATE) console.log(state);
 
       if (state.save.length) {
         state.save.forEach(s => localforage.setItem(s, state[s]));
-        this.store.dispatch(save([]));
+        store.dispatch(save([]));
       }
     });
 
@@ -72,7 +65,7 @@ class App extends React.Component {
       // `#${route}` -> `#/${route}`
       if (location.hash.indexOf('#/') != 0)
         return (location.hash = '#/' + location.hash.substr(1));
-      updateView(this.store);
+      updateView(store);
     };
 
     setTimeout(() => this._loadAd(), 120000);
@@ -135,10 +128,10 @@ class App extends React.Component {
     document.body.className = 'theme-' + state.config.general.theme;
 
     // Push initial state to store
-    this.store.dispatch({ type: INITIALIZE_STATE, state });
+    store.dispatch({ type: INITIALIZE_STATE, state });
 
     // Set state.view based on current url hash
-    updateView(this.store);
+    updateView(store);
 
     // Load new data from API
     if (!navigator.onLine) return;
@@ -158,8 +151,8 @@ class App extends React.Component {
         return loadBooksFromApi(account.library);
       })
       .then(books => {
-        this.store.dispatch(setState({ account, books }));
-        this.store.dispatch(save(['account', 'books']));
+        store.dispatch(setState({ account, books }));
+        store.dispatch(save(['account', 'books']));
 
         location.hash = location.hash.split('?')[0];
       })
@@ -198,6 +191,10 @@ class App extends React.Component {
       });
   }
 
+  dispatch(action) {
+    return store.dispatch(action);
+  }
+
   render() {
     if (!this.state || this.state.loading) return <Loading />;
 
@@ -205,7 +202,7 @@ class App extends React.Component {
       const props = {
         App: this, // eventually replace other props with this
         data: this.state,
-        dispatch: this.store.dispatch,
+        dispatch: store.dispatch,
         alert: this._alert
       };
 
