@@ -112,7 +112,7 @@ class App extends React.Component {
       }
     }
     // Access token is required
-    else if (navigator.onLine && !token && ENVIRONMENT != 'dev') {
+    else if (navigator.onLine && !token && ENVIRONMENT != 'development') {
       return location.replace(`${XYACCOUNTS_URL}/login/service/14`);
     }
 
