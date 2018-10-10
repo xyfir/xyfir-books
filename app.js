@@ -4,8 +4,6 @@ const SessionStore = require('express-mysql-session');
 const express = require('express');
 const session = require('express-session');
 const parser = require('body-parser');
-const moment = require('moment');
-const MySQL = require('lib/mysql');
 const app = express();
 
 const config = require('config');
@@ -34,22 +32,11 @@ app.use(parser.urlencoded({ extended: true, limit: '5mb' }));
 
 app.use('/static', express.static(__dirname + '/static'));
 app.use('/api', require('controllers/'));
-app.get('/', (req, res) => {
-  if (config.environment.type == 'development') {
-    (req.session.uid = 1),
-      (req.session.library = '1-testtesttesttesttesttesttesttesttesttest'),
-      (req.session.subscription =
-        moment()
-          .add(30, 'days')
-          .unix() * 1000);
-  }
-
-  res.sendFile(__dirname + '/views/Home.html');
-});
 app.get('/app', (req, res) => res.sendFile(__dirname + '/views/App.html'));
+app.get('/', (req, res) => res.sendFile(__dirname + '/views/Home.html'));
 
 app.listen(config.environment.port, () =>
-  console.log('~~Server running on port', config.environment.port)
+  console.log('Running on', config.environment.port)
 );
 
 if (config.environment.runCronJobs) require('jobs/cron/start')();
